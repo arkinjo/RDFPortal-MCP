@@ -1,0 +1,1376 @@
+endpoint:
+  - https://rdfportal.org/sib/sparql
+  - graph:
+    - http://sparql.uniprot.org/uniprot
+    - http://sparql.uniprot.org/obsolete
+    - http://sparql.uniprot.org/citationmapping
+    - http://sparql.uniprot.org/taxonomy
+    - http://sparql.uniprot.org/citations
+    - http://sparql.uniprot.org/proteomes
+    - http://sparql.uniprot.org/go
+    - http://sparql.uniprot.org/enzyme
+    - http://sparql.uniprot.org/diseases
+    - http://sparql.uniprot.org/journal
+    - http://sparql.uniprot.org/pathways
+    - http://sparql.uniprot.org/keywords
+    - http://sparql.uniprot.org/locations
+    - http://sparql.uniprot.org/tissues
+    - http://sparql.uniprot.org/core
+    - http://sparql.uniprot.org/databases
+another_endpoint:
+  - https://sparql.uniprot.org/sparql
+  - https://rdfportal.org/sib/sparql
+title: UniProt RDF
+website: https://uniprot.org/
+description: The Universal Protein Resource (UniProt) is a comprehensive resource for protein sequence and annotation data.
+tags: [ Protein ]
+provider: The Swiss Institute of Bioinformatics
+creators:
+  - name: The Swiss Institute of Bioinformatics
+version: 2023_01
+issued: 2023-03-01
+licenses:
+  - Creative Commons Attribution 4.0 International (CC BY 4.0) License- UniProt up:Q9BYF1:
+  - a:
+    - core:Protein
+  - core:recommendedName*:
+    - recommended_name_node: RecommendedNameNode
+  - core:submittedName*:
+    - submitted_name_node: SubmitedNameNode
+  - core:alternativeName*:
+    - alternative_name_node: AlternativeNameNode
+  - core:mnemonic:
+    - mnemonic: "ACE2_HUMAN"
+  - core:oldMnemonic*:
+    - old_mnemonic: "CQ066_HUMAN"
+  - core:replaces*:
+    - second_id: up:Q9UFZ6
+  - rdfs:label:
+    - label: "uniprot:Q9BYF1"
+  - core:reviewed:
+    - reviewed: 1
+  - core:created:
+    - created_date: 2005-08-02
+  - core:modified:
+    - modified_date: 2022-12-14
+  - core:version:
+    - version: 192
+  - core:encodedBy?:
+    - gene: Gene
+  - core:organism:
+    - taxonomy: taxonomy:9606
+  - core:proteome:
+    - proteome: <http://purl.uniprot.org/proteomes/UP000005640#Chromosome%2010>
+  - core:existence:
+    - existence: core:Evidence_at_Protein_Level_Existence
+  - core:enzyme*:
+    - ec: enzyme:3.4.17.23
+  - core:component*:
+    - component: Component
+  - core:sequence:
+    - simple_sequence: SimpleSequence
+  - core:sequence*:
+    - modified_sequence: ModifiedSequence
+  - core:sequence*:
+    - external_sequence: ExternalSequence
+  - core:sequence*:
+    - unknown_sequence: UnknownSequence
+  - core:potentialSequence*:
+    - potential_seq: isoforms:A0A7I2V2E9-1
+  - rdfs:seeAlso*:
+    - db_resource: DbResource
+  - core:citation*: Citation
+  - core:classifiedWith*:
+    - go: GO
+  - core:classifiedWith*:
+    - keyword: Keyword
+  - core:interaction*:
+    - intact: Intact
+  - core:isolatedFrom*:
+    - tissue: tissue:1030
+  - core:annotation*:
+    - absorption_annotation: AbsorptionAnnotation
+  - core:annotation*:
+    - active_site_annotation: ActiveSiteAnnotation
+  - core:annotation*:
+    - activity_regulation_annotation: ActivityRegulationAnnotation
+  - core:annotation*:
+    - allergen_annotation: AllergenAnnotation
+  - core:annotation*:
+    - alternative_initiation_annotation: AlternativeInitiationAnnotation
+  - core:annotation*:
+    - alternative_promoter_usage_annotation: AlternativePromoterUsageAnnotation
+  - core:annotation*:
+    - alternative_sequence_annotation: AlternativeSequenceAnnotation
+  - core:annotation*:
+    - alternative_splicing_annotation: AlternativeSplicingAnnotation
+  - core:annotation*:
+    - annotation: Annotation
+  - core:annotation*:
+    - beta_strand_annotation: BetaStrandAnnotation
+  - core:annotation*:
+    - binding_site_annotation: BindingSiteAnnotation
+  - core:annotation*:
+    - biotechnology_annotation: BiotechnologyAnnotation
+  - core:annotation*:
+    - catalytic_activity_annotation: CatalyticActivityAnnotation
+  - core:annotation*:
+    - caution_annotation: CautionAnnotation
+  - core:annotation*:
+    - chain_annotation: ChainAnnotation
+  - core:annotation*:
+    - cofactor_annotation: CofactorAnnotation
+  - core:annotation*:
+    - coiled_coil_annotation: CoiledCoilAnnotation
+  - core:annotation*:
+    - compositional_bias_annotation: CompositionalBiasAnnotation
+  - core:annotation*:
+    - cross_link_annotation: CrossLinkAnnotation
+  - core:annotation*:
+    - developmental_stage_annotation: DevelopmentalStageAnnotation
+  - core:annotation*:
+    - disease_annotation: DiseaseAnnotation
+  - core:annotation*:
+    - disruption_phenotype_annotation: DisruptionPhenotypeAnnotation
+  - core:annotation*:
+    - disulfide_bond_annotation: DisulfideBondAnnotation
+  - core:annotation*:
+    - domain_annotation: DomainAnnotation
+  - core:annotation*:
+    - domain_extent_annotation: DomainExtentAnnotation
+  - core:annotation*:
+    - erroneous_gene_model_prediction_annotation: ErroneousGeneModelPredictionAnnotation
+  - core:annotation*:
+    - erroneous_initiation_annotation: ErroneousInitiationAnnotation
+  - core:annotation*:
+    - erroneous_termination_annotation: ErroneousTerminationAnnotation
+  - core:annotation*:
+    - erroneous_translation_annotation: ErroneousTranslationAnnotation
+  - core:annotation*:
+    - frameshift_annotation: FrameshiftAnnotation
+  - core:annotation*:
+    - function_annotation: FunctionAnnotation
+  - core:annotation*:
+    - glycosylation_annotation: GlycosylationAnnotation
+  - core:annotation*:
+    - helix_annotation: HelixAnnotation
+  - core:annotation*:
+    - induction_annotation: InductionAnnotation
+  - core:annotation*:
+    - initiator_methionine_annotation: InitiatorMethionineAnnotation
+  - core:annotation*:
+    - intramembrane_annotation: IntramembraneAnnotation
+  - core:annotation*:
+    - kinetics_annotation: KineticsAnnotation
+  - core:annotation*:
+    - lipidation_annotation: LipidationAnnotation
+  - core:annotation*:
+    - mass_spectrometry_annotation: MassSpectrometryAnnotation
+  - core:annotation*:
+    - modified_residue_annotation: ModifiedResidueAnnotation
+  - core:annotation*:
+    - motif_annotation: MotifAnnotation
+  - core:annotation*:
+    - mutagenesis_annotation: MutagenesisAnnotation
+  - core:annotation*:
+    - natural_variant_annotation: NaturalVariantAnnotation
+  - core:annotation*:
+    - non_adjacent_residues_annotation: NonAdjacentResiduesAnnotation
+  - core:annotation*:
+    - non_standard_residue_annotation: NonStandardResidueAnnotation
+  - core:annotation*:
+    - non_terminal_residue_annotation: NonTerminalResidueAnnotation
+  - core:annotation*:
+    - nucleotide_binding_annotation: NucleotideBindingAnnotation
+  - core:annotation*:
+    - ph_dependence_annotation: PhDependenceAnnotation
+  - core:annotation*:
+    - ptm_annotation: PtmAnnotation
+  - core:annotation*:
+    - pathway_annotation: PathwayAnnotation
+  - core:annotation*:
+    - peptide_annotation: PeptideAnnotation
+  - core:annotation*:
+    - pharmaceutical_annotation: PharmaceuticalAnnotation
+  - core:annotation*:
+    - polymorphism_annotation: PolymorphismAnnotation
+  - core:annotation*:
+    - propeptide_annotation: PropeptideAnnotation
+  - core:annotation*:
+    - rna_editing_annotation: RnaEditingAnnotation
+  - core:annotation*:
+    - redox_potential_annotation: RedoxPotentialAnnotation
+  - core:annotation*:
+    - region_annotation: RegionAnnotation
+  - core:annotation*:
+    - repeat_annotation: RepeatAnnotation
+  - core:annotation*:
+    - ribosomal_frameshifting: RibosomalFrameshifting
+  - core:annotation*:
+    - sequence_caution_annotation: SequenceCautionAnnotation
+  - core:annotation*:
+    - sequence_conflict_annotation: SequenceConflictAnnotation
+  - core:annotation*:
+    - sequence_uncertainty_annotation: SequenceUncertaintyAnnotation
+  - core:annotation*:
+    - signal_peptide_annotation: SignalPeptideAnnotation
+  - core:annotation*:
+    - similarity_annotation: SimilarityAnnotation
+  - core:annotation*:
+    - site_annotation: SiteAnnotation
+  - core:annotation*:
+    - subcellular_location_annotation: SubcellularLocationAnnotation
+  - core:annotation*:
+    - subunit_annotation: SubunitAnnotation
+  - core:annotation*:
+    - temperature_dependence_annotation: TemperatureDependenceAnnotation
+  - core:annotation*:
+    - tissue_specificity_annotation: TissueSpecificityAnnotation
+  - core:annotation*:
+    - topological_domain_annotation: TopologicalDomainAnnotation
+  - core:annotation*:
+    - transit_peptide_annotation: TransitPeptideAnnotation
+  - core:annotation*:
+    - transmembrane_annotation: TransmembraneAnnotation
+  - core:annotation*:
+    - turn_annotation: TurnAnnotation
+  - core:annotation*:
+    - zinc_finger_annotation: ZincFingerAnnotation
+
+- RecommendedNameNode up:Q9BYF1#SIPDBB502D4006F752D:
+  - a: core:Structured_Name
+  - core:fullName:
+    - recommended_name: "Angiotensin-converting enzyme 2"
+  - core:shortName?:
+    - recommended_short_name: "hVps37A"
+  - core:ecName?:
+    - recommended_ec: "3.4.17.23"
+
+- SubmitedNameNode up:A0A2R3N0P2#SIPE4C7423F69FEF7A2:
+  - a: core:Structured_Name
+  - core:fullName+:
+    - submited_name: "Aldoketomutase"
+  - core:ecName?:
+    - submitted_ec: "5.2.1.8"
+
+- AlternativeNameNode up:A6NJT0#SIPA55C636CCF9151AA:
+  - a: core:Structured_Name
+  - core:fullName?:
+    - altanative_name: "Homeobox protein Uncx4.1"
+  - core:shortName?:
+    - altanative_short_name: "tRNA(m1A58)MTase subunit TRMT61A"
+  - core:ecName?:
+    - altanative_ec: "2.1.1.-"
+  - core:cdAntigenName?:
+    - altanative_antigen: "CD312"
+  - core:allergenName?:
+    - altanative_allergen: "Hom s 3"
+
+- Gene up:Q9BYF1#gene-MD59FDF2659357792822CB85F383B26B8FE:
+  - a: core:Gene
+  - skos:prefLabel?:
+    - gene_name: "ACE2"
+  - skos:altLabel?:
+    - gene_alt_name: "UNCX4.1"
+  - core:orfName?:
+    - orf_name: "UNQ868/PRO1885"
+
+- Component up:Q9BYF1#SIPDFC0265AEF6A17B9:
+  - a: core:Part
+  - core:recommendedName+:
+    - component_name_node: ComponentNameNode
+  - core:alternativeName*:
+    - component_alt_name_node: ComponentAltNameNode
+  - core:enzyme*:
+    - component_ec: enzyme:1.1.1.n12
+
+- ComponentNameNode up:Q9BYF1#SIP0AFB38383A51AFB7:
+  - a: core:Structured_Name
+  - core:fullName+:
+    - component_name: "Cathepsin H"
+  - core:shortName*:
+    - component_short_name: "Dyn-B"
+  - core:ecName?:
+    - component_ec_name: "3.4.22.16"
+
+- ComponentAltNameNode up:P04535#SIP946A7DAB764CBC03:
+  - a: core:Structured_Name
+  - core:fullName+:
+    - component_alt_name: "Dynorphin B"
+  - core:shortName*:
+    - component_alt_short_name: "Dyn-B"
+
+- SimpleSequence isoforms:Q9NYF8-1:
+  - a: core:Simple_Sequence
+  - core:name*:
+    - rep_isoform_name: "1"
+  - rdf:value:
+    - seq: "MGRSNSRSHSSRSKSRSQSSSRSRSRSHSRKKRYSSRSRSRTYSRSRSR..."
+  - core:mass:
+    - seq_mass: 106122
+    
+- ModifiedSequence isoforms:Q9NYF8-2:
+  - a: core:Modificated_Sequence
+  - core:name*:
+    - isoform_name: "Btf-l"
+  - rdf:value:
+    - isoform_seq: "MGRSNSRSHSSRSKSRSQSSSRSRSRSHSRKKRYRSRSRTYSRSRSRDR..."
+
+- ExternalSequence isoforms:L0R6Q1-1:
+  - a: core:External_Sequence
+  - rdf:value:
+    - external_seq: "MADDKDSLPKLKDLAFLKNQ..."
+
+- UnknownSequence isoforms:52757-2:
+  - a: core:Unknown_Sequence
+  - core:name*:
+    - no_seq_isoform_name: "Beta-1"
+
+- GO obo:GO_0001618:
+  - a: owl:Class
+
+- Keyword keywords:25:
+  - a: core:Concept
+
+- DbResource <http://purl.uniprot.org/embl-cds/AAF78220.1>:
+  - a:
+    - core:Resource
+    - core:Nucleotide_Resource
+    - core:Transcript_Resource
+    - core:Structure_Resource
+  - core:database:
+    - database: <http://purl.uniprot.org/database/EMBL>
+
+- AbsorptionAnnotation <http://purl.uniprot.org/uniprot/P04000#SIPD7876B25E46F0DAD>:
+  - a: core:Absorption_Annotation
+  - core:maximum:
+    - absorption_max: 530
+
+- ActiveSiteAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP3AC5B779F687F241>:
+  - a: core:Active_Site_Annotation
+  - rdfs:comment:
+    - active_site_desc: "Proton donor"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - active_site_begin: 505
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - active_site_end: 505
+
+- ActivityRegulationAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP24113BC5E56AA353>:
+  - a: core:Activity_Regulation_Annotation
+  - rdfs:comment:
+    - activity_regulation_desc: "Regulated by chloride and fluoride, but not bromide..."
+
+- AllergenAnnotation <http://purl.uniprot.org/uniprot/Q9BQE9#SIP21C424C523E246F6>:
+  - a: core:Allergen_Annotation
+  - rdfs:commnet:
+    - allergen_desc: "Causes an allergic reaction in human..."
+
+- AlternativeInitiationAnnotation <http://purl.uniprot.org/uniprot/Q68CP4#SIP253410AED6FBB7FC>:
+  - a: core:Alternative_Initiation_Annotation
+  - core:sequence+:
+    - alt_init_seq: isoforms:Q68CP4-1
+  - rdfs:comment?:
+    - alt_init_desc: "Isoform 1 and isoform 2 are correctly tar..."
+
+- AlternativePromoterUsageAnnotation <http://purl.uniprot.org/uniprot/P36402#SIP95AEAE561FE57BBA>:
+  - a: core:Alternative_Promoter_Usage_Annotation
+  - core:sequence+:
+    - alt_promoter_seq: isoforms:P36402-1
+  - rdfs:comment?:
+    - alt_promoter_desc: "2 series of isoforms, L and S, are produced..."
+
+- AlternativeSequenceAnnotation <http://purl.uniprot.org/annotation/VSP_060903>:
+  - a: core:Alternative_Sequence_Annotation
+  - rdfs:comment:
+    - all_seq_desc: "In isoform 2."
+  - core:substitution:
+    - alt_sequence: "MREAGWDKGG"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - alt_seq_begin: 1
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - alt_seq_end: 356
+
+- AlternativeSplicingAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP3EC7FC68B97F7D30>:
+  - a: core:Alternative_Splicing_Annotation
+  - core:sequence:
+    - alt_splice: isoforms:Q9BYF1-1
+
+- Annotation <http://purl.uniprot.org/uniprot/O14994#SIP7D3E6C3AD70A5B22>:
+  - a: core:Annotation
+  - rdfs:comment:
+    - annnotation_desc: "Starts at an alternative upstream CUG codon."
+  - core:sequence?:
+    - annotation_spec_seq: isoforms:P15692-16
+
+- BetaStrandAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP07DCC01247230EE4>:
+  - a: core:Beta_Strand_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - beta_strand_begin: 267
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - beta_strand_end: 271
+
+- BindingSiteAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP1F377B1DE4C0DD98>:
+  - a: core:Binding_Site_Annotation
+  - core:ligand:
+    - []:
+      - rdfs:subClassOf:
+        - ligand: obo:CHEBI_29105
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - binding_site_begin: 374
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - binding_site_end: 374
+
+- BiotechnologyAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP655A591DC7BB5F7C>:
+  - a: core:Biotechnology_Annotation
+  - rdfs:comment:
+    - biotechnology_desc: "An engeneered stable, dimeric and secreted..."
+
+- CatalyticActivityAnnotation <http://purl.uniprot.org/uniprot/A0A024R495#SIP793B603C8353D35C>:
+  - a: core:Catalytic_Activity_Annotation
+  - core:catalyticActivity:
+    - []:
+      - a: core:Catalytic_Activity
+      - core:catalyzedReaction:
+        - rhea: rhea:63573
+  - core:catalyzedPhysiologicalReaction?:
+    - physiological_raction: rhea:63573
+
+- CautionAnnotation <http://purl.uniprot.org/uniprot/Q9UBV6#SIP1EB470CAD3155EA6>:
+  - a: core:Caution_Annotation
+  - rdfs:comment:
+    - caution_desc: "Lacks conserved residue(s) required for the propagation of feature annotation."
+
+- ChainAnnotation <http://purl.uniprot.org/annotation/PRO_0000028570>:
+  - a: core:Chain_Annotation
+  - rdfs:comment:
+    - chain_desc: "Angiotensin-converting enzyme 2"
+  - core:mass:
+    - chain_mass: 90745
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - chain_begin: 18
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - chain_end: 805
+
+- CofactorAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP70C2C386E6334DC3>:
+  - a: core:Cofactor_Annotation
+  - core:cofactor*:
+    - cofactor: obo:CHEBI_29105
+  - rdfs:comment?:
+    - cofactor_desc: "Binds 1 zinc ion per subunit."
+
+- CoiledCoilAnnotation <http://purl.uniprot.org/uniprot/Q8TCM3#SIP7B20A9889ADA67D4>:
+  - a: core:Coiled_Coil_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - coiledcoil_begin: 275
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - coiledcoil_end: 302
+  - core:sequence?:
+    - coiledcoil_spec_seq: isoforms:O95834-3
+
+- CompositionalBiasAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP014E9A8DFAF0D2BF>:
+  - a: core:Compositional_Bias_Annotation
+  - rdfs:comment:
+    - comp_bias_desc: "Polar residues"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - comp_bias_begin: 785
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - comp_bias_end: 805
+
+- CrossLinkAnnotation <http://purl.uniprot.org/uniprot/Q6PCB5#SIP685176030B3FB725>:
+  - a: core:Cross-link_Annotation
+  - rdfs:comment:
+    - crosslink_desc: "Glycyl lysine isopeptide (Lys-Gly) (interchain with..."
+  - core:range+:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - crosslink_begin: 223
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - crosslink_end: 223 
+
+- DevelopmentalStageAnnotation <http://purl.uniprot.org/uniprot/Q99218#SIP64374804BD22E0E2>:
+  - a: core:Developmental_Stage_Annotation
+  - rdfs:comment:
+    - dev_stage_desc: "Transiently but abundantly expressed by..."
+
+- DiseaseAnnotation <http://purl.uniprot.org/uniprot/Q5T8D3#SIPE92EF7B4CE188CB3>:
+  - a: core:Disease_Annotation
+  - rdfs:comment:
+    - disease_desc: "The disease is caused by variants affecting the gene represented in this entry."
+  - core:disease?:
+    - disease: disease:5818
+
+- DisruptionPhenotypeAnnotation <http://purl.uniprot.org/uniprot/P52130#SIP72EE5F24F7558A62>:
+  - a: core:Disruption_Phenotype_Annotation
+  - rdfs:comment:
+    - disrupt_pheno_desc: "Essential, it cannot be deleted unless rnlA is also disrupted."
+
+- DisulfideBondAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP7320356582E6F072>:
+  - a: core:Disulfide_Bond_Annotation
+  - core:range+:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - disulfide_begin: 530
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - disulfide_end: 530
+
+- DomainAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP602CC12AAC4C1E4B>:
+  - a: core:Domain_Annotation
+  - rdfs:comment:
+    - domain_txt_desc: "The extracellular region of the ACE2 enzyme..."
+
+- DomainExtentAnnotation <http://purl.uniprot.org/uniprot/A0A075B6K2#SIP2B8577CC9F81EEE5>:
+  - a: core:Domain_Extent_Annotation
+  - rdfs:comment:
+    - domain_desc: "MHC_I-like_Ag-recog"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - domain_begin: 530
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - domain_end: 530
+
+- ErroneousGeneModelPredictionAnnotation <http://purl.uniprot.org/uniprot/Q8WUQ7#SIPCAC0CFFDFD09C79B>>:
+  - a: core:Erroneous_Gene_Model_Prediction_Annotation
+  - core:conflictingSequence:
+    - err_gene_model_predication_conflict_seq_node: ErrGeneModelPredicationConflictSeqNode
+
+- ErrGeneModelPredicationConflictSeqNode up:Q8WUQ7#SIP9FB4852469FB0692:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - err_gene_model_predication_conflict_seq: <http://purl.uniprot.org/embl-cds/EAW69298.1>
+
+- ErroneousInitiationAnnotation up:Q9NYF8#SIPE5597FD28F20E839:
+  - a: core:Erroneous_Initiation_Annotation
+  - core:conflictingSequence:
+    - err_init_conflict_seq_node: ErrInitConflictSeqNode
+
+- ErrInitConflictSeqNode up:Q9NYF8#SIP51CDE913E7CBBB2F:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - err_init_conflict_seq: <http://purl.uniprot.org/embl-cds/BAA11481.2>
+
+- ErroneousTerminationAnnotation up:O94979#SIPB2950A91FA076FE3:
+  - a: core:Erroneous_Termination_Annotation
+  - core:conflictingSequence:
+    - err_term_conflict_seq_node: ErrTermConflictSeqNode
+  - rdfs:comment:
+    - err_term_conflict_desc: "Truncated C-terminus."
+
+- ErrTermConflictSeqNode up:O94979#SIP72DF09D3E7C27B0D:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - err_term_conflict_seq: <http://purl.uniprot.org/embl-cds/CAI45995.1>
+
+- ErroneousTranslationAnnotation up:P36544#SIP2002BB2EF2E9FF2C:
+  - a: core:Erroneous_Translation_Annotation
+  - core:conflictingSequence:
+    - err_translate_conflict_seq_node: ErrTranslateConflictSeqNode
+  - rdfs:comment?:
+    - err_translate_conflict_desc: "Wrong choice of frame."
+
+- ErrTranslateConflictSeqNode up:P36544#SIP1AA4C077BB4475D3:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - err_translate_conflict_seq: <http://purl.uniprot.org/embl-cds/AAH37571.1>
+
+- FrameshiftAnnotation up:Q9NY61#SIP6C126E7063CC03D8:
+  - a: core:Frameshift_Annotation
+  - core:conflictingSequence:
+    - frameshift_seq_node: FrameshiftSeqNode
+
+- FrameshiftSeqNode up:Q9NY61#SIP05DE5164AF85D03E:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - frameshift_seq: <http://purl.uniprot.org/embl-cds/AAQ13610.1>
+
+- FunctionAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP376F906C1FC9BAE4>:
+  - a: core:Function_Annotation
+  - rdfs:comment:
+    - func_desc: "(Microbial infection) Acts as a receptor for..."
+  - core:sequence?:
+    - func_spec_seq: isoforms:Q9BYF1-3
+    
+- GlycosylationAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP20781602C636CB39>:
+  - a: core:Glycosylation_Annotation
+  - rdfs:comment:
+    - glyco_desc: "N-linked (GlcNAc...) asparagine"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - glyco_begin: 546
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - glyco_end: 546
+
+- HelixAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP0F315404B2449569>:
+  - a: core:Helix_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - helix_begin: 264
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - helix_end: 266
+
+- InductionAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP0975ACA8F20ADBC0>:
+  - a: core:Induction_Annotation
+  - rdfs:comment:
+    - induction_desc: "(Microbial infection) In airway epithelial cells,..."
+  - core:sequence?:
+    - induction_spec_seq: isoforms:Q9BYF1-3
+
+- InitiatorMethionineAnnotation <http://purl.uniprot.org/uniprot/O15523#SIP0265DF11775E181A>:
+  - a: core:Initiator_Methionine_Annotation
+  - rdfs:comment:
+    - init_met_desc: "Removed"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - init_met_begin: 1
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - init_met_end: 1
+  - core:sequence?:
+    - init_met_seq: isoforms:Q15746-10
+
+- IntramembraneAnnotation <http://purl.uniprot.org/uniprot/Q6AI14#SIPAD05AE88A309BFAB>:
+  - a: core:Intramembrane_Annotation
+  - rdfs:comment?:
+    - intramembrane_desc: "Name=L"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - intramembrane_begin: 421
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - intramembrane_end: 441
+
+- KineticsAnnotation <http://purl.uniprot.org/uniprot/Q13838#SIP82291B7583D2A2E4>:
+  - a: core:Kinetics_Annotation
+  - rdfs:comment:
+    - kinetics_desc: "kcat is 0.034 sec(-1) with angiotensin..."
+  - core:measuredActivity*:
+    - activity: "28.7 nmol/min/mg enzyme with angiotensin II as substrate"
+  - core:measuredAffinity*:
+    - affinity: "130 uM for Lys-[des-Arg(9)]-bradykinin"
+
+- LipidationAnnotation <http://purl.uniprot.org/uniprot/O43745#SIPC8B1D25E66389EF2>:
+  - a: core:Lipidation_Annotation
+  - rdfs:comment:
+    - lipid_desc: "N-myristoyl glycine"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - lipid_begin: 2
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - lipid_end: 2
+
+- MassSpectrometryAnnotation <http://purl.uniprot.org/uniprot/P80511#SIP832E02F2003FCDD7>:
+  - a: core:Mass_Spectrometry_Annotation
+  - core:measuredValue:
+    - ms_value: 10444
+  - rdfs:comment?:
+    - ms_desc: "Not post-translationally modified."
+  - core:method?:
+    - ms_method: core:ESI
+  - core:measuredError?:
+    - ms_error: 0.5
+  - core:sequence?:
+    - ms_seq: <http://purl.uniprot.org/annotation/PRO_0000045383>
+
+- ModifiedResidueAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP5E370263A4857D22>:
+  - a: core:Modified_Residue_Annotation
+  - rdfs:comment:
+    - mod_desc: "Phosphoserine"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - mod_begin: 783
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - mod_end: 783
+
+- MotifAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP1DCF0881D89E4492>:
+  - a: core:Motif_Annotation
+  - rdfs:comment:
+    - motif_desc: "PDZ-binding"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - motif_begin: 803
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - motif_end: 805
+
+- MutagenesisAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP08AFE023275A02FA>:
+  - a: core:Mutagenesis_Annotation
+  - rdfs:comment:
+    - mutation_desc: "Increases slightly the interaction with RBD domain of SARS-CoV-2 spike protein."
+  - core:substitution:
+    - mutation_pep_seq: "R"
+  - core:sequence?:
+    - mutation_seq: isoforms:P12821-3
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - mutation_begin: 39
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - mutation_end: 39
+          
+- NaturalVariantAnnotation <http://purl.uniprot.org/annotation/VAR_023082>:
+  - a: core:Natural_Variant_Annotation
+  - rdfs:comment?:
+    - var_desc: "In GEFS+1; can rescue the loss of..."
+  - core:substitution:
+    - var_pep_seq: "R"
+  - rdfs:seeAlso*:
+    - dbsnp: dbsnp:rs4646116
+  - skos:related*:
+    - related_disease: keywords:505
+  - core:sequence?:
+    - var_seq: isoforms:P84550-2
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - var_begin: 26
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - var_end: 26
+
+- NonAdjacentResiduesAnnotation <http://purl.uniprot.org/uniprot/Q9H195#SIPCA8701C234810EB7>:
+  - a: core:Non-adjacent_Residues_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_adj_residue_begin: 336
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_adj_residue_end: 337
+
+- NonStandardResidueAnnotation <http://purl.uniprot.org/uniprot/P49908#SIPFCA5080EC09C3F98>:
+  - a: core:Non-standard_Residue_Annotation
+  - rdfs:comment:
+    - non_std_residue_desc: "Selenocysteine"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_std_residue_begin: 367
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_std_residue_end: 367
+
+- NonTerminalResidueAnnotation <http://purl.uniprot.org/uniprot/C9J3B5#SIP0A2F2501462C9DC2>:
+  - a: core:Non-Terminal_Residue_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_terminal_residue_begin: 116
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nod_terminal_residue_end: 116
+
+- NucleotideBindingAnnotation <http://purl.uniprot.org/uniprot/Q6AW80#SIP288BDD5CD7B67E49>:
+  - a: core:Nucleotide_Binding_Annotation
+  - rdfs:comment?:
+    - nuc_bind_desc: "Nuclear receptor"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nuc_bind_begin: 1
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - nuc_bind_end: 47
+
+- PhDependenceAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIPE0D7193ADE63CBF1>:
+  - a: core:PH_Dependence_Annotation
+  - rdf:comment:
+    - ph_depend_desc: "Optimum pH is 6.5 in the presence of 1 M NaCl. Active from pH 6 to 9."
+  - core:sequence?:
+    - ph_spec_seq: isoforms:Q9ULC5-4
+
+- PtmAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP34FE7438CE6B6A77>:
+  - a: core:PTM_Annotation
+  - rdfs:comment:
+    - ptm_desc: "Proteolytic cleavage by ADAM17 generates a..."
+  - core:sequence?:
+    - ptm_spec_seq: isoforms:P22307-2
+
+- PathwayAnnotation <http://purl.uniprot.org/uniprot/Q5JU20#SIP8B5E08474E65EEEE>:
+  - a: core:Pathway_Annotation
+  - rdfs:seeAlso:
+    - unipathway: unipathway:399.850
+  - core:sequence?:
+    - unipathway_spec_seq: isoforms:Q4G0S4-2
+
+- PeptideAnnotation <http://purl.uniprot.org/annotation/PRO_0000005420>:
+  - a: core:Peptide_Annotation
+  - rdfs:comment:
+    - pep_desc: "GR-44"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - pep_begin: 413
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - pep_end: 456
+
+- PharmaceuticalAnnotation <http://purl.uniprot.org/uniprot/Q2M2I8#SIP72C2A5B0E13E4976>:
+  - a: core:Pharmaceutical_Annotation
+  - rdfs:comment:
+    - pharmaceutical_desc: "By regulating the entry of hepatitis C virus..."
+
+- PolymorphismAnnotation <http://purl.uniprot.org/uniprot/P14679#SIPDE59820269555BEA>:
+  - a: core:Polymorphism_Annotation
+  - rdfs:comment:
+    - polymorphism_desc: "Compound heterozygosity for the R402Q polymorphism..."
+
+- PropeptideAnnotation <http://purl.uniprot.org/annotation/PRO_0000027506>:
+  - a: core:Propeptide_Annotation
+  - rdfs:comment?:
+    - pro_pep_desc: "Activation peptide"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - pro_pep_begin: 23
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - pro_pep_end: 34
+
+- RnaEditingAnnotation <http://purl.uniprot.org/uniprot/P62952#SIP33EBA9AA3D98FCB3>:
+  - a: core:RNA_Editing_Annotation
+  - rdfs:comment:
+    - rna_edit_desc: "Partially edited. Decreased editing levels seen..."
+  - faldo:location*:
+    - []:
+      - a:
+        - faldo:Position
+        - faldo:ExactPosition
+      - faldo:position:
+        - rna_edit_pos: 15
+  - core:frameshift?:
+    - rna_edit_frameshift: true
+  - core:sequence?:
+    - rna_edit_spec_seq: isoforms:Q9P225-3
+
+- RedoxPotentialAnnotation <http://purl.uniprot.org/uniprot/Q8N5K1#SIP3818A95A2F00CD07>:
+  - a: core:Redox_Potential_Annotation
+  - rdfs:comment:
+    - redox_desc: "E is 0 +/- 10 mV for 2Fe-2S at pH 7.5."
+
+- RegionAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP2DFAC5510D837438>:
+  - a: core:Region_Annotation
+  - rdfs:comment:
+    - region_desc: "Interaction with SARS-CoV spike glycoprotein"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - region_begin: 353
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - region_end: 357
+
+- RepeatAnnotation <http://purl.uniprot.org/uniprot/Q9ULM6#SIPADC01FA0870D51A9>:
+  - a: core:Repeat_Annotation
+  - rdfs:comment:
+    - repeat_desc: "LRR 1"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - repeat_begin: 52
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - repeat_end: 73
+
+- RibosomalFrameshifting <http://purl.uniprot.org/uniprot/P63126#SIP51E33BC26A028813>:
+  - a: core:Ribosomal_Frameshifting
+  - rdfs:comment?:
+    - ribosomal_frameshift_desc: "This protein is synthesized as a Gag polypeptide..."
+  - core:sequence+:
+    - ribosomal_frameshift_spec_seq: isoforms:P63126-1
+
+- SequenceCautionAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP0DD00D6781008A7E>:
+  - a: core:Sequence_Caution_Annotation
+  - core:conflictingSequence:
+    - caution_seq_node: CautionSeqNode
+
+- CautionSeqNode up:Q9BYF1#SIP88F6482138F28E84:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - caution_seq: <http://purl.uniprot.org/embl-cds/AAQ89076.1>
+
+- SequenceConflictAnnotation up:Q9BYF1#SIP7DA2AEFD56F5CC8F:
+  - a: core:Sequence_Conflict_Annotation
+  - core:substitution:
+    - conflict_range_seq: "H"
+  - core:conflictingSequence:
+    - conflict_seq_node: ConflictSeqNode
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - conflict_begin: 18
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - conflict_end: 18
+
+- ConflictSeqNode up:Q9BYF1#SIP32276D8B1949959D:
+  - a: core:External_Sequence
+  - core:translatedFrom:
+    - conflict_seq: <http://purl.uniprot.org/embl-cds/CAB53682.1>
+
+- SequenceUncertaintyAnnotation <http://purl.uniprot.org/uniprot/F4MHP3#SIP1892436ABD7EE556>:
+  - a: core:Sequence_Uncertainty_Annotation
+  - rdfs:comment:
+    - seq_uncertain_desc: "D or N"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - seq_uncertain_begin: 233
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - seq_uncertain_end: 233
+
+- SignalPeptideAnnotation <http://purl.uniprot.org/uniprot/A0A075B6K2#SIP19CECB1CD6328B5B>:
+  - a: core:Signal_Peptide_Annotation
+  - rdfs:comment?:
+    - signal_pep_desc: "Or 19"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - signal_pep_begin: 1
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - signal_pep_end: 17
+
+- SimilarityAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP3C3646B8E7B3D163>:
+  - a: core:Similarity_Annotation
+
+- SiteAnnotation <http://purl.uniprot.org/uniprot/P0C0L4#SIP55654F9D8452DD68>:
+  - a: core:Site_Annotation
+  - rdf:comment:
+    - sim_desc: "Belongs to the peptidase M2 family."
+
+- SubcellularLocationAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIPA37239D978A32E27>:
+  - a: core:Subcellular_Location_Annotation
+  - core:locatedIn+:
+    - []:
+      - core:cellularComponent:
+        - location: locations:9905
+      - core:topology?:
+        - topology: locations:39
+      - core:orientation?:
+        - orientation: locations:9910
+  - rdfs:comment?:
+    - location_desc: "Detected in both cell membrane and cytoplasm in neurons."
+  - core:sequence?:
+    - location_spec_seq: isoforms:Q9BZC7-4
+
+- SubunitAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP1DFF5F58F75A9E93>:
+  - a: core:Subunit_Annotation
+  - rdfs:comment:
+    - subunit_desc: "(Microbial infection) Interacts with SARS coronavirus-2..."
+  - core:sequence?:
+    - subunit_spec_seq: annotation:PRO_0000292268
+
+- TemperatureDependenceAnnotation <http://purl.uniprot.org/uniprot/Q15067#SIPFAF2319FF366C954>:
+  - a: core:Temperature_Dependence_Annotation
+  - rdfs:comment:
+    - temp_depend_desc: "Optimum temperature at pH 7.5 is 47.5 degrees Celsius with 57% activity retained at 50 degrees Celsius."
+  - core:sequence?:
+    - temp_depend_spec_seq: isoforms:Q15067-2
+
+- TissueSpecificityAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP4A7F7FEF73AD1B2D>:
+  - a: core:Tissue_Specificity_Annotation
+  - rdfs:comment:
+    - tissue_spec_desc: "Expressed in endothelial cells from small and..."
+  - core:sequence?:
+    - tissue_spec_seq: isoforms:Q9BZC7-4
+
+- TopologicalDomainAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP24975BE8185AD056>:
+  - a: core:Topological_Domain_Annotation
+  - rdfs:comment:
+    - topological_domain_desc: "Extracellular"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - topological_domain_begin: 18
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - topological_domain_end: 740
+
+- TransitPeptideAnnotation <http://purl.uniprot.org/uniprot/P09038#SIP23FBF4FEB5B0798C>:
+  - a: core:Transit_Peptide_Annotation
+  - rdfs:comment:
+    - transit_pep_desc: "Inactivated after 3 minutes at 60 degrees Celsius or 1 minute at 80 degrees Celsius."
+  - core:sequence?:
+    - transit_pep_spec_seq: isoforms:Q9Y3B8-3
+
+- TransmembraneAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIPE6A37CDFE551A5E3>:
+  - a: core:Transmembrane_Annotation
+  - rdfs:comment:
+    - transmembrane_desc: "Helical"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - transmembrane_begin: 741
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - transmembrane_end: 761
+
+- TurnAnnotation <http://purl.uniprot.org/uniprot/Q9BYF1#SIP0979C4B449C5071B>:
+  - a: core:Turn_Annotation
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - turnransmembrane_begin: 559
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - turn_end: 562
+
+- ZincFingerAnnotation <http://purl.uniprot.org/uniprot/Q9NSD4#SIP6F21C96F90DA1648>:
+  - a: core:Zinc_Finger_Annotation
+  - rdfs:comment:
+    - zinc_finger_desc: "C2H2-type 8"
+  - core:range:
+    - []:
+      - a: faldo:Region
+      - faldo:begin:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - zinc_finger_begin: 321
+      - faldo:end:
+        - []:
+          - a: faldo:Position
+          - faldo:position:
+            - zinc_finger_end: 343
+
+- Intact <http://purl.uniprot.org/intact/1391211-7730807>:
+  - a:
+    - core:Interaction
+    - core:Self_Interaction
+    - core:Non_Self_Interaction
+  - core:experiments:
+    - exp_num: 8
+  - core:participant+: IntactPaticipant
+  
+- IntactPaticipant <http://purl.uniprot.org/intact/EBI-1391211>:
+  - a: core:Participant
+  - owl:sameAs:
+    - intaract_seq: up:Q9H2X3
+
+- Citation citations:14504186:
+  - a:
+    - core:Journal_Citation
+    - core:Submission_Citation
+    - core:Thesis_Citation
+    - core:Observation_Citation
+    - core:Patent_Citation
+    - core:Book_Citation
+    - core:Electronic_Citation
+  - dct:identifier?:
+    - citation_doi: "doi:10.1161/01.cir.0000094734.67990.99"
+  - core:title?:
+    - citation_title: "Increased angiotensin-(1-7)-forming activity ..."
+  - core:date?:
+    - ciattion_date: 2003
+  - core:name*:
+    - ciattion_name: "Circulation"
+  - core:volume?:
+    - citation_volume: "108"
+  - core:pages?:
+    - citation_pages: "1707-1712"
+  - core:author+:
+    - citation_author: "Zisman L.S."
+  - core:editor*:
+    - citation_editor: "Shugar D."
+  - foaf:primaryTopicOf?:
+    - pubmed: pubmed:14504186
+  - core:institution?:
+    - citation_institution: "Faculty of Biological Sciences / Goettingen"
+  - core:place?:
+    - citation_place: "Germany"
+  - core:publisher?:
+    - citation_publisher: "Academic Press"
+  - core:submittedTo*:
+    - submit_to: "UniProtKB"
+  - core:group?:
+    - citation_group: "Alzheimer's Disease Genetics Consortium"
+
+prefixes:
+  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  owl: <http://www.w3.org/2002/07/owl#>
+  xsd: <http://www.w3.org/2001/XMLSchema#>
+  dct: <http://purl.org/dc/terms/>
+  obo: <http://purl.obolibrary.org/obo/>
+  skos: <http://www.w3.org/2004/02/skos/core#>
+  foaf: <http://xmlns.com/foaf/0.1/>
+  faldo: <http://biohackathon.org/resource/faldo#> 
+  up: <http://purl.uniprot.org/uniprot/>
+  core: <http://purl.uniprot.org/core/>
+  taxonomy: <http://purl.uniprot.org/taxonomy/>
+  enzyme: <http://purl.uniprot.org/enzyme/>
+  citations: <http://purl.uniprot.org/citations/>
+  pubmed: <https://pubmed.ncbi.nlm.nih.gov/>
+  keywords: <http://purl.uniprot.org/keywords/>
+  isoforms: <http://purl.uniprot.org/isoforms/>
+  rhea: <http://rdf.rhea-db.org/>
+  dbsnp: <http://purl.uniprot.org/dbsnp/>
+  locations: <http://purl.uniprot.org/locations/>
+  annotation: <http://purl.uniprot.org/annotation/>
+  diseases: <http://purl.uniprot.org/diseases/>
+  database: <http://purl.uniprot.org/database/>
+  unipathway: <http://purl.uniprot.org/unipathway/>
+
+names:
+  description: protein name, mnemonic and gene name of human
+  variables: [UniProt, recommended_name, submited_name, mnemonic, gene_name, taxonomy]
+  parameters:
+    taxonomy: taxonomy:9606
+  options:
+    distinct: true
+ptms:
+  description: PTM sites and descriptions of an UniProt
+  variables: [UniProt, mod_desc, mod_begin, mod_end]
+  parameters:
+    UniProt: up:Q9BYF8
+hgnc:
+  description: corresponding HGNC ID of human
+  variables: [UniProt, db_resource, database]
+  parameters:
+    database: database:HGNC
+    taxonomy: taxonomy:9606
+refex_entry:
+  output_dir: "stanza" # /path/to/output/dir
+  label: "RefEx entry"
+  definition: "Stanza for RefEx entry"
+  sparql: stanza_sparql  # defined in sparql.yaml
+  parameters:
+    refex_id:
+      example: "RFX0000062273"
+      description: RefEx identifier
+      required: true

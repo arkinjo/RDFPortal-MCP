@@ -1,0 +1,4598 @@
+{
+  "type" : "Schema",
+  "@context" : "http://www.w3.org/ns/shex.jsonld",
+  "shapes" : [
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/UniProtShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Protein"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/recommendedName",
+              "valueExpr" : "file:/app/RecommendedNameNodeShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/submittedName",
+              "valueExpr" : "file:/app/SubmitedNameNodeShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/alternativeName",
+              "valueExpr" : "file:/app/AlternativeNameNodeShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/mnemonic",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/oldMnemonic",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/replaces",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#label",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/reviewed",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/created",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/modified",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/version",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/encodedBy",
+              "valueExpr" : "file:/app/GeneShape",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/organism",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/proteome",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/existence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/enzyme",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/component",
+              "valueExpr" : "file:/app/ComponentShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : "file:/app/SimpleSequenceShape"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : "file:/app/ModifiedSequenceShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : "file:/app/ExternalSequenceShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : "file:/app/UnknownSequenceShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/potentialSequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : "file:/app/DbResourceShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/citation",
+              "valueExpr" : "file:/app/CitationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/classifiedWith",
+              "valueExpr" : "file:/app/GOShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/classifiedWith",
+              "valueExpr" : "file:/app/KeywordShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/interaction",
+              "valueExpr" : "file:/app/IntactShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/isolatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AbsorptionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ActiveSiteAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ActivityRegulationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AllergenAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AlternativeInitiationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AlternativePromoterUsageAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AlternativeSequenceAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AlternativeSplicingAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/AnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/BetaStrandAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/BindingSiteAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/BiotechnologyAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CatalyticActivityAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CautionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ChainAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CofactorAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CoiledCoilAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CompositionalBiasAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/CrossLinkAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DevelopmentalStageAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DiseaseAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DisruptionPhenotypeAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DisulfideBondAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DomainAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/DomainExtentAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ErroneousGeneModelPredictionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ErroneousInitiationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ErroneousTerminationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ErroneousTranslationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/FrameshiftAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/FunctionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/GlycosylationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/HelixAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/InductionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/InitiatorMethionineAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/IntramembraneAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/KineticsAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/LipidationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/MassSpectrometryAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ModifiedResidueAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/MotifAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/MutagenesisAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/NaturalVariantAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/NonAdjacentResiduesAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/NonStandardResidueAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/NonTerminalResidueAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/NucleotideBindingAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PhDependenceAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PtmAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PathwayAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PeptideAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PharmaceuticalAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PolymorphismAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/PropeptideAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/RnaEditingAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/RedoxPotentialAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/RegionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/RepeatAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/RibosomalFrameshiftingShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SequenceCautionAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SequenceConflictAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SequenceUncertaintyAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SignalPeptideAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SimilarityAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SiteAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SubcellularLocationAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/SubunitAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TemperatureDependenceAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TissueSpecificityAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TopologicalDomainAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TransitPeptideAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TransmembraneAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/TurnAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/annotation",
+              "valueExpr" : "file:/app/ZincFingerAnnotationShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RecommendedNameNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Structured_Name"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/fullName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/shortName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/ecName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SubmitedNameNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Structured_Name"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/fullName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/ecName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AlternativeNameNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Structured_Name"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/fullName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/shortName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/ecName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/cdAntigenName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/allergenName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/GeneShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Gene"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/orfName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ComponentShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Part"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/recommendedName",
+              "valueExpr" : "file:/app/ComponentNameNodeShape",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/alternativeName",
+              "valueExpr" : "file:/app/ComponentAltNameNodeShape",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/enzyme",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ComponentNameNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Structured_Name"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/fullName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/shortName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/ecName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ComponentAltNameNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Structured_Name"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/fullName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/shortName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SimpleSequenceShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Simple_Sequence"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/mass",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ModifiedSequenceShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Modificated_Sequence"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ExternalSequenceShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/UnknownSequenceShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Unknown_Sequence"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/GOShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "TripleConstraint",
+          "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "valueExpr" : {
+            "type" : "NodeConstraint",
+            "values" : [
+              "http://www.w3.org/2002/07/owl#Class"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/KeywordShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "TripleConstraint",
+          "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "valueExpr" : {
+            "type" : "NodeConstraint",
+            "values" : [
+              "http://purl.uniprot.org/core/Concept"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DbResourceShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Resource",
+                  "http://purl.uniprot.org/core/Nucleotide_Resource",
+                  "http://purl.uniprot.org/core/Transcript_Resource",
+                  "http://purl.uniprot.org/core/Structure_Resource"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/database",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AbsorptionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Absorption_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/maximum",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ActiveSiteAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Active_Site_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ActivityRegulationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Activity_Regulation_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AllergenAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Allergen_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#commnet",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AlternativeInitiationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Alternative_Initiation_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AlternativePromoterUsageAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Alternative_Promoter_Usage_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AlternativeSequenceAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Alternative_Sequence_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/substitution",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AlternativeSplicingAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Alternative_Splicing_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/AnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/BetaStrandAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Beta_Strand_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/BindingSiteAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Binding_Site_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/ligand",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/BiotechnologyAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Biotechnology_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CatalyticActivityAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Catalytic_Activity_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/catalyticActivity",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/catalyzedPhysiologicalReaction",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CautionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Caution_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ChainAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Chain_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/mass",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CofactorAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Cofactor_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/cofactor",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CoiledCoilAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Coiled_Coil_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CompositionalBiasAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Compositional_Bias_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CrossLinkAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Cross-link_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DevelopmentalStageAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Developmental_Stage_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DiseaseAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Disease_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/disease",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DisruptionPhenotypeAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Disruption_Phenotype_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DisulfideBondAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Disulfide_Bond_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DomainAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Domain_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/DomainExtentAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Domain_Extent_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErroneousGeneModelPredictionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Erroneous_Gene_Model_Prediction_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/ErrGeneModelPredicationConflictSeqNodeShape"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErrGeneModelPredicationConflictSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErroneousInitiationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Erroneous_Initiation_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/ErrInitConflictSeqNodeShape"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErrInitConflictSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErroneousTerminationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Erroneous_Termination_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/ErrTermConflictSeqNodeShape"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErrTermConflictSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErroneousTranslationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Erroneous_Translation_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/ErrTranslateConflictSeqNodeShape"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ErrTranslateConflictSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/FrameshiftAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Frameshift_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/FrameshiftSeqNodeShape"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/FrameshiftSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/FunctionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Function_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/GlycosylationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Glycosylation_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/HelixAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Helix_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/InductionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Induction_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/InitiatorMethionineAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Initiator_Methionine_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/IntramembraneAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Intramembrane_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/KineticsAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Kinetics_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/measuredActivity",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/measuredAffinity",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/LipidationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Lipidation_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/MassSpectrometryAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Mass_Spectrometry_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/measuredValue",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/method",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/measuredError",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#float"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ModifiedResidueAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Modified_Residue_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/MotifAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Motif_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/MutagenesisAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Mutagenesis_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/substitution",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/NaturalVariantAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Natural_Variant_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/substitution",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#related",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/NonAdjacentResiduesAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Non-adjacent_Residues_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/NonStandardResidueAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Non-standard_Residue_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/NonTerminalResidueAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Non-Terminal_Residue_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/NucleotideBindingAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Nucleotide_Binding_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PhDependenceAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/PH_Dependence_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PtmAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/PTM_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PathwayAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Pathway_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PeptideAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Peptide_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PharmaceuticalAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Pharmaceutical_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PolymorphismAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Polymorphism_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/PropeptideAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Propeptide_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RnaEditingAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/RNA_Editing_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://biohackathon.org/resource/faldo#location",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/frameshift",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#trueclass"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RedoxPotentialAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Redox_Potential_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RegionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Region_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RepeatAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Repeat_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/RibosomalFrameshiftingShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Ribosomal_Frameshifting"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SequenceCautionAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Sequence_Caution_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/CautionSeqNodeShape"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CautionSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SequenceConflictAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Sequence_Conflict_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/substitution",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/conflictingSequence",
+              "valueExpr" : "file:/app/ConflictSeqNodeShape"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ConflictSeqNodeShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/External_Sequence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/translatedFrom",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SequenceUncertaintyAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Sequence_Uncertainty_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SignalPeptideAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Signal_Peptide_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SimilarityAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "TripleConstraint",
+          "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "valueExpr" : {
+            "type" : "NodeConstraint",
+            "values" : [
+              "http://purl.uniprot.org/core/Similarity_Annotation"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SiteAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Site_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SubcellularLocationAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Subcellular_Location_Annotation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/locatedIn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/SubunitAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Subunit_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TemperatureDependenceAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Temperature_Dependence_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TissueSpecificityAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Tissue_Specificity_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TopologicalDomainAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Topological_Domain_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TransitPeptideAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Transit_Peptide_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/sequence",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TransmembraneAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Transmembrane_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/TurnAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Turn_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/ZincFingerAnnotationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Zinc_Finger_Annotation"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#comment",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/range",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "bnode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/IntactShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Interaction",
+                  "http://purl.uniprot.org/core/Self_Interaction",
+                  "http://purl.uniprot.org/core/Non_Self_Interaction"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.uniprot.org/core/experiments",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/participant",
+              "valueExpr" : "file:/app/IntactPaticipantShape",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/IntactPaticipantShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Participant"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2002/07/owl#sameAs",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "file:/app/CitationShape",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.uniprot.org/core/Journal_Citation",
+                  "http://purl.uniprot.org/core/Submission_Citation",
+                  "http://purl.uniprot.org/core/Thesis_Citation",
+                  "http://purl.uniprot.org/core/Observation_Citation",
+                  "http://purl.uniprot.org/core/Patent_Citation",
+                  "http://purl.uniprot.org/core/Book_Citation",
+                  "http://purl.uniprot.org/core/Electronic_Citation"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/date",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/volume",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/pages",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/author",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/editor",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://xmlns.com/foaf/0.1/primaryTopicOf",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/institution",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/place",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/publisher",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/submittedTo",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/group",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

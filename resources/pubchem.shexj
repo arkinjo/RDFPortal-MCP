@@ -1,0 +1,4159 @@
+{
+  "type" : "Schema",
+  "@context" : "http://www.w3.org/ns/shex.jsonld",
+  "shapes" : [
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Anatomy",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Anatomy"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001262"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Author",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Author"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#family-name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#given-name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#fn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#organization-name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#hasUID",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/BioAssay",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#BioAssay"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://www.bioassayontology.org/bao#BAO_0000015"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0000210",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0000209",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/MeasureGroup",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0000540",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/BioAssay",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0001067",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/BioAssay",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0001094",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/BioAssay",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Book",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Book"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.org/spar/fabio/Book"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/isbn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/location",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/date",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/publisher",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/creator",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Author",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Cell",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cell"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010054"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/BFO_0000050",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/organism",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0001000",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Anatomy",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Compound"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000087",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#is_active_ingredient_of",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/CHEMINF_000455",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/CHEMINF_000461",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/CHEMINF_000480",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/CHEMINF_000462",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#has_parent",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000008",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCanonicalSmiles",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCompoundIdentifier",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCovalentUnitCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorDefinedAtomStereoCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorDefinedBondStereoCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorExactMass",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHeavyAtomCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHydrogenBondAcceptorCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHydrogenBondDonorCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorInChI",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIsomericSmiles",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIsotopeAtomCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIUPACName",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMolecularFormula",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMolecularWeight",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMonoIsotopicWeight",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorRotatableBondCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorStructureComplexity",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorTotalFormalCharge",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorTPSA",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorUndefinedAtomStereoCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorUndefinedBondStereoCount",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorXLOGP3"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Concept",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Concept"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/pav/importedFrom",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#broader",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Concept",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#inScheme",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Concept",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/ConservedDomain",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#ConservedDomain"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.obolibrary.org/obo/SO_0000417"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/abstract",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceCompoundCompound",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001435"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceCompoundDisease",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_000993"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceCompoundGene",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001257"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceDiseaseCompound",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_000993"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceDiseaseDisease",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001436"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceDiseaseGene",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_000983"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceGeneCompound",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001257"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceGeneDisease",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_000983"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/CooccurrenceGeneGene",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001437"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Cooccurrence"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_001157",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCanonicalSmiles",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000376"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCompoundIdentifier",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000140"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorCovalentUnitCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000369"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorDefinedAtomStereoCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000370"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorDefinedBondStereoCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000371"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorExactMass",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000338"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000221",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHeavyAtomCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000373"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHydrogenBondAcceptorCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000388"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorHydrogenBondDonorCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000387"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorInChI",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000396"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIsomericSmiles",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000379"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIsotopeAtomCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000372"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorIUPACName",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000382"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMolecularFormula",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000335"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMolecularWeight",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000334"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000221",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorMonoIsotopicWeight",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000337"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000221",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorRotatableBondCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000389"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorStructureComplexity",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000390"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorTotalFormalCharge",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000336"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorTPSA",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000392"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000221",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorUndefinedAtomStereoCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000374"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorUndefinedBondStereoCount",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000375"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorXLOGP3",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000395"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorSubstanceVersion",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.obolibrary.org/obo/IAO_0000129"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Descriptor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Disease"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010299"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#closeMatch",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#relatedMatch",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Endpoint",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Endpoint"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#label",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#decimal"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#hasQualifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  {
+                    "value" : "<"
+                  },
+                  {
+                    "value" : "<="
+                  },
+                  {
+                    "value" : "="
+                  },
+                  {
+                    "value" : ">="
+                  },
+                  {
+                    "value" : ">"
+                  }
+                ]
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000221",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#PubChemAssayOutcome",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#inactive",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#active",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#inconclusive",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#unspecified",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#probe"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.obolibrary.org/obo/IAO_0000136",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Substance"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/citesAsDataSource",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Gene",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Gene"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010035"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000056",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000085",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0001025",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000558",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Gene",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0002870",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/organism",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_001383"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Grant",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Grant"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.org/cerif/frapo/Grant"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/cerif/frapo/hasGrantNumber",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/cerif/frapo/hasFundingAgency",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Organization"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/InChIKey",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#InChIKey"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/CHEMINF_000399"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/subject",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://semanticscience.org/resource/SIO_000011",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Journal",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Journal"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.org/spar/fabio/Journal"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/eissn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/issn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/spar/fabio/hasNLMJournalTitleAbbreviation",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/spar/fabio/hasNationalLibraryOfMedicineJournalId",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#exactMatch",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/MeasureGroup",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#MeasureGroup"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://www.bioassayontology.org/bao#BAO_0000040"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/OBI_0000299",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Endpoint",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000057",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Cell",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Gene",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Protein",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Organization",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Organization"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://www.w3.org/2006/vcard/ns#Organization"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.org/cerif/frapo/FundingAgency"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#country-name",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2006/vcard/ns#fn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#closeMatch",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Patent"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://data.epo.org/linked-data/def/patent/Publication"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/abstract",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/patent/filingDate",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/patent/grantDate",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#priorityDate",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/patent/publicationDate",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/patent/publicationNumber",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/patent/titleOfInvention",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/applicantVC",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentAssignee",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/inventorVC",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentInventor",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/classificationIPCInventive",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentIPC",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/classificationCPCInventive",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentCPC",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/classificationCPCAdditional",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentCPC",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/patent/classificationIPCAdditional",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentIPC",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isCitedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentAssignee",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#PatentAssignee"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2006/vcard/ns#fn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentCPC",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#PatentCPC"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/modified",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://data.epo.org/linked-data/def/cpc/level",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+              }
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/cpc/symbol",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#broader",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentCPC",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://data.epo.org/linked-data/def/cpc/concordantIPC",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentIPC",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentInventor",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#PatentInventor"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2006/vcard/ns#fn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentIPC",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#PatentIPC"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2002/07/owl#sameAs",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#label",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#broader",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/PatentIPC",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Pathway",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Pathway"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://www.biopax.org/release/biopax-level3.owl#Pathway"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/organism",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.biopax.org/release/biopax-level3.owl#pathwayComponent",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Pathway",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#related",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Pathway",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000057",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Gene",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Protein"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Protein",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Protein"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010043"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.bioassayontology.org/bao#BAO_0002817",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#hasSimilarProtein",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Protein",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/enzyme",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Enzyme",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/encodedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Gene",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.uniprot.org/core/organism",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0002180",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/ConservedDomain",
+                  {
+                    "type" : "NodeConstraint",
+                    "nodeKind" : "iri"
+                  }
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.wwpdb.org/schema/pdbx-v50.owl#link_to_pdb",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Enzyme",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010343"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Enzyme",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Reference"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/contentType",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/bibliographicCitation",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/date",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  {
+                    "type" : "NodeConstraint",
+                    "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+                  },
+                  {
+                    "type" : "NodeConstraint",
+                    "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+                  }
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/startingPage",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/endingPage",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/pageRange",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/isbn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/issn",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/issueIdentifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/language",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://prismstandard.org/namespaces/basic/3.0/publicationName",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/fabio/hasSubjectTerm",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/fabio/hasPrimarySubjectTerm",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/discusses",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/isPartOf",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  {
+                    "type" : "NodeConstraint",
+                    "nodeKind" : "iri"
+                  },
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Journal",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Book"
+                ]
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/creator",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Author",
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/cerif/frapo/hasFundingAgency",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Organization",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/cerif/frapo/isSupportedBy",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Grant",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#discussesAsDerivedByTextMining",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Disease",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/GeneSymbol"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Source"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://purl.org/dc/terms/Dataset"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/title",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/alternative",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/rights",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/license",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://xmlns.com/foaf/0.1/homepage",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/subject",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Concept",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Substance",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Substance"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/available",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/modified",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/source",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Source"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000008",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Synonym",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/DescriptorSubstanceVersion"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.obolibrary.org/obo/RO_0000056",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/MeasureGroup",
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/CHEMINF_000477",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://rdf.wwpdb.org/schema/pdbx-v50.owl#link_to_pdb",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Synonym",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "extra" : [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ],
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Synonym"
+                ]
+              }
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000300",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 1,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/dc/terms/subject",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  {
+                    "type" : "NodeConstraint",
+                    "nodeKind" : "iri"
+                  },
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Concept"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://semanticscience.org/resource/SIO_000011",
+              "valueExpr" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Compound",
+              "min" : 0,
+              "max" : 1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type" : "ShapeDecl",
+      "id" : "http://rdf.ncbi.nlm.nih.gov/pubchem/Taxonomy",
+      "shapeExpr" : {
+        "type" : "Shape",
+        "closed" : true,
+        "expression" : {
+          "type" : "EachOf",
+          "expressions" : [
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#Taxonomy"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "values" : [
+                  "http://semanticscience.org/resource/SIO_010000"
+                ]
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://purl.org/dc/terms/identifier",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "type" : "TripleConstraint",
+              "predicate" : "http://www.w3.org/2004/02/skos/core#prefLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },
+            {
+              "predicate" : "http://www.w3.org/2004/02/skos/core#altLabel",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://purl.org/spar/cito/isDiscussedBy",
+              "valueExpr" : {
+                "type" : "ShapeOr",
+                "shapeExprs" : [
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Patent",
+                  "http://rdf.ncbi.nlm.nih.gov/pubchem/Reference"
+                ]
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            },
+            {
+              "predicate" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+              "valueExpr" : {
+                "type" : "NodeConstraint",
+                "nodeKind" : "iri"
+              },
+              "min" : 0,
+              "max" : -1,
+              "type" : "TripleConstraint"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
