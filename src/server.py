@@ -72,19 +72,40 @@ def general_prompt() -> str:
         "- `get_sparql_endpoints`: Get available SPARQL endpoints.\n"
         "- `execute_sparql`: Execute a SPARQL query on a specified endpoint.\n"
         "- `run_example_query`: Run an example SPARQL query on a specific RDF database.\n"
-        "- `get_sparql_shape_expression`: Get a shape expression for building SPARQL queries.\n"
         "- `get_graphs_in_database`: Get named graphs in a specific RDF database.\n"
         "- `get_pubchem_compound_id`: Get PubChem compound ID by name.\n"
         "- `get_compound_attributes_from_pubchem`: Get compound attributes from PubChem RDF.\n"
         "- `search_uniprot_entity`: Search for a UniProt entity ID by query.\n"
-        "- `search_pdbj_entry`: Search for PDBj entry information by keywords."
+        "- `search_pdb_entity`: Search for PDBj entry information by keywords.\n"
         "- `describe_pdb_rdf_schema`: Describe the PDB RDF schema.\n"
-        "- `search_chembl_id_lookup`: Search for ChEMBL ID by query.\n"
+        "- `search_chembl_entity`: Search for ChEMBL ID by query.\n"
         "- `get_chembl_entity_by_id`: Get ChEMBL entity by ID.\n"
         "For SPARQL queries, you can use the following common prefixes:\n"
         f"{COMMON_PREFIXES}\n"
         "When constructing SPARQL queries, please ensure that you use the correct prefixes and URIs. "
         "Use type conversion such as xsd:integer() or xsd:dateTime() in your queries when appropriate."
+    )
+
+@server.prompt(name="Generate ShEx and SPARQL Examples for RDF Database")
+def generate_shex_and_sparql_examples(
+    dbname: Annotated[str, Field(title="Database Name", description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    f"""
+    Generate ShEx and SPARQL examples for a specific RDF database.
+
+    Args:
+        dbname (str): The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
+
+    Returns:
+        str: The generated examples in JSON format.
+    """
+    return (
+    f"Explore the shape expression for the {dbname} RDF schema."
+    "Save the obtained shape expressions, along with SPARQL query examples,"
+    "in JSON format so that you can reference them later."
+    f"During exploration, study at least 5 {dbname} entries so the results are more comprehensive."
+    "Use `get_sparql_endpoints` to find available SPARQL endpoints."
+    "Start by running the `run_example_query` tool to get a feel for the data structure."
     )
 
 # --- Tools for RDF Portal ---
@@ -152,13 +173,13 @@ async def run_example_query(
 def build_sparql_query() -> str:
     return "When building a SPARQL query, please refer a relevant shape expressions provided with the resource."
 
-@server.tool()
+# @server.tool()
 async def get_sparql_shape_expression(dbname: str) -> str:
-    """
+    f"""
     Get a shape expression for a specific RDF database in JSON, which can be used to build a SPARQL query.
 
     Args:
-        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are "pubchem" and "uniprot".
+        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(SHEX_FILES.keys())}.
 
     Returns:
         str: The shape expression in JSON format.
@@ -194,6 +215,7 @@ SELECT DISTINCT ?graph WHERE {
     response.raise_for_status()
     result = response.json()["results"]["bindings"]
     return [binding["graph"]["value"] for binding in result]
+
 
 # --- Tools for PubChem RDF ---
 @server.tool()
@@ -259,7 +281,7 @@ async def search_uniprot_entity(query: str) -> str:
 
 # --- PDB-specific Tools  ---
 @server.tool()
-async def search_pdbj_entry(db: str, query: str, limit: int = 20) -> str:
+async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
     """
     Search for PDBj entry information by keywords.
 
@@ -304,7 +326,7 @@ async def describe_pdb_rdf_schema() -> str:
 
 # ChEMBL-specific tools are not implemented yet, but can be added in the future.
 @server.tool()
-async def search_chembl_id_lookup(query: str, limit: int = 20) -> str:
+async def search_chembl_entity(query: str, limit: int = 20) -> str:
     """
     Search for ChEMBL ID by query.
 
