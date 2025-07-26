@@ -103,9 +103,10 @@ def generate_shex_and_sparql_examples(
     f"Explore the shape expression for the {dbname} RDF schema."
     "Save the obtained shape expressions, along with SPARQL query examples,"
     "in JSON format so that you can reference them later."
-    f"During exploration, study at least 5 {dbname} entries so the results are more comprehensive."
+    "During exploration, study at least five entries so the results are more comprehensive."
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
     "Start by running the `run_example_query` tool to get a feel for the data structure."
+    "Make sure that the SPARQL queries you construct actually work and return results."
     )
 
 # --- Tools for RDF Portal ---
