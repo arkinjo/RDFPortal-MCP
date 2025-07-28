@@ -1,0 +1,74 @@
+schema_info:
+  # Replace with actual schema information
+  title: RDF Schema Analysis
+  description: This document provides an analysis of the RDF schema used in the project
+  endpoint: http://example.org/sparql
+  base_uri: http://example.org/
+prefixes:
+  # Replace with actual prefixes used in the RDF schema
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  ex: http://example.org/
+shape_expressions:
+  # Replace with actual shape expressions
+  Person:
+    description: A person entity in the RDF schema
+    properties:
+      name:
+        type: xsd:string
+        required: true
+        description: The name of the person
+      age:
+        type: xsd:integer
+        required: false
+        description: The age of the person
+  Organization:
+    description: An organization entity in the RDF schema
+    properties:
+      name:
+        type: xsd:string
+        required: true
+        description: The name of the organization
+      foundedYear:
+        type: xsd:integer
+        required: false
+        description: The year the organization was founded
+sample_entries:
+  # Replace with actual sample entries from the RDF . At least five diversified entries should be included.
+  - id: ex:SampleEntry1
+    label: Sample Entry
+  - id: ex:SampleEntry2
+    label: Another Sample Entry
+  - id: ex:SampleEntry3
+    label: Yet Another Sample Entry
+sparql_query_examples:
+  # Replace with at least five biologically relevant examples of SPARQL queries. Run these queries and make sure they actually work and return results.
+  get_classes:
+    description: Retrieve all classes defined in the RDF schema
+    sparql: |
+      SELECT ?class WHERE { 
+        ?class a rdfs:Class . 
+      }
+  get_properties:
+    description: Retrieve all properties defined in the RDF schema
+    sparql: |
+      SELECT ?property WHERE { 
+        ?property a rdf:Property . 
+      }
+architectural_notes:
+  # Any additional information useful for you to understand the architecture of the RDF schema and SPARQL queries.
+  # Replace with actual architectural notes.
+  design_patterns:
+    - Use of RDF Schema for defining classes and properties
+    - Integration with SPARQL endpoints for querying data
+  performance_considerations:
+    - Optimize SPARQL queries for better performance
+    - Consider caching frequently accessed data
+data_statistics:
+  # Replace with actual data statistics.
+  total_classes: 10
+  total_properties: 20
+  total_entries: 1000
+  last_updated: '2023-10-01T12:00:00Z'

@@ -46,6 +46,7 @@ SHEX_FILES = {
     "uniprot": "resources/uniprot.shexj",
     "pdb": "resources/pdb.shexj" # not available yet
 }
+SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
 
 # Example entries for RDF databases
 EXAMPLE_ENTRIES = {
@@ -99,14 +100,22 @@ def generate_shex_and_sparql_examples(
     Returns:
         str: The generated examples in JSON format.
     """
+    with open(SHEX_SPARQL_TEMPLATE, "r") as file:
+        shex_sparql_template = file.read()
+    
     return (
-    f"Explore the shape expression for the {dbname} RDF schema."
-    "Save the obtained shape expressions, along with SPARQL query examples,"
-    "in JSON format so that you can reference them later."
-    "During exploration, study at least five entries so the results are more comprehensive."
+    f"Explore the shape expression for the {dbname} RDF schema as deeply as possible."
+    "Construct and run several SPARQL queries based on the shape expression to retrieve biologically relevant data."
+    "Make sure the SPARQL queries are well-formed and return meaningful results."
+    "Save the obtained shape expressions, along with the SPARQL query examples,"
+    "in YAML format so that you can reference them later."
+    "The YAML file should be based on the following template:"
+    "\n\n"
+    f"{shex_sparql_template}"
+    "\n\n"
+    "During exploration, study at least five diversified entries so the results are more comprehensive."
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
     "Start by running the `run_example_query` tool to get a feel for the data structure."
-    "Make sure that the SPARQL queries you construct actually work and return results."
     )
 
 # --- Tools for RDF Portal ---
@@ -141,7 +150,11 @@ async def execute_sparql(
         )
     response.raise_for_status()
     bindings = response.json()["results"]["bindings"]
-    results =[{key: binding[key]["value"] for key in binding if key != "type"} for binding in bindings]
+    # For an example of "bindings", see:
+    # https://rdfportal.org/backend/pdb/sparql?default-graph-uri=&query=PREFIX+PDBo%3A+%3Chttp%3A%2F%2Frdf.wwpdb.org%2Fschema%2Fpdbx-v50.owl%23%3E%0D%0A%0D%0ASELECT+%3Ftype_value+%28COUNT%28%3Fpoly%29+as+%3Fcount%29+WHERE+%7B%0D%0A++%3Fentry+a+PDBo%3Adatablock+.%0D%0A++%3Fentry+PDBo%3Ahas_entity_polyCategory+%3Fpoly_cat+.%0D%0A++%3Fpoly_cat+PDBo%3Ahas_entity_poly+%3Fpoly+.%0D%0A++%3Fpoly+PDBo%3Aentity_poly.type+%3Ftype_value+.%0D%0A%7D+GROUP+BY+%3Ftype_value+ORDER+BY+DESC%28%3Fcount%29&format=application%2Fsparql-results%2Bjson&should-sponge=&timeout=0&signal_void=on
+    if not bindings:
+        return json.dumps([])
+    results = [{key: binding[key]["value"] for key in binding} for binding in bindings]
     return json.dumps(results)
 
 @server.tool()
@@ -352,7 +365,7 @@ async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
 
     Args:
         service (str): The service to use for the search. Supported values are:
-            - "activity" (for ChEMBL activity search)
+            - "activity" (for ChEMBL activity search, activity ID is an integer; remove the "CHEMBL" or "CHEMBL_ACT" prefixes)
             - "assay" (for ChEMBL assay search)
             - "assay_class" (for ChEMBL assay class search)
             - "atc_class" (for ChEMBL ATC class search)
