@@ -403,5 +403,31 @@ async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
     response.raise_for_status()
     return response.text
 
+# --- MeSH-specific Tools ---
+@server.tool()
+async def search_mesh_entity(query: str, match: str, limit: int = 10) -> str:
+    """
+    Search for MeSH ID by query.
+
+    Args:
+        query (str): The query string to search for.
+        match (str): The match type to use for the search. Supported values are:
+            - "contains" (for partial matches)
+            - "exact" (for exact matches)
+            - "startswith" (for matches that start with the query)
+        limit (int): The maximum number of results to return. Default is 10.
+
+    Returns:
+        str: A JSON-formatted string containing the search results.
+    """
+    url = "https://id.nlm.nih.gov/mesh/lookup/term"
+    params = {"label": query,
+              "match": match,
+              "limit": limit}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    return response.text
+
 if __name__ == "__main__":
     server.run()
