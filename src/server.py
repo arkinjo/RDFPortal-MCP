@@ -73,6 +73,8 @@ def general_prompt() -> str:
         "- `get_sparql_endpoints`: Get available SPARQL endpoints.\n"
         "- `execute_sparql`: Execute a SPARQL query on a specified endpoint.\n"
         "- `run_example_query`: Run an example SPARQL query on a specific RDF database.\n"
+        "- `get_class_list`: Get a list of classes in an RDF database that match a given URI.\n"
+        "- `get_property_list`: Get a list of properties in an RDF database that match a given URI.\n"
         "- `get_graphs_in_database`: Get named graphs in a specific RDF database.\n"
         "- `get_pubchem_compound_id`: Get PubChem compound ID by name.\n"
         "- `get_compound_attributes_from_pubchem`: Get compound attributes from PubChem RDF.\n"
@@ -116,6 +118,7 @@ def generate_shex_and_sparql_examples(
     "During exploration, study at least five diversified entries so the results are more comprehensive."
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
     "Start by running the `run_example_query` tool to get a feel for the data structure."
+    "Then, use `get_class_list` and `get_property_list` to explore classes and properties in the database."
     )
 
 # --- Tools for RDF Portal ---
@@ -173,12 +176,69 @@ async def run_example_query(
         raise ValueError(f"Unknown database: {dbname}")
     entries = ' '.join(f'<{entry}>' for entry in EXAMPLE_ENTRIES.get(dbname, []))
     sparql_query = f"""
-    SELECT *
+    SELECT ?subject ?predicate ?object
     WHERE {{
-        VALUES ?s {{ {entries} }}
-        ?s ?p ?o .
-        FILTER (!isBlank(?o))
+        VALUES ?subject {{ {entries} }}
+        ?subject ?predicate ?object .
+        FILTER (!isBlank(?object))
     }} LIMIT 20
+    """
+    return await execute_sparql(sparql_query, dbname)
+
+# --- Tools for exploring RDF databases ---
+@server.tool()
+async def get_class_list(
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+    uri: Annotated[str, Field(description="The URI to match classes.")]) -> str:
+    f"""
+    Get a list of classes in the RDF database that match the given URI.
+
+    Args:
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+        uri (str): The URI to match classes.
+
+    Returns:
+        str: A JSON-formatted string containing the list of classes.
+    """
+    sparql_query = f"""
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    SELECT DISTINCT ?class
+    WHERE {{
+        ?class a owl:Class .
+        FILTER STRSTARTS(STR(?class), "{uri}")
+    }} LIMIT 100
+    """
+    return await execute_sparql(sparql_query, dbname)
+
+@server.tool()
+async def get_property_list(
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+    uri: Annotated[str, Field(description="The URI to match properties.")]
+) -> str:
+    f"""
+    Get a list of properties in the RDF database that match the given URI.
+
+    Args:
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+        uri (str): The URI to match properties.
+
+    Returns:
+        str: A JSON-formatted string containing the list of properties.
+    """
+    sparql_query = f"""
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    SELECT DISTINCT ?property 
+    WHERE {{
+        ?property a ?proptype .
+        ?proptype rdfs:subClassOf rdf:Property .
+        FILTER STRSTARTS(STR(?property), "{uri}")
+    }} LIMIT 100
     """
     return await execute_sparql(sparql_query, dbname)
 
