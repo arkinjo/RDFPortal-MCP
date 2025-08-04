@@ -5,7 +5,7 @@ description = "RDF Portal MCP Server"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "mcp[cli]>=1.4.1",
+    "fastmcp>=2.10.5",
     "httpx>=0.28.1",
     "requests>=2.23.3",
 ]

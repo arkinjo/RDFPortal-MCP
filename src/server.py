@@ -2,7 +2,7 @@ import requests
 import httpx
 import json
 import sys
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from typing import List, Dict, Annotated
 from pydantic import Field
 
