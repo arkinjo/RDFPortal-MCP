@@ -2,6 +2,7 @@ import requests
 import httpx
 import json
 import sys
+import anyio
 from fastmcp import FastMCP
 from typing import List, Dict, Annotated
 from pydantic import Field
@@ -131,7 +132,7 @@ async def get_sparql_endpoints() -> str:
     """
     return json.dumps(SPARQL_ENDPOINT)
 
-@server.tool()
+# Making this a @server.tool() becomes an error, so we keep it as a function.
 async def execute_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
     dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")]
@@ -161,6 +162,23 @@ async def execute_sparql(
     return json.dumps(results)
 
 @server.tool()
+async def run_sparql(
+    sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+) -> str:
+    """
+    Run a SPARQL query on a specific RDF database.
+
+    Args:
+        sparql_query (str): The SPARQL query to execute.
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+
+    Returns:
+        str: The results of the SPARQL query in JSON format.
+    """
+    return await execute_sparql(sparql_query, dbname)
+
+@server.tool()
 async def run_example_query(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
@@ -184,6 +202,31 @@ async def run_example_query(
     }} LIMIT 20
     """
     return await execute_sparql(sparql_query, dbname)
+
+@server.tool()
+async def get_example_query(
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    """
+    Run an example SPARQL query on a specific RDF database.
+    Use this to start exploring the structure and content of the database.
+    Args:
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+    Returns:
+        str: The example RDF triples in JSON format.
+ """
+    if dbname not in SPARQL_ENDPOINT:
+        raise ValueError(f"Unknown database: {dbname}")
+    entries = ' '.join(f'<{entry}>' for entry in EXAMPLE_ENTRIES.get(dbname, []))
+    sparql_query = f"""
+    SELECT ?subject ?predicate ?object
+    WHERE {{
+        VALUES ?subject {{ {entries} }}
+        ?subject ?predicate ?object .
+        FILTER (!isBlank(?object))
+    }} LIMIT 20
+    """
+    return sparql_query
 
 # --- Tools for exploring RDF databases ---
 @server.tool()
@@ -243,11 +286,11 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
     return await execute_sparql(sparql_query, dbname)
 
 # --- Tools for SPARQL Shape Expressions --- The ShEx files are too large. Temporarily commented out.
-# @server.prompt(name="Query by SPARQL")
+@server.prompt(name="Query by SPARQL", enabled=False)
 def build_sparql_query() -> str:
     return "When building a SPARQL query, please refer a relevant shape expressions provided with the resource."
 
-# @server.tool()
+@server.tool(enabled=False)
 async def get_sparql_shape_expression(dbname: str) -> str:
     f"""
     Get a shape expression for a specific RDF database in JSON, which can be used to build a SPARQL query.
