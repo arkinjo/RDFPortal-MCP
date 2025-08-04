@@ -134,22 +134,22 @@ async def get_sparql_endpoints() -> str:
 @server.tool()
 async def execute_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
-    endpoint_key: Annotated[str, Field(description="The key for the SPARQL endpoint to use. To find the supported endpoints, use the `get_sparql_endpoints` tool.")]
+    dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")]
 ) -> str:
     """ Execute a SPARQL query on RDF Portal. 
     Args:
         sparql_query (str): The SPARQL query to execute.
-        endpoint_key (str): The key for the SPARQL endpoint to use. To find the supported endpoints, use the `get_sparql_endpoints` tool.
+        dbname (str): The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool.
     Returns:
         str: A JSON-formatted string containing the results of the SPARQL query.
     """
 
-    if endpoint_key not in SPARQL_ENDPOINT:
-        raise ValueError(f"Unknown endpoint key: {endpoint_key}")
+    if dbname not in SPARQL_ENDPOINT:
+        raise ValueError(f"Unknown database: {dbname}")
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            SPARQL_ENDPOINT[endpoint_key], data={"query": sparql_query}, headers={"Accept": "application/sparql-results+json"}
+            SPARQL_ENDPOINT[dbname], data={"query": sparql_query}, headers={"Accept": "application/sparql-results+json"}
         )
     response.raise_for_status()
     bindings = response.json()["results"]["bindings"]
@@ -326,7 +326,7 @@ async def get_compound_attributes_from_pubchem(pubchem_compound_id: str) -> str:
     return response.text
 
 # --- Tools for UniProt RDF ---
-@server.tool()
+# @server.tool()
 async def search_uniprot_entity(query: str) -> str:
     """
     Search for a UniProt entity ID by its query.
