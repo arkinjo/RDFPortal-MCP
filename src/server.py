@@ -9,7 +9,7 @@ from pydantic import Field
 
 # Initialize the FastMCP server
 # This is the entry point for the MCP server, which will handle requests and provide tools.
-server = FastMCP("RDF Portal MCP Server")
+mcp = FastMCP("RDF Portal MCP Server")
 
 # --- Constants and Configuration (Consolidated) ---
 # The SPARQL endpoints for various RDF databases. These endpoints are used to query the RDF data.
@@ -22,7 +22,8 @@ SPARQL_ENDPOINT = {
     "chebi": "https://rdfportal.org/backend/ebi/sparql",
     "mesh": "https://rdfportal.org/primary/sparql",
     "go": "https://rdfportal.org/primary/sparql",
-    "taxonomy": "https://rdfportal.org/primary/sparql"
+    "taxonomy": "https://rdfportal.org/primary/sparql",
+    "wikidata": "https://query.wikidata.org/sparql"
 }
 
 SPARQL_ENDPOINT_KEYS = list(SPARQL_ENDPOINT.keys())
@@ -58,11 +59,12 @@ EXAMPLE_ENTRIES = {
     "chembl": ["http://rdf.ebi.ac.uk/resource/chembl/assay/CHEMBL1176701","http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL1906"],
     "mesh": ["http://id.nlm.nih.gov/mesh/2025/A01.378.100"],
     "go": ["http://purl.obolibrary.org/obo/GO_0008150", "http://purl.obolibrary.org/obo/GO_0003674"],
-    "taxonomy": ["http://identifiers.org/taxonomy/116609", "http://identifiers.org/taxonomy/9606"]
+    "taxonomy": ["http://identifiers.org/taxonomy/116609", "http://identifiers.org/taxonomy/9606"],
+    "wikidata": ["http://www.wikidata.org/entity/Q7187", "http://www.wikidata.org/entity/Q40108"]
 }
 
 # --- General Prompt ---
-@server.prompt(name="General Prompt for RDF Portal MCP Server")
+@mcp.prompt(name="General Prompt for RDF Portal MCP Server")
 def general_prompt() -> str:
     """
     General prompt for the RDF Portal MCP Server.
@@ -90,7 +92,7 @@ def general_prompt() -> str:
         "Use type conversion such as xsd:integer() or xsd:dateTime() in your queries when appropriate."
     )
 
-@server.prompt(name="Generate ShEx and SPARQL Examples for RDF Database")
+@mcp.prompt(name="Generate ShEx and SPARQL Examples for RDF Database")
 def generate_shex_and_sparql_examples(
     dbname: Annotated[str, Field(title="Database Name", description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
@@ -122,9 +124,9 @@ def generate_shex_and_sparql_examples(
     "Then, use `get_class_list` and `get_property_list` to explore classes and properties in the database."
     )
 
-# --- Tools for RDF Portal ---
+# --- Tools for RDF Portal --- #
 
-@server.tool()
+@mcp.tool()
 async def get_sparql_endpoints() -> str:
     """ Get the available SPARQL endpoints for RDF Portal. 
     Returns:
@@ -132,7 +134,7 @@ async def get_sparql_endpoints() -> str:
     """
     return json.dumps(SPARQL_ENDPOINT)
 
-# Making this a @server.tool() becomes an error, so we keep it as a function.
+# Making this a @mcp.tool() becomes an error, so we keep it as a function.
 async def execute_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
     dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")]
@@ -161,7 +163,7 @@ async def execute_sparql(
     results = [{key: binding[key]["value"] for key in binding} for binding in bindings]
     return json.dumps(results)
 
-@server.tool()
+@mcp.tool()
 async def run_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
@@ -178,7 +180,7 @@ async def run_sparql(
     """
     return await execute_sparql(sparql_query, dbname)
 
-@server.tool()
+@mcp.tool()
 async def run_example_query(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
@@ -203,7 +205,7 @@ async def run_example_query(
     """
     return await execute_sparql(sparql_query, dbname)
 
-@server.tool()
+@mcp.tool()
 async def get_example_query(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
@@ -229,7 +231,7 @@ async def get_example_query(
     return sparql_query
 
 # --- Tools for exploring RDF databases ---
-@server.tool()
+@mcp.tool()
 async def get_class_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
     uri: Annotated[str, Field(description="The URI to match classes.")]) -> str:
@@ -256,7 +258,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
     """
     return await execute_sparql(sparql_query, dbname)
 
-@server.tool()
+@mcp.tool()
 async def get_property_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
     uri: Annotated[str, Field(description="The URI to match properties.")]
@@ -286,11 +288,11 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
     return await execute_sparql(sparql_query, dbname)
 
 # --- Tools for SPARQL Shape Expressions --- The ShEx files are too large. Temporarily commented out.
-@server.prompt(name="Query by SPARQL", enabled=False)
+@mcp.prompt(name="Query by SPARQL", enabled=False)
 def build_sparql_query() -> str:
     return "When building a SPARQL query, please refer a relevant shape expressions provided with the resource."
 
-@server.tool(enabled=False)
+@mcp.tool(enabled=False)
 async def get_sparql_shape_expression(dbname: str) -> str:
     f"""
     Get a shape expression for a specific RDF database in JSON, which can be used to build a SPARQL query.
@@ -308,7 +310,7 @@ async def get_sparql_shape_expression(dbname: str) -> str:
         shex = file.read()
     return shex
 
-@server.tool()
+@mcp.tool()
 async def get_graphs_in_database(dbname: str) -> List[str]:
     """
     Get a list of named graphs in a specific RDF database.
@@ -335,7 +337,7 @@ SELECT DISTINCT ?graph WHERE {
 
 
 # --- Tools for PubChem RDF ---
-@server.tool()
+@mcp.tool()
 async def get_pubchem_compound_id(compound_name: str) -> str:
     """
     Get a PubChem compound ID
@@ -351,7 +353,7 @@ async def get_pubchem_compound_id(compound_name: str) -> str:
     response.raise_for_status()
     return response.text
 
-@server.tool()
+@mcp.tool()
 async def get_compound_attributes_from_pubchem(pubchem_compound_id: str) -> str:
     """
     Get compound attributes from PubChem RDF
@@ -369,7 +371,7 @@ async def get_compound_attributes_from_pubchem(pubchem_compound_id: str) -> str:
     return response.text
 
 # --- Tools for UniProt RDF ---
-# @server.tool()
+@mcp.tool(enabled=False)
 async def search_uniprot_entity(query: str) -> str:
     """
     Search for a UniProt entity ID by its query.
@@ -397,7 +399,7 @@ async def search_uniprot_entity(query: str) -> str:
     return json.dumps(uniprot_ids)
 
 # --- PDB-specific Tools  ---
-@server.tool()
+@mcp.tool()
 async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
     """
     Search for PDBj entry information by keywords.
@@ -424,7 +426,7 @@ async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
     response_dict = {"total": total_results, "results": result_list}
     return json.dumps(response_dict)
 
-@server.tool()
+@mcp.tool()
 async def describe_pdb_rdf_schema() -> str:
     """
     Describe the PDB RDF schema.
@@ -442,7 +444,7 @@ async def describe_pdb_rdf_schema() -> str:
     )
 
 # ChEMBL-specific tools are not implemented yet, but can be added in the future.
-@server.tool()
+@mcp.tool()
 async def search_chembl_entity(query: str, limit: int = 20) -> str:
     """
     Search for ChEMBL ID by query.
@@ -461,7 +463,7 @@ async def search_chembl_entity(query: str, limit: int = 20) -> str:
     response.raise_for_status()
     return response.text
 
-@server.tool()
+@mcp.tool()
 async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
     """
     Get ChEMBL entity by ID.
@@ -507,7 +509,7 @@ async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
     return response.text
 
 # --- MeSH-specific Tools ---
-@server.tool()
+@mcp.tool()
 async def search_mesh_entity(query: str, match: str, limit: int = 10) -> str:
     """
     Search for MeSH ID by query.
@@ -533,4 +535,4 @@ async def search_mesh_entity(query: str, match: str, limit: int = 10) -> str:
     return response.text
 
 if __name__ == "__main__":
-    server.run()
+    mcp.run()
