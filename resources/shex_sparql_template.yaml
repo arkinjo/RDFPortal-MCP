@@ -58,8 +58,7 @@ sparql_query_examples:
         ?property a rdf:Property . 
       }
 architectural_notes:
-  # Any additional information useful for you to understand the architecture of the RDF schema and SPARQL queries.
-  # Replace with actual architectural notes.
+  # Replace with any additional information useful for you to understand the architecture of the RDF schema and SPARQL queries.
   design_patterns:
     - Use of RDF Schema for defining classes and properties
     - Integration with SPARQL endpoints for querying data

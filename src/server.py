@@ -335,43 +335,29 @@ SELECT DISTINCT ?graph WHERE {
     result = response.json()["results"]["bindings"]
     return [binding["graph"]["value"] for binding in result]
 
-
-# --- Tools for PubChem RDF ---
-@mcp.tool()
-async def get_pubchem_compound_id(compound_name: str) -> str:
+######################################
+##### Specific database tools ########
+######################################
+# DB: UniProt
+@mcp.tool(enabled=False)
+async def get_uniprot_entry(uniprot_id: str) -> str:
     """
-    Get a PubChem compound ID
+    Get a UniProt entry in RDF by its ID.  This tool consumes too many tokens.
 
-    Args: Compound name
-        example: "resveratrol"
+    Args:
+        uniprot_id (str): The UniProt ID of the entry to retrieve.
 
-    Returns: PubChem Compound ID in the JSON format
+    Returns:
+        str: The RDF representation of the UniProt entry.
     """
-    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{compound_name}/cids/JSON"
+    url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.rdf"
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
     response.raise_for_status()
     return response.text
 
-@mcp.tool()
-async def get_compound_attributes_from_pubchem(pubchem_compound_id: str) -> str:
-    """
-    Get compound attributes from PubChem RDF
 
-    Args: PubChem Compound ID
-        example: "445154"
-
-    Returns: Compound attributes in the JSON format
-    """
-    url = "https://togodx.dbcls.jp/human/sparqlist/api/metastanza_pubchem_compound"
-    params = {"id": pubchem_compound_id}
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, params=params)
-    response.raise_for_status()
-    return response.text
-
-# --- Tools for UniProt RDF ---
-@mcp.tool(enabled=False)
+@mcp.tool(enabled=True)
 async def search_uniprot_entity(query: str) -> str:
     """
     Search for a UniProt entity ID by its query.
@@ -398,52 +384,7 @@ async def search_uniprot_entity(query: str) -> str:
     uniprot_ids = [entry.get("primaryAccession") for entry in data.get("results", []) if "primaryAccession" in entry]
     return json.dumps(uniprot_ids)
 
-# --- PDB-specific Tools  ---
-@mcp.tool()
-async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
-    """
-    Search for PDBj entry information by keywords.
-
-    Args:
-        db (str): The database to search in. Allowed values are:
-            - "pdb" (Protein Data Bank, protein structures)
-            - "cc" (Chemical Component Dictionary, chemical components or small molecules in PDB)
-            - "prd" (BIRD, Biologically Interesting Reference Molecule Dictionary, mostly peptides).
-        query (str): Query string, any keywords that can be used to search for PDB entries.
-        limit (int): The maximum number of results to return. Default is 20.
-
-    Returns:
-        str: A JSON-formatted string containing the search results.
-    """
-    url = f"https://pdbj.org/rest/newweb/search/{db}?query={query}"
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-    response.raise_for_status()
-#    return response.json()["results"]
-    # Parse the response as JSON
-    total_results = response.json().get("total", 0)
-    result_list = [{entry[0]: entry[1]} for entry in response.json().get("results", [])[:limit]]
-    response_dict = {"total": total_results, "results": result_list}
-    return json.dumps(response_dict)
-
-@mcp.tool()
-async def describe_pdb_rdf_schema() -> str:
-    """
-    Describe the PDB RDF schema.
-
-    Returns:
-        str: A description of the PDB RDF schema.
-    """
-    return (
-        "The PDB RDF schema is defined in the PDBx-v50.owl file. "
-        "RDF triples in the PDB database typically follow this structure:\n"
-        """?entry rdf:type PDBo:datablock ;
-        PDBo:has_xxxCategory ?category .
-        ?category PDBo:has_xxx ?xxx .
-        ?xxx PDBo:xxx.property_name ?property_value . """
-    )
-
-# ChEMBL-specific tools are not implemented yet, but can be added in the future.
+# DB: ChEMBL
 @mcp.tool()
 async def search_chembl_entity(query: str, limit: int = 20) -> str:
     """
@@ -508,7 +449,85 @@ async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
     response.raise_for_status()
     return response.text
 
-# --- MeSH-specific Tools ---
+# DB: PubChem
+@mcp.tool()
+async def get_pubchem_compound_id(compound_name: str) -> str:
+    """
+    Get a PubChem compound ID
+
+    Args: Compound name
+        example: "resveratrol"
+
+    Returns: PubChem Compound ID in the JSON format
+    """
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{compound_name}/cids/JSON"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    response.raise_for_status()
+    return response.text
+
+@mcp.tool()
+async def get_compound_attributes_from_pubchem(pubchem_compound_id: str) -> str:
+    """
+    Get compound attributes from PubChem RDF
+
+    Args: PubChem Compound ID
+        example: "445154"
+
+    Returns: Compound attributes in the JSON format
+    """
+    url = "https://togodx.dbcls.jp/human/sparqlist/api/metastanza_pubchem_compound"
+    params = {"id": pubchem_compound_id}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    return response.text
+
+# DB: PDB
+@mcp.tool()
+async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
+    """
+    Search for PDBj entry information by keywords.
+
+    Args:
+        db (str): The database to search in. Allowed values are:
+            - "pdb" (Protein Data Bank, protein structures)
+            - "cc" (Chemical Component Dictionary, chemical components or small molecules in PDB)
+            - "prd" (BIRD, Biologically Interesting Reference Molecule Dictionary, mostly peptides).
+        query (str): Query string, any keywords that can be used to search for PDB entries.
+        limit (int): The maximum number of results to return. Default is 20.
+
+    Returns:
+        str: A JSON-formatted string containing the search results.
+    """
+    url = f"https://pdbj.org/rest/newweb/search/{db}?query={query}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    response.raise_for_status()
+    # Parse the response as JSON
+    total_results = response.json().get("total", 0)
+    result_list = [{entry[0]: entry[1]} for entry in response.json().get("results", [])[:limit]]
+    response_dict = {"total": total_results, "results": result_list}
+    return json.dumps(response_dict)
+
+@mcp.tool()
+async def describe_pdb_rdf_schema() -> str:
+    """
+    Describe the PDB RDF schema.
+
+    Returns:
+        str: A description of the PDB RDF schema.
+    """
+    return (
+        "The PDB RDF schema is defined in the PDBx-v50.owl file. "
+        "RDF triples in the PDB database typically follow this structure:\n"
+        """?entry rdf:type PDBo:datablock ;
+        PDBo:has_xxxCategory ?category .
+        ?category PDBo:has_xxx ?xxx .
+        ?xxx PDBo:xxx.property_name ?property_value . """
+    )
+
+# DB: MeSH
 @mcp.tool()
 async def search_mesh_entity(query: str, match: str, limit: int = 10) -> str:
     """
