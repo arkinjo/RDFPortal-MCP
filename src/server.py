@@ -142,6 +142,66 @@ async def get_sparql_endpoints() -> str:
     """
     return json.dumps(SPARQL_ENDPOINT)
 
+@mcp.tool()
+async def get_void(
+    graph_uri: Annotated[str,Field(description="Graph URI to explore. Use `get_graph_list` to get appropriate graph URI.")]
+) -> list:
+    """ Get VoID data for the given graph URI.
+    Args:
+        graph_uri (str): Graph URI to explore. Use `get_graph_list` to get appropriate graph URI.
+    Returns:
+        str: A JSON-formatted string containing the VoID data.
+    """
+    query=f"""
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?total_count ?class_count ?property_count ?class_name ?class_triple_count ?property_name ?property_triple_count
+WHERE {{
+  VALUES ?gname {{ <{graph_uri}> }}
+  [
+    a sd:Service ;
+    sd:defaultDataset [
+       a sd:Dataset ;
+       sd:namedGraph [
+         sd:name ?gname ;
+         a sd:NamedGraph ;
+         sd:endpoint ?ep_url ;
+         sd:graph [
+           a void:Dataset ;
+           void:triples ?total_count ;
+           void:classes ?class_count ;
+           void:properties ?property_count ;
+           void:distinctObjects ?uniq_object_count ;
+           void:distinctSubjects ?uniq_subject_count ;
+           void:classPartition [
+             void:class ?class_name ;
+             void:entities ?class_triple_count
+           ] ;
+           void:propertyPartition [
+             void:property ?property_name ;
+             void:triples ?property_triple_count
+           ]
+         ]
+       ]
+     ]
+  ] .
+}}
+"""
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://plod.dbcls.jp/repositories/RDFPortal_VoID2",
+            data={"query": query},
+            headers={"Accept": "application/sparql-results+json"}
+        )
+    response.raise_for_status()
+    bindings = response.json()["results"]["bindings"]
+    if not bindings:
+        return []
+    results = [{key: binding[key]["value"] for key in binding} for binding in bindings]
+    return results
+
 # Making this a @mcp.tool() becomes an error, so we keep it as a function.
 async def execute_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
