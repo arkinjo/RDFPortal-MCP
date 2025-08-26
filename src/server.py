@@ -21,7 +21,9 @@ SPARQL_ENDPOINT = {
     "mesh": "https://rdfportal.org/primary/sparql",
     "go": "https://rdfportal.org/primary/sparql",
     "taxonomy": "https://rdfportal.org/primary/sparql",
-    "wikidata": "https://query.wikidata.org/sparql"
+    "wikidata": "https://query.wikidata.org/sparql",
+    "mondo": "https://rdfportal.org/primary/sparql",
+    "ddbj": "https://rdfportal.org/ddbj/sparql"
 }
 
 SPARQL_ENDPOINT_KEYS = list(SPARQL_ENDPOINT.keys())
@@ -51,7 +53,9 @@ SHEX_FILES = {
     "taxonomy": "resources/taxonomy.yaml",
     "wikidata": "resources/wikidata.yaml",
     "pubchem": "resources/pubchem.yaml",
-    "reactome": "resources/reactome.yaml"
+    "reactome": "resources/reactome.yaml",
+    "mondo": "resources/mondo.yaml",
+    "ddbj": "resources/ddbj.yaml"
 }
 SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
 
@@ -66,7 +70,9 @@ EXAMPLE_ENTRIES = {
     "go": ["http://purl.obolibrary.org/obo/GO_0008150", "http://purl.obolibrary.org/obo/GO_0003674"],
     "taxonomy": ["http://identifiers.org/taxonomy/116609", "http://identifiers.org/taxonomy/9606"],
     "wikidata": ["http://www.wikidata.org/entity/Q7187", "http://www.wikidata.org/entity/Q40108"],
-    "reactome": ["http://www.reactome.org/biopax/68/49646#Pathway227","http://www.reactome.org/biopax/68/49646#BiochemicalReaction1002"]
+    "reactome": ["http://www.reactome.org/biopax/68/49646#Pathway227","http://www.reactome.org/biopax/68/49646#BiochemicalReaction1002"],
+    "mondo": ["http://purl.obolibrary.org/obo/MONDO_0000831","http://purl.obolibrary.org/obo/MONDO_0004784"],
+    "ddbj": ["http://identifiers.org/bioproject/PRJNA594547","http://identifiers.org/biosample/SAMN12636418"]
 }
 
 # --- General Prompt ---

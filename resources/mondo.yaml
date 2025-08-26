@@ -1,0 +1,392 @@
+schema_info:
+  title: MONDO Disease Ontology RDF Schema Analysis
+  description: Comprehensive analysis of the Monarch Disease Ontology (MONDO) RDF schema, focusing on disease classification, cross-references, and hierarchical relationships
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: http://purl.obolibrary.org/obo/
+  ontology_graph: http://rdfportal.org/ontology/mondo
+  version_analyzed: 2025-08-26
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  mondo: http://purl.obolibrary.org/obo/
+  obo: http://purl.obolibrary.org/obo/
+  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  iao: http://purl.obolibrary.org/obo/IAO_
+  bioontology: http://data.bioontology.org/metadata/
+
+shape_expressions:
+  MondoDisease:
+    description: A disease entity in the MONDO ontology with comprehensive metadata and cross-references
+    target_class: owl:Class
+    pattern: "MONDO_[0-9]{7}"
+    properties:
+      rdf:type:
+        type: owl:Class
+        required: true
+        description: Every MONDO disease is an OWL Class
+      rdfs:label:
+        type: xsd:string
+        required: true
+        cardinality: exactly_one
+        description: Human-readable disease name
+      rdfs:subClassOf:
+        type: mondo:Disease_IRI
+        required: false
+        cardinality: zero_or_more
+        description: Hierarchical disease classification relationships
+      oboInOwl:id:
+        type: xsd:string
+        required: true
+        pattern: "MONDO:[0-9]{7}"
+        description: Unique MONDO identifier
+      oboInOwl:hasDbXref:
+        type: xsd:string
+        required: false
+        cardinality: zero_or_more
+        description: Cross-references to external disease databases
+        valid_prefixes:
+          - "MESH:"     # Medical Subject Headings
+          - "DOID:"     # Disease Ontology
+          - "NCIT:"     # NCI Thesaurus
+          - "UMLS:"     # Unified Medical Language System
+          - "SCTID:"    # SNOMED Clinical Terms
+          - "ICD10CM:"  # ICD-10-CM
+          - "ICD9:"     # ICD-9
+          - "OMIM:"     # Online Mendelian Inheritance in Man
+          - "EFO:"      # Experimental Factor Ontology
+          - "MEDGEN:"   # NCBI Medical Genetics
+      oboInOwl:hasExactSynonym:
+        type: xsd:string
+        required: false
+        cardinality: zero_or_more
+        description: Alternative names with exact semantic equivalence
+      oboInOwl:hasRelatedSynonym:
+        type: xsd:string
+        required: false
+        cardinality: zero_or_more
+        description: Related terms that are semantically similar but not exact
+      iao:0000115:
+        type: xsd:string
+        required: false
+        cardinality: zero_or_one
+        description: Textual definition of the disease
+      oboInOwl:inSubset:
+        type: xsd:anyURI
+        required: false
+        cardinality: zero_or_more
+        description: Subset classifications for organizational purposes
+      skos:notation:
+        type: xsd:string
+        required: true
+        description: Compact identifier notation
+      owl:deprecated:
+        type: xsd:boolean
+        required: false
+        description: Indicates if the term is deprecated
+
+sample_rdf_entries:
+  acute_myocardial_infarction:
+    description: Acute myocardial infarction with comprehensive cross-references
+    RDF: |
+      mondo:MONDO_0004781 a owl:Class ;
+        rdfs:label "acute myocardial infarction" ;
+        oboInOwl:hasDbXref "DOID:9408", "EFO:0008583", "ICD10CM:I21.9", 
+                           "ICD9:410", "MESH:D009203", "NCIT:C27996", 
+                           "SCTID:57054005", "UMLS:C0027051" ;
+        rdfs:subClassOf mondo:MONDO_0005267 ;
+        oboInOwl:id "MONDO:0004781" ;
+        skos:notation "MONDO:0004781" .
+
+  type2_diabetes:
+    description: Type 2 diabetes mellitus with synonyms and definition
+    RDF: |
+      mondo:MONDO_0005148 a owl:Class ;
+        rdfs:label "type 2 diabetes mellitus" ;
+        oboInOwl:hasExactSynonym "NIDDM", "T2D", "T2DM", "adult onset diabetes",
+                                "diabetes mellitus, noninsulin-dependent" ;
+        oboInOwl:hasDbXref "DOID:9352", "EFO:0001360", "ICD10CM:E11",
+                           "MESH:D003924", "NCIT:C26747", "OMIM:125853" ;
+        iao:0000115 "A diabetes mellitus characterized by high blood sugar, 
+                     insulin resistance, and relative lack of insulin." ;
+        rdfs:subClassOf mondo:MONDO_0005015 ;
+        oboInOwl:id "MONDO:0005148" .
+
+  thrombotic_disease:
+    description: Thrombotic disease with vascular disorder classification
+    RDF: |
+      mondo:MONDO_0000831 a owl:Class ;
+        rdfs:label "thrombotic disease" ;
+        oboInOwl:hasDbXref "DOID:0060903", "ICD9:453.9", "MEDGEN:21160",
+                           "MESH:D013927", "NCIT:C26891", "SCTID:439127006",
+                           "UMLS:C0040053" ;
+        rdfs:subClassOf mondo:MONDO_0005385 ;
+        oboInOwl:id "MONDO:0000831" .
+
+  cardiovascular_disorder:
+    description: Top-level cardiovascular disorder classification
+    RDF: |
+      mondo:MONDO_0004995 a owl:Class ;
+        rdfs:label "cardiovascular disorder" ;
+        oboInOwl:hasExactSynonym "cardiovascular disease", "circulatory system disease" ;
+        iao:0000115 "A disease that involves the cardiovascular system." ;
+        rdfs:subClassOf mondo:MONDO_0000001 ;
+        oboInOwl:id "MONDO:0004995" .
+
+  allergic_asthma:
+    description: Allergic asthma as subtype of asthma
+    RDF: |
+      mondo:MONDO_0004784 a owl:Class ;
+        rdfs:label "allergic asthma" ;
+        oboInOwl:hasExactSynonym "atopic asthma", "extrinsic asthma" ;
+        oboInOwl:hasDbXref "DOID:2841", "EFO:0003949", "ICD10CM:J45.0",
+                           "MESH:D001249", "NCIT:C2869", "SCTID:195967001" ;
+        rdfs:subClassOf mondo:MONDO_0004979 ;
+        iao:0000115 "A form of asthma due to hypersensitivity to allergens." .
+
+sparql_query_examples:
+  get_cancer_diseases:
+    description: Retrieve all cancer-related diseases with their cross-references
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX hasDbXref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+      SELECT DISTINCT ?disease ?label
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease hasDbXref: ?xref .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+        FILTER(CONTAINS(LCASE(?label), "cancer") || 
+               CONTAINS(LCASE(?label), "carcinoma") || 
+               CONTAINS(LCASE(?label), "tumor"))
+      }
+      ORDER BY ?label
+      LIMIT 20
+
+  get_disease_cross_references:
+    description: Retrieve cross-references for a specific disease showing database integration
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX hasDbXref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+      SELECT ?disease ?label ?xref
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease hasDbXref: ?xref .
+        FILTER(CONTAINS(STR(?disease), "MONDO_0004781"))
+      }
+      ORDER BY ?xref
+
+  get_diabetes_variants_with_synonyms:
+    description: Find diabetes-related diseases with their alternative names
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX hasExactSynonym: <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym>
+      SELECT ?disease ?label ?synonym
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease hasExactSynonym: ?synonym .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+        FILTER(CONTAINS(LCASE(?label), "diabetes"))
+      }
+      ORDER BY ?disease ?synonym
+
+  get_cardiovascular_hierarchy:
+    description: Explore hierarchical relationships in cardiovascular diseases
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?parent_disease ?parent_label ?child_disease ?child_label
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?child_disease rdfs:subClassOf ?parent_disease .
+        ?child_disease rdfs:label ?child_label .
+        ?parent_disease rdfs:label ?parent_label .
+        FILTER(CONTAINS(STR(?child_disease), "MONDO"))
+        FILTER(CONTAINS(STR(?parent_disease), "MONDO"))
+        FILTER(CONTAINS(LCASE(?parent_label), "cardiovascular"))
+      }
+      ORDER BY ?parent_label ?child_label
+
+  get_deprecated_diseases:
+    description: Find deprecated disease terms for data quality assessment
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      SELECT ?disease ?label ?deprecated
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease owl:deprecated ?deprecated .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+        FILTER(?deprecated = true)
+      }
+      ORDER BY ?label
+      LIMIT 10
+
+  count_xref_databases:
+    description: Statistical analysis of cross-reference database coverage
+    sparql: |
+      PREFIX hasDbXref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+      SELECT ?db_prefix (COUNT(DISTINCT ?disease) as ?disease_count)
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease hasDbXref: ?xref .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+        BIND(
+          IF(STRSTARTS(?xref, "MESH:"), "MESH",
+          IF(STRSTARTS(?xref, "DOID:"), "DOID", 
+          IF(STRSTARTS(?xref, "NCIT:"), "NCIT",
+          IF(STRSTARTS(?xref, "UMLS:"), "UMLS",
+          IF(STRSTARTS(?xref, "ICD10CM:"), "ICD10CM",
+          IF(STRSTARTS(?xref, "ICD9:"), "ICD9",
+          IF(STRSTARTS(?xref, "OMIM:"), "OMIM", 
+          IF(STRSTARTS(?xref, "SCTID:"), "SCTID",
+          IF(STRSTARTS(?xref, "EFO:"), "EFO",
+          IF(STRSTARTS(?xref, "MEDGEN:"), "MEDGEN",
+          "Other")))))))))) AS ?db_prefix
+        )
+      }
+      GROUP BY ?db_prefix
+      ORDER BY DESC(?disease_count)
+
+  get_definition_coverage:
+    description: Assess textual definition coverage across MONDO diseases
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX iao: <http://purl.obolibrary.org/obo/IAO_>
+      SELECT ?disease ?label ?definition
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease iao:0000115 ?definition .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+      }
+      ORDER BY ?label
+      LIMIT 15
+
+  get_genetic_diseases:
+    description: Find genetic diseases with OMIM cross-references
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX hasDbXref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+      SELECT DISTINCT ?disease ?label ?omim_id
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease rdfs:label ?label .
+        ?disease hasDbXref: ?omim_id .
+        FILTER(CONTAINS(STR(?disease), "MONDO"))
+        FILTER(STRSTARTS(?omim_id, "OMIM:"))
+      }
+      ORDER BY ?label
+      LIMIT 20
+
+architectural_notes:
+  design_patterns:
+    - "MONDO uses OWL Class hierarchy for disease classification"
+    - "Extensive cross-referencing via oboInOwl:hasDbXref to major medical databases"
+    - "Synonym management through hasExactSynonym and hasRelatedSynonym properties"
+    - "Subset organization using oboInOwl:inSubset for different use cases"
+    - "Deprecation workflow using owl:deprecated for term lifecycle management"
+  
+  cross_reference_integration:
+    - "MeSH (Medical Subject Headings): Primary medical vocabulary"
+    - "Disease Ontology (DOID): Semantic disease classification"
+    - "NCI Thesaurus (NCIT): Cancer and biomedical terminology"
+    - "SNOMED CT (SCTID): Clinical terminology standard"
+    - "ICD-10-CM/ICD-9: Medical classification codes"
+    - "UMLS: Unified medical language integration"
+    - "OMIM: Genetic disorder database"
+    - "EFO: Experimental Factor Ontology"
+    - "MEDGEN: NCBI Medical Genetics database"
+  
+  performance_considerations:
+    - "Use graph-specific queries with FROM clause for better performance"
+    - "Index filtering on MONDO prefix for disease-specific queries"
+    - "Cross-reference queries benefit from prefix-based filtering"
+    - "Hierarchical queries should use rdfs:subClassOf with appropriate depth limits"
+    - "Large synonym collections require pagination for comprehensive retrieval"
+
+  data_quality_features:
+    - "Deprecated term tracking via owl:deprecated"
+    - "Comprehensive cross-validation through multiple database mappings"
+    - "Synonym categorization for semantic precision"
+    - "Structured definition requirements for major disease categories"
+
+data_statistics:
+  total_classes: 30176
+  total_properties: 58
+  total_cross_references: 134816
+  total_exact_synonyms: 76574
+  total_related_synonyms: 31834
+  deprecated_terms: 3912
+  terms_with_definitions: 18543
+  subset_annotations: 73068
+  last_updated: '2025-08-26T00:00:00Z'
+  
+  cross_reference_coverage:
+    UMLS: 21276
+    MEDGEN: 21276
+    Other: 17961
+    DOID: 11477
+    OMIM: 9932
+    SCTID: 9051
+    MESH: 8235
+    NCIT: 7425
+    ICD9: 4416
+    EFO: 2400
+    ICD10CM: 1691
+
+  major_database_mappings:
+    description: Cross-reference distribution showing database integration depth
+    primary_databases:
+      - "UMLS (21,276): Unified Medical Language System - broadest coverage"
+      - "MEDGEN (21,276): NCBI Medical Genetics - genetic disorders"
+      - "DOID (11,477): Disease Ontology - semantic disease classification"
+      - "OMIM (9,932): Online Mendelian Inheritance in Man - genetic diseases"
+      - "SCTID (9,051): SNOMED Clinical Terms - clinical terminology"
+      - "MESH (8,235): Medical Subject Headings - biomedical vocabulary"
+      - "NCIT (7,425): NCI Thesaurus - cancer terminology"
+      - "ICD9 (4,416): International Classification of Diseases 9th revision"
+      - "EFO (2,400): Experimental Factor Ontology - experimental data"
+      - "ICD10CM (1,691): ICD-10 Clinical Modification - current clinical codes"
+
+query_validation_results:
+  get_cancer_diseases:
+    status: "SUCCESSFUL"
+    sample_results:
+      - "ACTH-producing pituitary gland carcinoma"
+      - "Askin tumor"
+      - "BAP1-related tumor predisposition syndrome"
+      - "Barrett adenocarcinoma"
+    result_count: 20
+    
+  get_disease_cross_references:
+    status: "SUCCESSFUL"
+    sample_disease: "acute myocardial infarction (MONDO_0004781)"
+    cross_references_found: 16
+    databases_covered: ["DOID", "EFO", "ICD10CM", "ICD9", "MEDGEN", "NCIT", "SCTID", "UMLS"]
+    
+  get_diabetes_variants_with_synonyms:
+    status: "SUCCESSFUL"
+    disease_types_found: 49
+    synonym_examples:
+      - "T1D, T1DM, IDDM (Type 1 Diabetes)"
+      - "T2D, T2DM, NIDDM (Type 2 Diabetes)"
+      - "GDM (Gestational Diabetes)"
+      - "MODY (Maturity-Onset Diabetes of the Young)"
+    
+  get_cardiovascular_hierarchy:
+    status: "SUCCESSFUL"
+    parent_categories: 8
+    child_diseases: 57
+    hierarchy_depth: "Multi-level classification system demonstrated"
+    
+  count_xref_databases:
+    status: "SUCCESSFUL"
+    database_coverage: 11
+    total_disease_mappings: "Over 134,816 cross-references"
+    integration_quality: "HIGH - Multiple database validation"
