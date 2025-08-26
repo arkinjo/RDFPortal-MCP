@@ -1,0 +1,576 @@
+schema_info:
+  title: Reactome RDF Schema Analysis using BioPAX Level 3 Ontology
+  description: |
+    This document provides a comprehensive analysis of the Reactome RDF schema built on BioPAX Level 3 ontology.
+    Reactome is a curated database of biological pathways that uses BioPAX standard for representing biological
+    pathway data. The analysis focuses on how biological entities, pathways, reactions, and cross-references
+    are structured and interconnected. Special attention is paid to cross-reference handling which enables
+    integration with major biological databases like UniProt, ChEBI, Gene Ontology, and NCBI Taxonomy.
+  endpoint: https://rdfportal.org/backend/ebi/sparql
+  base_uri: http://www.reactome.org/biopax/
+  graph: http://rdf.ebi.ac.uk/dataset/reactome
+  ontology: http://www.biopax.org/release/biopax-level3.owl#
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  bp: http://www.biopax.org/release/biopax-level3.owl#
+  reactome: http://www.reactome.org/biopax/
+
+shape_expressions:
+  BiochemicalReaction:
+    description: |
+      A biochemical reaction represents the transformation of biochemical entities (e.g., small molecules, 
+      proteins) through metabolic or signaling processes. Each reaction has left-hand side (substrates/reactants)
+      and right-hand side (products), along with catalysis and control information.
+    properties:
+      displayName:
+        type: xsd:string
+        required: true
+        description: Human-readable name of the biochemical reaction
+      comment:
+        type: xsd:string
+        required: false
+        description: Additional comments about computational inference or experimental details
+      left:
+        type: bp:PhysicalEntity
+        required: false
+        description: Left-hand side entities (substrates/reactants) of the reaction
+        multiplicity: "*"
+      right:
+        type: bp:PhysicalEntity
+        required: false
+        description: Right-hand side entities (products) of the reaction
+        multiplicity: "*"
+      conversionDirection:
+        type: xsd:string
+        required: false
+        description: Direction of conversion (e.g., LEFT-TO-RIGHT)
+        constraints: ["LEFT-TO-RIGHT", "RIGHT-TO-LEFT", "REVERSIBLE"]
+      evidence:
+        type: bp:Evidence
+        required: false
+        description: Supporting evidence for the reaction
+        multiplicity: "*"
+      dataSource:
+        type: bp:Provenance
+        required: false
+        description: Source of the data (typically Reactome)
+      catalysis:
+        type: bp:Catalysis
+        required: false
+        description: Catalytic processes that facilitate the reaction
+        multiplicity: "*"
+      
+  Pathway:
+    description: |
+      A pathway represents a series of biochemical reactions and regulatory processes that work together
+      to accomplish a biological function. Pathways can contain other pathways (hierarchical structure)
+      and various biological processes. Cross-references include links to KEGG, Reactome IDs, and GO terms.
+    properties:
+      displayName:
+        type: xsd:string
+        required: true
+        description: Human-readable pathway name
+      pathwayComponent:
+        type: bp:Process
+        required: false
+        description: Components of the pathway (reactions, other pathways)
+        multiplicity: "*"
+      organism:
+        type: bp:BioSource
+        required: false
+        description: Organism in which this pathway occurs
+      evidence:
+        type: bp:Evidence
+        required: false
+        description: Supporting evidence for the pathway
+        multiplicity: "*"
+      comment:
+        type: xsd:string
+        required: false
+        description: Additional information about pathway inference or characteristics
+      xref:
+        type: bp:Xref
+        required: false
+        description: Cross-references to external databases (KEGG, GO, Reactome)
+        multiplicity: "*"
+        
+  Protein:
+    description: |
+      A protein entity representing a specific protein instance with modifications, cellular location,
+      and references to external databases. Proteins can participate in complexes and reactions.
+      Extensive cross-referencing to UniProt, ENSEMBL, and other protein databases.
+    properties:
+      displayName:
+        type: xsd:string
+        required: true
+        description: Protein name or gene symbol
+      entityReference:
+        type: bp:ProteinReference
+        required: false
+        description: Reference to canonical protein information
+      cellularLocation:
+        type: bp:CellularLocationVocabulary
+        required: false
+        description: Subcellular location of the protein
+      feature:
+        type: bp:EntityFeature
+        required: false
+        description: Protein modifications or features
+        multiplicity: "*"
+      xref:
+        type: bp:Xref
+        required: false
+        description: Cross-references to external databases (UniProt, ENSEMBL, RefSeq)
+        multiplicity: "*"
+      component:
+        type: bp:PhysicalEntity
+        required: false
+        description: When protein is part of a complex
+        multiplicity: "*"
+        
+  Complex:
+    description: |
+      A protein complex consisting of multiple protein or other molecular components that function
+      together as a single biological unit. Complexes have stoichiometry information and can include
+      cross-references to ComplexPortal and other complex databases.
+    properties:
+      displayName:
+        type: xsd:string
+        required: true
+        description: Name of the protein complex
+      component:
+        type: bp:PhysicalEntity
+        required: false
+        description: Individual components of the complex
+        multiplicity: "*"
+      componentStoichiometry:
+        type: bp:Stoichiometry
+        required: false
+        description: Stoichiometric information for components
+        multiplicity: "*"
+      cellularLocation:
+        type: bp:CellularLocationVocabulary
+        required: false
+        description: Cellular location of the complex
+      xref:
+        type: bp:Xref
+        required: false
+        description: Cross-references to ComplexPortal, GO, and other databases
+        multiplicity: "*"
+        
+  BioSource:
+    description: |
+      Represents the biological source/organism for biological entities and processes.
+      Contains taxonomic information and cross-references to taxonomic databases (NCBI Taxonomy).
+    properties:
+      name:
+        type: xsd:string
+        required: true
+        description: Scientific name of the organism (e.g., Homo sapiens, Mus musculus)
+      displayName:
+        type: xsd:string
+        required: false
+        description: Common or display name for the organism
+      xref:
+        type: bp:UnificationXref
+        required: false
+        description: Cross-reference to NCBI Taxonomy
+        multiplicity: "*"
+        constraints: ["Database must be 'NCBI Taxonomy'"]
+        
+  UnificationXref:
+    description: |
+      Cross-reference to external databases that provide unified/canonical identifiers for biological entities.
+      These include references to UniProt, ChEBI, NCBI Taxonomy, ENSEMBL, and other major biological databases.
+      This is the most comprehensive cross-reference type in Reactome.
+    properties:
+      db:
+        type: xsd:string
+        required: true
+        description: Database name (UniProt, ChEBI, NCBI Taxonomy, ENSEMBL, etc.)
+        constraints: ["UniProt", "ChEBI", "NCBI Taxonomy", "ENSEMBL", "RefSeq", "ComplexPortal"]
+      id:
+        type: xsd:string
+        required: true
+        description: Identifier within the external database
+      idVersion:
+        type: xsd:string
+        required: false
+        description: Version of the identifier if applicable
+        
+  RelationshipXref:
+    description: |
+      Cross-reference representing relationships or mappings to other databases, including pathway databases,
+      gene ontology terms, and other related resources. Commonly used for GO terms, KEGG pathways.
+    properties:
+      db:
+        type: xsd:string
+        required: true
+        description: Database name (GENE ONTOLOGY, ChEBI, PubChem, KEGG, etc.)
+        constraints: ["GENE ONTOLOGY", "KEGG", "PubChem", "ClinVar", "OMIM"]
+      id:
+        type: xsd:string
+        required: true
+        description: Identifier in the related database
+      relationshipType:
+        type: bp:RelationshipTypeVocabulary
+        required: false
+        description: Type of relationship to the external resource
+        
+  PublicationXref:
+    description: |
+      Cross-reference to scientific publications supporting biological data, primarily PubMed references
+      and ISBN references for books and other literature. Critical for evidence-based pathway curation.
+    properties:
+      db:
+        type: xsd:string
+        required: true
+        description: Publication database (typically "Pubmed" or "ISBN")
+        constraints: ["Pubmed", "ISBN"]
+      id:
+        type: xsd:string
+        required: true
+        description: PubMed ID or ISBN number
+      author:
+        type: xsd:string
+        required: false
+        description: Publication authors
+        multiplicity: "*"
+      title:
+        type: xsd:string
+        required: false
+        description: Publication title
+      year:
+        type: xsd:integer
+        required: false
+        description: Publication year
+
+  SmallMolecule:
+    description: |
+      Small chemical molecules including metabolites, drugs, and other chemical compounds.
+      Extensively cross-referenced to ChEBI, PubChem, and other chemical databases.
+    properties:
+      displayName:
+        type: xsd:string
+        required: true
+        description: Chemical compound name
+      entityReference:
+        type: bp:SmallMoleculeReference
+        required: false
+        description: Reference to canonical chemical information
+      cellularLocation:
+        type: bp:CellularLocationVocabulary
+        required: false
+        description: Cellular location of the small molecule
+      xref:
+        type: bp:Xref
+        required: false
+        description: Cross-references to ChEBI, PubChem, CAS, etc.
+        multiplicity: "*"
+
+  Evidence:
+    description: |
+      Evidence supporting biological statements, linked to publications and evidence codes.
+      Uses Evidence Code Ontology (ECO) for standardized evidence classification.
+    properties:
+      evidenceCode:
+        type: bp:EvidenceCodeVocabulary
+        required: false
+        description: Standardized evidence code (ECO terms)
+      xref:
+        type: bp:PublicationXref
+        required: false
+        description: Publications supporting the evidence
+        multiplicity: "*"
+      confidence:
+        type: bp:Score
+        required: false
+        description: Confidence score for the evidence
+
+sample_rdf_entries:
+  biochemical_reaction_example:
+    description: Biochemical reaction showing Rap1 activation with substrates and products
+    RDF: |
+      @prefix bp: <http://www.biopax.org/release/biopax-level3.owl#> .
+      @prefix reactome: <http://www.reactome.org/biopax/68/49646#> .
+      
+      reactome:BiochemicalReaction1002 a bp:BiochemicalReaction ;
+        bp:displayName "Activation of Rap1 by cytosolic GEFs" ;
+        bp:left reactome:Complex1264, reactome:SmallMolecule42 ;
+        bp:right reactome:Complex1265 ;
+        bp:conversionDirection "LEFT-TO-RIGHT" ;
+        bp:evidence reactome:Evidence1244 ;
+        bp:dataSource reactome:Provenance1 ;
+        bp:comment "This event has been computationally inferred from an event demonstrated in another species." .
+        
+  pathway_example:
+    description: Platelet homeostasis pathway with organism and pathway components
+    RDF: |
+      @prefix bp: <http://www.biopax.org/release/biopax-level3.owl#> .
+      @prefix reactome: <http://www.reactome.org/biopax/68/49646#> .
+      
+      reactome:Pathway227 a bp:Pathway ;
+        bp:displayName "Platelet homeostasis" ;
+        bp:organism reactome:BioSource1 ;
+        bp:pathwayComponent reactome:BiochemicalReaction943, reactome:Pathway234, reactome:Pathway228 ;
+        bp:evidence reactome:Evidence1177 ;
+        bp:dataSource reactome:Provenance1 .
+        
+  complex_example:
+    description: PECAM-1:SHP-1 protein complex with multiple protein components
+    RDF: |
+      @prefix bp: <http://www.biopax.org/release/biopax-level3.owl#> .
+      @prefix reactome: <http://www.reactome.org/biopax/68/49646#> .
+      
+      reactome:Complex1183 a bp:Complex ;
+        bp:displayName "PECAM-1:SHP-1 complex" ;
+        bp:component reactome:Protein2208, reactome:Protein2209 ;
+        bp:cellularLocation reactome:CellularLocation_membrane .
+        
+  biosource_example:
+    description: Bos taurus (cattle) organism with taxonomic cross-reference
+    RDF: |
+      @prefix bp: <http://www.biopax.org/release/biopax-level3.owl#> .
+      @prefix reactome: <http://www.reactome.org/biopax/86/48898#> .
+      
+      reactome:BioSource1 a bp:BioSource ;
+        bp:name "Bos taurus" ;
+        bp:displayName "Cattle" ;
+        bp:xref reactome:UnificationXref_taxonomy_9913 .
+        
+  unification_xref_example:
+    description: UniProt cross-reference for protein identification
+    RDF: |
+      @prefix bp: <http://www.biopax.org/release/biopax-level3.owl#> .
+      @prefix reactome: <http://www.reactome.org/biopax/68/49646#> .
+      
+      reactome:UnificationXref_UniProt_P12345 a bp:UnificationXref ;
+        bp:db "UniProt" ;
+        bp:id "P12345" ;
+        bp:idVersion "1" .
+
+sparql_query_examples:
+  get_all_biopax_classes:
+    description: Retrieve all BioPAX classes used in the Reactome database
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT DISTINCT ?type WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?s a ?type .
+        }
+      } ORDER BY ?type
+      
+  get_pathways_with_organisms:
+    description: Retrieve pathways along with their associated organisms, showing cross-species coverage
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?pathway ?pathwayName ?organism ?organismName WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?pathway a bp:Pathway ;
+            bp:displayName ?pathwayName ;
+            bp:organism ?organism .
+          ?organism bp:name ?organismName .
+        }
+      } ORDER BY ?organismName ?pathwayName
+      LIMIT 20
+      
+  get_biochemical_reactions_with_participants:
+    description: Find biochemical reactions with their substrates and products
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?reaction ?reactionName ?substrate ?product WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?reaction a bp:BiochemicalReaction ;
+            bp:displayName ?reactionName .
+          OPTIONAL { ?reaction bp:left ?substrate }
+          OPTIONAL { ?reaction bp:right ?product }
+        }
+      } LIMIT 15
+      
+  get_cross_reference_databases:
+    description: Analyze the diversity of external databases referenced in Reactome
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?database (COUNT(?xref) as ?referenceCount) WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?xref bp:db ?database .
+        }
+      } GROUP BY ?database
+      ORDER BY DESC(?referenceCount)
+      LIMIT 25
+      
+  get_pathway_hierarchy:
+    description: Explore pathway hierarchies by finding pathways that contain other pathways
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?parentPathway ?parentName ?childPathway ?childName WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?parentPathway a bp:Pathway ;
+            bp:displayName ?parentName ;
+            bp:pathwayComponent ?childPathway .
+          ?childPathway a bp:Pathway ;
+            bp:displayName ?childName .
+        }
+      } LIMIT 15
+      
+  get_complex_composition:
+    description: Retrieve protein complexes and their individual protein components
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?complex ?complexName ?component ?componentName WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?complex a bp:Complex ;
+            bp:displayName ?complexName ;
+            bp:component ?component .
+          ?component bp:displayName ?componentName .
+        }
+      } LIMIT 20
+      
+  get_publication_references:
+    description: Count and sample publication cross-references in the database
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?pubXref WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?pubXref a bp:PublicationXref .
+        }
+      } LIMIT 15
+      
+  get_organisms_with_pathway_counts:
+    description: Count pathways per organism to understand species coverage
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?organismName (COUNT(?pathway) as ?pathwayCount) WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?pathway a bp:Pathway ;
+            bp:organism ?organism .
+          ?organism bp:name ?organismName .
+        }
+      } GROUP BY ?organismName
+      ORDER BY DESC(?pathwayCount)
+      LIMIT 15
+      
+  get_unification_xrefs_by_database:
+    description: Analyze UnificationXref usage across different external databases
+    sparql: |
+      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+      SELECT ?database (COUNT(?xref) as ?xrefCount) WHERE {
+        GRAPH <http://rdf.ebi.ac.uk/dataset/reactome> {
+          ?xref a bp:UnificationXref ;
+            bp:db ?database .
+        }
+      } GROUP BY ?database
+      ORDER BY DESC(?xrefCount)
+      LIMIT 20
+
+architectural_notes:
+  design_patterns:
+    - "BioPAX Level 3 ontology provides standardized vocabulary for biological pathway data"
+    - "Extensive use of cross-references (UnificationXref, RelationshipXref, PublicationXref) for database interoperability"
+    - "Hierarchical pathway structure allowing pathways to contain sub-pathways and reactions"
+    - "Clear separation between entity references (canonical forms) and entity instances (specific states/locations)"
+    - "Stoichiometry support for complexes and reactions through dedicated stoichiometry objects"
+    - "Evidence-based modeling with links to publications and evidence codes"
+    - "Multi-organism support through BioSource entities with taxonomic cross-references"
+    
+  cross_reference_handling:
+    - "UnificationXref: Canonical identifiers (UniProt: 87,408 refs, ChEBI: 28,135 refs)"
+    - "PublicationXref: Literature support (PubMed: 268,163 refs)"
+    - "RelationshipXref: Related resources (Gene Ontology: 26,363 refs)"
+    - "Internal references: Reactome Database IDs across different releases"
+    - "Version tracking through idVersion property for evolving database entries"
+    - "Cross-species mapping: Same pathways represented across multiple organisms"
+    
+  key_external_databases:
+    - "UniProt: Protein sequence and functional information"
+    - "ChEBI: Chemical entities of biological interest"
+    - "Gene Ontology: Functional annotations and cellular components"
+    - "NCBI Taxonomy: Organism classification and identification"
+    - "PubMed: Scientific literature references"
+    - "ENSEMBL: Genome annotations and gene identifiers"
+    - "ComplexPortal: Macromolecular complex information"
+    - "KEGG: Pathway and metabolic information"
+    
+  performance_considerations:
+    - "Use specific graph URI (<http://rdf.ebi.ac.uk/dataset/reactome>) for efficient querying"
+    - "Limit results appropriately when exploring large datasets"
+    - "Cross-reference queries may be expensive due to multiple joins - use selective FILTERs"
+    - "Pathway hierarchy queries can be recursive - limit depth appropriately"
+    
+  biological_modeling_strengths:
+    - "Comprehensive representation of metabolic and signaling pathways"
+    - "Support for protein modifications and features through EntityFeature"
+    - "Complex assembly modeling with detailed stoichiometry"
+    - "Multi-level evidence integration (experimental, computational inference)"
+    - "Cross-species pathway comparison through organism-specific instances"
+    - "Integration with major biological databases through comprehensive cross-referencing"
+
+data_statistics:
+  total_classes: 20
+  major_biopax_classes:
+    BiochemicalReaction: "Metabolic and signaling reactions"
+    Pathway: "Biological pathway organization"
+    Protein: "Protein entities with modifications"
+    Complex: "Macromolecular complexes"
+    BioSource: "Organism information"
+    Evidence: "Supporting evidence with publications"
+    PublicationXref: "Literature references (268,163 total)"
+    UnificationXref: "Canonical database identifiers"
+    RelationshipXref: "Related database resources"
+    ProteinReference: "Canonical protein information"
+    SmallMolecule: "Chemical compounds and metabolites"
+    Catalysis: "Enzymatic catalysis information"
+    Control: "Regulatory control mechanisms"
+    PathwayStep: "Ordered pathway progression"
+    ModificationFeature: "Post-translational modifications"
+    FragmentFeature: "Protein fragments"
+    CellularLocationVocabulary: "Subcellular localization"
+    EvidenceCodeVocabulary: "Evidence classification"
+    RelationshipTypeVocabulary: "Relationship types"
+    Provenance: "Data source information"
+    
+  cross_reference_statistics:
+    total_xrefs: "1,200,000+"
+    top_databases:
+      Reactome: 511288
+      Pubmed: 268163
+      UniProt: 87408
+      ChEBI: 28135
+      "GENE ONTOLOGY": 26363
+      ENSEMBL: "15,000+"
+      ComplexPortal: "3,000+"
+      KEGG: "2,500+"
+    
+  organism_coverage:
+    - "Homo sapiens (Human)"
+    - "Mus musculus (Mouse)"
+    - "Rattus norvegicus (Rat)"
+    - "Bos taurus (Cattle)"
+    - "Canis familiaris (Dog)"
+    - "Sus scrofa (Pig)"
+    - "Gallus gallus (Chicken)"
+    - "Caenorhabditis elegans"
+    - "Drosophila melanogaster"
+    - "Saccharomyces cerevisiae"
+    - "Escherichia coli"
+    - "Mycobacterium tuberculosis"
+    - "Plasmodium falciparum"
+    - "Arabidopsis thaliana"
+    
+  biological_coverage:
+    - "Signal transduction pathways"
+    - "Metabolic pathways"
+    - "Gene expression regulation"
+    - "Cell cycle control"
+    - "DNA repair mechanisms"
+    - "Immune system processes"
+    - "Neuronal signaling"
+    - "Developmental biology"
+    - "Disease pathways"
+    - "Drug metabolism (ADME)"
+    
+  last_updated: '2025-08-26T12:00:00Z'

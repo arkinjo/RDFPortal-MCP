@@ -1,0 +1,297 @@
+schema_info:
+  title: NCBI Taxonomy RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the NCBI Taxonomy RDF schema available through RDF Portal
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: http://identifiers.org/taxonomy/
+  ontology_namespace: http://ddbj.nig.ac.jp/ontologies/taxonomy/
+  
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  taxo: http://ddbj.nig.ac.jp/ontologies/taxonomy/
+  dcterms: http://purl.org/dc/terms/
+  foaf: http://xmlns.com/foaf/0.1/
+  obo: http://purl.obolibrary.org/obo/
+  
+shape_expressions:
+  Taxon:
+    description: A taxonomic entity representing an organism or group of organisms in the biological classification hierarchy
+    iri_pattern: http://identifiers.org/taxonomy/{taxonomic_id}
+    properties:
+      type:
+        predicate: rdf:type
+        object: taxo:Taxon
+        required: true
+        description: Defines the entity as a taxonomic unit
+      label:
+        predicate: rdfs:label
+        type: xsd:string
+        required: true
+        description: The common name or label for the taxon
+      scientificName:
+        predicate: taxo:scientificName
+        type: xsd:string
+        required: false
+        description: The formal scientific name of the taxon
+      identifier:
+        predicate: dcterms:identifier
+        type: xsd:string
+        required: true
+        description: The unique NCBI Taxonomy ID number
+      rank:
+        predicate: taxo:rank
+        object_type: taxo:Rank
+        required: false
+        description: The taxonomic rank (Species, Genus, Family, etc.)
+      parentTaxon:
+        predicate: rdfs:subClassOf
+        object_type: taxo:Taxon
+        required: false
+        description: The parent taxon in the taxonomic hierarchy
+      geneticCode:
+        predicate: taxo:geneticCode
+        object_type: taxo:GeneticCode
+        required: false
+        description: The genetic code used by the organism
+      geneticCodeMt:
+        predicate: taxo:geneticCodeMt
+        object_type: taxo:GeneticCode
+        required: false
+        description: The mitochondrial genetic code
+      geneticCodePt:
+        predicate: taxo:geneticCodePt
+        object_type: taxo:GeneticCode
+        required: false
+        description: The plastid genetic code
+      sameAs:
+        predicate: owl:sameAs
+        object_type: IRI
+        required: false
+        description: Links to equivalent entities in other databases
+      seeAlso:
+        predicate: rdfs:seeAlso
+        object_type: IRI
+        required: false
+        description: Links to related resources
+        
+  Rank:
+    description: A taxonomic rank classification (Kingdom, Phylum, Class, Order, Family, Genus, Species, etc.)
+    iri_pattern: http://ddbj.nig.ac.jp/ontologies/taxonomy/{rank_name}
+    properties:
+      type:
+        predicate: rdf:type
+        object: taxo:Rank
+        required: true
+        description: Defines the entity as a taxonomic rank
+        
+  GeneticCode:
+    description: A genetic code classification used by organisms
+    iri_pattern: http://ddbj.nig.ac.jp/ontologies/taxonomy/GeneticCode{code_number}
+    properties:
+      type:
+        predicate: rdf:type
+        object: taxo:GeneticCode
+        required: true
+        description: Defines the entity as a genetic code
+
+sample_rdf_entries:
+  homo_sapiens:
+    description: Human species entry with complete taxonomic information
+    RDF: |
+      <http://identifiers.org/taxonomy/9606> a taxo:Taxon ;
+        rdfs:label "Homo sapiens" ;
+        taxo:scientificName "Homo sapiens" ;
+        dcterms:identifier "9606" ;
+        taxo:rank taxo:Species ;
+        rdfs:subClassOf <http://identifiers.org/taxonomy/9605> ;
+        owl:sameAs <http://purl.obolibrary.org/obo/NCBITaxon_9606> ;
+        rdfs:seeAlso <http://purl.uniprot.org/taxonomy/9606> .
+        
+  arabidopsis_genus:
+    description: Arabidopsis genus with rank information
+    RDF: |
+      <http://identifiers.org/taxonomy/3701> a taxo:Taxon ;
+        rdfs:label "Arabidopsis" ;
+        taxo:scientificName "Arabidopsis" ;
+        dcterms:identifier "3701" ;
+        taxo:rank taxo:Genus .
+        
+  fusarium_species:
+    description: Fungal species with genetic code information
+    RDF: |
+      <http://identifiers.org/taxonomy/101028> a taxo:Taxon ;
+        rdfs:label "Fusarium pseudograminearum" ;
+        taxo:scientificName "Fusarium pseudograminearum" ;
+        dcterms:identifier "101028" ;
+        taxo:rank taxo:Species ;
+        taxo:geneticCode taxo:GeneticCode1 ;
+        taxo:geneticCodeMt taxo:GeneticCode4 .
+        
+  subspecies_example:
+    description: Subspecies level taxon showing hierarchical relationship
+    RDF: |
+      <http://identifiers.org/taxonomy/1674924> a taxo:Taxon ;
+        rdfs:label "Pseudomonas syringae pv. actinidifoliorum" ;
+        rdfs:subClassOf <http://identifiers.org/taxonomy/317> .
+        
+  variety_example:
+    description: Variety level taxon showing detailed classification
+    RDF: |
+      <http://identifiers.org/taxonomy/1545464> a taxo:Taxon ;
+        rdfs:label "Aspergillus oryzae var. tenuis" ;
+        rdfs:subClassOf <http://identifiers.org/taxonomy/5062> ;
+        taxo:rank taxo:Varietas .
+
+sparql_query_examples:
+  count_total_taxa:
+    description: Count the total number of taxonomic entities in the database
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT (COUNT(?taxon) AS ?totalTaxa) WHERE {
+        ?taxon a taxo:Taxon .
+      }
+      
+  get_model_organisms:
+    description: Retrieve information about common model organisms
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      SELECT ?taxon ?label ?scientificName ?identifier WHERE {
+        ?taxon a taxo:Taxon ;
+               rdfs:label ?label ;
+               dcterms:identifier ?identifier .
+        OPTIONAL { ?taxon taxo:scientificName ?scientificName }
+        VALUES ?taxon { 
+          <http://identifiers.org/taxonomy/9606>   # Homo sapiens
+          <http://identifiers.org/taxonomy/10090>  # Mus musculus  
+          <http://identifiers.org/taxonomy/7227>   # Drosophila melanogaster
+          <http://identifiers.org/taxonomy/6239>   # Caenorhabditis elegans
+          <http://identifiers.org/taxonomy/3702>   # Arabidopsis thaliana
+        }
+      }
+      
+  find_taxonomic_hierarchy:
+    description: Find parent-child relationships in taxonomic classification
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT ?child ?childLabel ?parent ?parentLabel ?childRank ?parentRank WHERE {
+        ?child rdfs:subClassOf ?parent ;
+               a taxo:Taxon ;
+               rdfs:label ?childLabel .
+        ?parent a taxo:Taxon ;
+                rdfs:label ?parentLabel .
+        OPTIONAL { ?child taxo:rank ?childRank }
+        OPTIONAL { ?parent taxo:rank ?parentRank }
+      } 
+      LIMIT 10
+      
+  get_taxa_by_rank:
+    description: Retrieve taxa filtered by specific taxonomic rank
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT ?taxon ?label ?scientificName WHERE {
+        ?taxon a taxo:Taxon ;
+               rdfs:label ?label ;
+               taxo:rank taxo:Genus .
+        OPTIONAL { ?taxon taxo:scientificName ?scientificName }
+      }
+      LIMIT 20
+      
+  find_genetic_codes:
+    description: Find organisms with specific genetic code information
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT ?taxon ?label ?geneticCode ?mitochondrialCode ?plastidCode WHERE {
+        ?taxon a taxo:Taxon ;
+               rdfs:label ?label .
+        OPTIONAL { ?taxon taxo:geneticCode ?geneticCode }
+        OPTIONAL { ?taxon taxo:geneticCodeMt ?mitochondrialCode }
+        OPTIONAL { ?taxon taxo:geneticCodePt ?plastidCode }
+        FILTER(BOUND(?geneticCode) || BOUND(?mitochondrialCode) || BOUND(?plastidCode))
+      }
+      LIMIT 15
+      
+  get_cross_references:
+    description: Find cross-references to other biological databases
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT ?taxon ?label ?sameAs ?seeAlso WHERE {
+        ?taxon a taxo:Taxon ;
+               rdfs:label ?label .
+        OPTIONAL { ?taxon owl:sameAs ?sameAs }
+        OPTIONAL { ?taxon rdfs:seeAlso ?seeAlso }
+        FILTER(BOUND(?sameAs) || BOUND(?seeAlso))
+      }
+      LIMIT 10
+      
+  search_taxa_by_name:
+    description: Search for taxa containing specific terms in their names
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT ?taxon ?label ?rank ?identifier WHERE {
+        ?taxon a taxo:Taxon ;
+               rdfs:label ?label ;
+               dcterms:identifier ?identifier .
+        OPTIONAL { ?taxon taxo:rank ?rank }
+        FILTER(CONTAINS(LCASE(?label), "pseudomonas"))
+      }
+      LIMIT 10
+      
+  get_available_ranks:
+    description: List all available taxonomic ranks in the database
+    sparql: |
+      PREFIX taxo: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      SELECT DISTINCT ?rank WHERE {
+        ?taxon taxo:rank ?rank .
+      }
+      ORDER BY ?rank
+
+architectural_notes:
+  design_patterns:
+    - Uses standard RDF/RDFS vocabulary for basic properties and relationships
+    - Implements custom taxonomy-specific ontology at http://ddbj.nig.ac.jp/ontologies/taxonomy/
+    - Utilizes owl:sameAs for cross-database linking and data integration
+    - Employs rdfs:subClassOf to represent taxonomic hierarchy (parent-child relationships)
+    - Uses Dublin Core terms for metadata like identifiers
+    - Genetic code information is represented as separate entities linked via object properties
+    
+  data_integration:
+    - Links to NCBI Taxonomy, OBO Library, UniProt, and other major biological databases
+    - Consistent URI patterns for taxonomic entities using identifiers.org namespace
+    - Cross-references enable federated queries across multiple biological data sources
+    
+  query_patterns:
+    - Hierarchical traversal using rdfs:subClassOf relationships
+    - Filtering by taxonomic rank for focused biological queries
+    - Optional patterns accommodate varying completeness of taxonomic data
+    - Genetic code queries enable phylogenetic and evolutionary studies
+    
+  performance_considerations:
+    - Large dataset (3+ million taxa) requires efficient indexing
+    - Hierarchical queries may benefit from materialized views
+    - Cross-reference queries can leverage external database endpoints
+    - Consider limiting result sets for interactive applications
+
+data_statistics:
+  total_taxa: 3046425
+  available_ranks:
+    - Species
+    - Genus
+    - Family
+    - Order
+    - Class
+    - Phylum
+    - Kingdom
+    - Subspecies
+    - Varietas
+    - FormaSpecialis
+    - NoRank
+    - Subclass
+    - Subphylum
+    - Subfamily
+  genetic_codes_available: true
+  cross_references_included: true
+  hierarchical_relationships: true
+  last_analyzed: '2025-08-20T12:00:00Z'

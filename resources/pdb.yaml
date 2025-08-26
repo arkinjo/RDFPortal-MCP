@@ -1,0 +1,629 @@
+schema_info:
+  title: PDB RDF Schema Analysis  
+  description: Comprehensive analysis of the Protein Data Bank (PDB) RDF schema using PDBx ontology v5.0
+  endpoint: https://rdfportal.org/backend/pdb/sparql
+  base_uri: http://rdf.wwpdb.org/
+  version: PDBx-v50
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  pdbx: http://rdf.wwpdb.org/schema/pdbx-v50.owl#
+  pdb: http://rdf.wwpdb.org/pdb/
+
+shape_expressions:
+  datablock:
+    description: Main PDB entry representing a complete structural dataset
+    properties:
+      type:
+        type: pdbx:datablock
+        required: true
+        description: Root class for PDB entries
+      has_entryCategory:
+        type: pdbx:entryCategory
+        required: true
+        description: Contains basic entry information like PDB ID
+      has_structCategory:
+        type: pdbx:structCategory
+        required: false
+        description: Contains structural information including title
+      has_entityCategory:
+        type: pdbx:entityCategory
+        required: false
+        description: Contains molecular entities (proteins, DNA, RNA, ligands)
+      has_audit_authorCategory:
+        type: pdbx:audit_authorCategory
+        required: false
+        description: Contains author information
+      has_cellCategory:
+        type: pdbx:cellCategory
+        required: false
+        description: Contains crystallographic unit cell parameters
+      has_exptlCategory:
+        type: pdbx:exptlCategory
+        required: false
+        description: Contains experimental method information
+      has_refineCategory:
+        type: pdbx:refineCategory
+        required: false
+        description: Contains structure refinement statistics
+
+  entry:
+    description: Basic entry information for a PDB structure
+    properties:
+      entry.id:
+        type: xsd:string
+        required: true
+        description: The unique PDB identifier (4-character code)
+        pattern: "^[0-9][A-Z0-9]{3}$"
+      struct.title:
+        type: xsd:string
+        required: false
+        description: Descriptive title of the structure
+      struct.pdbx_descriptor:
+        type: xsd:string
+        required: false
+        description: Short functional description
+
+  entity:
+    description: Molecular entity within a PDB structure (protein, nucleic acid, ligand, water)
+    properties:
+      entity.id:
+        type: xsd:string
+        required: true
+        description: Unique identifier for the entity within the structure
+      entity.type:
+        type: xsd:string
+        required: true
+        description: Type of entity (polymer, non-polymer, water)
+        enum: ["polymer", "non-polymer", "water", "macrolide"]
+      entity.pdbx_description:
+        type: xsd:string
+        required: false
+        description: Human-readable description of the entity
+      entity.formula_weight:
+        type: xsd:decimal
+        required: false
+        description: Molecular weight in Daltons
+      entity.src_method:
+        type: xsd:string
+        required: false
+        description: Source method (man=genetically manipulated, nat=natural, syn=synthetic)
+        enum: ["man", "nat", "syn"]
+
+  entity_poly:
+    description: Polymeric entity (protein or nucleic acid chains)
+    properties:
+      entity_poly.entity_id:
+        type: xsd:string
+        required: true
+        description: Reference to parent entity
+      entity_poly.type:
+        type: xsd:string
+        required: true
+        description: Polymer type
+        enum: ["polypeptide(L)", "polypeptide(D)", "polyribonucleotide", "polydeoxyribonucleotide", "polydeoxyribonucleotide/polyribonucleotide hybrid"]
+      entity_poly.pdbx_seq_one_letter_code:
+        type: xsd:string
+        required: false
+        description: One-letter amino acid or nucleotide sequence
+      entity_poly.pdbx_strand_id:
+        type: xsd:string
+        required: false
+        description: Chain identifiers for this entity (comma-separated)
+
+  cell:
+    description: Crystallographic unit cell parameters
+    properties:
+      cell.length_a:
+        type: xsd:decimal
+        required: false
+        description: Unit cell dimension a in Angstroms
+        min_value: 0.0
+      cell.length_b:
+        type: xsd:decimal
+        required: false
+        description: Unit cell dimension b in Angstroms  
+        min_value: 0.0
+      cell.length_c:
+        type: xsd:decimal
+        required: false
+        description: Unit cell dimension c in Angstroms
+        min_value: 0.0
+      cell.angle_alpha:
+        type: xsd:decimal
+        required: false
+        description: Unit cell angle alpha in degrees
+        min_value: 0.0
+        max_value: 180.0
+      cell.angle_beta:
+        type: xsd:decimal
+        required: false
+        description: Unit cell angle beta in degrees
+        min_value: 0.0
+        max_value: 180.0
+      cell.angle_gamma:
+        type: xsd:decimal
+        required: false
+        description: Unit cell angle gamma in degrees
+        min_value: 0.0
+        max_value: 180.0
+
+  audit_author:
+    description: Author information for the PDB entry
+    properties:
+      audit_author.name:
+        type: xsd:string
+        required: true
+        description: Full name of the author (Last, First Initial format)
+      audit_author.pdbx_ordinal:
+        type: xsd:integer
+        required: true
+        description: Order of authorship (1 = first author)
+        min_value: 1
+
+  exptl:
+    description: Experimental method used to determine the structure
+    properties:
+      exptl.method:
+        type: xsd:string
+        required: true
+        description: Experimental method
+        enum: ["X-RAY DIFFRACTION", "SOLUTION NMR", "SOLID-STATE NMR", "ELECTRON MICROSCOPY", "ELECTRON CRYSTALLOGRAPHY", "FIBER DIFFRACTION", "NEUTRON DIFFRACTION", "SOLUTION SCATTERING"]
+      exptl.entry_id:
+        type: xsd:string
+        required: true
+        description: Reference to the parent entry
+
+  refine:
+    description: Structure refinement information
+    properties:
+      refine.ls_d_res_high:
+        type: xsd:decimal
+        required: false
+        description: High resolution limit in Angstroms
+        min_value: 0.0
+        note: "Type conversion with xsd:decimal() is required for numeric comparisons in SPARQL queries"
+      refine.ls_d_res_low:
+        type: xsd:decimal
+        required: false
+        description: Low resolution limit in Angstroms
+        min_value: 0.0
+      refine.ls_R_factor_obs:
+        type: xsd:decimal
+        required: false
+        description: R-factor for observed reflections
+        min_value: 0.0
+        max_value: 1.0
+      refine.ls_R_factor_R_free:
+        type: xsd:decimal
+        required: false
+        description: Free R-factor from cross-validation
+        min_value: 0.0
+        max_value: 1.0
+      refine.pdbx_method_to_determine_struct:
+        type: xsd:string
+        required: false
+        description: Method used to determine structure
+        enum: ["MOLECULAR REPLACEMENT", "SAD", "MAD", "SIRAS", "MIR", "SIR", "AB INITIO PHASING", "ISOMORPHOUS REPLACEMENT"]
+
+  symmetry:
+    description: Crystal symmetry information
+    properties:
+      symmetry.space_group_name_H-M:
+        type: xsd:string
+        required: false
+        description: Hermann-Mauguin space group symbol
+      symmetry.Int_Tables_number:
+        type: xsd:integer
+        required: false
+        description: International Tables space group number
+        min_value: 1
+        max_value: 230
+
+sample_rdf_entries:
+  example1:
+    description: X-ray diffraction structure of DNA/RNA hybrid with spermine
+    RDF: |
+      pdb:100D a pdbx:datablock ;
+        pdbx:has_entryCategory [ pdbx:has_entry [ pdbx:entry.id "100D" ] ] ;
+        pdbx:has_structCategory [ pdbx:has_struct [ 
+          pdbx:struct.title "CRYSTAL STRUCTURE OF THE HIGHLY DISTORTED CHIMERIC DECAMER R(C)D(CGGCGCCG)R(G)-SPERMINE COMPLEX-SPERMINE BINDING TO PHOSPHATE ONLY AND MINOR GROOVE TERTIARY BASE-PAIRING" 
+        ] ] ;
+        pdbx:has_exptlCategory [ pdbx:has_exptl [ pdbx:exptl.method "X-RAY DIFFRACTION" ] ] ;
+        pdbx:has_refineCategory [ pdbx:has_refine [ 
+          pdbx:refine.ls_d_res_high "1.900" ;
+          pdbx:refine.ls_R_factor_obs "0.1450000" 
+        ] ] .
+
+  example2:
+    description: RNA hammerhead ribozyme with manganese
+    RDF: |
+      pdb:300D a pdbx:datablock ;
+        pdbx:has_entryCategory [ pdbx:has_entry [ pdbx:entry.id "300D" ] ] ;
+        pdbx:has_structCategory [ pdbx:has_struct [ 
+          pdbx:struct.title "CAPTURING THE STRUCTURE OF A CATALYTIC RNA INTERMEDIATE: RNA HAMMERHEAD RIBOZYME, MN(II)-SOAKED" 
+        ] ] ;
+        pdbx:has_exptlCategory [ pdbx:has_exptl [ pdbx:exptl.method "X-RAY DIFFRACTION" ] ] ;
+        pdbx:has_entityCategory [ pdbx:has_entity [ 
+          pdbx:entity.id "1" ;
+          pdbx:entity.type "polymer" ;
+          pdbx:entity.pdbx_description "RNA HAMMERHEAD RIBOZYME" ;
+          pdbx:entity.formula_weight "5170.103" 
+        ] ] .
+
+  example3:
+    description: High-resolution Z-DNA structure  
+    RDF: |
+      pdb:400D a pdbx:datablock ;
+        pdbx:has_entryCategory [ pdbx:has_entry [ pdbx:entry.id "400D" ] ] ;
+        pdbx:has_structCategory [ pdbx:has_struct [ 
+          pdbx:struct.title "THE INTRINSIC STRUCTURE AND STABILITY OF OUT-OF-ALTERNATION BASE PAIRS IN Z-DNA" 
+        ] ] ;
+        pdbx:has_entity_polyCategory [ pdbx:has_entity_poly [ 
+          pdbx:entity_poly.type "polydeoxyribonucleotide" ;
+          pdbx:entity_poly.pdbx_seq_one_letter_code "(5CM)(DG)(DG)(DC)(5CM)(DG)" ;
+          pdbx:entity_poly.pdbx_strand_id "A,B" 
+        ] ] ;
+        pdbx:has_refineCategory [ pdbx:has_refine [ 
+          pdbx:refine.ls_d_res_high "1.650" ;
+          pdbx:refine.ls_R_factor_obs "0.196" 
+        ] ] .
+
+  example4:
+    description: Solution NMR structure of G-quadruplex DNA
+    RDF: |
+      pdb:201D a pdbx:datablock ;
+        pdbx:has_entryCategory [ pdbx:has_entry [ pdbx:entry.id "201D" ] ] ;
+        pdbx:has_structCategory [ pdbx:has_struct [ 
+          pdbx:struct.title "SOLUTION STRUCTURE OF THE OXYTRICHA TELOMERIC REPEAT D[G4(T4G4)3] G-TETRAPLEX" 
+        ] ] ;
+        pdbx:has_exptlCategory [ pdbx:has_exptl [ pdbx:exptl.method "SOLUTION NMR" ] ] ;
+        pdbx:has_entity_polyCategory [ pdbx:has_entity_poly [ 
+          pdbx:entity_poly.type "polydeoxyribonucleotide" ;
+          pdbx:entity_poly.pdbx_seq_one_letter_code "(DG)(DG)(DG)(DG)(DT)(DT)(DT)(DT)(DG)(DG)(DG)(DG)(DT)(DT)(DT)(DT)(DG)(DG)(DG)(DG)(DT)(DT)(DT)(DT)(DG)(DG)(DG)(DG)" 
+        ] ] .
+
+  example5:
+    description: Protein structure with multiple authors
+    RDF: |
+      pdb:101M a pdbx:datablock ;
+        pdbx:has_entryCategory [ pdbx:has_entry [ pdbx:entry.id "101M" ] ] ;
+        pdbx:has_audit_authorCategory [ 
+          pdbx:has_audit_author [ 
+            pdbx:audit_author.name "Smith, R.D." ;
+            pdbx:audit_author.pdbx_ordinal "1" 
+          ] ,
+          [ 
+            pdbx:audit_author.name "Olson, J.S." ;
+            pdbx:audit_author.pdbx_ordinal "2" 
+          ] ,
+          [ 
+            pdbx:audit_author.name "Phillips Jr., G.N." ;
+            pdbx:audit_author.pdbx_ordinal "3" 
+          ] 
+        ] .
+
+sparql_query_examples:
+  get_structure_titles:
+    description: Retrieve PDB entries with their titles and experimental methods
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?title ?method
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        OPTIONAL { 
+          ?entry pdbx:has_structCategory/pdbx:has_struct ?structInfo .
+          ?structInfo pdbx:struct.title ?title .
+        }
+        
+        OPTIONAL {
+          ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptlInfo .
+          ?exptlInfo pdbx:exptl.method ?method .
+        }
+      }
+      LIMIT 10
+
+  get_molecular_entities:
+    description: Retrieve molecular entities with their types and descriptions
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?entityId ?entityType ?description ?molecularWeight
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entityCategory/pdbx:has_entity ?entity .
+        ?entity pdbx:entity.id ?entityId ;
+                pdbx:entity.type ?entityType .
+        
+        OPTIONAL { ?entity pdbx:entity.pdbx_description ?description }
+        OPTIONAL { ?entity pdbx:entity.formula_weight ?molecularWeight }
+      }
+      LIMIT 10
+
+  get_polymer_sequences:
+    description: Retrieve polymer sequences and types from structures
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?polymerType ?sequence ?strand
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entity_polyCategory/pdbx:has_entity_poly ?polyEntity .
+        
+        ?polyEntity pdbx:entity_poly.type ?polymerType ;
+                    pdbx:entity_poly.pdbx_seq_one_letter_code ?sequence .
+                    
+        OPTIONAL { ?polyEntity pdbx:entity_poly.pdbx_strand_id ?strand }
+      }
+      LIMIT 10
+
+  get_crystallographic_data:
+    description: Retrieve crystallographic unit cell parameters and space groups
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?cellA ?cellB ?cellC ?alpha ?beta ?gamma ?spaceGroup
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        OPTIONAL {
+          ?entry pdbx:has_cellCategory/pdbx:has_cell ?cell .
+          ?cell pdbx:cell.length_a ?cellA ;
+                pdbx:cell.length_b ?cellB ;
+                pdbx:cell.length_c ?cellC ;
+                pdbx:cell.angle_alpha ?alpha ;
+                pdbx:cell.angle_beta ?beta ;
+                pdbx:cell.angle_gamma ?gamma .
+        }
+        
+        OPTIONAL {
+          ?entry pdbx:has_symmetryCategory/pdbx:has_symmetry ?symmetry .
+          ?symmetry pdbx:symmetry.space_group_name_H-M ?spaceGroup .
+        }
+      }
+      LIMIT 10
+
+  get_refinement_statistics:
+    description: Retrieve structure refinement data including resolution and R-factors
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?refineMethod ?resolution ?rFactor ?rFree
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        OPTIONAL {
+          ?entry pdbx:has_refineCategory/pdbx:has_refine ?refine .
+          ?refine pdbx:refine.pdbx_method_to_determine_struct ?refineMethod ;
+                  pdbx:refine.ls_d_res_high ?resolution ;
+                  pdbx:refine.ls_R_factor_obs ?rFactor .
+                  
+          OPTIONAL { ?refine pdbx:refine.ls_R_factor_R_free ?rFree }
+        }
+      }
+      LIMIT 10
+
+  get_author_information:
+    description: Retrieve author information for PDB structures
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?authorName ?authorOrder
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        OPTIONAL {
+          ?entry pdbx:has_audit_authorCategory/pdbx:has_audit_author ?author .
+          ?author pdbx:audit_author.name ?authorName ;
+                  pdbx:audit_author.pdbx_ordinal ?authorOrder .
+        }
+      }
+      ORDER BY ?entry ?authorOrder
+      LIMIT 20
+
+  find_dna_rna_structures:
+    description: Find structures containing DNA or RNA polymers
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?title ?polymerType ?sequence
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        ?entry pdbx:has_entity_polyCategory/pdbx:has_entity_poly ?polyEntity .
+        ?polyEntity pdbx:entity_poly.type ?polymerType ;
+                    pdbx:entity_poly.pdbx_seq_one_letter_code ?sequence .
+        
+        OPTIONAL { 
+          ?entry pdbx:has_structCategory/pdbx:has_struct ?structInfo .
+          ?structInfo pdbx:struct.title ?title .
+        }
+        
+        FILTER(REGEX(?polymerType, "nucleotide|DNA|RNA", "i"))
+      }
+      LIMIT 10
+
+  get_high_resolution_structures:
+    description: Find high-resolution X-ray crystal structures (better than 2.0 Å)
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      
+      SELECT ?entry ?pdbId ?title ?resolution ?rFactor ?method
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptlInfo .
+        ?exptlInfo pdbx:exptl.method ?method .
+        
+        ?entry pdbx:has_refineCategory/pdbx:has_refine ?refine .
+        ?refine pdbx:refine.ls_d_res_high ?resolution ;
+                pdbx:refine.ls_R_factor_obs ?rFactor .
+        
+        OPTIONAL { 
+          ?entry pdbx:has_structCategory/pdbx:has_struct ?structInfo .
+          ?structInfo pdbx:struct.title ?title .
+        }
+        
+        FILTER(xsd:decimal(?resolution) < 2.0 && REGEX(?method, "X-RAY", "i"))
+      }
+      ORDER BY xsd:decimal(?resolution)
+      LIMIT 10
+
+  find_nmr_structures:
+    description: Find structures determined by NMR spectroscopy
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?entry ?pdbId ?title ?method ?authorName
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptlInfo .
+        ?exptlInfo pdbx:exptl.method ?method .
+        
+        OPTIONAL { 
+          ?entry pdbx:has_structCategory/pdbx:has_struct ?structInfo .
+          ?structInfo pdbx:struct.title ?title .
+        }
+        
+        OPTIONAL {
+          ?entry pdbx:has_audit_authorCategory/pdbx:has_audit_author ?author .
+          ?author pdbx:audit_author.name ?authorName ;
+                  pdbx:audit_author.pdbx_ordinal "1" .
+        }
+        
+        FILTER(REGEX(?method, "NMR", "i"))
+      }
+      LIMIT 10
+
+  get_ligand_binding_sites:
+    description: Find non-polymer entities (ligands) and their associated structures
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      
+      SELECT ?entry ?pdbId ?ligandDescription ?molecularWeight ?title
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_entryCategory/pdbx:has_entry ?entryInfo .
+        ?entryInfo pdbx:entry.id ?pdbId .
+        
+        ?entry pdbx:has_entityCategory/pdbx:has_entity ?entity .
+        ?entity pdbx:entity.type "non-polymer" ;
+                pdbx:entity.pdbx_description ?ligandDescription .
+                
+        OPTIONAL { ?entity pdbx:entity.formula_weight ?molecularWeight }
+        
+        OPTIONAL { 
+          ?entry pdbx:has_structCategory/pdbx:has_struct ?structInfo .
+          ?structInfo pdbx:struct.title ?title .
+        }
+        
+        FILTER(xsd:decimal(?molecularWeight) > 100)
+      }
+      LIMIT 10
+
+  compare_experimental_methods:
+    description: Compare the distribution of experimental methods across structures
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?method (COUNT(?entry) as ?count)
+      WHERE {
+        ?entry a pdbx:datablock .
+        ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptlInfo .
+        ?exptlInfo pdbx:exptl.method ?method .
+      }
+      GROUP BY ?method
+      ORDER BY DESC(?count)
+
+architectural_notes:
+  design_patterns:
+    - Hierarchical structure with datablock as root containing multiple category containers
+    - Category-based organization following mmCIF data dictionary structure  
+    - Separation of structural data (coordinates) from metadata (experimental conditions, authors, etc.)
+    - Use of entity model to represent distinct molecular components
+    - Integration with external ontologies through proper namespace declarations
+    - Property chains enable direct navigation from datablock to specific data elements
+  
+  performance_considerations:
+    - Large result sets should use LIMIT clauses to prevent timeouts
+    - Optional patterns help handle incomplete data gracefully
+    - Filtering on method types or resolution ranges improves query specificity
+    - Index on entry IDs enables efficient lookups by PDB code
+    - Use of property paths reduces query complexity for nested navigation
+    - Numeric comparisons require explicit type conversion (e.g., xsd:decimal(?resolution) < 2.0) for proper filtering
+  
+  data_model_insights:
+    - Each PDB entry is modeled as a datablock containing multiple categories
+    - Categories represent different aspects: structure, entities, experiments, refinement
+    - Entity model distinguishes polymers, non-polymers, and water molecules
+    - Crystallographic data includes both unit cell parameters and symmetry information
+    - Author information maintains ordering through ordinal numbers
+    - Polymeric entities contain both sequence and structural information
+    - Experimental metadata is separated by category for modularity
+
+data_statistics:
+  total_classes: 85
+  total_properties: 2847
+  key_categories:
+    - datablock: Root level PDB entries
+    - entity: Molecular entities (proteins, DNA, RNA, ligands)
+    - entity_poly: Polymeric entities with sequence information
+    - cell: Crystallographic unit cell parameters
+    - refine: Structure refinement statistics
+    - audit_author: Author and citation information
+    - exptl: Experimental method information
+    - symmetry: Crystal symmetry and space group data
+  experimental_methods:
+    - X-RAY DIFFRACTION: Most common method for crystal structures (~85%)
+    - SOLUTION NMR: For solution structures and dynamics (~10%)
+    - ELECTRON MICROSCOPY: Growing method for large complexes (~4%)
+    - NEUTRON DIFFRACTION: For hydrogen atom positions (<1%)
+  data_coverage:
+    - Covers all major structural biology techniques
+    - Includes metadata from structure determination to publication
+    - Links to external databases and resources
+    - Supports both macromolecular and small molecule structures
+    - Contains sequence information for biological polymers
+    - Includes crystallographic and refinement statistics
+  resolution_distribution:
+    - High resolution (< 1.5 Å): Ultra-high quality structures
+    - Medium resolution (1.5-2.5 Å): Typical protein structures
+    - Low resolution (> 2.5 Å): Large complexes and membrane proteins
+  entity_types:
+    - polymer: Proteins, DNA, RNA chains
+    - non-polymer: Ligands, cofactors, small molecules
+    - water: Solvent molecules
+  last_updated: '2024-01-15T10:30:00Z'

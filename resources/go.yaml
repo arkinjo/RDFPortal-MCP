@@ -1,0 +1,254 @@
+schema_info:
+  title: Gene Ontology (GO) RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the Gene Ontology RDF schema, including shape expressions and biologically relevant SPARQL queries
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: http://purl.obolibrary.org/obo/
+  version: 2025-08-20
+  
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  go: http://purl.obolibrary.org/obo/
+  bfo: http://purl.obolibrary.org/obo/BFO_
+  iao: http://purl.obolibrary.org/obo/IAO_
+
+shape_expressions:
+  GO_Term:
+    description: A Gene Ontology term representing a biological concept
+    properties:
+      type:
+        type: owl:Class
+        required: true
+        description: All GO terms are OWL classes
+      label:
+        type: rdfs:Literal
+        required: true
+        description: The primary human-readable name for the GO term
+      definition:
+        type: iao:0000115
+        required: false
+        description: Textual definition of the GO term (IAO_0000115)
+      synonym:
+        type: iao:0000118
+        required: false
+        description: Alternative names or synonyms (IAO_0000118)
+      subClassOf:
+        type: rdfs:subClassOf
+        required: false
+        description: Hierarchical parent relationships
+      id_pattern:
+        regex: "^http://purl\\.obolibrary\\.org/obo/GO_\\d{7}$"
+        description: GO terms follow the pattern GO_NNNNNNN
+
+  Biological_Process:
+    description: GO terms representing biological processes (GO:0008150 hierarchy)
+    inherits: GO_Term
+    properties:
+      root_class:
+        type: rdfs:subClassOf*
+        value: go:GO_0008150
+        description: All biological processes are subclasses of GO:0008150
+
+  Molecular_Function:
+    description: GO terms representing molecular functions (GO:0003674 hierarchy)
+    inherits: GO_Term
+    properties:
+      root_class:
+        type: rdfs:subClassOf*
+        value: go:GO_0003674
+        description: All molecular functions are subclasses of GO:0003674
+
+  Cellular_Component:
+    description: GO terms representing cellular components (GO:0005575 hierarchy)
+    inherits: GO_Term
+    properties:
+      root_class:
+        type: rdfs:subClassOf*
+        value: go:GO_0005575
+        description: All cellular components are subclasses of GO:0005575
+
+  GO_Annotation:
+    description: Gene product annotations to GO terms
+    properties:
+      evidence:
+        type: go:evidence
+        required: false
+        description: Evidence code supporting the annotation
+      reference:
+        type: go:reference
+        required: false
+        description: Literature or database reference
+      assigned_by:
+        type: go:assigned_by
+        required: false
+        description: Database or organization that made the annotation
+
+sample_rdf_entries:
+  biological_process_example:
+    description: "Cell division biological process"
+    RDF: |
+      go:GO_0051301 a owl:Class ;
+        rdfs:label "cell division" ;
+        iao:0000115 "The process resulting in division of a cell..." ;
+        rdfs:subClassOf go:GO_0008150 .
+
+  molecular_function_example:
+    description: "ATP binding molecular function"
+    RDF: |
+      go:GO_0005524 a owl:Class ;
+        rdfs:label "ATP binding" ;
+        iao:0000115 "Binding to ATP, adenosine 5'-triphosphate..." ;
+        rdfs:subClassOf go:GO_0003674 .
+
+  cellular_component_example:
+    description: "Nucleus cellular component"
+    RDF: |
+      go:GO_0005634 a owl:Class ;
+        rdfs:label "nucleus" ;
+        iao:0000115 "A membrane-bounded organelle of eukaryotic cells..." ;
+        rdfs:subClassOf go:GO_0005575 .
+
+  kinetochore_example:
+    description: "Kinetochore protein complex"
+    RDF: |
+      go:GO_0000776 a owl:Class ;
+        rdfs:label "kinetochore" ;
+        iao:0000115 "A multisubunit complex that is located at the centromeric region..." ;
+        rdfs:subClassOf go:GO_0005575 .
+
+  enzyme_activity_example:
+    description: "Protein kinase activity"
+    RDF: |
+      go:GO_0004672 a owl:Class ;
+        rdfs:label "protein kinase activity" ;
+        iao:0000115 "Catalysis of the phosphorylation of an amino acid residue..." ;
+        rdfs:subClassOf go:GO_0003674 .
+
+sparql_query_examples:
+  get_root_go_terms:
+    description: Retrieve the three main GO root terms (biological process, molecular function, cellular component)
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX go: <http://purl.obolibrary.org/obo/>
+      
+      SELECT DISTINCT ?term ?label 
+      WHERE {
+        ?term rdfs:label ?label .
+        FILTER(?term IN (go:GO_0008150, go:GO_0003674, go:GO_0005575))
+      }
+
+  get_go_terms_with_definitions:
+    description: Get GO terms with their labels and definitions (using correct IAO property URI)
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      
+      SELECT ?term ?label ?definition
+      WHERE {
+        ?term a owl:Class ;
+              rdfs:label ?label .
+        OPTIONAL { ?term <http://purl.obolibrary.org/obo/IAO_0000115> ?definition }
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 10
+
+  get_hierarchical_relationships:
+    description: Explore parent-child relationships in GO hierarchy
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?child ?child_label ?parent ?parent_label
+      WHERE {
+        ?child rdfs:subClassOf ?parent ;
+               rdfs:label ?child_label .
+        ?parent rdfs:label ?parent_label .
+        FILTER(STRSTARTS(STR(?child), "http://purl.obolibrary.org/obo/GO_"))
+        FILTER(STRSTARTS(STR(?parent), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 10
+
+  get_biological_process_children:
+    description: Find direct children of the biological process root term
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX go: <http://purl.obolibrary.org/obo/>
+      
+      SELECT ?child ?label
+      WHERE {
+        ?child rdfs:subClassOf go:GO_0008150 ;
+               rdfs:label ?label .
+        FILTER(STRSTARTS(STR(?child), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 10
+
+  explore_go_properties:
+    description: Explore properties and relationships for a specific GO term
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX go: <http://purl.obolibrary.org/obo/>
+      
+      SELECT ?property ?value
+      WHERE {
+        go:GO_0008150 ?property ?value .
+      }
+      LIMIT 10
+
+  get_specific_go_terms:
+    description: Get information about specific GO terms by their IDs
+    status: "✅ TESTED AND WORKING"
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX go: <http://purl.obolibrary.org/obo/>
+      
+      SELECT ?term ?label
+      WHERE {
+        VALUES ?term { go:GO_0000776 go:GO_0005634 go:GO_0005737 }
+        ?term rdfs:label ?label .
+      }
+
+architectural_notes:
+  design_patterns:
+    - "GO uses OWL ontology patterns with rdfs:subClassOf for hierarchical relationships"
+    - "Three main root classes organize all GO terms: biological_process, molecular_function, cellular_component"
+    - "IAO properties are used for metadata like definitions (IAO_0000115) and synonyms (IAO_0000118)"
+    - "GO terms follow standardized ID pattern: GO_NNNNNNN (7 digits)"
+    - "Uses BFO (Basic Formal Ontology) as upper-level ontology framework"
+  
+  performance_considerations:
+    - "Use FILTER with STRSTARTS for efficient GO term filtering"
+    - "Limit query results when exploring large hierarchies"
+    - "Use rdfs:subClassOf+ for transitive hierarchy queries"
+    - "Consider using DISTINCT to avoid duplicates from multiple graphs"
+  
+  data_quality_notes:
+    - "Some GO terms may have multiple labels in different contexts"
+    - "Hierarchical relationships can be complex with multiple inheritance"
+    - "Definitions and synonyms are optional properties"
+
+data_statistics:
+  estimated_total_classes: 47000+
+  total_root_classes: 3
+  main_namespaces: ["biological_process", "molecular_function", "cellular_component"]
+  key_properties: ["rdfs:label", "IAO_0000115", "IAO_0000118", "rdfs:subClassOf"]
+  last_updated: '2025-08-20T12:00:00Z'
+
+validation_notes:
+  tested_queries: 6
+  working_queries: 6
+  failed_queries_excluded: 2
+  query_validation_status: "Only verified working SPARQL queries included. Complex aggregation and transitive queries failed."
+  shape_expression_coverage: "Comprehensive coverage of GO term structure and three main hierarchies"
+  limitations_discovered:
+    - "COUNT aggregations with complex BIND statements fail"
+    - "Transitive property queries (rdfs:subClassOf+) not supported or fail"
+    - "Complex FILTER with regex patterns cause errors"
+    - "Some advanced SPARQL 1.1 features appear unsupported"
+  endpoint_issues:
+    - "Periodic 302 redirect errors encountered"
+    - "Some queries return duplicate results due to multiple graph contexts"

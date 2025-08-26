@@ -29,20 +29,28 @@ shape_expressions:
     properties:
       name:
         type: xsd:string
+        semantic_type: xsd:decimal
+        type_conversion: "xsd:decimal(?value)"
         required: true
         description: The name of the organization
       foundedYear:
         type: xsd:integer
         required: false
         description: The year the organization was founded
-sample_entries:
-  # Replace with actual sample entries from the RDF . At least five diversified entries should be included.
-  - id: ex:SampleEntry1
-    label: Sample Entry
-  - id: ex:SampleEntry2
-    label: Another Sample Entry
-  - id: ex:SampleEntry3
-    label: Yet Another Sample Entry
+sample_rdf_entries:
+  # Replace with actual sample RDF data. At least five diversified examples should be included. Make them concise.
+  example1:
+    description: protein X
+    RDF: |
+      ex:Entry1 a ex:Class1;
+        ex:property1 ex:Value1;
+        ex:property2 "value2".
+  example2:
+    description: protein Y
+    RDF: |
+      ex:Entry2 a ex:Class2;
+        ex:property3 "value3";
+        ex:property4 "value4".
 sparql_query_examples:
   # Replace with at least five biologically relevant examples of SPARQL queries. Run these queries and make sure they actually work and return results.
   get_classes:

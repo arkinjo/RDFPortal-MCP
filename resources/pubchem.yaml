@@ -1,0 +1,480 @@
+schema_info:
+  title: PubChem RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the PubChem RDF schema including compounds, bioassays, molecular descriptors, and cross-references to external databases
+  endpoint: https://rdfportal.org/backend/pubchem/sparql
+  base_uri: http://rdf.ncbi.nlm.nih.gov/pubchem/
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  vocab: http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#
+  pubchem: http://rdf.ncbi.nlm.nih.gov/pubchem/
+  sio: http://semanticscience.org/resource/
+  cheminf: http://semanticscience.org/resource/
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+  bao: http://www.bioassayontology.org/bao#
+  cito: http://purl.org/spar/cito/
+  chebi: http://purl.obolibrary.org/obo/
+  snomed: http://purl.bioontology.org/ontology/SNOMEDCT/
+  nci: http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#
+  ndfrt: http://purl.bioontology.org/ontology/NDFRT/
+
+shape_expressions:
+  Compound:
+    description: A chemical compound entity in PubChem with complete molecular information and cross-references
+    uri_pattern: "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID{id}"
+    properties:
+      identifier:
+        type: xsd:string
+        required: true
+        predicate: dcterms:identifier
+        description: The PubChem Compound ID (CID) as a string
+        example: "2519"
+      
+      preferred_label:
+        type: xsd:string
+        required: true
+        predicate: skos:prefLabel
+        description: The primary chemical name or systematic name
+        example: "1,3,7-trimethylpurine-2,6-dione"
+      
+      canonical_smiles:
+        type: xsd:string
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000376 -> sio:SIO_000300
+        description: Canonical SMILES representation for structure
+        example: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+      
+      isomeric_smiles:
+        type: xsd:string
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000379 -> sio:SIO_000300
+        description: Isomeric SMILES with stereochemistry information
+        example: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+      
+      inchi:
+        type: xsd:string
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000396 -> sio:SIO_000300
+        description: IUPAC International Chemical Identifier
+        example: "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3"
+      
+      exact_mass:
+        type: xsd:decimal
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000338 -> sio:SIO_000300
+        description: Exact molecular mass in Daltons
+        example: "194.08037557"
+      
+      hydrogen_bond_donors:
+        type: xsd:integer
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000387 -> sio:SIO_000300
+        description: Number of hydrogen bond donor atoms
+        example: "0"
+      
+      hydrogen_bond_acceptors:
+        type: xsd:integer
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000388 -> sio:SIO_000300
+        description: Number of hydrogen bond acceptor atoms
+        example: "3"
+      
+      rotatable_bonds:
+        type: xsd:integer
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000369 -> sio:SIO_000300
+        description: Number of rotatable bonds for flexibility assessment
+        example: "1"
+      
+      formal_charge:
+        type: xsd:integer
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000370 -> sio:SIO_000300
+        description: Formal charge of the molecule
+        example: "0"
+      
+      complexity:
+        type: xsd:integer
+        required: false
+        predicate: sio:SIO_000008 -> sio:CHEMINF_000371 -> sio:SIO_000300
+        description: Structural complexity score
+        example: "0"
+      
+      # Cross-references to external databases
+      chebi_classification:
+        type: iri
+        required: false
+        predicate: rdf:type
+        description: ChEBI ontology classification for chemical roles
+        example: "http://purl.obolibrary.org/obo/CHEBI_27732"
+      
+      snomed_classification:
+        type: iri
+        required: false
+        predicate: rdf:type
+        description: SNOMED CT classification for medical concepts
+        example: "http://purl.bioontology.org/ontology/SNOMEDCT/255641001"
+      
+      nci_classification:
+        type: iri
+        required: false
+        predicate: rdf:type
+        description: NCI Thesaurus classification
+        example: "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C328"
+      
+      ndfrt_classification:
+        type: iri
+        required: false
+        predicate: rdf:type
+        description: National Drug File Reference Terminology classification
+        example: "http://purl.bioontology.org/ontology/NDFRT/N0000006506"
+      
+      discussed_in_patents:
+        type: iri
+        required: false
+        predicate: cito:isDiscussedBy
+        description: Patent documents that discuss this compound
+        multiple: true
+
+  BioAssay:
+    description: A biological assay or experiment measuring compound biological activity
+    uri_pattern: "http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/AID{id}"
+    properties:
+      identifier:
+        type: xsd:string
+        required: true
+        predicate: dcterms:identifier
+        description: The PubChem BioAssay ID (AID)
+        example: "1932045"
+      
+      title:
+        type: xsd:string
+        required: true
+        predicate: dcterms:title
+        description: Descriptive title of the bioassay experiment
+        example: "Antiinflammatory activity in mouse RAW264.7 cells assessed as inhibition of LPS-induced TNFalpha expression at 5 ug/ml"
+      
+      source_organization:
+        type: xsd:string
+        required: false
+        predicate: dcterms:source
+        description: Source organization that submitted the assay
+      
+      assay_type:
+        type: iri
+        required: false
+        predicate: bao:BAO_0000209
+        description: Type of bioassay from BioAssay Ontology
+        example: "http://www.bioassayontology.org/bao#BAO_0000015"
+      
+      target_type:
+        type: iri
+        required: false
+        predicate: bao:BAO_0000210
+        description: Biological target type (protein, gene, pathway, etc.)
+
+  MolecularDescriptor:
+    description: Computed molecular properties and descriptors for chemical compounds
+    uri_pattern: "http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/CID{compound_id}_{descriptor_type}"
+    properties:
+      descriptor_type:
+        type: iri
+        required: true
+        predicate: rdf:type
+        description: Type of molecular descriptor using CHEMINF ontology
+        example: "http://semanticscience.org/resource/CHEMINF_000376"
+      
+      descriptor_value:
+        type: xsd:string
+        required: true
+        predicate: sio:SIO_000300
+        description: The computed value of the descriptor
+        example: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+      
+      describes_compound:
+        type: iri
+        required: true
+        predicate: "^sio:SIO_000008"
+        description: The compound this descriptor characterizes
+
+  Patent:
+    description: Patent documents that mention or discuss chemical compounds
+    uri_pattern: "http://rdf.ncbi.nlm.nih.gov/pubchem/patent/{patent_id}"
+    properties:
+      patent_identifier:
+        type: xsd:string
+        required: true
+        predicate: dcterms:identifier
+        description: Patent document identifier
+        example: "AU-2012272804-A1"
+      
+      discusses_compounds:
+        type: iri
+        required: false
+        predicate: "^cito:isDiscussedBy"
+        description: Chemical compounds discussed in this patent
+        multiple: true
+
+sample_rdf_entries:
+  example1:
+    description: Caffeine compound (CID2519) with molecular descriptors and cross-references
+    RDF: |
+      pubchem:compound/CID2519 a vocab:Compound, chebi:CHEBI_27732, snomed:255641001 ;
+        dcterms:identifier "2519" ;
+        skos:prefLabel "1,3,7-trimethylpurine-2,6-dione" ;
+        sio:SIO_000008 pubchem:descriptor/CID2519_Canonical_SMILES,
+                       pubchem:descriptor/CID2519_Exact_Mass,
+                       pubchem:descriptor/CID2519_HBond_Donors ;
+        cito:isDiscussedBy pubchem:patent/AU-2012272804-A1 .
+      
+      pubchem:descriptor/CID2519_Canonical_SMILES a sio:CHEMINF_000376 ;
+        sio:SIO_000300 "CN1C=NC2=C1C(=O)N(C(=O)N2C)C" .
+      
+      pubchem:descriptor/CID2519_Exact_Mass a sio:CHEMINF_000338 ;
+        sio:SIO_000300 "194.08037557" .
+
+  example2:
+    description: Anti-inflammatory bioassay with detailed experimental conditions
+    RDF: |
+      pubchem:bioassay/AID1932045 a vocab:BioAssay, bao:BAO_0000015 ;
+        dcterms:identifier "1932045" ;
+        dcterms:title "Antiinflammatory activity in mouse RAW264.7 cells assessed as inhibition of LPS-induced TNFalpha expression at 5 ug/ml" ;
+        bao:BAO_0000209 bao:BAO_0000015 .
+
+  example3:
+    description: Molecular weight descriptor for aspirin demonstrating descriptor pattern
+    RDF: |
+      pubchem:compound/CID2244 a vocab:Compound ;
+        sio:SIO_000008 pubchem:descriptor/CID2244_Exact_Mass .
+      
+      pubchem:descriptor/CID2244_Exact_Mass a sio:CHEMINF_000338 ;
+        sio:SIO_000300 "180.04225873" .
+
+  example4:
+    description: Drug compound with hydrogen bonding properties for ADMET analysis
+    RDF: |
+      pubchem:compound/CID275395 a vocab:Compound ;
+        skos:prefLabel "4-amino-2-benzyl-1H-imidazole-5-carboxamide" ;
+        sio:SIO_000008 pubchem:descriptor/CID275395_HBond_Donors,
+                       pubchem:descriptor/CID275395_HBond_Acceptors .
+      
+      pubchem:descriptor/CID275395_HBond_Donors a sio:CHEMINF_000387 ;
+        sio:SIO_000300 "3" .
+      
+      pubchem:descriptor/CID275395_HBond_Acceptors a sio:CHEMINF_000388 ;
+        sio:SIO_000300 "3" .
+
+  example5:
+    description: Patent document with compound cross-references
+    RDF: |
+      pubchem:patent/AU-2012272804-A1 a vocab:Patent ;
+        dcterms:identifier "AU-2012272804-A1" ;
+        cito:discusses pubchem:compound/CID2519 .
+
+sparql_query_examples:
+  get_compound_basic_info:
+    description: Retrieve basic information about compounds including ID, name, and molecular weight for drug discovery
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?compound ?identifier ?label ?exact_mass WHERE {
+        ?compound a vocab:Compound .
+        ?compound dcterms:identifier ?identifier .
+        ?compound skos:prefLabel ?label .
+        OPTIONAL {
+          ?compound sio:SIO_000008 ?mass_descriptor .
+          ?mass_descriptor a sio:CHEMINF_000338 .
+          ?mass_descriptor sio:SIO_000300 ?exact_mass .
+        }
+      } LIMIT 10
+
+  get_bioassay_info:
+    description: Retrieve bioassay information including titles and experimental conditions for biological activity analysis
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT ?bioassay ?identifier ?title ?source WHERE {
+        ?bioassay a vocab:BioAssay .
+        ?bioassay dcterms:identifier ?identifier .
+        ?bioassay dcterms:title ?title .
+        OPTIONAL { ?bioassay dcterms:source ?source . }
+      } LIMIT 10
+
+  get_compound_descriptors:
+    description: Retrieve all molecular descriptors for caffeine (CID2519) for comprehensive chemical analysis
+    sparql: |
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?descriptor_type ?value WHERE {
+        <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID2519> sio:SIO_000008 ?descriptor .
+        ?descriptor a ?descriptor_type .
+        ?descriptor sio:SIO_000300 ?value .
+        FILTER(ISURI(?descriptor_type))
+      }
+
+  find_compounds_by_weight_range:
+    description: Find compounds within a specific molecular weight range (180-200 Da) for lead optimization
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?compound ?label ?mass WHERE {
+        ?compound a vocab:Compound .
+        ?compound skos:prefLabel ?label .
+        ?compound sio:SIO_000008 ?mass_descriptor .
+        ?mass_descriptor a sio:CHEMINF_000338 .
+        ?mass_descriptor sio:SIO_000300 ?mass .
+        FILTER(?mass >= 180.0 && ?mass <= 200.0)
+      } LIMIT 20
+
+  find_anti_inflammatory_assays:
+    description: Find bioassays related to anti-inflammatory activity for therapeutic research
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT ?bioassay ?title ?identifier WHERE {
+        ?bioassay a vocab:BioAssay .
+        ?bioassay dcterms:title ?title .
+        ?bioassay dcterms:identifier ?identifier .
+        FILTER(CONTAINS(LCASE(?title), "antiinflammatory") || 
+               CONTAINS(LCASE(?title), "anti-inflammatory") ||
+               CONTAINS(LCASE(?title), "inflammation"))
+      } LIMIT 10
+
+  get_compounds_with_ontology_classifications:
+    description: Find compounds with specific ontological classifications from ChEBI, SNOMED, and NCI for semantic analysis
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX chebi: <http://purl.obolibrary.org/obo/>
+      PREFIX snomed: <http://purl.bioontology.org/ontology/SNOMEDCT/>
+      
+      SELECT DISTINCT ?compound ?label ?classification WHERE {
+        ?compound a vocab:Compound .
+        ?compound skos:prefLabel ?label .
+        ?compound a ?classification .
+        FILTER(STRSTARTS(STR(?classification), "http://purl.obolibrary.org/obo/CHEBI_") ||
+               STRSTARTS(STR(?classification), "http://purl.bioontology.org/ontology/SNOMEDCT/") ||
+               STRSTARTS(STR(?classification), "http://ncicb.nci.nih.gov/xml/owl/EVS/"))
+      } LIMIT 15
+
+  compound_patent_relationships:
+    description: Find compounds and the patents that discuss them for intellectual property analysis
+    sparql: |
+      PREFIX cito: <http://purl.org/spar/cito/>
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?compound ?label ?patent WHERE {
+        ?compound a vocab:Compound .
+        ?compound skos:prefLabel ?label .
+        ?compound cito:isDiscussedBy ?patent .
+      } LIMIT 20
+
+  hydrogen_bond_analysis:
+    description: Analyze hydrogen bonding properties of compounds for drug-like characteristics (Lipinski's Rule of Five)
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?compound ?label ?donors ?acceptors WHERE {
+        ?compound a vocab:Compound .
+        ?compound skos:prefLabel ?label .
+        ?compound sio:SIO_000008 ?donor_desc .
+        ?donor_desc a sio:CHEMINF_000387 .
+        ?donor_desc sio:SIO_000300 ?donors .
+        ?compound sio:SIO_000008 ?acceptor_desc .
+        ?acceptor_desc a sio:CHEMINF_000388 .
+        ?acceptor_desc sio:SIO_000300 ?acceptors .
+        FILTER(?donors <= 5 && ?acceptors <= 10)
+      } LIMIT 25
+
+  structural_complexity_analysis:
+    description: Analyze structural complexity and rotatable bonds for compound flexibility assessment
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?compound ?label ?rotatable_bonds ?complexity WHERE {
+        ?compound a vocab:Compound .
+        ?compound skos:prefLabel ?label .
+        ?compound sio:SIO_000008 ?rot_desc .
+        ?rot_desc a sio:CHEMINF_000369 .
+        ?rot_desc sio:SIO_000300 ?rotatable_bonds .
+        ?compound sio:SIO_000008 ?complex_desc .
+        ?complex_desc a sio:CHEMINF_000371 .
+        ?complex_desc sio:SIO_000300 ?complexity .
+        FILTER(?rotatable_bonds <= 10)
+      } LIMIT 20
+
+architectural_notes:
+  design_patterns:
+    - Semantic Science Integrated Ontology (SIO) for descriptor-compound relationships using sio:SIO_000008 (has attribute)
+    - ChEBI and CHEMINF ontologies for standardized chemical informatics descriptors
+    - Dublin Core Terms for metadata (dcterms:identifier, dcterms:title, dcterms:source)
+    - SPAR Citation Ontology (CITO) for patent-compound citation relationships using cito:isDiscussedBy
+    - BioAssay Ontology (BAO) for bioassay type classification and target specification
+    - SNOMED CT, NCI Thesaurus, and NDFRT for medical and pharmacological classification
+    - SKOS for preferred labels and vocabulary organization
+  
+  performance_considerations:
+    - Compound queries should include LIMIT clauses due to 119M+ compounds in database
+    - Molecular descriptor queries can be computationally intensive due to billions of descriptors
+    - Use specific compound IRIs when possible for faster targeted lookups
+    - Patent relationship queries generate large result sets and may require pagination
+    - Text-based searches on bioassay titles may require performance optimization
+    - Cross-reference queries across multiple ontologies benefit from indexing on rdf:type
+  
+  integration_points:
+    - ChEBI ontology (http://purl.obolibrary.org/obo/) provides chemical classification and roles
+    - SNOMED CT provides comprehensive medical terminology and drug classifications
+    - NCI Thesaurus offers cancer and biomedical concept classification
+    - Patent databases integrate via CITO citation relationships
+    - CHEMINF ontology standardizes molecular descriptor types for interoperability
+    - BioAssay Ontology enables semantic integration with other biological databases
+  
+  cross_reference_handling:
+    - Multiple rdf:type statements link compounds to external ontology terms
+    - Patent relationships use bidirectional CITO predicates for comprehensive coverage
+    - Molecular descriptors follow SIO patterns for semantic interoperability
+    - External database identifiers preserved through dcterms:identifier patterns
+
+data_statistics:
+  total_compounds: 119093251
+  total_bioassays: 1768183
+  total_molecular_descriptors: "~1.5 billion (estimated)"
+  descriptor_types:
+    - "CHEMINF_000376 (Canonical SMILES)"
+    - "CHEMINF_000338 (Exact Mass)"
+    - "CHEMINF_000387 (Hydrogen Bond Donors)"
+    - "CHEMINF_000388 (Hydrogen Bond Acceptors)"
+    - "CHEMINF_000369 (Rotatable Bonds)"
+    - "CHEMINF_000396 (InChI)"
+  main_namespaces:
+    - "http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary# (Core classes and properties)"
+    - "http://semanticscience.org/resource/ (SIO descriptors and relationships)"
+    - "http://purl.obolibrary.org/obo/ (ChEBI chemical roles and classifications)"
+    - "http://www.bioassayontology.org/bao# (Bioassay types and experimental context)"
+    - "http://purl.org/spar/cito/ (Citation and discussion relationships)"
+  cross_references:
+    chebi_classifications: "~50 million compound-ChEBI mappings"
+    snomed_classifications: "~30 million compound-SNOMED mappings"
+    patent_relationships: "~500 million compound-patent citations"
+  last_updated: '2024-01-15T00:00:00Z'
+  endpoint_status: active
+  query_limits:
+    max_results_recommended: 1000
+    timeout_seconds: 30
+    complex_queries_limit: 100

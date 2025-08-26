@@ -1,0 +1,541 @@
+schema_info:
+  title: UniProt RDF Database Schema Analysis
+  description: Comprehensive analysis of the UniProt RDF schema including proteins, sequences, annotations, taxonomic classifications, and cross-references to external biological databases
+  endpoint: https://rdfportal.org/backend/sib/sparql
+  base_uri: http://purl.uniprot.org/
+  date_analyzed: 2025-08-22
+  scope: Protein structure, function, taxonomy, interactions, and biological annotations
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  up: http://purl.uniprot.org/core/
+  uniprot: http://purl.uniprot.org/uniprot/
+  taxon: http://purl.uniprot.org/taxonomy/
+  go: http://purl.obolibrary.org/obo/GO_
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+  interpro: http://purl.uniprot.org/interpro/
+  pfam: http://purl.uniprot.org/pfam/
+
+shape_expressions:
+  Protein:
+    description: A protein entity with comprehensive biological annotations including sequence, structure, function, and taxonomic information
+    properties:
+      mnemonic:
+        type: xsd:string
+        required: true
+        description: Unique protein identifier/mnemonic (e.g., TLR7_HUMAN)
+        pattern: "^[A-Z0-9]+_[A-Z0-9]+$"
+      recommendedName:
+        type: up:Structured_Name
+        required: false
+        description: Official recommended name of the protein
+        subproperties:
+          fullName:
+            type: xsd:string
+            description: Complete protein name
+            example: "Toll-like receptor 7"
+          shortName:
+            type: xsd:string
+            description: Abbreviated protein name
+            example: "TLR-7"
+      alternativeName:
+        type: up:Structured_Name
+        required: false
+        description: Alternative names for the protein
+      organism:
+        type: up:Taxon
+        required: true
+        description: Taxonomic organism reference
+        cross_reference_pattern: "Links to NCBI Taxonomy via taxon: namespace"
+      sequence:
+        type: up:Sequence
+        required: false
+        description: Protein sequence information including isoforms
+      reviewed:
+        type: xsd:boolean
+        required: false
+        description: Whether entry is manually reviewed (Swiss-Prot=true, TrEMBL=false)
+      created:
+        type: xsd:date
+        required: false
+        description: Date when the entry was created
+      modified:
+        type: xsd:date
+        required: false
+        description: Date when the entry was last modified
+      annotation:
+        type: up:Annotation
+        required: false
+        description: Various biological annotations (function, location, domains, etc.)
+        cardinality: "multiple"
+      classifiedWith:
+        type: rdfs:Resource
+        required: false
+        description: GO terms, keywords, and other classifications
+        cross_reference_targets:
+          - "Gene Ontology (GO)"
+          - "Keywords"
+          - "Enzyme Classification (EC)"
+      interaction:
+        type: up:Interaction
+        required: false
+        description: Protein-protein interactions with experimental evidence
+      replaces:
+        type: up:Protein
+        required: false
+        description: Links to replaced/obsolete protein entries
+      seeAlso:
+        type: rdfs:Resource
+        required: false
+        description: Cross-references to external databases
+        cross_reference_targets:
+          - "InterPro domains"
+          - "Reactome pathways"
+          - "PDB structures"
+          - "KEGG pathways"
+          - "STRING interactions"
+
+  Sequence:
+    description: Protein sequence with molecular properties and checksums
+    properties:
+      mass:
+        type: xsd:int
+        required: false
+        description: Molecular mass in Daltons
+        range: "1000-500000+ typical range"
+      length:
+        type: xsd:int
+        required: false
+        description: Sequence length in amino acids
+        range: "50-35000+ typical range"
+      md5Checksum:
+        type: xsd:string
+        required: false
+        description: MD5 hash of the sequence for integrity verification
+        pattern: "^[a-f0-9]{32}$"
+      crc64Checksum:
+        type: xsd:string
+        required: false
+        description: CRC64 checksum of the sequence
+      value:
+        type: xsd:string
+        required: false
+        description: Actual amino acid sequence (FASTA format)
+        alphabet: "ACDEFGHIKLMNPQRSTVWY"
+      precursor:
+        type: xsd:boolean
+        required: false
+        description: Whether this is a precursor sequence
+      version:
+        type: xsd:int
+        required: false
+        description: Sequence version number
+
+  Taxon:
+    description: Taxonomic classification linking to NCBI Taxonomy
+    properties:
+      scientificName:
+        type: xsd:string
+        required: true
+        description: Scientific name of the organism
+        example: "Homo sapiens"
+      commonName:
+        type: xsd:string
+        required: false
+        description: Common name of the organism
+        example: "Human"
+      rank:
+        type: up:Rank
+        required: false
+        description: Taxonomic rank (species, genus, family, etc.)
+      partOfLineage:
+        type: up:Taxon
+        required: false
+        description: Parent taxonomic classification in lineage
+        hierarchy: "Domain > Kingdom > Phylum > Class > Order > Family > Genus > Species"
+
+  Annotation:
+    description: Biological annotations with position information for sequence features
+    subtypes:
+      - Function_Annotation
+      - Subcellular_Location_Annotation
+      - Catalytic_Activity_Annotation
+      - Binding_Site_Annotation
+      - Active_Site_Annotation
+      - Domain_Annotation
+      - Transmembrane_Annotation
+      - Signal_Peptide_Annotation
+      - Disease_Annotation
+      - Pathway_Annotation
+      - Region_Annotation
+      - Motif_Annotation
+      - Compositional_Bias_Annotation
+      - Coiled_Coil_Annotation
+      - Zinc_Finger_Annotation
+    properties:
+      text:
+        type: xsd:string
+        required: false
+        description: Textual description of the annotation
+      comment:
+        type: xsd:string
+        required: false
+        description: Detailed functional or structural comment
+      begin:
+        type: xsd:int
+        required: false
+        description: Start position on sequence (1-based indexing)
+      end:
+        type: xsd:int
+        required: false
+        description: End position on sequence (1-based indexing)
+      evidence:
+        type: up:Evidence
+        required: false
+        description: Evidence code supporting the annotation
+
+  Interaction:
+    description: Protein-protein interaction data with experimental support
+    properties:
+      participant:
+        type: up:Protein
+        required: true
+        description: Interacting protein partner
+      experiments:
+        type: xsd:int
+        required: false
+        description: Number of supporting experiments
+      interactionType:
+        type: rdfs:Resource
+        required: false
+        description: Type of interaction (binary, self, etc.)
+
+sample_rdf_entries:
+  human_kinase:
+    description: Human protein kinase with reviewed status
+    organism: "Homo sapiens (Human)"
+    reviewed: true
+    RDF: |
+      uniprot:P17612 a up:Protein ;
+        up:mnemonic "KAPCA_HUMAN" ;
+        up:recommendedName/up:fullName "cAMP-dependent protein kinase catalytic subunit alpha" ;
+        up:organism taxon:9606 ;
+        up:reviewed "1" ;
+        up:annotation [
+          a up:Function_Annotation ;
+          rdfs:comment "Phosphorylates a large number of substrates in the cytoplasm and the nucleus"
+        ] .
+
+  archaeal_ribosomal:
+    description: Archaeal ribosomal protein from uncultured organism
+    organism: "Uncultured archaeon"
+    reviewed: false
+    RDF: |
+      uniprot:A0A0D3RPI9 a up:Protein ;
+        up:mnemonic "A0A0D3RPI9_UNCAX" ;
+        up:recommendedName/up:fullName "50S ribosomal protein L22" ;
+        up:organism taxon:115547 ;
+        up:reviewed "0" .
+
+  plant_membrane:
+    description: Plant membrane protein with mass information
+    organism: "Arabidopsis thaliana (Mouse-ear cress)"
+    molecular_mass: 100533
+    RDF: |
+      uniprot:Q9FFU6 a up:Protein ;
+        up:mnemonic "B561A_ARATH" ;
+        up:recommendedName/up:fullName "Cytochrome b561 and DOMON domain-containing protein" ;
+        up:organism taxon:3702 ;
+        up:sequence [
+          up:mass "100533" ;
+          up:md5Checksum "5ee37fb08375407fc02cb38bfddb60a9"
+        ] .
+
+  human_receptor:
+    description: Human receptor with cross-references to external databases
+    cross_references: "InterPro, Reactome, GO"
+    RDF: |
+      uniprot:A9YTQ3 a up:Protein ;
+        up:mnemonic "AHRR_HUMAN" ;
+        up:recommendedName/up:fullName "Aryl hydrocarbon receptor repressor" ;
+        up:organism taxon:9606 ;
+        rdfs:seeAlso interpro:IPR001067 ;
+        up:annotation [
+          a up:Function_Annotation ;
+          rdfs:comment "Mediates dioxin toxicity and is involved in regulation of cell growth"
+        ] .
+
+  interaction_example:
+    description: Protein with documented interaction data
+    interactions: "Self and binary interactions"
+    RDF: |
+      uniprot:ExampleProtein a up:Protein ;
+        up:interaction [
+          a up:Interaction ;
+          up:participant uniprot:PartnerProtein ;
+          up:experiments "3"
+        ] .
+
+sparql_query_examples:
+  get_protein_basic_info:
+    description: Retrieve basic protein information including names and taxonomic classification
+    tested: true
+    returns: 10
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?protein ?mnemonic ?fullName ?organism ?taxonName
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:mnemonic ?mnemonic .
+          ?protein up:recommendedName/up:fullName ?fullName .
+          ?protein up:organism ?organism .
+          ?organism up:scientificName ?taxonName .
+      }
+      LIMIT 10
+
+  get_large_protein_sequences:
+    description: Retrieve protein sequences with molecular mass greater than 50kDa
+    tested: true
+    returns: 5
+    biological_relevance: "Large proteins often have multiple domains and complex functions"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?protein ?sequence ?mass ?length ?checksum
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:sequence ?sequence .
+          OPTIONAL { ?sequence up:mass ?mass }
+          OPTIONAL { ?sequence up:length ?length }
+          OPTIONAL { ?sequence up:md5Checksum ?checksum }
+          FILTER(?mass > 50000)
+      }
+      LIMIT 5
+
+  find_human_kinases:
+    description: Find human protein kinases with review status
+    tested: true
+    returns: 5
+    biological_relevance: "Kinases are key regulatory enzymes in cellular signaling"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?protein ?mnemonic ?fullName ?organism ?taxonName ?reviewed
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:mnemonic ?mnemonic .
+          ?protein up:recommendedName/up:fullName ?fullName .
+          ?protein up:organism ?organism .
+          ?organism up:scientificName ?taxonName .
+          OPTIONAL { ?protein up:reviewed ?reviewed }
+          FILTER(CONTAINS(LCASE(?fullName), "kinase"))
+          FILTER(?taxonName = "Homo sapiens")
+      }
+      LIMIT 5
+
+  get_annotation_types:
+    description: Discover different types of biological annotations in UniProt
+    tested: true
+    returns: 15
+    biological_relevance: "Shows the breadth of functional annotation types available"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT DISTINCT ?annotationType
+      WHERE {
+          [] up:annotation ?annotation .
+          ?annotation rdf:type ?annotationType .
+          FILTER(STRSTARTS(STR(?annotationType), "http://purl.uniprot.org/core/"))
+      }
+      LIMIT 15
+
+  get_cross_references:
+    description: Retrieve cross-references to external databases (InterPro, GO, Reactome)
+    tested: true
+    returns: 10
+    biological_relevance: "Shows integration with major biological databases"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?protein ?dbRef ?database
+      WHERE {
+          ?protein rdfs:seeAlso ?dbRef .
+          ?dbRef up:database ?database .
+          FILTER(CONTAINS(STR(?dbRef), "reactome") || 
+                 CONTAINS(STR(?dbRef), "interpro") || 
+                 CONTAINS(STR(?dbRef), "go"))
+      }
+      LIMIT 10
+
+  get_human_protein_functions:
+    description: Retrieve detailed functional annotations for human proteins
+    tested: true
+    returns: 3
+    biological_relevance: "Provides insights into protein molecular functions and biological processes"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+      
+      SELECT ?protein ?name ?functionText
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:organism taxon:9606 .
+          ?protein up:recommendedName/up:fullName ?name .
+          ?protein up:annotation ?annotation .
+          ?annotation rdf:type up:Function_Annotation .
+          ?annotation rdfs:comment ?functionText .
+      }
+      LIMIT 3
+
+  get_sequence_analysis:
+    description: Analyze protein sequences by length and mass distribution
+    tested: false
+    biological_relevance: "Useful for understanding protein size distributions across organisms"
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?organism ?avgMass ?maxLength ?proteinCount
+      WHERE {
+          {
+              SELECT ?organism (AVG(?mass) AS ?avgMass) (MAX(?length) AS ?maxLength) (COUNT(?protein) AS ?proteinCount)
+              WHERE {
+                  ?protein rdf:type up:Protein .
+                  ?protein up:organism ?organism .
+                  ?protein up:sequence ?seq .
+                  ?seq up:mass ?mass .
+                  ?seq up:length ?length .
+                  FILTER(?mass > 10000)
+              }
+              GROUP BY ?organism
+              HAVING (COUNT(?protein) > 5)
+          }
+      }
+      ORDER BY DESC(?avgMass)
+      LIMIT 10
+
+architectural_notes:
+  design_patterns:
+    - "Hierarchical annotation system with specialized annotation types"
+    - "Extensive cross-referencing via rdfs:seeAlso to external databases"
+    - "Separation of reviewed (Swiss-Prot) and unreviewed (TrEMBL) entries"
+    - "Structured naming with fullName/shortName patterns"
+    - "Sequence isoform management with external sequence references"
+    - "Multi-level taxonomic classification with lineage tracking"
+    - "Position-based sequence annotations with begin/end coordinates"
+    - "Evidence-based annotation system for traceability"
+
+  performance_considerations:
+    - "Filter by organism early in queries for better performance"
+    - "Use specific UniProt IDs when possible rather than broad pattern matching"
+    - "Sequence text queries can be resource intensive"
+    - "Consider using OPTIONAL clauses for properties that may not exist"
+    - "Cross-reference queries benefit from specific database filtering"
+
+  data_integration_strengths:
+    - "Rich cross-references to 40+ external biological databases"
+    - "Standardized Gene Ontology (GO) term integration"
+    - "InterPro domain and family classifications"
+    - "Reactome pathway connections"
+    - "PDB structural data links"
+    - "Taxonomic integration with NCBI Taxonomy"
+
+  cross_reference_patterns:
+    InterPro_domains:
+      pattern: "http://purl.uniprot.org/interpro/IPR######"
+      description: "Protein families, domains and functional sites"
+    GO_terms:
+      pattern: "http://purl.obolibrary.org/obo/GO_#######"
+      description: "Gene Ontology molecular function, biological process, cellular component"
+    Reactome_pathways:
+      pattern: "http://identifiers.org/reactome/R-HSA-#######"
+      description: "Biological pathways and reactions"
+    PDB_structures:
+      pattern: "http://rdf.wwpdb.org/pdb/####"
+      description: "3D protein structures"
+
+data_statistics:
+  total_protein_classes: 1
+  total_annotation_types: 80+
+  total_properties: 150+
+  cross_reference_databases: 40+
+  reviewed_entries: "Swiss-Prot (manually reviewed)"
+  unreviewed_entries: "TrEMBL (automatically annotated)"
+  sequence_types: ["Simple_Sequence", "External_Sequence", "Modified_Sequence"]
+  interaction_types: ["Interaction", "Self_Interaction", "Non_Self_Interaction"]
+  taxonomic_coverage: "All domains of life (Bacteria, Archaea, Eukaryota, Viruses)"
+  update_frequency: "Continuous (weekly releases)"
+  last_analyzed: "2025-08-22"
+
+biological_coverage:
+  organisms:
+    model_organisms:
+      - "Homo sapiens (Human)"
+      - "Mus musculus (Mouse)"
+      - "Arabidopsis thaliana (Mouse-ear cress)"
+      - "Saccharomyces cerevisiae (Baker's yeast)"
+      - "Escherichia coli"
+      - "Drosophila melanogaster (Fruit fly)"
+    environmental:
+      - "Uncultured bacteria"
+      - "Uncultured archaea"
+      - "Marine microorganisms"
+
+  protein_functional_categories:
+    enzymes:
+      - "Kinases and phosphatases"
+      - "Oxidoreductases"
+      - "Transferases"
+      - "Hydrolases"
+      - "Ligases"
+    structural:
+      - "Ribosomal proteins"
+      - "Cytoskeletal proteins"
+      - "Membrane proteins"
+    regulatory:
+      - "Transcription factors"
+      - "Signal transduction proteins"
+      - "Hormone receptors"
+    transport:
+      - "Ion channels"
+      - "Transporters"
+      - "Carrier proteins"
+
+  annotation_depth:
+    sequence_features:
+      - "Active sites and binding sites"
+      - "Domains and motifs"
+      - "Transmembrane regions"
+      - "Signal peptides"
+      - "Post-translational modifications"
+    functional_annotations:
+      - "Molecular function (GO)"
+      - "Biological process (GO)"
+      - "Cellular component (GO)"
+      - "Pathway involvement"
+      - "Disease associations"
+    structural_information:
+      - "Secondary structure elements"
+      - "Coiled coils"
+      - "Compositional bias"
+      - "Zinc fingers"
+
+validation_notes:
+  query_execution: "All 6 main SPARQL queries successfully executed and returned results"
+  data_quality: "Cross-references are well-maintained and link to authoritative databases"
+  schema_completeness: "Comprehensive coverage of protein biology from sequence to function"
+  performance: "Queries execute efficiently with appropriate filtering"
+  biological_relevance: "Schema supports major use cases in protein research and bioinformatics"

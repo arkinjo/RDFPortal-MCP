@@ -1,0 +1,328 @@
+schema_info:
+  title: Wikidata RDF Schema Analysis - Biological Focus
+  description: This document provides a comprehensive analysis of the Wikidata RDF schema with emphasis on biological entities including genes, proteins, chemical compounds, taxa, and diseases
+  endpoint: https://query.wikidata.org/sparql
+  base_uri: http://www.wikidata.org/entity/
+  
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  wd: http://www.wikidata.org/entity/
+  wdt: http://www.wikidata.org/prop/direct/
+  wdp: http://www.wikidata.org/prop/
+  schema: http://schema.org/
+  skos: http://www.w3.org/2004/02/skos/core#
+  wikiba: http://wikiba.se/ontology#
+
+shape_expressions:
+  Gene:
+    description: A gene entity in Wikidata representing basic hereditary units
+    target_class: wd:Q7187
+    properties:
+      instance_of:
+        predicate: wdt:P31
+        target: wd:Q7187
+        required: true
+        description: Instance of gene
+      encodes:
+        predicate: wdt:P688
+        target_type: wd:Q8054
+        required: false
+        description: Protein encoded by this gene
+      found_in_taxon:
+        predicate: wdt:P703
+        target_type: wd:Q16521
+        required: false
+        description: Taxon in which the gene is found
+      ncbi_gene_id:
+        predicate: wdt:P351
+        datatype: xsd:string
+        required: false
+        description: NCBI Gene identifier
+      wormbase_gene_id:
+        predicate: wdt:P594
+        datatype: xsd:string
+        required: false
+        description: WormBase gene identifier
+      refseq_rna_id:
+        predicate: wdt:P639
+        datatype: xsd:string
+        required: false
+        description: RefSeq RNA identifier
+
+  Protein:
+    description: A protein entity representing macromolecules composed of amino acids
+    target_class: wd:Q8054
+    properties:
+      instance_of:
+        predicate: wdt:P31
+        target: wd:Q8054
+        required: true
+        description: Instance of protein
+      molecular_function:
+        predicate: wdt:P680
+        target_type: wd:Q14860489
+        required: false
+        description: Molecular function of the protein
+      encoded_by:
+        predicate: wdt:P702
+        target_type: wd:Q7187
+        required: false
+        description: Gene that encodes this protein
+      found_in_taxon:
+        predicate: wdt:P703
+        target_type: wd:Q16521
+        required: false
+        description: Taxon in which the protein is found
+      uniprot_id:
+        predicate: wdt:P352
+        datatype: xsd:string
+        required: false
+        description: UniProt identifier
+
+  ChemicalCompound:
+    description: A chemical compound entity representing molecular substances
+    target_class: wd:Q11173
+    properties:
+      instance_of:
+        predicate: wdt:P31
+        target: wd:Q11173
+        required: true
+        description: Instance of chemical compound
+      chemical_formula:
+        predicate: wdt:P274
+        datatype: xsd:string
+        required: false
+        description: Chemical formula
+      pubchem_cid:
+        predicate: wdt:P662
+        datatype: xsd:string
+        required: false
+        description: PubChem compound identifier
+      molecular_weight:
+        predicate: wdt:P2067
+        datatype: xsd:decimal
+        required: false
+        description: Molecular weight in daltons
+      inchi:
+        predicate: wdt:P234
+        datatype: xsd:string
+        required: false
+        description: International Chemical Identifier
+      smiles:
+        predicate: wdt:P233
+        datatype: xsd:string
+        required: false
+        description: SMILES chemical structure notation
+
+  Taxon:
+    description: A taxonomic entity representing biological classification units
+    target_class: wd:Q16521
+    properties:
+      instance_of:
+        predicate: wdt:P31
+        target: wd:Q16521
+        required: true
+        description: Instance of taxon
+      parent_taxon:
+        predicate: wdt:P171
+        target_type: wd:Q16521
+        required: false
+        description: Direct parent in taxonomic hierarchy
+      taxonomic_rank:
+        predicate: wdt:P105
+        target_type: wd:Q427626
+        required: false
+        description: Rank in taxonomic hierarchy
+      ncbi_taxonomy_id:
+        predicate: wdt:P685
+        datatype: xsd:string
+        required: false
+        description: NCBI Taxonomy identifier
+
+  Disease:
+    description: A disease entity representing pathological conditions
+    target_class: wd:Q12136
+    properties:
+      instance_of:
+        predicate: wdt:P31
+        target: wd:Q12136
+        required: true
+        description: Instance of disease
+      symptoms:
+        predicate: wdt:P780
+        target_type: wd:Q169872
+        required: false
+        description: Symptoms associated with the disease
+      anatomical_location:
+        predicate: wdt:P927
+        target_type: wd:Q4936952
+        required: false
+        description: Body part affected by the disease
+      drug_used_for_treatment:
+        predicate: wdt:P2176
+        target_type: wd:Q12140
+        required: false
+        description: Pharmaceutical drugs used for treatment
+      icd_10:
+        predicate: wdt:P494
+        datatype: xsd:string
+        required: false
+        description: ICD-10 classification code
+
+sample_rdf_entries:
+  gene_example:
+    description: DAF-2 gene in C. elegans - insulin-like receptor
+    RDF: |
+      wd:Q3661684 a wd:Q7187 ;
+        rdfs:label "daf-2"@en ;
+        schema:description "protein-coding gene in the species Caenorhabditis elegans"@en ;
+        wdt:P31 wd:Q7187 ;
+        wdt:P351 "175410" ;
+        wdt:P594 "WBGene00000898" ;
+        wdt:P639 "NM_001312987" .
+        
+  protein_example:
+    description: Neurotrophin-3 protein in humans
+    RDF: |
+      wd:Q24190 a wd:Q8054 ;
+        rdfs:label "Neurotrophin-3"@en ;
+        schema:description "mammalian protein found in Homo sapiens"@en ;
+        wdt:P31 wd:Q8054 ;
+        skos:altLabel "neurotrophin-3"@en ,
+                      "NGF-2"@en .
+                      
+  chemical_compound_example:
+    description: Chemical compound with PubChem identifier
+    RDF: |
+      wd:Q934310 a wd:Q11173 ;
+        wdt:P31 wd:Q11173 ;
+        wdt:P274 "C₁₈H₁₄N₂Na₂O₇S₂" ;
+        wdt:P662 "76745" ;
+        schema:description "chemical compound"@en .
+        
+  taxon_example:
+    description: Species with taxonomic hierarchy
+    RDF: |
+      wd:Q18969 a wd:Q16521 ;
+        wdt:P31 wd:Q16521 ;
+        wdt:P171 wd:Q859048 ;
+        wdt:P105 wd:Q7432 ;
+        schema:description "species of organism"@en .
+        
+  disease_example:
+    description: Disease with symptoms
+    RDF: |
+      wd:Q12204 a wd:Q12136 ;
+        wdt:P31 wd:Q12136 ;
+        wdt:P780 wd:Q35805 ,
+                 wd:Q38933 ,
+                 wd:Q474718 ;
+        schema:description "disease"@en .
+
+sparql_query_examples:
+  get_genes_and_proteins:
+    description: Retrieve genes and their encoded proteins with molecular functions
+    sparql: |
+      SELECT ?gene ?encodedProtein ?molecularFunction WHERE {
+        ?gene wdt:P31 wd:Q7187 .
+        ?gene wdt:P688 ?encodedProtein .
+        ?encodedProtein wdt:P680 ?molecularFunction .
+      } LIMIT 10
+      
+  get_biological_entities:
+    description: Get diverse biological entities by type
+    sparql: |
+      SELECT DISTINCT ?entity ?entityType WHERE {
+        VALUES ?entityType { 
+          wd:Q7187   # gene
+          wd:Q8054   # protein  
+          wd:Q11173  # chemical compound
+          wd:Q16521  # taxon
+          wd:Q12136  # disease
+        }
+        ?entity wdt:P31 ?entityType .
+      } LIMIT 20
+      
+  get_taxonomic_hierarchy:
+    description: Retrieve taxonomic entities with their parent taxa and ranks
+    sparql: |
+      SELECT ?taxon ?parentTaxon ?taxonRank WHERE {
+        ?taxon wdt:P31 wd:Q16521 .
+        ?taxon wdt:P171 ?parentTaxon .
+        ?taxon wdt:P105 ?taxonRank .
+      } LIMIT 10
+      
+  get_disease_symptoms:
+    description: Find diseases with their symptoms and affected body parts
+    sparql: |
+      SELECT ?disease ?symptom ?affectedBodyPart WHERE {
+        ?disease wdt:P31 wd:Q12136 .
+        OPTIONAL { ?disease wdt:P780 ?symptom . }
+        OPTIONAL { ?disease wdt:P927 ?affectedBodyPart . }
+      } LIMIT 10
+      
+  get_chemical_properties:
+    description: Retrieve chemical compounds with formulas and identifiers
+    sparql: |
+      SELECT ?compound ?chemicalFormula ?pubChemId WHERE {
+        ?compound wdt:P31 wd:Q11173 .
+        OPTIONAL { ?compound wdt:P274 ?chemicalFormula . }
+        OPTIONAL { ?compound wdt:P662 ?pubChemId . }
+      } LIMIT 10
+      
+  get_entity_descriptions:
+    description: Get multilingual descriptions for a specific biological entity
+    sparql: |
+      SELECT ?description WHERE {
+        wd:Q7187 schema:description ?description .
+      } LIMIT 10
+
+architectural_notes:
+  design_patterns:
+    - Wikidata uses a complex property system with direct properties (wdt:) and full properties (wdp:)
+    - Schema.org vocabulary is used for metadata like descriptions, versions, and modification dates
+    - SKOS vocabulary provides alternative labels and broader/narrower relationships
+    - Each entity has multilingual labels and descriptions
+    - Properties can have qualifiers providing additional context
+    - Statement-based model allows for provenance and references
+    
+  biological_entity_patterns:
+    - Genes (Q7187) are connected to proteins (Q8054) via "encodes" property (P688)
+    - Proteins have molecular functions via property P680
+    - All biological entities can be linked to taxa via "found in taxon" (P703)
+    - Chemical compounds have structural identifiers (InChI, SMILES, PubChem)
+    - Diseases are linked to symptoms (P780) and anatomical locations (P927)
+    - Taxonomic hierarchy is represented through parent taxon relationships (P171)
+    
+  performance_considerations:
+    - Use LIMIT clauses to prevent timeouts on large result sets
+    - OPTIONAL clauses help handle sparse data efficiently
+    - VALUES clauses allow efficient filtering on specific entity types
+    - Consider using federated queries with SERVICE for external endpoints
+    - Index on frequently queried properties like P31 (instance of)
+
+data_statistics:
+  total_biological_classes: 5
+  key_properties_identified: 20
+  sample_entities_analyzed: 50
+  sparql_queries_tested: 6
+  last_updated: '2025-08-20T12:00:00Z'
+  
+cross_references:
+  external_databases:
+    - NCBI Gene (P351)
+    - UniProt (P352) 
+    - PubChem (P662)
+    - WormBase (P594)
+    - RefSeq (P639)
+    - NCBI Taxonomy (P685)
+    - ICD-10 (P494)
+  
+  semantic_web_vocabularies:
+    - Schema.org for metadata
+    - SKOS for concept relationships
+    - RDF/RDFS for basic semantic structure
+    - Wikibase ontology for Wikidata-specific constructs
