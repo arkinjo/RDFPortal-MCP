@@ -27,7 +27,8 @@ SPARQL_ENDPOINT = {
     "taxonomy": "https://rdfportal.org/primary/sparql",
     "wikidata": "https://query.wikidata.org/sparql",
     "mondo": "https://rdfportal.org/primary/sparql",
-    "ddbj": "https://rdfportal.org/ddbj/sparql"
+    "ddbj": "https://rdfportal.org/ddbj/sparql",
+    "glycosmos": "https://ts.glycosmos.org/sparql"
 }
 
 SPARQL_ENDPOINT_KEYS = list(SPARQL_ENDPOINT.keys())
