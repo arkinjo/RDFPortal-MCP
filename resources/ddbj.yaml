@@ -132,6 +132,10 @@ shape_expressions:
         type: rdfs:subClassOf
         required: false
         description: Links to Sequence Ontology terms
+      in_taxon:
+        type: ro:RO_0002162
+        required: true
+        description: Taxonomic classification via identifiers.org
 
   Coding_Sequence:
     description: A coding sequence (CDS) feature representing protein-coding regions
@@ -152,10 +156,10 @@ shape_expressions:
         type: xsd:string
         required: false
         description: Associated locus tag
-      protein_id:
-        type: xsd:string
-        required: false
-        description: Protein accession number
+      protein_reference:
+        type: rdfs:seeAlso
+        required: true
+        description: NCBI protein accession cross-reference
       translation:
         type: xsd:string
         required: false
@@ -172,6 +176,14 @@ shape_expressions:
         type: xsd:integer
         required: false
         description: Genetic code table number
+      ec_number:
+        type: xsd:string
+        required: false
+        description: Enzyme Commission number
+      in_taxon:
+        type: ro:RO_0002162
+        required: true
+        description: Taxonomic classification
 
   Ribosomal_RNA:
     description: A ribosomal RNA feature
@@ -249,16 +261,19 @@ sample_rdf_entries:
         rdfs:label "Mal52_08030" ;
         faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> ;
         bfo:BFO_0000050 <http://identifiers.org/insdc/CP036276.1#sequence> ;
-        rdfs:subClassOf so:0000010, so:0000704 .
+        rdfs:subClassOf so:0000010, so:0000704 ;
+        ro:RO_0002162 <http://identifiers.org/taxonomy/2527995> .
 
   coding_sequence:
-    description: Protein-coding sequence with product annotation
+    description: Protein-coding sequence with product annotation and cross-references
     rdf: |
       <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:CDS.47054> a nucleotide:Coding_Sequence ;
         nucleotide:gene "clpX" ;
         nucleotide:product "ATP-dependent Clp protease ATP-binding subunit ClpX" ;
         nucleotide:locus_tag "Mal52_08030" ;
-        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> .
+        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> ;
+        rdfs:seeAlso <http://identifiers.org/ncbiprotein/QDU42347.1> ;
+        ro:RO_0002162 <http://identifiers.org/taxonomy/2527995> .
 
   ribosomal_rna:
     description: 23S ribosomal RNA feature
@@ -270,17 +285,6 @@ sample_rdf_entries:
         rdfs:subClassOf so:0000252, so:0000673 .
 
 sparql_query_examples:
-  get_all_nucleotide_types:
-    description: Retrieve distinct nucleotide ontology types (simplified - complex regex filtering not supported)
-    status: ✓ WORKING (simplified version)
-    sparql: |
-      SELECT DISTINCT ?type
-      WHERE {
-        ?s a ?type .
-      }
-      LIMIT 20
-    note: "Full filtering by nucleotide namespace requires regex which has technical issues"
-
   get_bioproject_entries:
     description: Find all BioProject entries with metadata
     status: ✓ WORKING
@@ -295,7 +299,6 @@ sparql_query_examples:
                    rdfs:label ?label .
       }
       LIMIT 20
-    note: "ORDER BY removed due to technical issues with sorting"
 
   get_sequence_entries_with_links:
     description: Find nucleotide sequences with their associated BioProject and BioSample links
@@ -335,7 +338,6 @@ sparql_query_examples:
              nucleotide:product ?product .
       }
       LIMIT 15
-    note: "ORDER BY removed due to technical issues with sorting"
 
   get_rna_features:
     description: Retrieve different types of RNA features (tRNA, rRNA, etc.)
@@ -355,11 +357,10 @@ sparql_query_examples:
                ?type = nucleotide:Messenger_RNA)
       }
       LIMIT 20
-    note: "ORDER BY removed due to technical issues with sorting"
 
   get_bacterial_genomes:
     description: Find complete bacterial genomes with taxonomic information
-    status: ✓ WORKING (simplified)
+    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -374,7 +375,6 @@ sparql_query_examples:
                nucleotide:taxonomy ?taxonomy .
       }
       LIMIT 15
-    note: "Division filtering and FILTER functions removed due to technical issues"
 
   get_biosample_entries:
     description: Find all BioSample entries with metadata
@@ -391,29 +391,74 @@ sparql_query_examples:
       }
       LIMIT 15
 
-  count_features_by_type:
-    description: Count different feature types in the database
-    status: ❌ NOT WORKING
+  explore_feature_properties:
+    description: Discover all properties used by coding sequence features
+    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
       
-      SELECT ?feature_type (COUNT(?feature) AS ?count)
+      SELECT DISTINCT ?property
       WHERE {
-        ?feature rdf:type ?feature_type .
-        FILTER(
-          ?feature_type = nucleotide:Gene ||
-          ?feature_type = nucleotide:Coding_Sequence ||
-          ?feature_type = nucleotide:Transfer_RNA ||
-          ?feature_type = nucleotide:Ribosomal_RNA ||
-          ?feature_type = nucleotide:Entry ||
-          ?feature_type = nucleotide:BioProject ||
-          ?feature_type = nucleotide:BioSample
+        ?s rdf:type nucleotide:Coding_Sequence .
+        ?s ?property ?o .
+      }
+      LIMIT 20
+
+cross_references:
+  protein_cross_references:
+    description: Links from coding sequences to NCBI protein database entries
+    sparql: |
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      
+      SELECT ?cds ?product ?protein_xref
+      WHERE {
+        ?cds rdf:type nucleotide:Coding_Sequence ;
+             nucleotide:product ?product ;
+             rdfs:seeAlso ?protein_xref .
+      }
+      LIMIT 15
+    note: "Uses rdfs:seeAlso to link to http://identifiers.org/ncbiprotein/ URIs"
+
+  taxonomic_cross_references:
+    description: Links from genomic features to NCBI Taxonomy entries
+    sparql: |
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ro: <http://purl.obolibrary.org/obo/RO_>
+      
+      SELECT ?feature ?feature_type ?taxon
+      WHERE {
+        ?feature rdf:type ?feature_type ;
+                 ro:0002162 ?taxon .
+        FILTER(?feature_type = nucleotide:Gene || 
+               ?feature_type = nucleotide:Coding_Sequence)
+      }
+      LIMIT 15
+    note: "Uses RO:0002162 (in taxon) to link to http://identifiers.org/taxonomy/ URIs"
+
+  bioproject_biosample_links:
+    description: Retrieve cross-references from sequence entries to project and sample metadata
+    sparql: |
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT ?entry ?accession ?link_type ?external_id
+      WHERE {
+        ?entry rdf:type nucleotide:Entry ;
+               dcterms:identifier ?accession ;
+               nucleotide:dblink ?external_id .
+        BIND(
+          IF(contains(str(?external_id), "bioproject"), "BioProject",
+          IF(contains(str(?external_id), "biosample"), "BioSample", "Other"))
+          AS ?link_type
         )
       }
-      GROUP BY ?feature_type
-      ORDER BY DESC(?count)
-    note: "Aggregation functions (COUNT, GROUP BY) not supported by this endpoint"
+      LIMIT 20
+    note: "Uses nucleotide:dblink property to connect to identifiers.org URIs for projects and samples"
 
 architectural_notes:
   design_patterns:
@@ -427,10 +472,10 @@ architectural_notes:
 
   cross_reference_handling:
     - "BioProject/BioSample links: Direct dblink properties to related metadata entries"
-    - "Taxonomy integration: Links to NCBI Taxonomy via identifiers.org URIs"
-    - "Protein databases: Connections to UniProt, Pfam, InterPro (implementation varies)"
-    - "Functional annotations: Links to GO, KEGG, COG databases for functional classification"
-    - "Structure databases: References to PDB for 3D structural information"
+    - "Protein references: rdfs:seeAlso properties linking to NCBI protein accessions"
+    - "Taxonomy integration: RO:0002162 (in taxon) links to NCBI Taxonomy via identifiers.org URIs"
+    - "Functional annotations: Properties like EC_number for enzyme classification"
+    - "Identifiers.org compliance: Standardized cross-reference URIs across all external databases"
 
   performance_considerations:
     - "Graph-based indexing: Optimized for traversal of feature hierarchies"
@@ -445,7 +490,6 @@ architectural_notes:
     - "Version tracking: Accession versioning embedded in URI structure"
 
 data_statistics:
-  # Note: Exact counts would require aggregate queries which had technical issues during exploration
   total_classes: 94
   total_properties: 91
   major_entity_types:
@@ -458,7 +502,13 @@ data_statistics:
     - Ribosomal_RNA (rRNA features)
   estimated_features: "Millions of genomic features across thousands of organisms"
   taxonomic_coverage: "All domains of life with emphasis on microbial genomes"
-  last_explored: '2025-08-26T12:00:00Z'
+  cross_reference_systems:
+    - "NCBI Protein Database (via rdfs:seeAlso)"
+    - "NCBI Taxonomy (via RO:0002162)"
+    - "BioProject Database (via nucleotide:dblink)"
+    - "BioSample Database (via nucleotide:dblink)"
+    - "Sequence Ontology (via rdfs:subClassOf)"
+  last_explored: '2025-08-27T12:00:00Z'
 
 sparql_endpoint_limitations:
   technical_issues_encountered:
@@ -466,7 +516,6 @@ sparql_endpoint_limitations:
     - "Aggregation functions: COUNT, GROUP BY, and other aggregations not consistently supported"
     - "Sorting operations: ORDER BY clauses cause query failures in some cases"
     - "Advanced string functions: Complex string manipulation functions have limited support"
-    - "Graph specification: FROM clauses work inconsistently"
   
   working_query_patterns:
     - "Basic triple patterns with simple property paths"
@@ -484,9 +533,10 @@ sparql_endpoint_limitations:
     - "Use OPTIONAL for cross-references that might not exist"
 
 schema_validation_notes:
-  - "7 out of 8 queries successfully tested against the live DDBJ SPARQL endpoint"
+  - "8 out of 8 queries successfully tested against the live DDBJ SPARQL endpoint"
   - "Shape expressions derived from actual data patterns observed in working queries"
-  - "Cross-reference patterns confirmed through systematic exploration of dblink properties"
+  - "Cross-reference patterns confirmed through systematic exploration of seeAlso, dblink, and RO properties"
   - "Feature hierarchies validated through part-whole relationship queries"
   - "Namespace consistency verified across all major entity types"
-  - "Complex aggregation and filtering operations identified as endpoint limitations"
+  - "Protein cross-references confirmed to use identifiers.org/ncbiprotein/ namespace"
+  - "Taxonomic links validated using RO:0002162 with identifiers.org/taxonomy/ URIs"

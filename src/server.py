@@ -8,6 +8,10 @@ from pydantic import Field
 # This is the entry point for the MCP server, which will handle requests and provide tools.
 mcp = FastMCP("RDF Portal MCP Server")
 
+@mcp.resource("resources://greeting")
+def greeting() -> str:
+    return "Hello! I don't know why this is here. But, the server doesn't work without it."
+
 # --- Constants and Configuration (Consolidated) ---
 # The SPARQL endpoints for various RDF databases. These endpoints are used to query the RDF data.
 # See also: https://github.com/rdfportal/rdfportal.github.io/blob/feature/legacy/info/ep_dataset_graph.tsv
@@ -57,6 +61,7 @@ SHEX_FILES = {
     "mondo": "resources/mondo.yaml",
     "ddbj": "resources/ddbj.yaml"
 }
+
 SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
 
 # Example entries for RDF databases
@@ -75,11 +80,12 @@ EXAMPLE_ENTRIES = {
     "ddbj": ["http://identifiers.org/bioproject/PRJNA594547","http://identifiers.org/biosample/SAMN12636418"]
 }
 
-# --- General Prompt ---
-@mcp.prompt(name="General Prompt for RDF Portal MCP Server")
-def general_prompt() -> str:
+# -- prompts --
+
+@mcp.prompt(name="Hello RDF Portal!")
+def hello() -> str:
     """
-    General prompt for the RDF Portal MCP Server.
+    Introduction to the RDF Portal MCP Server.
     This prompt provides an overview of the available tools and their usage.
     """
     return (
@@ -93,16 +99,14 @@ def general_prompt() -> str:
         "- `get_property_list`: Get a list of properties in an RDF database that match a given URI.\n"
         "- `get_graph_list`: Get named graphs in a specific RDF database.\n"
         "- `describe_rdf_schema`: Get the RDF schema of a specific RDF database. Use this before constructing SPARQL queries.\n"
-        "For SPARQL queries, you can use the following common prefixes:\n"
-        f"{COMMON_PREFIXES}\n"
         "When constructing SPARQL queries, ensure that you use the correct prefixes and URIs, "
         "start simple, use OPTIONAL extensively, build queries step-by-step, and test with known entities."
         "Use type conversion such as xsd:decimal() or xsd:dateTime() in your queries when appropriate."
     )
 
-@mcp.prompt(name="Generate ShEx and SPARQL Examples for RDF Database")
+@mcp.prompt(enabled=True, name="Generate ShEx and SPARQL examples")
 def generate_shex_and_sparql_examples(
-    dbname: Annotated[str, Field(title="Database Name", description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+    dbname: Annotated[str, Field(description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
     f"""
     Generate ShEx and SPARQL examples for a specific RDF database.
@@ -115,9 +119,9 @@ def generate_shex_and_sparql_examples(
     """
     with open(SHEX_SPARQL_TEMPLATE, "r") as file:
         shex_sparql_template = file.read()
-    
+
     return (
-    f"Explore the shape expression for the {dbname} RDF schema as deeply as possible."
+    f"Explore the shape expression for the {dbname} RDF schema as deeply as possible"
     "In particular, pay close attention to how cross-references to other databases are handled."
     "Construct and run several SPARQL queries based on the shape expression to retrieve biologically relevant data."
     "Make sure the SPARQL queries are well-formed and return meaningful results."
@@ -125,11 +129,12 @@ def generate_shex_and_sparql_examples(
     "in YAML format so that you can reference them later."
     "The YAML file should be based on the following template:"
     "\n\n"
-    f"{shex_sparql_template}"
+   f"{shex_sparql_template}"
     "\n\n"
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
-    "Use `run_example_query` tool to get a feel for the data structure."
+    "Use `run_example_query` to get a feel for the data structure."
     "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
+    "Make sure to test all the SPARQL queries and cross-references thoroughly."
     )
 
 # --- Tools for RDF Portal --- #
@@ -310,7 +315,7 @@ async def get_example_query(
 )
 async def get_class_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
-    uri: Annotated[str, Field(description="The URI to match classes.")]) -> list:
+    uri: Annotated[str, Field(description="The URI to match classes. `http://...`")]) -> list:
     f"""
     Get a list of classes in the RDF database that match the given URI.
 
@@ -341,7 +346,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 )
 async def get_property_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
-    uri: Annotated[str, Field(description="The URI to match properties.")]
+    uri: Annotated[str, Field(description="The URI to match properties. `http://...`")]
 ) -> list:
     f"""
     Get a list of properties in the RDF database that match the given URI.
@@ -393,8 +398,6 @@ SELECT DISTINCT ?graph WHERE {
 }'''
     return await execute_sparql(sparql_query, dbname)
 
-# --- Tools for SPARQL Shape Expressions --- The ShEx files are too large. Temporarily commented out.
-
 @mcp.tool(
         enabled=True,
         name="describe_rdf_schema",
@@ -415,9 +418,12 @@ async def describe_rdf_schema(
     shex_file = SHEX_FILES.get(dbname)
     if not shex_file:
         raise ValueError(f"Unknown database: {dbname}")
-    with open(shex_file, "r") as file:
-        shex = file.read()
-    return shex
+    try:
+        with open(shex_file, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        return f"Error: The schema file for '{dbname}' was not found at the path '{shex_file}'."
+
 
 if __name__ == "__main__":
     mcp.run()

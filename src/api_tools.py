@@ -1,4 +1,3 @@
-# original: https://github.com/zzaebok/mcp-wikidata
 import httpx
 from fastmcp import FastMCP
 from typing import List, Dict, Annotated
@@ -121,7 +120,7 @@ async def search_chembl_molecule(query: str, limit: int = 20) -> dict:
 
     return {"total_count": total_count, "results": parsed_results}
 
-@mcp.tool()
+@mcp.tool(enabled=False)
 async def get_chembl_entity_by_id(service: str, chembl_id: str) -> str:
     """
     Get ChEMBL entity by ID.

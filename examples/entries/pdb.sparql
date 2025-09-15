@@ -1,4 +1,0 @@
-SELECT ?s 
-WHERE {
-    ?s a <http://rdf.wwpdb.org/schema/pdbx-v50.owl#datablock>.
-}

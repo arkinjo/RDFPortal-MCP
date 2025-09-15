@@ -65,6 +65,16 @@ sparql_query_examples:
       SELECT ?property WHERE { 
         ?property a rdf:Property . 
       }
+cross_references:
+ # Replace with actual examples on how to obtain cross-reference info to other databases
+  xref_type1:
+    description: some xref description.
+    sparql: |
+      {SPARQL query to retrieve the cross-reference information}
+  xref_type2: 
+    description: another xref description
+    sparql: |
+      {Another SPARQL query}
 architectural_notes:
   # Replace with any additional information useful for you to understand the architecture of the RDF schema and SPARQL queries.
   design_patterns:
