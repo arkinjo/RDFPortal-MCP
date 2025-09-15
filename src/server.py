@@ -60,7 +60,8 @@ SHEX_FILES = {
     "pubchem": "resources/pubchem.yaml",
     "reactome": "resources/reactome.yaml",
     "mondo": "resources/mondo.yaml",
-    "ddbj": "resources/ddbj.yaml"
+    "ddbj": "resources/ddbj.yaml",
+    "glycosmos": "resources/glycosmos.yaml"
 }
 
 SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
