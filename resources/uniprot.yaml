@@ -295,7 +295,7 @@ sample_rdf_entries:
         up:mnemonic "KAPCA_HUMAN" ;
         up:recommendedName/up:fullName "cAMP-dependent protein kinase catalytic subunit alpha" ;
         up:organism taxon:9606 ;
-        up:reviewed "1" ;
+        up:reviewed true ;
         up:enzyme <http://purl.uniprot.org/enzyme/2.7.11.11> ;
         up:annotation [
           a up:Function_Annotation ;
@@ -313,7 +313,7 @@ sample_rdf_entries:
         up:mnemonic "A0A0D3RPI9_UNCAX" ;
         up:recommendedName/up:fullName "50S ribosomal protein L22" ;
         up:organism taxon:115547 ;
-        up:reviewed "0" .
+        up:reviewed false .
 
   human_receptor_with_xrefs:
     description: Human receptor with extensive cross-references to external databases
