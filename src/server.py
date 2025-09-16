@@ -79,7 +79,8 @@ EXAMPLE_ENTRIES = {
     "wikidata": ["http://www.wikidata.org/entity/Q7187", "http://www.wikidata.org/entity/Q40108"],
     "reactome": ["http://www.reactome.org/biopax/68/49646#Pathway227","http://www.reactome.org/biopax/68/49646#BiochemicalReaction1002"],
     "mondo": ["http://purl.obolibrary.org/obo/MONDO_0000831","http://purl.obolibrary.org/obo/MONDO_0004784"],
-    "ddbj": ["http://identifiers.org/bioproject/PRJNA594547","http://identifiers.org/biosample/SAMN12636418"]
+    "ddbj": ["http://identifiers.org/bioproject/PRJNA594547","http://identifiers.org/biosample/SAMN12636418"],
+    "glycosmos": ["http://glycosmos.org/glycogene/25", "http://purl.obolibrary.org/obo/CHEBI_146500"]
 }
 
 # -- prompts --
