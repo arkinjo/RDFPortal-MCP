@@ -65,6 +65,7 @@ SHEX_FILES = {
 }
 
 SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
+RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # Example entries for RDF databases
 EXAMPLE_ENTRIES = {
@@ -118,7 +119,7 @@ def generate_shex_and_sparql_examples(
         dbname (str): The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
     Returns:
-        str: The generated examples in JSON format.
+        str: The generated examples in YAML format.
     """
     with open(SHEX_SPARQL_TEMPLATE, "r") as file:
         shex_sparql_template = file.read()
@@ -138,6 +139,35 @@ def generate_shex_and_sparql_examples(
     "Use `run_example_query` to get a feel for the data structure."
     "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
     "Make sure to test all the SPARQL queries and cross-references thoroughly."
+    )
+
+@mcp.prompt(enabled=True, name="Generate RDF-Config file")
+def generate_rdf_config(
+        dbname: Annotated[str, Field(description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    f"""
+    Generate the RDF-Config file for a specific RDF database.
+
+    Args:
+        dbname (str): The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
+
+    Returns:
+        str: The generated examples in YAML format.
+    """
+    with open(RDF_CONFIG_TEMPLATE, "r") as file:
+        template = file.read()
+    return (
+    f"Study the RDF Schema of {dbname} by exploring the database."
+    "Try to make biologically relevant SPARQL queries to explore the database structure."
+    "The results should be saved in YAML format."
+    "The YAML file should be based on the following template:"
+    "\n\n"
+   f"{template}"
+    "\n\n"
+    "Use `get_sparql_endpoints` to find available SPARQL endpoints."
+    "Use `run_example_query` to get a feel for the data structure."
+    "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
+ 
     )
 
 # --- Tools for RDF Portal --- #
