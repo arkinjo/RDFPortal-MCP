@@ -1,4 +1,8 @@
 # RDFPortal-MCP
+This MCP server executes SPARQL queries against various RDF databases provided at the [RDF Portal](https://rdfportal.org/). 
+
+Additional functionalities are also provided that interact with a few REST APIs at various sites.
+
 ## Installation
 - Python (>= 3.11)
 - [uv](https://docs.astral.sh/uv/) package manager
@@ -48,3 +52,4 @@ uv sync
     }
 }
 ```
+Here, "rdfportal" is the main MCP server for RDFPortal, whereas "api_tools" is an additional (optional) MCP server providing REST APIs.
