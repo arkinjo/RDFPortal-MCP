@@ -1,5 +1,5 @@
 # RDFPortal-MCP
-This MCP server executes SPARQL queries against various RDF databases provided at the [RDF Portal](https://rdfportal.org/). 
+This MCP server executes SPARQL queries against various biological/biomedical RDF databases provided at the [RDF Portal](https://rdfportal.org/). 
 
 Additional functionalities are also provided that interact with a few REST APIs at various sites.
 
