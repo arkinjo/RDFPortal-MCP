@@ -384,5 +384,7 @@ async def get_wikidata_metadata(entity_id: str, language: str = "en") -> Dict[st
     )
     return {"Label": label, "Descriptions": descriptions}
 
+# DB: Glycosmos
+
 if __name__ == "__main__":
     mcp.run()

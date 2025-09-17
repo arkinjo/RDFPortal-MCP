@@ -1,0 +1,316 @@
+# BacDive RDF Schema Analysis (MIE File)
+
+schema_info:
+  title: BacDive RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the BacDive RDF schema, focusing on bacterial strain data, culture conditions, sequences, and cross-references to external databases
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: https://purl.dsmz.de/
+  graphs:
+    - http://rdfportal.org/dataset/bacdive
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  dcterms: http://purl.org/dc/terms/
+  bacdive: https://purl.dsmz.de/schema/
+  strain: https://purl.dsmz.de/bacdive/strain/
+  sequence: https://purl.dsmz.de/bacdive/sequence_16S/
+  reference: https://purl.dsmz.de/bacdive/reference/
+
+shape_expressions:
+  bacdive:Strain:
+    description: A bacterial strain entity representing a specific isolate of a microorganism with detailed taxonomic and phenotypic information
+    properties:
+      rdfs:label:
+        description: The complete name of the strain including species and strain designation
+        type: xsd:string
+        required: true
+      dcterms:description:
+        description: Detailed description of the strain, including isolation source and characteristics
+        type: xsd:string
+        required: false
+      bacdive:hasTaxID:
+        description: NCBI Taxonomy ID for cross-referencing with other databases
+        type: xsd:string
+        required: true
+      bacdive:hasBacDiveID:
+        description: Unique BacDive database identifier for the strain
+        type: xsd:string
+        required: true
+      bacdive:hasGenus:
+        description: Taxonomic genus of the strain
+        type: xsd:string
+        required: true
+      bacdive:hasSpecies:
+        description: Complete species name of the strain
+        type: xsd:string
+        required: true
+      bacdive:hasSpeciesEpithet:
+        description: Species epithet part of the taxonomic name
+        type: xsd:string
+        required: true
+      bacdive:hasStrainNames:
+        description: Alternative names or designations for the strain
+        type: xsd:string
+        required: false
+      bacdive:hasDesignation:
+        description: Primary strain designation or code
+        type: xsd:string
+        required: false
+      bacdive:hasDomain:
+        description: Taxonomic domain (e.g., Bacteria, Archaea)
+        type: xsd:string
+        required: true
+      bacdive:hasPhylum:
+        description: Taxonomic phylum classification
+        type: xsd:string
+        required: true
+      bacdive:hasClass:
+        description: Taxonomic class classification
+        type: xsd:string
+        required: true
+      bacdive:hasOrder:
+        description: Taxonomic order classification
+        type: xsd:string
+        required: true
+      bacdive:hasFamily:
+        description: Taxonomic family classification
+        type: xsd:string
+        required: true
+      bacdive:isTypeStrain:
+        description: Boolean indicating if this is a type strain for the species
+        type: xsd:boolean
+        required: false
+      bacdive:hasReference:
+        description: Link to reference describing the strain
+        type: bacdive:Reference
+        required: false
+
+  bacdive:16SSequence:
+    description: 16S rRNA gene sequence data for molecular identification and phylogenetic analysis
+    properties:
+      bacdive:hasSequenceAccession:
+        description: GenBank or other database accession number for the sequence
+        type: xsd:string
+        required: true
+      bacdive:fromSequenceDB:
+        description: Source database of the sequence (e.g., ena, genbank)
+        type: xsd:string
+        required: true
+      bacdive:hasSequenceInformation:
+        description: Additional sequence metadata or information
+        type: xsd:string
+        required: false
+      bacdive:describesStrain:
+        description: The strain that this sequence represents
+        type: bacdive:Strain
+        required: true
+      bacdive:hasReference:
+        description: Literature reference for the sequence
+        type: bacdive:Reference
+        required: false
+
+  bacdive:Origin:
+    description: Information about the origin and isolation of bacterial strains including geographic and environmental context
+    properties:
+      rdfs:label:
+        description: Description of the origin or isolation source
+        type: xsd:string
+        required: true
+
+  bacdive:CultureCondition:
+    description: Culture conditions and media requirements for growing bacterial strains
+    properties:
+      rdfs:label:
+        description: Name or description of the culture medium or condition
+        type: xsd:string
+        required: true
+
+  bacdive:Reference:
+    description: Literature or database references providing additional information about strains
+    properties:
+      rdfs:seeAlso:
+        description: External URLs or links to other databases and resources
+        type: xsd:anyURI
+        required: false
+
+sample_rdf_entries:
+  strain_ramlibacter:
+    description: Ramlibacter lithotrophicus strain with complete taxonomic information and type strain status
+    RDF: |
+      strain:170921 a bacdive:Strain ;
+        rdfs:label "Ramlibacter lithotrophicus 170921" ;
+        dcterms:description "Ramlibacter lithotrophicus RBP-1 is a chemolithoautotroph bacterium that was isolated from co-culture with Nitrospirota." ;
+        bacdive:hasTaxID "2606681" ;
+        bacdive:hasBacDiveID "170921" ;
+        bacdive:hasGenus "Ramlibacter" ;
+        bacdive:hasSpecies "Ramlibacter lithotrophicus" ;
+        bacdive:hasSpeciesEpithet "lithotrophicus" ;
+        bacdive:hasDesignation "RBP-1" ;
+        bacdive:hasStrainNames "170921", "RBP-1" ;
+        bacdive:hasDomain "Bacteria" ;
+        bacdive:hasPhylum "Pseudomonadota" ;
+        bacdive:hasClass "Betaproteobacteria" ;
+        bacdive:hasOrder "Burkholderiales" ;
+        bacdive:hasFamily "Comamonadaceae" ;
+        bacdive:isTypeStrain "1" ;
+        bacdive:matchesTaxIDLevel "species" ;
+        bacdive:hasReference reference:69654 .
+
+  sequence_16s_example:
+    description: 16S rRNA sequence with multiple inheritance and cross-reference to ENA database
+    RDF: |
+      sequence:%3E50_DSM_111736_900R a bacdive:16SSequence, bacdive:NucleotideSequence, bacdive:RNASequence, bacdive:rRNASequence ;
+        bacdive:hasSequenceAccession ">50_DSM_111736_900R" ;
+        bacdive:fromSequenceDB "ena" ;
+        bacdive:hasSequenceInformation "ena", ">50_DSM_111736_900R" ;
+        bacdive:describesStrain strain:140868 ;
+        bacdive:hasReference reference:67658 .
+
+  origin_enrichment:
+    description: Multiple inheritance enrichment procedure with strain association
+    RDF: |
+      <https://purl.dsmz.de/bacdive/enrichment/15449> a bacdive:EnrichmentProcedure, bacdive:IsolationInformation, bacdive:IsolationProcedure, bacdive:Origin ;
+        rdfs:label "w+Sarc (water agar + nutrient bacteria cells)" ;
+        bacdive:describesStrain strain:18157 .
+
+  culture_medium:
+    description: Comprehensive culture medium with external links and growth information
+    RDF: |
+      <https://purl.dsmz.de/bacdive/culture_medium/135091> a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CultureMedium ;
+        rdfs:label "CIP Medium 23" ;
+        bacdive:describesStrain strain:6758 ;
+        bacdive:hasReference reference:116038 ;
+        bacdive:hasGrowthInformation "1" ;
+        bacdive:hasMediaLink <https://catalogue-crbip.pasteur.fr/fiche_milieu.xhtml?crbip=23> ;
+        bacdive:hasMediumGrowth "1" ;
+        bacdive:providedBy "CIP" .
+
+  external_reference:
+    description: Reference with comprehensive catalogue information and external links
+    RDF: |
+      reference:115969 a bacdive:Reference ;
+        rdfs:seeAlso <https://catalogue-crbip.pasteur.fr/fiche_catalogue.xhtml?crbip=CIP%20111405> ;
+        dcterms:creator "Curators of the CIP" ;
+        bacdive:hasBibliographicInformation "catalogue" ;
+        bacdive:hasCatalogueID "CIP 111405" ;
+        bacdive:hasCatalogueInformation "CIP 111405", "Collection of Institut Pasteur" ;
+        bacdive:hasCatalogueInstitution "Collection of Institut Pasteur" ;
+        bacdive:hasDocumentType "catalogue" .
+
+sparql_query_examples:
+  get_all_strain_classes:
+    description: Retrieve all distinct classes in the BacDive database
+    sparql: |
+      SELECT DISTINCT ?class WHERE {
+        GRAPH <http://rdfportal.org/dataset/bacdive> {
+          ?s a ?class .
+        }
+      } ORDER BY ?class
+
+  get_strains_with_taxonomy:
+    description: Retrieve bacterial strains with their complete taxonomic classification
+    sparql: |
+      SELECT ?strain ?label ?genus ?species ?phylum ?class WHERE {
+        ?strain a <https://purl.dsmz.de/schema/Strain> .
+        ?strain <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        ?strain <https://purl.dsmz.de/schema/hasGenus> ?genus .
+        ?strain <https://purl.dsmz.de/schema/hasSpecies> ?species .
+        ?strain <https://purl.dsmz.de/schema/hasPhylum> ?phylum .
+        ?strain <https://purl.dsmz.de/schema/hasClass> ?class .
+      } LIMIT 10
+
+  get_strains_with_sequences:
+    description: Find strains that have 16S rRNA sequence data available
+    sparql: |
+      SELECT ?strain ?species ?sequence ?accession WHERE {
+        ?strain a <https://purl.dsmz.de/schema/Strain> .
+        ?strain <https://purl.dsmz.de/schema/hasSpecies> ?species .
+        ?sequence <https://purl.dsmz.de/schema/describesStrain> ?strain .
+        ?sequence a <https://purl.dsmz.de/schema/16SSequence> .
+        ?sequence <https://purl.dsmz.de/schema/hasSequenceAccession> ?accession .
+      } LIMIT 5
+
+  get_type_strains:
+    description: Retrieve type strains which are nomenclatural reference strains for species
+    sparql: |
+      SELECT ?strain ?species ?designation WHERE {
+        ?strain a <https://purl.dsmz.de/schema/Strain> .
+        ?strain <https://purl.dsmz.de/schema/isTypeStrain> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+        ?strain <https://purl.dsmz.de/schema/hasSpecies> ?species .
+        OPTIONAL { ?strain <https://purl.dsmz.de/schema/hasDesignation> ?designation }
+      } LIMIT 10
+
+  get_culture_conditions:
+    description: Retrieve different culture media and conditions used for bacterial cultivation
+    sparql: |
+      SELECT ?condition ?label WHERE {
+        ?condition a <https://purl.dsmz.de/schema/CultureCondition> .
+        ?condition <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+      } LIMIT 15
+
+cross_references:
+  taxonomy_crossref:
+    description: Cross-references to NCBI Taxonomy database through taxonomic IDs
+    sparql: |
+      SELECT ?strain ?species ?taxid WHERE {
+        ?strain a <https://purl.dsmz.de/schema/Strain> .
+        ?strain <https://purl.dsmz.de/schema/hasSpecies> ?species .
+        ?strain <https://purl.dsmz.de/schema/hasTaxID> ?taxid .
+        FILTER(?taxid != "species")
+      } LIMIT 10
+
+  sequence_database_crossref:
+    description: Cross-references to nucleotide sequence databases (ENA, GenBank) via accession numbers
+    sparql: |
+      SELECT ?sequence ?accession ?database ?strain WHERE {
+        ?sequence a <https://purl.dsmz.de/schema/16SSequence> .
+        ?sequence <https://purl.dsmz.de/schema/hasSequenceAccession> ?accession .
+        ?sequence <https://purl.dsmz.de/schema/fromSequenceDB> ?database .
+        ?sequence <https://purl.dsmz.de/schema/describesStrain> ?strain .
+      } LIMIT 10
+
+  culture_collection_crossref:
+    description: Cross-references to other culture collections through external URLs
+    sparql: |
+      SELECT ?reference ?external_url WHERE {
+        ?reference a <https://purl.dsmz.de/schema/Reference> .
+        ?reference <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?external_url .
+        FILTER(CONTAINS(STR(?external_url), "catalogue-crbip.pasteur.fr"))
+      } LIMIT 10
+
+architectural_notes:
+  design_patterns:
+    - Use of DSMZ-specific schema namespace (https://purl.dsmz.de/schema/) for domain-specific properties
+    - Clear separation between strain entities, sequence data, and culture information
+    - Multiple inheritance for sequence types (16SSequence extends NucleotideSequence, RNASequence, and rRNASequence)
+    - Extensive use of taxonomic hierarchy properties for precise biological classification
+    - Integration with external databases through standardized identifiers (NCBI Taxonomy IDs, sequence accessions)
+  
+  performance_considerations:
+    - Large dataset with 143,019 strain records requires efficient indexing
+    - Taxonomic queries benefit from indexed genus, species, and higher taxonomic rank properties
+    - Sequence-strain relationships are frequently queried and should be optimized
+    - Cross-reference queries to external databases may require federation or caching
+
+  data_integration_patterns:
+    - NCBI Taxonomy IDs enable integration with phylogenetic and genomic databases
+    - Sequence accession numbers link to NCBI nucleotide databases and EBI/ENA
+    - External URLs in references provide direct links to other culture collections
+    - Strain names and designations facilitate cross-referencing with laboratory collections
+
+data_statistics:
+  total_classes: 20
+  total_properties: 18
+  total_strains: 143019
+  total_sequences: 36457
+  total_origins: 140707
+  major_classes:
+    - Strain: 143019 instances
+    - Origin: 140707 instances  
+    - 16SSequence: 36457 instances
+    - CultureCondition: ~135000 instances
+    - Reference: ~116000 instances
+  last_updated: '2025-01-15T10:00:00Z'

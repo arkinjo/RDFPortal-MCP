@@ -28,7 +28,9 @@ SPARQL_ENDPOINT = {
     "wikidata": "https://query.wikidata.org/sparql",
     "mondo": "https://rdfportal.org/primary/sparql",
     "ddbj": "https://rdfportal.org/ddbj/sparql",
-    "glycosmos": "https://ts.glycosmos.org/sparql"
+    "glycosmos": "https://ts.glycosmos.org/sparql",
+    "bacdive": "https://rdfportal.org/primary/sparql",
+    "mediadive": "https://rdfportal.org/primary/sparql"
 }
 
 SPARQL_ENDPOINT_KEYS = list(SPARQL_ENDPOINT.keys())
@@ -61,10 +63,12 @@ SHEX_FILES = {
     "reactome": "resources/reactome.yaml",
     "mondo": "resources/mondo.yaml",
     "ddbj": "resources/ddbj.yaml",
-    "glycosmos": "resources/glycosmos.yaml"
+    "glycosmos": "resources/glycosmos.yaml",
+    "bacdive": "resources/bacdive.yaml",
+    "mediadive": "resources/mediadive.yaml"
 }
 
-SHEX_SPARQL_TEMPLATE="resources/shex_sparql_template.yaml"
+MIE_TEMPLATE="resources/MIE_template.yaml"
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # Example entries for RDF databases
@@ -108,37 +112,40 @@ def hello() -> str:
         "Use type conversion such as xsd:decimal() or xsd:dateTime() in your queries when appropriate."
     )
 
-@mcp.prompt(enabled=True, name="Generate ShEx and SPARQL examples")
-def generate_shex_and_sparql_examples(
-    dbname: Annotated[str, Field(description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+@mcp.prompt(enabled=True, name="Generate a MIE file")
+def generate_MIE_file(
+    dbname: Annotated[str, Field(description=f"The name of the database to explore. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
     f"""
-    Generate ShEx and SPARQL examples for a specific RDF database.
+    Explore a specific RDF database to generate an MIE file for SPARQL queries.
 
     Args:
-        dbname (str): The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
+        dbname (str): The name of the database to explore. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
     Returns:
         str: The generated examples in YAML format.
     """
-    with open(SHEX_SPARQL_TEMPLATE, "r") as file:
-        shex_sparql_template = file.read()
+    with open(MIE_TEMPLATE, "r") as file:
+        mie_template = file.read()
 
     return (
     f"Explore the shape expression for the {dbname} RDF schema as deeply as possible"
     "In particular, pay close attention to how cross-references to other databases are handled."
     "Construct and run several SPARQL queries based on the shape expression to retrieve biologically relevant data."
     "Make sure the SPARQL queries are well-formed and return meaningful results."
-    "Save the obtained shape expressions, along with the SPARQL query examples,"
+    "Save the obtained shape expressions, along with the RDF and SPARQL query examples,"
     "in YAML format so that you can reference them later."
     "The YAML file should be based on the following template:"
     "\n\n"
-   f"{shex_sparql_template}"
+   f"{MIE_TEMPLATE}"
+   "\n\n"
+   f"{mie_template}"
     "\n\n"
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
     "Use `run_example_query` to get a feel for the data structure."
     "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
-    "Make sure to test all the SPARQL queries and cross-references thoroughly."
+    "Test all the SPARQL queries and cross-references thoroughly."
+    "Also, check if all the RDF examples really exist in the database."
     )
 
 @mcp.prompt(enabled=True, name="Generate RDF-Config file")

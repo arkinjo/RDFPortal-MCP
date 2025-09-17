@@ -1,9 +1,14 @@
-schema_info:
+# This is the template for creating a MIE file.
+schema_info: 
   # Replace with actual schema information
   title: RDF Schema Analysis
   description: This document provides an analysis of the RDF schema used in the project
   endpoint: http://example.org/sparql
   base_uri: http://example.org/
+  graphs: # This subsection is optional.
+  # Replace with actual graph URIs, only those that are relevant to this database.
+    - http://example.org/graph1
+    - http://example.org/graph2
 prefixes:
   # Replace with actual prefixes used in the RDF schema
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
@@ -13,49 +18,50 @@ prefixes:
   ex: http://example.org/
 shape_expressions:
   # Replace with actual shape expressions
-  Person:
-    description: A person entity in the RDF schema
-    properties:
-      name:
+  ex:Person:
+    description: A person entity in the RDF schema # Describe the class. This tag "description" is fixed. Don't change it.
+    properties: # List the properties of the class. The tag "properties" is fixed. Don't change it.
+      # Replace with actual properties in the following.
+      ex:name: # Replace with actual URI of the property
+        description: The name of the person # Describe the property. This tag "description" is fixed. Don't change it.
         type: xsd:string
         required: true
-        description: The name of the person
-      age:
+      ex:age:
+        description: The age of the person
         type: xsd:integer
         required: false
-        description: The age of the person
-  Organization:
+  ex:Organization:
     description: An organization entity in the RDF schema
     properties:
-      name:
+      ex:name:
+        description: The name of the organization
         type: xsd:string
         semantic_type: xsd:decimal
         type_conversion: "xsd:decimal(?value)"
         required: true
-        description: The name of the organization
-      foundedYear:
+      ex:foundedYear:
+        description: The year the organization was founded
         type: xsd:integer
         required: false
-        description: The year the organization was founded
-sample_rdf_entries:
+sample_rdf_entries: # This tag "sample_rdf_entries" is fixed. Don't change it.
   # Replace with actual sample RDF data. At least five diversified examples should be included. Make them concise.
-  example1:
-    description: protein X
-    RDF: |
+  protein_X: # Give some appropriate name for the example.
+    description: protein X # This tag "description" is fixed. Don't change it.
+    RDF: | # This tag "RDF" is fixed. Don't change it.
       ex:Entry1 a ex:Class1;
         ex:property1 ex:Value1;
         ex:property2 "value2".
-  example2:
+  protein_Y:
     description: protein Y
     RDF: |
       ex:Entry2 a ex:Class2;
         ex:property3 "value3";
         ex:property4 "value4".
-sparql_query_examples:
+sparql_query_examples: # This tag "sparql_query_examples" is fixed. Don't change it.
   # Replace with at least five biologically relevant examples of SPARQL queries. Run these queries and make sure they actually work and return results.
   get_classes:
-    description: Retrieve all classes defined in the RDF schema
-    sparql: |
+    description: Retrieve all classes defined in the RDF schema # This tag "description" is fixed. Don't change it.
+    sparql: | # This tag "sparql" is fixed. Don't change it.
       SELECT ?class WHERE { 
         ?class a rdfs:Class . 
       }
@@ -65,7 +71,7 @@ sparql_query_examples:
       SELECT ?property WHERE { 
         ?property a rdf:Property . 
       }
-cross_references:
+cross_references: # This tag "cross_references" is fixed. Don't change it.
  # Replace with actual examples on how to obtain cross-reference info to other databases
   xref_type1:
     description: some xref description.
@@ -75,7 +81,7 @@ cross_references:
     description: another xref description
     sparql: |
       {Another SPARQL query}
-architectural_notes:
+architectural_notes: # This tag "architectural_notes" is fixed. Don't change it.
   # Replace with any additional information useful for you to understand the architecture of the RDF schema and SPARQL queries.
   design_patterns:
     - Use of RDF Schema for defining classes and properties
@@ -83,7 +89,7 @@ architectural_notes:
   performance_considerations:
     - Optimize SPARQL queries for better performance
     - Consider caching frequently accessed data
-data_statistics:
+data_statistics: # This tag "data_statistics" is fixed. Don't change it.
   # Replace with actual data statistics.
   total_classes: 10
   total_properties: 20

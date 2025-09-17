@@ -1,0 +1,91 @@
+# RDF-Config file for Glycosmos database
+endpoint:
+  - https://ts.glycosmos.org/sparql
+  - graph:
+    - http://rdf.glycosmos.org/glycogenes
+    - http://rdf.glycosmos.org/glycoprotein
+    - http://rdf.glycosmos.org/glycans
+    - http://rdf.glycosmos.org/hgnc
+    - http://rdf.glycosmos.org/kegg
+    - http://rdf.glycosmos.org/pathway
+    - http://rdf.glycosmos.org/pathway_reactome
+
+metadata:
+  title: Glycosmos RDF
+  description: Glycosmos is a comprehensive glycobiology database containing information about glycans, glycogenes, glycoproteins, and their cross-references to major biological databases
+  tags: [Glycan, Glycogene, Glycoprotein, Glycobiology, Carbohydrate, Gene, Protein]
+  provider: DBCLS
+  creators:
+    - name: Glycosmos Team
+      affiliation: DBCLS
+  version: 1.0.0
+  issued: 2025-09-16
+  licenses:
+    - https://creativecommons.org/licenses/by/4.0/
+
+prefix:
+  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  owl: <http://www.w3.org/2002/07/owl#>
+  xsd: <http://www.w3.org/2001/XMLSchema#>
+  dcterms: <http://purl.org/dc/terms/>
+  glycan: <http://purl.jp/bio/12/glyco/glycan#>
+  conjugate: <http://purl.jp/bio/12/glyco/conjugate#>
+  uniprot: <http://purl.uniprot.org/core/>
+  sio: <http://semanticscience.org/resource/>
+  chebi: <http://purl.obolibrary.org/obo/CHEBI_>
+  ncbigene: <http://identifiers.org/ncbigene/>
+  taxonomy: <http://identifiers.org/taxonomy/>
+  glycosmos: <http://glycosmos.org/>
+
+model:
+  - Glycogene glycosmos:glycogene/1436:
+    - a: glycan:Glycogene
+    - rdfs:label:
+      - gene_symbol: "CSF1R"
+    - dcterms:description:
+      - gene_description: "colony stimulating factor 1 receptor"
+    - glycan:has_taxon:
+      - organism_taxon: taxonomy:9606
+    - rdfs:seeAlso:
+      - ncbi_gene_ref: ncbigene:1436
+    - rdfs:seeAlso:
+      - uniprot_gene_ref: <http://purl.uniprot.org/geneid/1436>
+
+  - GlycanResource chebi:146500:
+    - a: glycan:Resource_entry
+    - rdfs:label:
+      - resource_label: "ChEBI"
+    - dcterms:identifier:
+      - chebi_identifier: "146500"
+
+  - Glycoprotein glycosmos:glycoprotein/A0A0D5CCD3:
+    - a: glycan:Glycoprotein
+    - rdfs:label:
+      - protein_label: "MHC class I antigen (Fragment)"
+    - rdfs:seeAlso:
+      - uniprot_protein_ref: <http://purl.uniprot.org/uniprot/A0A0D5CCD3>
+    - conjugate:glycosylated_at:
+      - glycosylation_site: glycosmos:glycosylationsite/SITE00007746
+    - glycan:has_taxon:
+      - protein_taxon: taxonomy:9606
+
+  - VegfaGene glycosmos:glycogene/7422:
+    - a: glycan:Glycogene
+    - rdfs:label:
+      - vegfa_symbol: "VEGFA"
+    - dcterms:description:
+      - vegfa_description: "vascular endothelial growth factor A"
+    - glycan:has_taxon:
+      - human_taxon: taxonomy:9606
+    - rdfs:seeAlso*:
+      - cross_reference: ncbigene:7422
+
+  - MouseGene glycosmos:glycogene/26383:
+    - a: glycan:Glycogene
+    - rdfs:label:
+      - fto_label: "Fto"
+    - dcterms:description+:
+      - fto_function: "FTO alpha-ketoglutarate dependent dioxygenase"
+    - glycan:has_taxon:
+      - mouse_taxon: taxonomy:10090

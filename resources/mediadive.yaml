@@ -1,0 +1,450 @@
+schema_info: 
+  title: MediaDive RDF Schema Analysis
+  description: This document provides an analysis of the MediaDive RDF schema, which contains bacterial culture media compositions, growth conditions, and strain information from DSMZ
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: https://purl.dsmz.de/
+  graphs:
+    - http://rdfportal.org/dataset/mediadive
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  schema: https://purl.dsmz.de/schema/
+  mediadive: https://purl.dsmz.de/mediadive/
+  bacdive: https://purl.dsmz.de/bacdive/
+  dcterms: http://purl.org/dc/terms/
+
+shape_expressions:
+  schema:Strain:
+    description: A bacterial strain entity with taxonomic information and growth characteristics
+    properties:
+      rdfs:label:
+        description: The full scientific name and strain identifier
+        type: xsd:string
+        required: true
+      dcterms:description:
+        description: Detailed description of the strain including origin and characteristics
+        type: xsd:string
+        required: false
+      schema:hasTaxID:
+        description: NCBI Taxonomy ID for taxonomic classification
+        type: xsd:string
+        required: false
+      schema:hasBacDiveID:
+        description: BacDive database identifier
+        type: xsd:string
+        required: false
+      schema:hasSpecies:
+        description: Species name
+        type: xsd:string
+        required: true
+      schema:hasGenus:
+        description: Genus name
+        type: xsd:string
+        required: true
+      schema:hasFamily:
+        description: Taxonomic family
+        type: xsd:string
+        required: false
+      schema:hasOrder:
+        description: Taxonomic order
+        type: xsd:string
+        required: false
+      schema:hasClass:
+        description: Taxonomic class
+        type: xsd:string
+        required: false
+      schema:hasPhylum:
+        description: Taxonomic phylum
+        type: xsd:string
+        required: false
+      schema:hasDomain:
+        description: Taxonomic domain
+        type: xsd:string
+        required: false
+      schema:hasDesignation:
+        description: Strain designation or identifier
+        type: xsd:string
+        required: false
+      schema:hasStrainNames:
+        description: Alternative strain names
+        type: xsd:string
+        required: false
+
+  schema:Medium:
+    description: A culture medium formulation for bacterial growth
+    properties:
+      rdfs:label:
+        description: The name of the culture medium
+        type: xsd:string
+        required: true
+      dcterms:identifier:
+        description: Unique identifier for the medium
+        type: xsd:anyURI
+        required: true
+      schema:belongsToGroup:
+        description: Medium group or category
+        type: xsd:string
+        required: false
+      schema:fromSource:
+        description: Source organization (e.g., DSMZ)
+        type: xsd:string
+        required: false
+      schema:hasFinalPH:
+        description: Final pH value of the medium
+        type: xsd:decimal
+        required: false
+      schema:hasMaxPH:
+        description: Maximum pH value
+        type: xsd:decimal
+        required: false
+      schema:hasMinPH:
+        description: Minimum pH value
+        type: xsd:decimal
+        required: false
+      schema:hasMainSolution:
+        description: Reference to the main solution component
+        type: schema:Solution
+        required: false
+      schema:includesSolution:
+        description: Solutions included in the medium
+        type: schema:Solution
+        required: false
+      schema:isComplex:
+        description: Whether the medium is complex (1) or defined (0)
+        type: xsd:boolean
+        required: false
+      schema:hasLinkToSource:
+        description: URL link to source documentation
+        type: xsd:anyURI
+        required: false
+
+  schema:Ingredient:
+    description: A chemical component used in culture media
+    properties:
+      rdfs:label:
+        description: The name of the ingredient
+        type: xsd:string
+        required: true
+      dcterms:identifier:
+        description: Unique identifier for the ingredient
+        type: xsd:string
+        required: true
+      schema:belongsToGroup:
+        description: Chemical group or category
+        type: xsd:string
+        required: false
+      schema:hasPubChem:
+        description: PubChem Compound ID for cross-reference
+        type: xsd:string
+        required: false
+      schema:hasGMO:
+        description: GMO database cross-reference URI
+        type: xsd:anyURI
+        required: false
+      schema:hasSynonym:
+        description: Alternative names for the ingredient
+        type: xsd:string
+        required: false
+      schema:isComplexCarbonSource:
+        description: Whether it serves as a complex carbon source
+        type: xsd:boolean
+        required: false
+      schema:hasCAS:
+        description: CAS Registry Number for chemical identification
+        type: xsd:string
+        required: false
+      schema:hasChEBI:
+        description: ChEBI database identifier
+        type: xsd:string
+        required: false
+      schema:hasFormula:
+        description: Chemical formula
+        type: xsd:string
+        required: false
+      schema:hasMass:
+        description: Molecular mass in daltons
+        type: xsd:decimal
+        required: false
+      schema:hasZVG:
+        description: ZVG catalog number
+        type: xsd:string
+        required: false
+
+  schema:Solution:
+    description: A solution component of a culture medium
+    properties:
+      rdfs:label:
+        description: The name of the solution
+        type: xsd:string
+        required: true
+      dcterms:identifier:
+        description: Unique identifier for the solution
+        type: xsd:string
+        required: true
+      schema:hasVolume:
+        description: Volume of the solution in mL
+        type: xsd:decimal
+        required: false
+      schema:firstDefinedInMedium:
+        description: Medium where this solution was first defined
+        type: schema:Medium
+        required: false
+
+  schema:GrowthCondition:
+    description: Growth conditions for bacterial strains
+    properties:
+      schema:growthTemperature:
+        description: Growth temperature in Celsius
+        type: xsd:decimal
+        required: false
+      schema:hasGrowthIndicator:
+        description: Growth indicator (1 for positive, 0 for negative)
+        type: xsd:boolean
+        required: false
+      schema:partOfMedium:
+        description: Medium used for these growth conditions
+        type: schema:Medium
+        required: true
+      schema:relatedToStrain:
+        description: Strain tested under these conditions
+        type: schema:Strain
+        required: true
+
+sample_rdf_entries:
+  ramlibacter_strain:
+    description: Example bacterial strain with taxonomic information
+    RDF: |
+      <https://purl.dsmz.de/bacdive/strain/170921> a schema:Strain ;
+        rdfs:label "Ramlibacter lithotrophicus 170921" ;
+        dcterms:description "Ramlibacter lithotrophicus RBP-1 is a chemolithoautotroph bacterium that was isolated from co-culture with Nitrospirota." ;
+        schema:hasTaxID "2606681" ;
+        schema:hasBacDiveID "170921" ;
+        schema:hasSpecies "Ramlibacter lithotrophicus" ;
+        schema:hasGenus "Ramlibacter" ;
+        schema:hasFamily "Comamonadaceae" ;
+        schema:hasOrder "Burkholderiales" ;
+        schema:hasClass "Betaproteobacteria" ;
+        schema:hasPhylum "Pseudomonadota" ;
+        schema:hasDomain "Bacteria" ;
+        schema:hasDesignation "RBP-1" .
+
+  flavobacterium_medium:
+    description: Example culture medium with pH and composition information
+    RDF: |
+      <https://purl.dsmz.de/mediadive/medium/102> a schema:CultureMedium, schema:Medium ;
+        rdfs:label "FLAVOBACTERIUM AQUATILE MEDIUM" ;
+        dcterms:identifier "https://identifiers.org/mediadive.medium:102" ;
+        schema:belongsToGroup "FLAVOBACTERIUM AQUATILE MEDIUM" ;
+        schema:fromSource "DSMZ" ;
+        schema:hasFinalPH "7.4" ;
+        schema:hasMaxPH "7.4" ;
+        schema:hasMinPH "7.4" ;
+        schema:hasMainSolution <https://purl.dsmz.de/mediadive/solution/172> ;
+        schema:isComplex "1" ;
+        schema:hasLinkToSource "https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium102.pdf" .
+
+  sorbitol_ingredient:
+    description: Example chemical ingredient with PubChem cross-reference
+    RDF: |
+      <https://purl.dsmz.de/mediadive/ingredient/1010> a schema:Ingredient ;
+        rdfs:label "Sorbitol" ;
+        dcterms:identifier "1010" ;
+        schema:belongsToGroup "D-Sorbitol" ;
+        schema:hasPubChem "5780" ;
+        schema:hasGMO <http://purl.jp/bio/10/gmo/GMO_001369> ;
+        schema:hasCAS "50-70-4" ;
+        schema:hasChEBI "30911" ;
+        schema:hasFormula "C6H14O6" ;
+        schema:hasMass "182.17" ;
+        schema:hasSynonym "D-Glucitol", "D-Sorbitol", "glucitol" ;
+        schema:hasZVG "30670" ;
+        schema:isComplexCarbonSource "0" .
+
+  main_solution:
+    description: Example solution component
+    RDF: |
+      <https://purl.dsmz.de/mediadive/solution/172> a schema:Solution ;
+        rdfs:label "Main sol. 102" ;
+        dcterms:identifier "172" ;
+        schema:hasVolume "1000" ;
+        schema:firstDefinedInMedium <https://purl.dsmz.de/mediadive/medium/102> .
+
+  growth_condition:
+    description: Example growth condition with temperature
+    RDF: |
+      <https://purl.dsmz.de/mediadive/growth/326777> a schema:GrowthCondition ;
+        schema:growthTemperature "28" ;
+        schema:hasGrowthIndicator "1" ;
+        schema:partOfMedium <https://purl.dsmz.de/mediadive/medium/83> ;
+        schema:relatedToStrain <https://purl.dsmz.de/mediadive/strain/21326> .
+
+sparql_query_examples:
+  get_all_strains:
+    description: Retrieve all bacterial strains with their species information
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?label ?species WHERE { 
+        ?strain a schema:Strain .
+        ?strain rdfs:label ?label .
+        ?strain schema:hasSpecies ?species .
+      } LIMIT 100
+
+  get_complex_media:
+    description: Find all complex culture media with their pH values
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?label ?ph WHERE {
+        ?medium a schema:Medium .
+        ?medium rdfs:label ?label .
+        ?medium schema:isComplex "1" .
+        ?medium schema:hasFinalPH ?ph .
+      } ORDER BY ?ph
+
+  find_ingredients_with_pubchem:
+    description: Retrieve ingredients that have PubChem cross-references
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?pubchem WHERE {
+        ?ingredient a schema:Ingredient .
+        ?ingredient rdfs:label ?label .
+        ?ingredient schema:hasPubChem ?pubchem .
+        FILTER(?pubchem > 0)
+      } ORDER BY ?label
+
+  get_escherichia_growth_conditions:
+    description: Find growth conditions for Escherichia coli strains
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?species ?medium ?temperature WHERE { 
+        ?strain a schema:Strain .
+        ?strain schema:hasSpecies ?species .
+        ?growthCondition schema:relatedToStrain ?strain .
+        ?growthCondition schema:partOfMedium ?medium .
+        ?growthCondition schema:growthTemperature ?temperature .
+        FILTER(CONTAINS(?species, "Escherichia"))
+      } ORDER BY ?temperature
+
+  get_strain_taxonomy:
+    description: Retrieve complete taxonomic hierarchy for strains
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?species ?genus ?family ?order ?class ?phylum ?domain WHERE {
+        ?strain a schema:Strain .
+        ?strain schema:hasSpecies ?species .
+        ?strain schema:hasGenus ?genus .
+        OPTIONAL { ?strain schema:hasFamily ?family }
+        OPTIONAL { ?strain schema:hasOrder ?order }
+        OPTIONAL { ?strain schema:hasClass ?class }
+        OPTIONAL { ?strain schema:hasPhylum ?phylum }
+        OPTIONAL { ?strain schema:hasDomain ?domain }
+      } LIMIT 50
+
+cross_references:
+  pubchem_compounds:
+    description: Ingredients with PubChem compound cross-references for chemical information
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?pubchem_id WHERE {
+        ?ingredient a schema:Ingredient .
+        ?ingredient rdfs:label ?label .
+        ?ingredient schema:hasPubChem ?pubchem_id .
+        FILTER(?pubchem_id > 0)
+      }
+
+  gmo_database:
+    description: Ingredients with GMO database cross-references
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?gmo_uri WHERE {
+        ?ingredient a schema:Ingredient .
+        ?ingredient rdfs:label ?label .
+        ?ingredient schema:hasGMO ?gmo_uri .
+      }
+
+  taxonomy_ncbi:
+    description: Strains with NCBI Taxonomy database cross-references
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?label ?tax_id WHERE {
+        ?strain a schema:Strain .
+        ?strain rdfs:label ?label .
+        ?strain schema:hasTaxID ?tax_id .
+        FILTER(REGEX(?tax_id, "^[0-9]+$"))
+      }
+
+  chebi_compounds:
+    description: Ingredients with ChEBI database cross-references for chemical ontology
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?chebi_id WHERE {
+        ?ingredient a schema:Ingredient .
+        ?ingredient rdfs:label ?label .
+        ?ingredient schema:hasChEBI ?chebi_id .
+      }
+
+  bacdive_database:
+    description: Strains with BacDive database cross-references
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?label ?bacdive_id WHERE {
+        ?strain a schema:Strain .
+        ?strain rdfs:label ?label .
+        ?strain schema:hasBacDiveID ?bacdive_id .
+      }
+
+architectural_notes:
+  design_patterns:
+    - Uses DSMZ schema vocabulary (https://purl.dsmz.de/schema/) for all domain-specific terms
+    - Integrates with multiple external databases: PubChem for chemical compounds, GMO database for genetic modification information, NCBI Taxonomy for taxonomic classification, and BacDive for bacterial diversity
+    - Employs Dublin Core Terms (dcterms) for metadata like identifiers and descriptions
+    - Implements hierarchical relationships between Media, Solutions, and Ingredients
+    - Links strains to growth conditions and appropriate culture media
+    - Maintains both complex and defined media classifications
+    - Provides detailed taxonomic classification from domain to species level
+
+  cross_reference_strategy:
+    - PubChem IDs stored as strings, with "0" indicating no cross-reference available
+    - GMO database links stored as complete URIs in the format http://purl.jp/bio/10/gmo/GMO_XXXXXX
+    - NCBI Taxonomy IDs stored as strings, both numeric IDs and taxonomic rank names
+    - BacDive strain IDs provide links to the broader BacDive bacterial database
+    - Identifiers.org URIs used for medium identification following FAIR data principles
+
+  performance_considerations:
+    - Large dataset with 143,019 strains, 3,291 media, and 1,489 ingredients
+    - Indexes on taxonomic properties recommended for species-level queries
+    - Cross-reference properties should be indexed for external database linking
+    - Growth condition queries may benefit from temperature-based indexing
+
+data_statistics:
+  total_classes: 13
+  total_strains: 143019
+  total_media: 3291
+  total_ingredients: 1489
+  total_solutions: ~5000
+  total_growth_conditions: ~350000
+  last_updated: '2024-01-01T00:00:00Z'
+  primary_organisms: bacterial_strains
+  data_source: DSMZ_MediaDive

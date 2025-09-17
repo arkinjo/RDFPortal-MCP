@@ -40,22 +40,24 @@ prefix: # The "prefix" tag is fixed. Don't change it.
 model: # The "model" tag is fixed. Don't change it.
 # In the following, add entity examples, sufficiently many to make biologically relevant SPARQL queries.
 # Except for the variable type (with property "a"), there is always an object.
-  - VarName1 ex:example1: # Replace with meaningful variable name (CamelCase) for "VarName1" and specific example for "ex:example1".
+# The examples (e.g., ex:exampl1 and "example2") must be real data. Do not make fake URIs or literals. Check the database for their existance.
+  - VarName1 ex:example1: # Replace with meaningful variable name (CamelCase) for "VarName1". Replace "ex:example1" with an EXISTING URI. 
     - a: ex:Class1 # ex:Class1 must be the class of ex:example1 (when available).
     - ex:prop1: # Replace with appropriate property ex:example1 may have.
-      - var_name_2: ex:example2 # Replace with meaningful variable name (snake_case) for "VarName2" and specific example for "ex:example2".
+      - var_name_2: "example2" # Replace with meaningful variable name (snake_case) for "VarName2". "example2" must be an existing literal.
+# If ex:example2 has nodes under it, DO NOT nest any further. If there are nodes under this, make separate items for each at the same level as VarName1.
     - ex:prop2: # Replace with appropriate property name ex:example1 may have.
-      - var_name_3: ex:example3 # Replace with meaningful variable name (snake_case) for "VarName3" and specific example for "ex:example3".
-  - VarName4 ex:example4: # Replace with meaningful variable name (CamelCase) for "VarName4" and specific example for "ex:example4".
+      - var_name_3: ex:example3 # Replace with meaningful variable name (snake_case) for "VarName3" and real example for "ex:example3".
+  - VarName4 ex:example4: # Replace with meaningful variable name (CamelCase) for "VarName4". "ex:example4" must be an existing URI.
     - a: ex:Class2 # ex:Class2 must be the class of ex:example4 (when available).
     - ex:prop3: # Replace with appropriate property ex:example4 may have.
-      - var_name_5: ex:example5 # Replace with meaningful variable name (snake_case) for "VarName5" and specific example for "ex:example5".
-    - ex:prop4*: # Replace with appropriate property name ex:example4 may have. The "*" at the end indicates 0 or more properties.
-      - var_name_6: ex:example6 # Replace with meaningful variable name (snake_case) for "VarName6" and specific example for "ex:example6".
+      - var_name_5: ex:example5 # Replace with meaningful variable name (snake_case) for "VarName5". "ex:example5" must be an existing URI or literal.
+    - ex:prop4*: # The "*" at the end indicates 0 or more properties.
+      - var_name_6: ex:example6 # Replace with meaningful variable name (snake_case) for "VarName6". "ex:example6" must be an existing URI or literal."
     - rdfs:label:
       - var_name_7: "some label"
 
-  - VarName8 ex:example8: # Replace with meaningful variable name for "VarName7" and specific example for "ex:example
-    - a: ex:Class3 # ex:Class3 must be the class of ex:example7 (when available).
-    - ex:prop5+: # Replace with appropriate property ex:example7 may have. The "+" at the end indicates 1 or more properties.
-      - var_name_9: ex:example9 # Replace with meaningful variable name for "VarName8" and specific example for "ex:example8".
+  - VarName8 ex:example8: # Replace with meaningful variable name for "VarName8". "ex:example8" must be an existing URI.
+    - a: ex:Class3 # ex:Class3 must be the class of ex:example8 (when available).
+    - ex:prop5+: # The "+" at the end indicates 1 or more properties.
+      - var_name_9: ex:example9 
