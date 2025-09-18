@@ -1,8 +1,8 @@
 # This is the template for creating a MIE file.
 schema_info: 
   # Replace with actual schema information
-  title: RDF Schema Analysis
-  description: This document provides an analysis of the RDF schema used in the project
+  title: DBNAME RDF Schema # Replace DBNAME with the database name.
+  description: A comprehensive resource for human relations and genetics # Replace with a concise description about the database.
   endpoint: http://example.org/sparql
   base_uri: http://example.org/
   graphs: # This subsection is optional.
