@@ -152,6 +152,60 @@ apis:
         - GlyTouCan: the accession number provided
         - WURCS: WURCS sequence string (if available)
         - GlycoCT: GlycoCT sequence string (if available)
+  
+  - api_name: disease_bind_glycan
+    title: GlyTouCan ID from disease name
+    endpoint: https://api.alpha.glycosmos.org/sparqlist/disease_bind_glycan
+    description: |
+      Retrieve GlyTouCan IDs associated with a given disease.
+      Requires a `disease ` string (e.g., "Influenza").
+      For example: https://api.alpha.glycosmos.org/sparqlist/disease_bind_glycan?disease=Influenza
+    parameters:
+      - name: disease
+        type: string
+        required: true
+        description: Disease in SugarBind database
+    output:
+      format: json
+      fields:
+        - disease: Label of the disease (e.g., Influenza)
+        - glytoucan_id: URI string of GlyTouCan accession number (e.g., "http://rdf.glycoinfo.org/glycan/G99053DY")
+
+  - api_name: glytoucan_id_to_epitope_id
+    title: Epitope ID from GlyTouCan ID
+    endpoint: https://api.alpha.glycosmos.org/sparqlist/glytoucan_id_to_epitope_id
+    description: |
+      Retrieve Epitope IDs associated with a given GlyTouCan ID.
+      Requires a `GlyTouCan ID ` string (e.g., "G58955OJ").
+      For example: https://api.alpha.glycosmos.org/sparqlist/glytoucan_id_to_epitope_id?glytoucan_id=G97932OH
+    parameters:
+      - name: glytoucan_id
+        type: string
+        required: true
+        description: GlyTouCan accession number (e.g., "G58955OJ")
+    output:
+      format: json
+      fields:
+        - glytoucan_id: GlyTouCan accession number (e.g., "G58955OJ")
+        - motif_id: Identifier of GlycoEpitope databse (e.g., "EP0111")
+
+  - api_name: epitope_id_to_epitope_name
+    title: Epitope name from epitope ID
+    endpoint: https://api.alpha.glycosmos.org/sparqlist/epitope_id_to_epitope_name
+    description: |
+      Retrieve Epitope name associated with a given epitope ID.
+      Requires a `Epitope ID ` string (e.g., "EP0112").
+      For example: https://api.alpha.glycosmos.org/sparqlist/epitope_id_to_epitope_name?epitope_id=EP0112
+    parameters:
+      - name: epitope_id
+        type: string
+        required: true
+        description: Identifier of GlycoEpitope databse (e.g., "EP0111")
+    output:
+      format: json
+      fields:
+        - epitope_id: Identifier of GlycoEpitope databse (e.g., "EP0111")        
+        - epitope_name: epitope name (e.g., "GT1a alpha")
 
 use_cases:
 
@@ -247,3 +301,21 @@ use_cases:
     api: gtc_external_id
     mapping:
       accNum: G00055MO
+
+  - question: "Find the GlyTouCan ID bind to Influenza."
+    api: disease_bind_glycan
+    mapping:
+      disease: Influenza
+      glytoucan_id: G75789AR
+  
+  - question: "Find the epitope ID links for GlyTouCan G58955OJ."
+    api: glytoucan_id_to_epitope_id
+    mapping:
+      motif_id: EP0111
+      glytoucan_id: G58955OJ
+
+  - question: "Find the epitope name links for epitope ID."
+    api: epitope_id_to_epitope_name
+    mapping:
+      epitope_id: EP0111
+      epitope_name: GT1a alpha

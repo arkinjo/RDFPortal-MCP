@@ -86,3 +86,25 @@ chains:
     final_output:
       - sequences
       - external_ids
+  
+  - chain_name: disease_to_glycan_motifs
+    descripttion: |
+      Retrieve GlyTouCan accession number and the motifs that is associated with a given disease
+      Example: “Please tell me about the glycans and their motifs that bind to the influenza virus.”
+    steps:
+      - api: disease_bind_glycan
+        mapping:
+          disease: from_question
+        output_to: glytoucan_id
+      - api: glytoucan_id_to_epitope_id
+        mapping:
+          glytoucan_id: glytoucan_id
+        output_to: motif_id #need to revise to epitope_id
+      - api: epitope_id_to_epitope_name
+        mapping:
+          epitope_id: epitope_id
+        output_to: epitope_name
+    final_output:
+      - glytoucan_id
+      - epitope_id
+      - epitope_name

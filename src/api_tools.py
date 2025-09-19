@@ -409,6 +409,31 @@ async def glycoepitope_epitope_gtc(epitopeID: str) -> str:
     data = response.json()
     return json.dumps(data)
 
+@mcp.tool(enabled=True) # TODO: output should be epitope_id, NOT motif_id
+async def glytoucan_id_to_epitope_id(glytoucan_id: str) -> str:
+    """
+    Retrieve Epitope IDs associated with a given GlyTouCan ID.
+    Requires a `GlyTouCan ID ` string (e.g., "G58955OJ").
+    
+    Args:
+        glytoucan_id (str): GlyTouCan accession number (e.g., "G58955OJ").
+
+    Returns:
+        format: json
+        fields:
+            - glytoucan_id: GlyTouCan accession number (e.g., "G58955OJ")
+            - motif_id: Identifier of GlycoEpitope databse (e.g., "EP0111")
+    """
+    url = f"https://api.alpha.glycosmos.org/sparqlist/glytoucan_id_to_epitope_id"
+    params = {
+        "glytoucan_id": glytoucan_id
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
 
 @mcp.tool(enabled=True)
 async def gtc_image(accession: str, 
@@ -496,7 +521,7 @@ async def gtc_external_id(accNum: str) -> str:
     return json.dumps(data)
 
 
-@mcp.tool(enabled=True) # TODO: which gene id?
+@mcp.tool(enabled=True) # TODO: gene id is which ontology?
 async def gene_and_organism_annotation(tax_id: str, gene_id: str) -> str:
     """
     Map a gene in a given species (by NCBI Taxonomy ID and gene symbol) to UniProt IDs, 
@@ -584,6 +609,60 @@ async def gtcId2Seq(id: str) -> str:
     data = response.json()
     return json.dumps(data)
 
+
+@mcp.tool(enabled=True)
+async def disease_bind_glycan(disease: str) -> str:
+    """
+    Retrieve GlyTouCan IDs associated with a given disease.
+    Requires a `disease ` string (e.g., "Influenza").
+
+    Args:
+        disease (str): Disease name in SugarBind database (case sensitive)
+
+    Returns:
+        format: json
+        fields:
+            - disease: Label of the disease (e.g., Influenza)
+            - glytoucan_id: GlyTouCan accession number (e.g. "G99053DY")
+    """
+    url = f"https://api.alpha.glycosmos.org/sparqlist/disease_bind_glycan"
+    params = {
+        "disease": disease
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
+
+# glytoucan_id_to_epitope_id is moved after glycoepitope_epitope_gtc()
+
+
+@mcp.tool(enabled=True)
+async def epitope_id_to_epitope_name(epitope_id: str) -> str:
+    """
+    Retrieve Epitope name associated with a given epitope ID.
+    Requires a `Epitope ID ` string (e.g., "EP0112").
+    
+    Args:
+        epitope_id (str): Identifier of GlycoEpitope databse (e.g., "EP0111")
+
+    Returns:
+        format: json
+        fields:
+            - epitope_id: Identifier of GlycoEpitope databse (e.g., "EP0111")        
+            - epitope_name: epitope name (e.g., "GT1a alpha")
+    """
+    url = f"https://api.alpha.glycosmos.org/sparqlist/epitope_id_to_epitope_name"
+    params = {
+        "epitope_id": epitope_id
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
 
 if __name__ == "__main__":
     mcp.run()
