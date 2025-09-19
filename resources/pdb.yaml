@@ -328,7 +328,7 @@ sparql_query_examples:
       LIMIT 100
 
   get_entries_with_multiple_authors:
-    description: Retrieve PDB entries with author information and count collaborative structures (Note: GROUP_CONCAT not supported, use COUNT only)
+    description: Retrieve PDB entries with more than three authors and count the total number of authors for each, identifying highly collaborative structures
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       

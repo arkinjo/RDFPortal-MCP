@@ -118,7 +118,7 @@ shape_expressions:
         coverage: "~69% of entities"
         example: "OC(=O)CNCP(O)(O)=O"
       rdfs:subClassOf:
-        description: Parent classes in the ChEBI hierarchy establishing taxonomic relationships
+        description: Parent classes in the ChEBI hierarchy. This property establishes taxonomic relationships (e.g., 'is a' relationships) and also links compounds to their chemical roles (e.g., 'has role') via OWL restrictions.
         type: owl:Class
         required: false
         multiplicity: multiple
@@ -158,21 +158,6 @@ shape_expressions:
         required: false
         multiplicity: multiple
         
-  ChemicalHierarchy:
-    description: Hierarchical relationships between chemical entities and roles using OWL restrictions
-    properties:
-      rdfs:subClassOf:
-        description: Parent-child relationships in chemical classification establishing taxonomic structure
-        type: owl:Class
-        required: true
-        multiplicity: multiple
-      ro:0000087:
-        description: "has role" relationships linking compounds to their chemical roles via OWL restrictions
-        type: owl:Restriction
-        required: false
-        multiplicity: multiple
-        pattern: "owl:Restriction with owl:onProperty ro:0000087 and owl:someValuesFrom [role]"
-
 sample_rdf_entries:
   glyphosate:
     description: Herbicide compound - glyphosate with comprehensive metadata including structural identifiers and cross-references

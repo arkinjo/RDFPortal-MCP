@@ -1623,7 +1623,7 @@ architectural_notes:
   semantic_modeling:
     namespace_organization:
       - Primary namespace: https://purl.dsmz.de/schema/ for all bacterial-specific properties
-      - Standard vocabularies: rdfs:, dct:, xsd: for common metadata properties
+      - Utilizes standard vocabularies like RDFS, Dublin Core (dct), and XML Schema (xsd) for common metadata properties
       - Consistent URI patterns for all shape expressions and properties
     property_design:
       - Descriptive property names with clear semantic meaning (hasGramStain, isTypeStrain, describesStrain)
@@ -2038,7 +2038,7 @@ biological_query_examples:
             BIND(CONCAT(STR(?gc_start), "% GC") AS ?gc_content)
           }
         }
-      } LIMIT 10 20
+      } LIMIT 10
 
   get_spore_formation_data:
     description: Query spore formation capabilities (both positive and negative cases)
