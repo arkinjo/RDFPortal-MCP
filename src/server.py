@@ -68,7 +68,7 @@ SHEX_FILES = {
     "mediadive": "mie/mediadive.yaml"
 }
 
-MIE_TEMPLATE="mie/MIE_template.yaml"
+MIE_TEMPLATE="resources/MIE_template.yaml"
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # Example entries for RDF databases
