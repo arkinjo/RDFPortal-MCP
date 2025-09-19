@@ -1,0 +1,56 @@
+- database: bacdive
+  title: BacDive RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the BacDive RDF
+    schema, focusing on bacterial strain data, culture conditions, sequences, and
+    cross-references to external databases
+- database: chembl
+  title: ChEMBL RDF Schema
+  description: A comprehensive bioactivity database containing drug-like bioactive
+    compounds with quantitative activities across multiple targets, supporting drug
+    discovery and chemical biology research
+- database: ddbj
+  title: DDBJ RDF Schema
+  description: A comprehensive resource for nucleotide sequence data and genomic features
+    from the DNA Data Bank of Japan. Part of the International Nucleotide Sequence
+    Database Collaboration (INSDC), containing genomic sequences, genes, coding sequences,
+    proteins, and RNA features with extensive cross-references to other biological
+    databases.
+- database: glycosmos
+  title: Glycosmos RDF Schema
+  description: A comprehensive resource for glycan structures, glycogenes, glycoproteins,
+    and their biological relationships with extensive cross-references to major biological
+    databases
+- database: go
+  title: Gene Ontology (GO) RDF Schema Analysis
+  description: This document provides a comprehensive analysis of the Gene Ontology
+    RDF schema including shape expressions, cross-references, and biologically relevant
+    SPARQL queries
+- database: mediadive
+  title: MediaDive RDF Schema
+  description: A comprehensive resource for bacterial culture media compositions,
+    growth conditions, and strain information from DSMZ (German Collection of Microorganisms
+    and Cell Cultures)
+- database: mondo
+  title: MONDO Disease Ontology RDF Schema Analysis
+  description: Comprehensive analysis of the Monarch Disease Ontology (MONDO) RDF
+    schema, focusing on disease classification, cross-references to external databases,
+    and hierarchical relationships
+- database: reactome
+  title: Reactome RDF Schema
+  description: A comprehensive resource for biological pathway data using BioPAX Level
+    3 ontology, focusing on biochemical reactions, protein complexes, and cross-references
+    to external databases
+- database: taxonomy
+  title: NCBI Taxonomy RDF Schema
+  description: A comprehensive resource for biological taxonomic classification, hierarchical
+    relationships, and cross-references to major biological databases
+- database: uniprot
+  title: UniProt RDF Schema
+  description: A comprehensive resource for protein sequences, functional annotation,
+    taxonomic classification, and extensive cross-references to external biological
+    databases
+- database: wikidata
+  title: Wikidata RDF Schema - Biological Entities
+  description: A comprehensive knowledge base for biological entities including genes,
+    proteins, chemical compounds, taxa, and diseases with extensive cross-references
+    to external databases
