@@ -385,6 +385,109 @@ async def get_wikidata_metadata(entity_id: str, language: str = "en") -> Dict[st
     return {"Label": label, "Descriptions": descriptions}
 
 # DB: Glycosmos
+@mcp.tool(enabled=True)
+async def glycoepitope_epitope_gtc(epitopeID: str) -> str:
+    """
+    Retrieve GlyTouCan IDs associated with a given glycoepitope ID.
+
+    Args:
+        epitopeID (str): 
+            The glycoepitope ID to search to retrieve the corresponding GlyTouCan ID. This should be a valid glycoepitope ID string (e.g., EP####).
+
+    Returns:
+        glytoucanID (str): The GlyTouCan ID associated with the given glycoepitope."
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/glycoepitope_epitope_gtc"
+    params = {
+        "epitopeID": epitopeID
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
+@mcp.tool(enabled=True)
+async def gtc_image(accession: str, 
+                    style: str = "extended", 
+                    notation: str = "snfg", 
+                    format: str = "svg", 
+                    graph: str = "http://rdf.glytoucan.org/image"
+                    ) -> str:
+    """
+    Get image data from GlyTouCan
+
+    Args:
+        accession (str): 
+            The GlyTouCan accession number that uniquely identifies a glycan structure.
+            Example: "G39023AU"
+        
+        style (str, optional): 
+            The image style to use. 
+            Default is "extended".
+            Options: "extended".
+        
+        notation (str, optional): 
+            Symbol notation system used to draw or describe the glycan.
+            Default is "snfg".
+            Options include: "cfg", "cfg_bw", "cfg_uoxf", "uoxf", "uoxf_color", "iupac", "snfg".
+        
+        format (str, optional): 
+            The output format of the image.
+            Default is "svg".
+            Options: "png" or "svg".
+        
+        graph (str, optional): 
+            The RDF graph URI to use as the data source.
+            Default is "http://rdf.glytoucan.org/image".
+
+    Returns:
+        format: json
+        fields:
+            - image_tag: Ready-to-use `<img>` HTML tag string
+            - image_base64: Base64-encoded string of the image
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/gtc_image"
+    params = {
+        "accession": accession,
+        "style": style,
+        "notation": notation,
+        "format": format,
+        "graph": graph
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    return response.text
+
+@mcp.tool(enabled=True)
+async def gtc_external_id(accNum: str) -> str:
+    """
+    Retrieve external database cross-references for a given GlyTouCan accession number.  
+    Returns mappings to partner databases (KEGG, BCSDB, GlyGen, UniCarb-DB, GlycoEpitope, GlycoChemExplorer, JCGGDB AIST), including database-specific IDs, URLs, and descriptions.
+
+    Args:
+        accNum (str): 
+            The GlyTouCan ID (also called as accession number) to find the external resources linked the ID.
+
+    Returns:
+        - entry_label: Label of the external resource (e.g., KEGG GLYCAN, GlyGen)
+        - id: External identifier from the partner database
+        - url: Direct URL to the partner database entry
+        - from: Source database name
+        - description: Description of the partner database
+        - partnerurl: Homepage of the partner database
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/gtc_external_id"
+    params = {
+        "accNum": accNum
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
 
 if __name__ == "__main__":
     mcp.run()
