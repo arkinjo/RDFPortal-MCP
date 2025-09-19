@@ -153,10 +153,10 @@ def validate_sparql_and_rdf() -> str:
     """
     Validate SPARQL and RDF examples.
     """
-    return (
-        "Test all the SPARQL query examples and cross-references thoroughly."
-        "Also, check if all the RDF examples exist in the database."
-    )
+    return """
+    Test all the SPARQL query examples and cross-references thoroughly.
+    Also, check if all the RDF examples exist in the database.
+    """
 
 @mcp.prompt(enabled=True, name="Generate RDF-Config file")
 def generate_rdf_config(
