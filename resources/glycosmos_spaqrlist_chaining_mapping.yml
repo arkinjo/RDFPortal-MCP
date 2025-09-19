@@ -1,0 +1,88 @@
+chain_info:
+  title: GlyCosmos SPARQList API Chained Workflows
+  description: |
+    This YAML defines chains of atomic API calls from glycosmos_sparqlist_natural_lang_mapping.yml.  
+    Each chain describes how outputs from one API can be mapped as inputs to the next,  
+    enabling more complex natural language queries to be resolved step by step.
+
+general_rules:
+  - Chains are sequences of existing atomic APIs.
+  - Each step explicitly states which output fields map into the next step’s parameters.
+  - Chains should remain modular: intermediate results can be reused in other workflows.
+  - The MCP should treat each step as independently testable.
+
+chains:
+
+  - chain_name: epitope_to_pubchem
+    description: |
+      Resolve a glycoepitope to external PubChem identifiers through GlyTouCan.
+      Natural language queries like:  
+      "Find PubChem compounds linked to epitope EP0009."
+    steps:
+      - api: glycoepitope_epitope_gtc
+        mapping:
+          epitopeID: from_question
+        output_to: glytoucanID
+      - api: gtc_external_id
+        mapping:
+          accNum: glytoucanID
+        output_to: external_ids
+    final_output:
+      - glytoucanID
+      - external_ids
+
+  - chain_name: glycan_to_sequence_and_image
+    description: |
+      Retrieve both the structural sequence and a display image for a glycan.  
+      Useful for questions like:  
+      "Show me the structure of glycan G10219AA in both sequence and image form."
+    steps:
+      - api: gtcId2Seq
+        mapping:
+          id: from_question
+        output_to: sequences
+      - api: gtc_image
+        mapping:
+          accession: same_as(id)
+          style: extended
+          notation: snfg
+          format: svg
+        output_to: image
+    final_output:
+      - sequences
+      - image
+
+  - chain_name: gene_to_uniprot_to_sequence
+    description: |
+      Map a gene in a given organism to UniProt, then fetch its amino acid sequence.  
+      Example: "Get the sequence of human TNF protein."
+    steps:
+      - api: gene_and_organism_annotation
+        mapping:
+          tax_id: from_question
+          gene_id: from_question
+        output_to: up
+      - api: uniprot_aa_seq
+        mapping:
+          up_id: up
+        output_to: aa_seq
+    final_output:
+      - up
+      - aa_seq
+
+  - chain_name: glycan_cross_reference
+    description: |
+      Retrieve GlyTouCan accession → sequence → external IDs in one flow.  
+      Example: "What is the sequence and KEGG ID for glycan G95616YE?"
+    steps:
+      - api: gtcId2Seq
+        mapping:
+          id: from_question
+        output_to: sequences
+      - api: gtc_external_id
+        mapping:
+          accNum: same_as(id)
+        output_to: external_ids
+    final_output:
+      - sequences
+      - external_ids

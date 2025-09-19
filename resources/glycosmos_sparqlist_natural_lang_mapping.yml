@@ -1,0 +1,249 @@
+schema_info:
+  title: GlyCosmos SPARQList API Natural Language Mapping
+  description: |
+    This YAML maps GlyCosmos SPARQList APIs to natural language use cases.
+    Each API has a description of what it does, the parameters it takes,
+    and example mappings from natural language questions to API calls.
+
+general_rules:
+  - All APIs use HTTP GET requests.
+  - Parameters are passed as query arguments appended to the endpoint.
+  - "Example: https://sparqlist.glycosmos.org/sparqlist/api/<api_name>?param=value"
+  - Parameter values should be extracted from the natural language question.
+  - Most APIs return JSON by default, sometimes with a text alternative.
+
+apis:
+  - api_name: glycoepitope_epitope_gtc
+    title: Glyco Epitope (get GlyTouCan ID)
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/glycoepitope_epitope_gtc
+    description: |
+      Retrieve GlyTouCan IDs associated with a given glycoepitope.
+      Requires an `epitopeID` string (e.g., EP####).
+    parameters:
+      - name: epitopeID
+        type: string
+        required: true
+        description: Glycoepitope identifier (e.g., "EP0007").
+    output:
+      format: json | text
+      fields:
+        - glytoucanID: GlyTouCan accession number string (e.g., G00055MO)
+
+  - api_name: gtc_image
+    title: Get image data from GlyTouCan
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/gtc_image
+    description: |
+      Retrieve glycan structure images from GlyTouCan using a specified accession number.  
+      Supports multiple styles, notations, and formats.  
+      Returns both an HTML `<img>` tag (for rendering) and a base64-encoded string (for decoding/embedding).
+    parameters:
+      - name: accession
+        type: string
+        required: true
+        description: GlyTouCan accession number (e.g., G39023AU)
+      - name: style
+        type: string
+        required: false
+        default: extended
+        description: Image style (e.g., extended)
+      - name: notation
+        type: string
+        required: false
+        default: snfg
+        description: Symbol notation (cfg, cfg_bw, cfg_uoxf, uoxf, uoxf_color, iupac, snfg)
+      - name: format
+        type: string
+        required: false
+        default: svg
+        description: Image format (png or svg)
+      - name: graph
+        type: string
+        required: false
+        default: http://rdf.glytoucan.org/image
+        description: Graph source for image retrieval
+    output:
+      format: json
+      fields:
+        - image_tag: Ready-to-use `<img>` HTML tag string
+        - image_base64: Base64-encoded string of the image
+        
+  - api_name: gtc_external_id
+    title: External ID from GlyTouCan
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/gtc_external_id
+    description: |
+      Retrieve external database cross-references for a given GlyTouCan accession number.  
+      Returns mappings to partner databases (KEGG, BCSDB, GlyGen, UniCarb-DB, GlycoEpitope, GlycoChemExplorer, JCGGDB AIST),  
+      including database-specific IDs, URLs, and descriptions.
+    parameters:
+      - name: accNum
+        type: string
+        required: true
+        description: GlyTouCan accession number (e.g., "G39023AU")
+    output:
+      format: json
+      fields:
+        - entry_label: Label of the external resource (e.g., KEGG GLYCAN, GlyGen)
+        - id: External identifier from the partner database
+        - url: Direct URL to the partner database entry
+        - from: Source database name
+        - description: Description of the partner database
+        - partnerurl: Homepage of the partner database
+
+  - api_name: gene_and_organism_annotation
+    title: Gene and organism annotations
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/gene_and_organism_annotation
+    description: |
+      Map a gene in a given species (by NCBI Taxonomy ID and gene symbol) to UniProt IDs, 
+      protein names, synonyms, and lineage information. Useful for annotating genes across species.
+    parameters:
+      - name: tax_id
+        type: string
+        required: true
+        description: NCBI Taxonomy ID (e.g., "9606" for human).
+      - name: gene_id
+        type: string
+        required: true
+        description: Gene symbol or identifier (e.g., "BRCA1").
+    output:
+      format: json
+      fields:
+        - tg: TogoGenome gene URI
+        - up: UniProt protein URIs
+        - rs: RefSeq identifiers
+        - protein_name: Common protein name
+        - synonym_name: Gene synonyms
+        - recommended_name: UniProt recommended protein name
+        - ec_name: EC enzyme classification numbers
+        - alternative_name: Alternate names
+        - lineage: Full taxonomic lineage
+
+  - api_name: uniprot_aa_seq
+    title: Glycoprotein amino acid sequence from UniProt
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/uniprot_aa_seq
+    description: |
+      Retrieve the amino acid sequence and length of a glycoprotein given its UniProt accession ID.
+      Input is a UniProt ID (e.g., "P02873"). Returns the raw amino acid sequence and its length.
+    parameters:
+      - name: up_id
+        type: string
+        required: true
+        description: UniProt protein accession ID (e.g., "P02873").
+    output:
+      format: json
+      fields:
+        - aa_seq: full amino acid sequence string
+        - length: length of the sequence in amino acids
+        
+  - api_name: gtcId2Seq
+    title: Get Sequence by accession
+    endpoint: https://sparqlist.glycosmos.org/sparqlist/api/gtcId2Seq
+    description: |
+      Retrieve glycan sequences from GlyTouCan by accession number.
+      Supports both WURCS and GlycoCT sequence formats. Input is a GlyTouCan ID
+      (e.g., "G95616YE"). Returns sequence data if available.
+    parameters:
+      - name: id
+        type: string
+        required: true
+        description: GlyTouCan accession number (e.g., "G95616YE").
+    output:
+      format: json
+      fields:
+        - GlyTouCan: the accession number provided
+        - WURCS: WURCS sequence string (if available)
+        - GlycoCT: GlycoCT sequence string (if available)
+
+use_cases:
+
+  - question: "Retrieve the WURCS and GlycoCT sequences for GlyTouCan ID G95616YE."
+    api: gtcId2Seq
+    mapping:
+      id: G95616YE
+
+  - question: "What is the glycan sequence for GlyTouCan accession G00055MO?"
+    api: gtcId2Seq
+    mapping:
+      id: G00055MO
+
+  - question: "Give me the GlycoCT and WURCS formats for glycan G10219AA."
+    api: gtcId2Seq
+    mapping:
+      id: G10219AA
+
+  - question: "What is the amino acid sequence of UniProt protein P02873?"
+    api: uniprot_aa_seq
+    mapping:
+      up_id: P02873
+
+  - question: "UniProt protein Q8N158 associated amino acid sequence and length."
+    api: uniprot_aa_seq
+    mapping:
+      up_id: Q8N158
+
+  - question: "Retrieve the sequence for UniProt ID O76074."
+    api: uniprot_aa_seq
+    mapping:
+      up_id: O76074
+
+  - question: "For human (tax 9606), what UniProt IDs and lineage are linked to TNF gene?"
+    api: gene_and_organism_annotation
+    mapping:
+      tax_id: "9606"
+      gene_id: "TNF"
+
+  - question: "For Drosophila (taxonomy 7227), what annotations exist for gene OGT?"
+    api: gene_and_organism_annotation
+    mapping:
+      tax_id: "7227"
+      gene_id: "OGT"
+
+  - question: "For mouse (taxonomy ID 10090), list UniProt accessions and names for Fut1."
+    api: gene_and_organism_annotation
+    mapping:
+      tax_id: "10090"
+      gene_id: "Fut1"
+
+  - question: "What GlyTouCan IDs are associated with epitope EP0009?"
+    api: glycoepitope_epitope_gtc
+    mapping:
+      epitopeID: EP0009
+
+  - question: "Find the GlyTouCan entry for epitope EP0020."
+    api: glycoepitope_epitope_gtc
+    mapping:
+      epitopeID: EP0020
+
+  - question: "Glycoepitope EP0456 is linked to what GlyTouCan IDs"
+    api: glycoepitope_epitope_gtc
+    mapping:
+      epitopeID: EP0456
+      
+  - question: "Show me the glycan image for GlyTouCan ID G00051MO."
+    api: gtc_image
+    mapping:
+      accession: G00051MO
+      style: extended
+      notation: snfg
+      format: svg
+
+  - question: "Retrieve glycan G00055MO as a PNG in CFG notation."
+    api: gtc_image
+    mapping:
+      accession: G00055MO
+      notation: cfg
+      format: png
+
+  - question: "Find all external database links for GlyTouCan ID G78706CK."
+    api: gtc_external_id
+    mapping:
+      accNum: G78706CK
+  
+  - question: "What KEGG and GlyGen cross-references exist for GlyTouCan glycan G10738?"
+    api: gtc_external_id
+    mapping:
+      accNum: G10738
+
+  - question: "Show me the UniCarb-DB and BCSDB entries linked to GlyTouCan accession G00055MO."
+    api: gtc_external_id
+    mapping:
+      accNum: G00055MO
