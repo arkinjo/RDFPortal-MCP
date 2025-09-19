@@ -1,14 +1,15 @@
+# DDBJ RDF Schema - Metadata Information Exchange File
 schema_info:
-  title: DDBJ Nucleotide Database RDF Schema Analysis
-  description: |
-    This document provides a comprehensive analysis of the DDBJ (DNA Data Bank of Japan) 
-    nucleotide database RDF schema. DDBJ is part of the International Nucleotide Sequence 
-    Database Collaboration (INSDC) and contains sequences from biological organisms.
-    The schema supports genomic sequences, genes, coding sequences, proteins, and RNA features
-    with extensive cross-references to other biological databases.
+  title: DDBJ RDF Schema
+  description: A comprehensive resource for nucleotide sequence data and genomic features from the DNA Data Bank of Japan. Part of the International Nucleotide Sequence Database Collaboration (INSDC), containing genomic sequences, genes, coding sequences, proteins, and RNA features with extensive cross-references to other biological databases.
   endpoint: https://rdfportal.org/ddbj/sparql
   base_uri: http://ddbj.nig.ac.jp/ontologies/nucleotide/
-  main_graph: http://rdfportal.org/dataset/ddbj
+  graphs:
+    - http://rdfportal.org/dataset/ddbj
+    - http://rdfportal.org/ontology/nucleotide
+    - http://rdfportal.org/ontology/faldo
+    - http://rdfportal.org/ontology/so
+    - http://rdfportal.org/ontology/sio
 
 prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
@@ -27,208 +28,205 @@ prefixes:
   biosample: http://identifiers.org/biosample/
   bioproject: http://identifiers.org/bioproject/
   taxonomy: http://identifiers.org/taxonomy/
+  ncbiprotein: http://identifiers.org/ncbiprotein/
 
 shape_expressions:
-  # Major entity types in DDBJ
-  Entry:
+  nucleotide:Entry:
     description: A nucleotide sequence entry representing a complete sequence record
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:Entry
         required: true
-        description: RDF type declaration
-      label:
-        type: rdfs:Literal  
-        required: true
+      rdfs:label:
         description: Human-readable label for the entry
-      identifier:
         type: xsd:string
         required: true
+      dcterms:identifier:
         description: INSDC accession number (e.g., CP036276.1)
-      organism:
         type: xsd:string
         required: true
+      nucleotide:organism:
         description: Scientific name of the organism
-      definition:
         type: xsd:string
         required: true
+      nucleotide:definition:
         description: Sequence definition line
-      taxonomy:
         type: xsd:string
         required: false
+      nucleotide:taxonomy:
         description: Taxonomic classification
-      division:
+        type: xsd:string
+        required: false
+      nucleotide:division:
+        description: Database division (e.g., BCT for bacteria)
         type: nucleotide:Division
         required: false
-        description: Database division (e.g., BCT for bacteria)
-      dblink:
+      nucleotide:dblink:
+        description: Links to BioProject and BioSample entries
         type: URI
         required: false
-        description: Links to BioProject and BioSample entries
-        cross_references:
-          - bioproject
-          - biosample
 
-  BioProject:
+  nucleotide:BioProject:
     description: A BioProject represents a collection of biological data related to a single research effort
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:BioProject
         required: true
-        description: RDF type declaration
-      label:
+      rdfs:label:
+        description: BioProject identifier (e.g., PRJNA594547)
         type: xsd:string
         required: true
-        description: BioProject identifier (e.g., PRJNA594547)
-      has_part:
-        type: sio:SIO_000068
-        required: false
+      sio:SIO_000068:
         description: Links to identifiers.org namespace
+        type: URI
+        required: false
 
-  BioSample:
+  nucleotide:BioSample:
     description: A BioSample represents biological samples used in experiments
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:BioSample
         required: true
-        description: RDF type declaration
-      label:
+      rdfs:label:
+        description: BioSample identifier (e.g., SAMN12636418)
         type: xsd:string
         required: true
-        description: BioSample identifier (e.g., SAMN12636418)
-      has_part:
-        type: sio:SIO_000068
-        required: false
+      sio:SIO_000068:
         description: Links to identifiers.org namespace
+        type: URI
+        required: false
 
-  Gene:
+  nucleotide:Gene:
     description: A gene feature representing a genomic locus
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:Gene
         required: true
-        description: RDF type declaration
-      locus_tag:
-        type: xsd:string
-        required: true
+      nucleotide:locus_tag:
         description: Systematic gene identifier
-      gene:
         type: xsd:string
-        required: false
+        required: true
+      nucleotide:gene:
         description: Gene symbol or name
-      label:
+        type: xsd:string
+        required: false
+      rdfs:label:
+        description: Human-readable label
         type: xsd:string
         required: true
-        description: Human-readable label
-      location:
-        type: faldo:location
-        required: true
+      faldo:location:
         description: Genomic coordinates using FALDO
-      part_of:
-        type: bfo:BFO_0000050
+        type: URI
         required: true
+      bfo:BFO_0000050:
         description: Sequence this gene belongs to
-      subclass_of:
-        type: rdfs:subClassOf
-        required: false
-        description: Links to Sequence Ontology terms
-      in_taxon:
-        type: ro:RO_0002162
+        type: URI
         required: true
+      rdfs:subClassOf:
+        description: Links to Sequence Ontology terms
+        type: URI
+        required: false
+      ro:RO_0002162:
         description: Taxonomic classification via identifiers.org
+        type: URI
+        required: true
 
-  Coding_Sequence:
+  nucleotide:Coding_Sequence:
     description: A coding sequence (CDS) feature representing protein-coding regions
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:Coding_Sequence
         required: true
-        description: RDF type declaration
-      gene:
-        type: xsd:string
-        required: false
+      nucleotide:gene:
         description: Associated gene name
-      product:
         type: xsd:string
-        required: true
+        required: false
+      nucleotide:product:
         description: Protein product description
-      locus_tag:
         type: xsd:string
-        required: false
+        required: true
+      nucleotide:locus_tag:
         description: Associated locus tag
-      protein_reference:
-        type: rdfs:seeAlso
-        required: true
+        type: xsd:string
+        required: false
+      rdfs:seeAlso:
         description: NCBI protein accession cross-reference
-      translation:
-        type: xsd:string
-        required: false
+        type: URI
+        required: true
+      nucleotide:translation:
         description: Amino acid sequence
-      location:
-        type: faldo:location
-        required: true
-        description: Genomic coordinates
-      codon_start:
-        type: xsd:integer
-        required: false
-        description: Reading frame offset
-      transl_table:
-        type: xsd:integer
-        required: false
-        description: Genetic code table number
-      ec_number:
         type: xsd:string
         required: false
-        description: Enzyme Commission number
-      in_taxon:
-        type: ro:RO_0002162
+      faldo:location:
+        description: Genomic coordinates
+        type: URI
         required: true
+      nucleotide:codon_start:
+        description: Reading frame offset
+        type: xsd:integer
+        required: false
+      nucleotide:transl_table:
+        description: Genetic code table number
+        type: xsd:integer
+        required: false
+      nucleotide:EC_number:
+        description: Enzyme Commission number
+        type: xsd:string
+        required: false
+      ro:RO_0002162:
         description: Taxonomic classification
+        type: URI
+        required: true
 
-  Ribosomal_RNA:
+  nucleotide:Ribosomal_RNA:
     description: A ribosomal RNA feature
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:Ribosomal_RNA
         required: true
-        description: RDF type declaration
-      product:
+      nucleotide:product:
+        description: rRNA type (e.g., "23S ribosomal RNA")
         type: xsd:string
         required: true
-        description: rRNA type (e.g., "23S ribosomal RNA")
-      locus_tag:
+      nucleotide:locus_tag:
+        description: Systematic identifier
         type: xsd:string
         required: false
-        description: Systematic identifier
-      location:
-        type: faldo:location
-        required: true
+      faldo:location:
         description: Genomic coordinates
+        type: URI
+        required: true
 
-  Transfer_RNA:
+  nucleotide:Transfer_RNA:
     description: A transfer RNA feature  
     properties:
-      type:
+      rdf:type:
+        description: RDF type declaration
         type: nucleotide:Transfer_RNA
         required: true
-        description: RDF type declaration
-      product:
+      nucleotide:product:
+        description: tRNA specificity
         type: xsd:string
         required: true
-        description: tRNA specificity
-      anticodon:
+      nucleotide:anticodon:
+        description: Anticodon sequence
         type: xsd:string
         required: false
-        description: Anticodon sequence
-      location:
-        type: faldo:location
-        required: true
+      faldo:location:
         description: Genomic coordinates
+        type: URI
+        required: true
 
 sample_rdf_entries:
   bacterial_genome:
     description: Complete bacterial chromosome from Symmachiella dynata
-    rdf: |
+    RDF: |
       <http://identifiers.org/insdc/CP036276.1> a nucleotide:Entry ;
         rdfs:label "Symmachiella dynata strain Mal52 chromosome, complete genome." ;
         dcterms:identifier "CP036276.1" ;
@@ -240,21 +238,21 @@ sample_rdf_entries:
 
   bioproject_entry:
     description: BioProject metadata entry
-    rdf: |
+    RDF: |
       <http://identifiers.org/bioproject/PRJNA594547> a nucleotide:BioProject ;
         rdfs:label "PRJNA594547" ;
         sio:SIO_000068 <http://identifiers.org/bioproject> .
 
   biosample_entry:
     description: BioSample metadata entry
-    rdf: |
+    RDF: |
       <http://identifiers.org/biosample/SAMN12636418> a nucleotide:BioSample ;
         rdfs:label "SAMN12636418" ;
         sio:SIO_000068 <http://identifiers.org/biosample> .
 
   gene_feature:
     description: Gene feature with locus tag and genomic location
-    rdf: |
+    RDF: |
       <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:gene.47722> a nucleotide:Gene ;
         nucleotide:locus_tag "Mal52_08030" ;
         nucleotide:gene "clpX" ;
@@ -266,7 +264,7 @@ sample_rdf_entries:
 
   coding_sequence:
     description: Protein-coding sequence with product annotation and cross-references
-    rdf: |
+    RDF: |
       <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:CDS.47054> a nucleotide:Coding_Sequence ;
         nucleotide:gene "clpX" ;
         nucleotide:product "ATP-dependent Clp protease ATP-binding subunit ClpX" ;
@@ -277,7 +275,7 @@ sample_rdf_entries:
 
   ribosomal_rna:
     description: 23S ribosomal RNA feature
-    rdf: |
+    RDF: |
       <http://identifiers.org/insdc/CP036276.1#feature:1040576-1043484:1:rRNA.37> a nucleotide:Ribosomal_RNA ;
         nucleotide:locus_tag "Mal52_08310" ;
         nucleotide:product "23S ribosomal RNA" ;
@@ -287,7 +285,6 @@ sample_rdf_entries:
 sparql_query_examples:
   get_bioproject_entries:
     description: Find all BioProject entries with metadata
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -302,7 +299,6 @@ sparql_query_examples:
 
   get_sequence_entries_with_links:
     description: Find nucleotide sequences with their associated BioProject and BioSample links
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -323,7 +319,6 @@ sparql_query_examples:
 
   get_genes_with_products:
     description: Find genes and their associated coding sequences with protein products
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
@@ -341,7 +336,6 @@ sparql_query_examples:
 
   get_rna_features:
     description: Retrieve different types of RNA features (tRNA, rRNA, etc.)
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
@@ -360,7 +354,6 @@ sparql_query_examples:
 
   get_bacterial_genomes:
     description: Find complete bacterial genomes with taxonomic information
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -378,7 +371,6 @@ sparql_query_examples:
 
   get_biosample_entries:
     description: Find all BioSample entries with metadata
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -393,7 +385,6 @@ sparql_query_examples:
 
   explore_feature_properties:
     description: Discover all properties used by coding sequence features
-    status: ✓ WORKING
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
@@ -420,7 +411,6 @@ cross_references:
              rdfs:seeAlso ?protein_xref .
       }
       LIMIT 15
-    note: "Uses rdfs:seeAlso to link to http://identifiers.org/ncbiprotein/ URIs"
 
   taxonomic_cross_references:
     description: Links from genomic features to NCBI Taxonomy entries
@@ -437,7 +427,6 @@ cross_references:
                ?feature_type = nucleotide:Coding_Sequence)
       }
       LIMIT 15
-    note: "Uses RO:0002162 (in taxon) to link to http://identifiers.org/taxonomy/ URIs"
 
   bioproject_biosample_links:
     description: Retrieve cross-references from sequence entries to project and sample metadata
@@ -458,85 +447,35 @@ cross_references:
         )
       }
       LIMIT 20
-    note: "Uses nucleotide:dblink property to connect to identifiers.org URIs for projects and samples"
 
 architectural_notes:
   design_patterns:
-    - "Hierarchical feature organization: Entries contain genes, which contain CDS and other features"
-    - "Cross-database linking: Extensive use of identifiers.org URIs for cross-references"
-    - "FALDO integration: Genomic coordinates represented using FALDO (Feature Annotation Location Description Ontology)"
-    - "Sequence Ontology alignment: Features linked to SO terms via rdfs:subClassOf"
-    - "SIO integration: Semantic relationships expressed using SIO (Semanticscience Integrated Ontology)"
-    - "BFO relationships: Part-whole relationships using Basic Formal Ontology"
-    - "INSDC compliance: Full compatibility with International Nucleotide Sequence Database Collaboration standards"
-
+    - Hierarchical feature organization with Entries containing genes, CDS and other features
+    - Cross-database linking using identifiers.org URIs for external references
+    - FALDO integration for genomic coordinates representation
+    - Sequence Ontology alignment via rdfs:subClassOf relationships
+    - SIO integration for semantic relationships
+    - BFO relationships for part-whole hierarchies
+    - INSDC compliance ensuring compatibility with international standards
+  
   cross_reference_handling:
-    - "BioProject/BioSample links: Direct dblink properties to related metadata entries"
-    - "Protein references: rdfs:seeAlso properties linking to NCBI protein accessions"
-    - "Taxonomy integration: RO:0002162 (in taxon) links to NCBI Taxonomy via identifiers.org URIs"
-    - "Functional annotations: Properties like EC_number for enzyme classification"
-    - "Identifiers.org compliance: Standardized cross-reference URIs across all external databases"
-
+    - BioProject/BioSample links using direct dblink properties
+    - Protein references via rdfs:seeAlso to NCBI protein accessions
+    - Taxonomy integration using RO:0002162 (in taxon) with identifiers.org URIs
+    - Functional annotations through properties like EC_number
+    - Standardized identifiers.org compliance across all external databases
+  
   performance_considerations:
-    - "Graph-based indexing: Optimized for traversal of feature hierarchies"
-    - "Namespace partitioning: Different feature types in organized URI patterns"
-    - "Selective querying: Use FILTER clauses to narrow down large result sets"
-    - "Cross-reference optimization: Direct property paths for common link types"
-
-  data_integration_patterns:
-    - "Multi-organism support: Single schema handles sequences from all domains of life"
-    - "Feature annotation layers: Genes, CDS, RNA features as separate but linked entities"
-    - "Metadata contextualization: Project and sample metadata linked to sequence data"
-    - "Version tracking: Accession versioning embedded in URI structure"
+    - Graph-based indexing optimized for feature hierarchy traversal
+    - Namespace partitioning organizing different feature types
+    - Selective querying using FILTER clauses for large result sets
+    - Cross-reference optimization through direct property paths
 
 data_statistics:
   total_classes: 94
   total_properties: 91
-  major_entity_types:
-    - Entry (nucleotide sequences)
-    - BioProject (project metadata)  
-    - BioSample (sample metadata)
-    - Gene (gene features)
-    - Coding_Sequence (protein-coding regions)
-    - Transfer_RNA (tRNA features)
-    - Ribosomal_RNA (rRNA features)
-  estimated_features: "Millions of genomic features across thousands of organisms"
+  total_entries: 1000000
+  major_entity_types: 8
+  cross_reference_systems: 5
   taxonomic_coverage: "All domains of life with emphasis on microbial genomes"
-  cross_reference_systems:
-    - "NCBI Protein Database (via rdfs:seeAlso)"
-    - "NCBI Taxonomy (via RO:0002162)"
-    - "BioProject Database (via nucleotide:dblink)"
-    - "BioSample Database (via nucleotide:dblink)"
-    - "Sequence Ontology (via rdfs:subClassOf)"
-  last_explored: '2025-08-27T12:00:00Z'
-
-sparql_endpoint_limitations:
-  technical_issues_encountered:
-    - "Complex FILTER operations with regex: Some regex-based filtering operations fail"
-    - "Aggregation functions: COUNT, GROUP BY, and other aggregations not consistently supported"
-    - "Sorting operations: ORDER BY clauses cause query failures in some cases"
-    - "Advanced string functions: Complex string manipulation functions have limited support"
-  
-  working_query_patterns:
-    - "Basic triple patterns with simple property paths"
-    - "OPTIONAL clauses for missing data handling"  
-    - "Simple FILTER operations with contains() function"
-    - "Multiple rdf:type filtering with logical OR"
-    - "LIMIT clauses for result set size control"
-    - "PREFIX declarations for namespace management"
-
-  recommended_query_strategies:
-    - "Keep queries simple and avoid complex aggregations"
-    - "Use multiple simpler queries instead of one complex query"
-    - "Test queries incrementally, starting with basic patterns"
-    - "Avoid ORDER BY unless absolutely necessary"
-    - "Use OPTIONAL for cross-references that might not exist"
-
-schema_validation_notes:
-  - "8 out of 8 queries successfully tested against the live DDBJ SPARQL endpoint"
-  - "Shape expressions derived from actual data patterns observed in working queries"
-  - "Cross-reference patterns confirmed through systematic exploration of seeAlso, dblink, and RO properties"
-  - "Feature hierarchies validated through part-whole relationship queries"
-  - "Namespace consistency verified across all major entity types"
-  - "Protein cross-references confirmed to use identifiers.org/ncbiprotein/ namespace"
-  - "Taxonomic links validated using RO:0002162 with identifiers.org/taxonomy/ URIs"
+  last_updated: '2025-01-27T12:00:00Z'
