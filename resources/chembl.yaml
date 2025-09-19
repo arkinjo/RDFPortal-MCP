@@ -1,10 +1,18 @@
+# ChEMBL RDF Schema MIE File
+# This file provides a comprehensive analysis of the ChEMBL RDF schema including shape expressions,
+# SPARQL queries, cross-references, and biologically relevant examples for drug discovery research.
+
 schema_info:
-  title: ChEMBL RDF Schema Analysis
-  description: Comprehensive analysis of the ChEMBL RDF schema including shape expressions, SPARQL queries, and biologically relevant examples for drug discovery and chemical biology research
+  title: ChEMBL RDF Schema 
+  description: A comprehensive bioactivity database containing drug-like bioactive compounds with quantitative activities across multiple targets, supporting drug discovery and chemical biology research
   endpoint: https://rdfportal.org/backend/ebi/sparql
   base_uri: http://rdf.ebi.ac.uk/
-  version: ChEMBL 31
-  dataset_graph: http://rdf.ebi.ac.uk/dataset/chembl
+  graphs:
+    - http://rdf.ebi.ac.uk/dataset/chembl
+    - http://rdf.ebi.ac.uk/dataset/biomodels
+    - http://rdf.ebi.ac.uk/dataset/expressionatlas
+    - http://rdf.ebi.ac.uk/dataset/chebi
+    - http://rdf.ebi.ac.uk/dataset/reactome
 
 prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
@@ -19,85 +27,76 @@ prefixes:
 shape_expressions:
   SmallMolecule:
     description: A small molecule chemical compound in ChEMBL with cross-references and bioactivities
-    targetClass: chembl:SmallMolecule
     properties:
       chemblId:
-        type: xsd:string
-        required: true
-        pattern: "^CHEMBL[0-9]+$"
         description: Unique ChEMBL identifier for the molecule
-      label:
+        type: xsd:string
+        pattern: "^CHEMBL[0-9]+$"
+        required: true
+      rdfs:label:
+        description: Human-readable name of the molecule
         type: xsd:string
         required: false
-        description: Human-readable name of the molecule
       hasActivity:
+        description: Bioactivity measurements for this molecule
         type: chembl:Activity
         required: false
-        cardinality: "*"
-        description: Bioactivity measurements for this molecule
+        cardinality: multiple
       hasParentMolecule:
+        description: Parent molecule if this is a derivative
         type: chembl:SmallMolecule
         required: false
-        description: Parent molecule if this is a derivative
       moleculeXref:
-        type: chembl:DatabaseReference
+        description: Cross-references to external chemical databases (PubChem, DrugBank, ChEBI, HMDB)
+        type: xsd:anyURI
         required: false
-        cardinality: "*"
-        description: Cross-references to external databases (PubChem, DrugBank, ChEBI, etc.)
+        cardinality: multiple
         cross_reference_targets:
           - PubChem: "http://pubchem.ncbi.nlm.nih.gov/compound/"
           - DrugBank: "http://www.drugbank.ca/drugs/"
           - ChEBI: "http://www.ebi.ac.uk/chebi/searchId.do?chebiId="
           - HMDB: "http://www.hmdb.ca/metabolites/"
-          - LINCS: "http://lincscloud.org/l1000/"
 
   SingleProtein:
     description: A single protein target in ChEMBL with classification and external references
-    targetClass: chembl:SingleProtein
     properties:
       chemblId:
-        type: xsd:string
-        required: true
-        pattern: "^CHEMBL[0-9]+$"
         description: Unique ChEMBL identifier for the protein
-      label:
+        type: xsd:string
+        pattern: "^CHEMBL[0-9]+$"
+        required: true
+      rdfs:label:
+        description: Name of the protein target
         type: xsd:string
         required: true
-        description: Name of the protein target
       targetType:
+        description: Classification of the target type
         type: xsd:string
         required: false
-        description: Classification of the target type
       hasAssay:
+        description: Assays performed against this target
         type: chembl:Assay
         required: false
-        cardinality: "*"
-        description: Assays performed against this target
+        cardinality: multiple
       hasProteinClassification:
+        description: Protein classification information
         type: chembl:ProteinClassification
         required: false
-        cardinality: "*"
-        description: Protein classification information
+        cardinality: multiple
       hasTargetComponent:
+        description: Target components with external database cross-references
         type: chembl:TargetComponent
         required: false
-        cardinality: "*"
-        description: Target components with external database cross-references
-      targetXref:
-        type: chembl:DatabaseReference
-        required: false
-        cardinality: "*"
-        description: Direct target cross-references (less commonly used than component-level xrefs)
+        cardinality: multiple
 
   TargetComponent:
     description: A target component that provides cross-references to external protein databases
-    targetClass: chembl:TargetComponent
     properties:
       targetCmptXref:
-        type: chembl:DatabaseReference
-        required: false
-        cardinality: "*"
         description: Cross-references to protein databases (UniProt, GO, InterPro, Reactome, Pfam)
+        type: xsd:anyURI
+        required: false
+        cardinality: multiple
         cross_reference_targets:
           - UniProt: "http://purl.uniprot.org/uniprot/"
           - Gene_Ontology: "http://identifiers.org/obo.go/"
@@ -108,93 +107,90 @@ shape_expressions:
 
   Activity:
     description: A bioactivity measurement linking a molecule to a target via an assay
-    targetClass: chembl:Activity
     properties:
       chemblId:
-        type: xsd:string
-        required: true
-        pattern: "^CHEMBL_ACT_[0-9]+$"
         description: Unique ChEMBL activity identifier
+        type: xsd:string
+        pattern: "^CHEMBL_ACT_[0-9]+$"
+        required: true
       hasMolecule:
+        description: The molecule being tested
         type: chembl:SmallMolecule
         required: true
-        description: The molecule being tested
       hasAssay:
+        description: The assay in which activity was measured
         type: chembl:Assay
         required: true
-        description: The assay in which activity was measured
       standardValue:
-        type: xsd:decimal
-        required: false
         description: Standardized activity value
+        type: xsd:decimal
+        required: false
       standardUnits:
+        description: Units for the standardized value (nM, uM, mg/L, etc.)
         type: xsd:string
         required: false
-        description: Units for the standardized value (nM, uM, etc.)
       standardType:
+        description: Type of activity measurement (IC50, Ki, ED50, Kd, etc.)
         type: xsd:string
         required: false
-        description: Type of activity measurement (IC50, Ki, ED50, etc.)
       publishedValue:
-        type: xsd:decimal
-        required: false
         description: Originally published activity value
-      pChembl:
         type: xsd:decimal
         required: false
+      pChembl:
         description: Negative log of molar activity value
+        type: xsd:decimal
+        required: false
 
   Assay:
     description: An experimental assay for measuring bioactivity
-    targetClass: chembl:Assay
     properties:
       chemblId:
-        type: xsd:string
-        required: true
-        pattern: "^CHEMBL[0-9]+$"
         description: Unique ChEMBL identifier for the assay
-      label:
         type: xsd:string
-        required: false
+        pattern: "^CHEMBL[0-9]+$"
+        required: true
+      rdfs:label:
         description: Assay name or identifier
-      assayType:
         type: xsd:string
         required: false
-        description: Type of assay (Binding, Functional, etc.)
+      assayType:
+        description: Type of assay (Binding, Functional, ADMET, etc.)
+        type: xsd:string
+        required: false
       hasTarget:
+        description: Primary target of the assay
         type: chembl:SingleProtein
         required: false
-        description: Primary target of the assay
       hasActivity:
+        description: Activities measured in this assay
         type: chembl:Activity
         required: false
-        cardinality: "*"
-        description: Activities measured in this assay
+        cardinality: multiple
       hasDocument:
+        description: Publication describing the assay
         type: chembl:Document
         required: false
-        description: Publication describing the assay
 
   Mechanism:
     description: Drug mechanism of action information linking molecules to their protein targets
-    targetClass: chembl:Mechanism
     properties:
       hasTarget:
+        description: Target protein for the mechanism
         type: chembl:SingleProtein
         required: true
-        description: Target protein for the mechanism
       hasMolecule:
+        description: Drug molecule
         type: chembl:SmallMolecule
         required: true
-        description: Drug molecule
       mechanismActionType:
-        type: xsd:string
-        required: false
         description: Type of action (INHIBITOR, AGONIST, ANTAGONIST, etc.)
-      mechanismDescription:
         type: xsd:string
         required: false
+      mechanismDescription:
         description: Detailed description of the mechanism
+        type: xsd:string
+        required: false
 
 sample_rdf_entries:
   molecule_with_comprehensive_xrefs:
@@ -206,17 +202,18 @@ sample_rdf_entries:
         chembl:moleculeXref <http://www.drugbank.ca/drugs/DB00366> ;
         chembl:moleculeXref <http://pubchem.ncbi.nlm.nih.gov/compound/3162> ;
         chembl:moleculeXref <http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI%3A51380> ;
+        chembl:moleculeXref <http://pubchem.ncbi.nlm.nih.gov/substance/14872648> ;
         chembl:hasActivity chembl_res:activity/CHEMBL_ACT_12345 .
 
   protein_target_with_classification:
     description: Single protein target with type classification and associated assays
     RDF: |
-      chembl_res:target/CHEMBL1906 a chembl:SingleProtein ;
-        rdfs:label "Serine/threonine-protein kinase RAF" ;
-        chembl:chemblId "CHEMBL1906" ;
+      chembl_res:target/CHEMBL2664 a chembl:SingleProtein ;
+        rdfs:label "Adenosylhomocysteinase" ;
+        chembl:chemblId "CHEMBL2664" ;
         chembl:targetType "SINGLE PROTEIN" ;
         chembl:hasAssay chembl_res:assay/CHEMBL1176701 ;
-        chembl:hasTargetComponent chembl_res:targetcomponent/CHEMBL_TC_1906 .
+        chembl:hasTargetComponent chembl_res:targetcomponent/CHEMBL_TC_1000 .
 
   target_component_with_protein_xrefs:
     description: Target component with comprehensive cross-references to protein databases
@@ -225,13 +222,14 @@ sample_rdf_entries:
         chembl:targetCmptXref <http://purl.uniprot.org/uniprot/P23526> ;
         chembl:targetCmptXref <http://identifiers.org/obo.go/GO:0005829> ;
         chembl:targetCmptXref <http://identifiers.org/interpro/IPR036291> ;
-        chembl:targetCmptXref <http://identifiers.org/pfam/PF00027> ;
+        chembl:targetCmptXref <http://identifiers.org/interpro/IPR000043> ;
         chembl:targetCmptXref <http://identifiers.org/reactome/R-HSA-156581> .
 
   high_affinity_bioactivity:
     description: High-affinity bioactivity measurement with standardized nanomolar IC50 value
     RDF: |
       chembl_res:activity/CHEMBL_ACT_1001249 a chembl:Activity ;
+        chembl:chemblId "CHEMBL_ACT_1001249" ;
         chembl:hasMolecule chembl_res:molecule/CHEMBL302363 ;
         chembl:hasAssay chembl_res:assay/CHEMBL690469 ;
         chembl:standardValue "0.021"^^xsd:decimal ;
@@ -258,13 +256,6 @@ sparql_query_examples:
       } 
       GROUP BY ?class 
       ORDER BY DESC(?count)
-    results_verified: true
-    sample_results: |
-      Activity: 20,334,684 instances
-      SmallMolecule: 1,920,643 instances  
-      Assay: 1,610,596 instances
-      SingleProtein: 9,092 instances
-      Mechanism: 7,098 instances
 
   find_drug_molecules_with_names:
     description: Find small molecules with their names and ChEMBL IDs for basic drug discovery
@@ -279,7 +270,6 @@ sparql_query_examples:
         FILTER(STRLEN(?label) > 1)
       } 
       LIMIT 10
-    results_verified: true
 
   high_affinity_nanomolar_activities:
     description: Find high-affinity bioactivities with nanomolar IC50 or Ki values for lead optimization
@@ -297,9 +287,6 @@ sparql_query_examples:
                (?type = "IC50" || ?type = "Ki"))
       } 
       LIMIT 10
-    results_verified: true
-    sample_results: |
-      Found activities with IC50/Ki values from 0.021 nM to 71 nM
 
   drug_mechanisms_by_action_type:
     description: Find drug mechanisms of action with target and molecule information for pharmacology studies
@@ -317,9 +304,6 @@ sparql_query_examples:
         FILTER(?actionType IN ("INHIBITOR", "AGONIST", "ANTAGONIST"))
       } 
       LIMIT 10
-    results_verified: true
-    sample_results: |
-      Found mechanisms including beta-lactam inhibitors, COX inhibitors, beta-2 agonists
 
   protein_kinase_inhibitor_activities:
     description: Find bioactivities for protein kinase inhibitors with high potency for cancer research
@@ -341,9 +325,27 @@ sparql_query_examples:
                CONTAINS(LCASE(?targetLabel), "kinase"))
       } 
       LIMIT 10
-    results_verified: true
-    sample_results: |
-      Found potent inhibitors of p38, AKT, LCK, JNK, and HER2 kinases with IC50 < 10 nM
+
+  target_assay_bioactivity_integration:
+    description: Comprehensive query linking targets, assays, and bioactivities for systems pharmacology
+    sparql: |
+      PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT ?target ?targetLabel ?assay ?assayType ?activity ?molecule ?molLabel ?value ?units ?type WHERE {
+        ?target a chembl:SingleProtein ;
+               rdfs:label ?targetLabel ;
+               chembl:hasAssay ?assay .
+        ?assay chembl:assayType ?assayType ;
+              chembl:hasActivity ?activity .
+        ?activity chembl:hasMolecule ?molecule ;
+                 chembl:standardValue ?value ;
+                 chembl:standardUnits ?units ;
+                 chembl:standardType ?type .
+        ?molecule rdfs:label ?molLabel .
+        FILTER(?value < 1000 && ?units = "nM")
+      } 
+      LIMIT 8
 
 cross_references:
   molecule_pubchem_drugbank_xrefs:
@@ -359,11 +361,6 @@ cross_references:
         FILTER(CONTAINS(STR(?xref), "pubchem") || CONTAINS(STR(?xref), "drugbank"))
       } 
       LIMIT 10
-    results_verified: true
-    cross_reference_types:
-      - PubChem compounds: "http://pubchem.ncbi.nlm.nih.gov/compound/"
-      - PubChem substances: "http://pubchem.ncbi.nlm.nih.gov/substance/"  
-      - DrugBank drugs: "http://www.drugbank.ca/drugs/"
 
   molecule_comprehensive_database_xrefs:
     description: Comprehensive molecule cross-references including ChEBI, PubChem, and DrugBank
@@ -380,10 +377,6 @@ cross_references:
         FILTER(BOUND(?chebiXref) || BOUND(?pubchemXref) || BOUND(?drugbankXref))
       } 
       LIMIT 8
-    results_verified: true
-    sample_results: |
-      DOXYLAMINE has ChEBI:51380, PubChem:3162, DrugBank:DB00366
-      BEPRIDIL has ChEBI:3061, PubChem:2351, DrugBank:DB01244
 
   target_component_protein_xrefs:
     description: Explore target component cross-references to protein databases for systems biology integration
@@ -397,11 +390,6 @@ cross_references:
                CONTAINS(STR(?xref), "obo.go"))
       } 
       LIMIT 10
-    results_verified: true
-    cross_reference_types:
-      - UniProt proteins: "http://purl.uniprot.org/uniprot/"
-      - Gene Ontology terms: "http://identifiers.org/obo.go/"
-      - InterPro protein families: "http://identifiers.org/interpro/"
 
   target_component_comprehensive_protein_annotation:
     description: Comprehensive protein target annotation through target components with multiple database cross-references
@@ -419,9 +407,6 @@ cross_references:
         FILTER(BOUND(?uniprotXref) || BOUND(?goXref) || BOUND(?interproXref))
       } 
       LIMIT 8
-    results_verified: true
-    sample_results: |
-      Adenosylhomocysteinase (CHEMBL2664) has UniProt:P23526, multiple GO terms, and InterPro:IPR036291
 
   pathway_and_protein_family_xrefs:
     description: Find target component cross-references to pathway (Reactome) and protein family (Pfam) databases
@@ -433,13 +418,6 @@ cross_references:
         FILTER(CONTAINS(STR(?xref), "reactome") || CONTAINS(STR(?xref), "pfam"))
       } 
       LIMIT 5
-    results_verified: true
-    sample_results: |
-      Reactome pathways: R-HSA-156581, R-HSA-1614635, R-HSA-5578997
-      Pfam families: PF00670, PF05221, PF10294, PF00027, PF00610
-    cross_reference_types:
-      - Reactome pathways: "http://identifiers.org/reactome/"
-      - Pfam protein families: "http://identifiers.org/pfam/"
 
 architectural_notes:
   design_patterns:
@@ -459,29 +437,6 @@ architectural_notes:
     - Target component model allows granular protein annotation from multiple databases
     - Each target can have multiple components, each with its own set of cross-references
 
-  cross_reference_implementation_details:
-    targetXref_vs_targetCmptXref:
-      - targetXref: Defined in schema but sparsely populated
-      - targetCmptXref: Primary mechanism for protein cross-references
-      - Target components serve as bridge between targets and external protein databases
-      - Provides more granular and structured approach to protein cross-referencing
-    
-    molecular_cross_references:
-      coverage: "Extensive coverage for approved drugs, good coverage for bioactive compounds"
-      primary_databases: ["PubChem", "DrugBank", "ChEBI", "HMDB"]
-      uri_patterns:
-        - "http://pubchem.ncbi.nlm.nih.gov/compound/{CID}"
-        - "http://www.drugbank.ca/drugs/{DBID}"
-        - "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI%3A{CHEBI_ID}"
-
-    protein_cross_references:
-      coverage: "Comprehensive protein annotation through target components"
-      primary_databases: ["UniProt", "Gene Ontology", "InterPro", "Pfam", "Reactome"]
-      uri_patterns:
-        - "http://purl.uniprot.org/uniprot/{UNIPROT_ID}"
-        - "http://identifiers.org/obo.go/GO:{GO_ID}"
-        - "http://identifiers.org/interpro/{IPR_ID}"
-
   performance_considerations:
     - Activity table is the largest with >20M records - index on molecule and target
     - Use LIMIT clauses for exploratory queries to avoid timeouts
@@ -496,186 +451,22 @@ architectural_notes:
     - Cross-references vary in completeness across different molecules
     - Mechanism data is available for approved drugs but limited for research compounds
     - Target component cross-references provide rich protein annotation
-    - GO term annotations can be extensive (>10 terms per protein common)
 
 data_statistics:
+  total_classes: 98
+  total_properties: 89
   total_activities: 20334684
   total_small_molecules: 1920643
   total_assays: 1610596
   total_single_proteins: 9092
   total_mechanisms: 7098
-  major_classes:
-    - Activity: 20334684 instances
-    - SmallMolecule: 1920643 instances
-    - Assay: 1610596 instances
-    - SingleProtein: 9092 instances
-    - Mechanism: 7098 instances
   cross_reference_coverage:
     molecules_with_pubchem_xref: "extensive"
-    molecules_with_drugbank_xref: "good_for_approved_drugs"
+    molecules_with_drugbank_xref: "good_for_approved_drugs" 
     molecules_with_chebi_xref: "moderate"
+    target_components_with_uniprot_xref: "comprehensive"
     target_components_with_go_xref: "comprehensive"
     target_components_with_interpro_xref: "extensive"
-    target_components_with_uniprot_xref: "comprehensive"
     target_components_with_pfam_xref: "extensive"
     target_components_with_reactome_xref: "moderate"
-  biological_domain_coverage:
-    kinase_inhibitors: "extensive_with_submicromolar_activities"
-    gpcr_ligands: "comprehensive_binding_data"
-    ion_channel_modulators: "good_functional_data"
-    enzyme_inhibitors: "extensive_biochemical_data"
-    antibiotics: "mechanism_of_action_data"
   last_updated: '2023-10-01T12:00:00Z'
-  data_version: 'ChEMBL 31'
-
-validation_rules:
-  molecule_validation:
-    - All SmallMolecule instances must have a chemblId
-    - ChEMBL IDs must follow pattern CHEMBL[0-9]+
-    - Molecules should have at least one cross-reference or activity
-    - Cross-references should use standardized external database URIs
-    - Molecule names should be non-empty strings when present
-
-  activity_validation:
-    - Activities must link to both a molecule and an assay
-    - Standard values should be positive numbers when present
-    - Units should be from controlled vocabulary when standardized
-    - Activity IDs follow pattern CHEMBL_ACT_[0-9]+
-    - Standardized activity types must be from controlled vocabulary (IC50, Ki, etc.)
-
-  target_validation:
-    - All targets must have a chemblId and label
-    - SingleProtein targets should have target components with cross-references
-    - Target types must be from the defined ChEMBL taxonomy
-    - Target component cross-references should use identifiers.org URIs when possible
-    - Each target should have at least one assay or mechanism association
-
-  cross_reference_validation:
-    - All moleculeXref values should be valid external database URIs
-    - All targetCmptXref values should use standard identifiers.org patterns
-    - Cross-references should be bidirectionally verifiable where possible
-    - URI patterns should match expected formats for each external database
-
-cross_reference_analysis:
-  targetXref_implementation:
-    - The targetXref property exists in the ChEMBL schema
-    - Actual target cross-references are implemented through the targetCmptXref property on target components
-    - Target components serve as the bridge between targets and external protein databases
-    - This provides a more granular and structured approach to protein cross-referencing
-    - Multiple target components per target allow for complex protein annotation
-
-  external_databases_referenced:
-    molecules:
-      PubChem: 
-        description: "Chemical compound database"
-        uri_pattern: "http://pubchem.ncbi.nlm.nih.gov/compound/"
-        coverage: "extensive"
-      DrugBank: 
-        description: "Drug and drug target database"  
-        uri_pattern: "http://www.drugbank.ca/drugs/"
-        coverage: "good_for_approved_drugs"
-      ChEBI: 
-        description: "Chemical entities of biological interest"
-        uri_pattern: "http://www.ebi.ac.uk/chebi/searchId.do?chebiId="
-        coverage: "moderate"
-      HMDB: 
-        description: "Human metabolome database"
-        uri_pattern: "http://www.hmdb.ca/metabolites/"
-        coverage: "limited"
-      LINCS: 
-        description: "Library of integrated network-based cellular signatures"
-        uri_pattern: "http://lincscloud.org/l1000/"
-        coverage: "specialized"
-    
-    target_components:
-      UniProt: 
-        description: "Universal protein resource"
-        uri_pattern: "http://purl.uniprot.org/uniprot/"
-        coverage: "comprehensive"
-      Gene_Ontology: 
-        description: "Standardized gene product annotations"
-        uri_pattern: "http://identifiers.org/obo.go/"
-        coverage: "comprehensive"
-      InterPro: 
-        description: "Protein families, domains and functional sites"
-        uri_pattern: "http://identifiers.org/interpro/"  
-        coverage: "extensive"
-      Reactome: 
-        description: "Pathway database"
-        uri_pattern: "http://identifiers.org/reactome/"
-        coverage: "moderate"
-      Pfam: 
-        description: "Protein family database"
-        uri_pattern: "http://identifiers.org/pfam/"
-        coverage: "extensive"
-      IntAct: 
-        description: "Protein interaction database"
-        uri_pattern: "http://identifiers.org/intact/"
-        coverage: "good"
-
-  cross_reference_usage_patterns:
-    molecule_integration:
-      - "Molecules typically have 2-5 external cross-references"
-      - "PubChem cross-references are most common"
-      - "Approved drugs usually have DrugBank cross-references"
-      - "Natural products often have ChEBI cross-references"
-      - "Cross-references enable chemical structure and property integration"
-    
-    protein_integration:
-      - "Target components provide rich protein annotation"
-      - "Each protein typically has 5-15 GO term annotations"
-      - "UniProt cross-references enable sequence and structural data access"
-      - "InterPro annotations provide protein family and domain information"
-      - "Pathway integration through Reactome cross-references"
-      - "Protein family classification through Pfam cross-references"
-
-  biological_integration_opportunities:
-    chemical_space_analysis:
-      - "Use PubChem for chemical similarity calculations" 
-      - "Integrate ChEBI for chemical classification hierarchies"
-      - "Access DrugBank for ADMET and pharmacokinetic data"
-      - "Use HMDB for metabolite pathway integration"
-    
-    protein_systems_biology:
-      - "GO annotations enable functional enrichment analysis"
-      - "UniProt provides sequence and structural context"
-      - "Reactome enables pathway-based drug target analysis"
-      - "InterPro domains help predict drug binding sites"
-      - "Pfam families enable target selectivity analysis"
-
-query_optimization_strategies:
-  high_performance_patterns:
-    - "Use specific ChEMBL ID patterns for exact matches"
-    - "Filter on standardized activity values for meaningful comparisons"
-    - "Limit cross-reference queries with database-specific URI patterns"
-    - "Use OPTIONAL clauses for sparse properties like cross-references"
-    - "Group activities by target or molecule for aggregation queries"
-  
-  cross_reference_query_optimization:
-    - "Use CONTAINS filters for URI pattern matching in cross-references"
-    - "Combine OPTIONAL clauses for multiple cross-reference types"
-    - "Filter BOUND variables when requiring specific cross-reference types"
-    - "Use LIMIT clauses generously for exploratory cross-reference queries"
-    - "Index queries on target components when accessing protein annotations"
-
-biological_use_cases:
-  drug_discovery_workflows:
-    - "Target-based screening using bioactivity data"
-    - "Lead optimization through SAR analysis"
-    - "Mechanism of action elucidation via target-drug relationships" 
-    - "Cross-target selectivity profiling"
-    - "Integration with chemical space analysis via PubChem"
-  
-  systems_pharmacology:
-    - "Pathway-based drug repositioning using Reactome cross-references"
-    - "Protein family-based selectivity analysis via Pfam"
-    - "GO term enrichment for drug target analysis"
-    - "Integration with protein interaction networks via IntAct"
-    - "Multi-target drug analysis using target component annotations"
-  
-  chemical_biology:
-    - "Tool compound identification for target validation"
-    - "Chemical probe characterization via bioactivity profiles"
-    - "Target deconvolution using activity similarity"
-    - "Chemical genetic screening integration"
-    - "Structure-activity relationship analysis"

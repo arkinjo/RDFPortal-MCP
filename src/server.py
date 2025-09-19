@@ -148,6 +148,16 @@ def generate_MIE_file(
     "Also, check if all the RDF examples really exist in the database."
     )
 
+@mcp.prompt(name="Validate SPARQL and RDF examples")
+def validate_sparql_and_rdf() -> str:
+    """
+    Validate SPARQL and RDF examples.
+    """
+    return (
+        "Test all the SPARQL query examples and cross-references thoroughly."
+        "Also, check if all the RDF examples exist in the database."
+    )
+
 @mcp.prompt(enabled=True, name="Generate RDF-Config file")
 def generate_rdf_config(
         dbname: Annotated[str, Field(description=f"The name of the database for which to generate examples. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
