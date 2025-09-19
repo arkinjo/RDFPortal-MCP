@@ -207,7 +207,7 @@ sparql_query_examples:
       
   count_total_compounds:
     description: Count the total number of compounds in the database
-    status: ✅ VALIDATED - Total compound count confirmed: 119,093,251
+    status: ✅ VALIDATED - Total compound count confirmed 119,093,251
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       SELECT (COUNT(?compound) AS ?compound_count) WHERE {

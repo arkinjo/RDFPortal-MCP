@@ -8,7 +8,7 @@ from pydantic import Field
 # This is the entry point for the MCP server, which will handle requests and provide tools.
 mcp = FastMCP("RDF Portal MCP Server")
 
-@mcp.resource("resources://greeting")
+@mcp.resource("resource://greeting")
 def greeting() -> str:
     return "Hello! I don't know why this is here. But, the server doesn't work without it."
 
@@ -51,21 +51,21 @@ PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 
 # The Shex files are used to define the shape expressions for SPARQL queries. 
 SHEX_FILES = {
-    "uniprot": "resources/uniprot.yaml",
-    "pdb": "resources/pdb.yaml",
-    "chembl": "resources/chembl.yaml",
-    "chebi": "resources/chebi.yaml",
-    "go": "resources/go.yaml",
-    "mesh": "resources/mesh.yaml",
-    "taxonomy": "resources/taxonomy.yaml",
-    "wikidata": "resources/wikidata.yaml",
-    "pubchem": "resources/pubchem.yaml",
-    "reactome": "resources/reactome.yaml",
-    "mondo": "resources/mondo.yaml",
-    "ddbj": "resources/ddbj.yaml",
-    "glycosmos": "resources/glycosmos.yaml",
-    "bacdive": "resources/bacdive.yaml",
-    "mediadive": "resources/mediadive.yaml"
+    "uniprot": "mie/uniprot.yaml",
+    "pdb": "mie/pdb.yaml",
+    "chembl": "mie/chembl.yaml",
+    "chebi": "mie/chebi.yaml",
+    "go": "mie/go.yaml",
+    "mesh": "mie/mesh.yaml",
+    "taxonomy": "mie/taxonomy.yaml",
+    "wikidata": "mie/wikidata.yaml",
+    "pubchem": "mie/pubchem.yaml",
+    "reactome": "mie/reactome.yaml",
+    "mondo": "mie/mondo.yaml",
+    "ddbj": "mie/ddbj.yaml",
+    "glycosmos": "mie/glycosmos.yaml",
+    "bacdive": "mie/bacdive.yaml",
+    "mediadive": "mie/mediadive.yaml"
 }
 
 MIE_TEMPLATE="resources/MIE_template.yaml"
@@ -153,10 +153,10 @@ def validate_sparql_and_rdf() -> str:
     """
     Validate SPARQL and RDF examples.
     """
-    return (
-        "Test all the SPARQL query examples and cross-references thoroughly."
-        "Also, check if all the RDF examples exist in the database."
-    )
+    return """
+    Test all the SPARQL query examples and cross-references thoroughly.
+    Also, check if all the RDF examples exist in the database.
+    """
 
 @mcp.prompt(enabled=True, name="Generate RDF-Config file")
 def generate_rdf_config(
