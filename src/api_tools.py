@@ -384,6 +384,8 @@ async def get_wikidata_metadata(entity_id: str, language: str = "en") -> Dict[st
     )
     return {"Label": label, "Descriptions": descriptions}
 
+
+
 # DB: Glycosmos
 @mcp.tool(enabled=True)
 async def glycoepitope_epitope_gtc(epitopeID: str) -> str:
@@ -406,6 +408,7 @@ async def glycoepitope_epitope_gtc(epitopeID: str) -> str:
     response.raise_for_status()
     data = response.json()
     return json.dumps(data)
+
 
 @mcp.tool(enabled=True)
 async def gtc_image(accession: str, 
@@ -461,6 +464,7 @@ async def gtc_image(accession: str,
     response.raise_for_status()
     return response.text
 
+
 @mcp.tool(enabled=True)
 async def gtc_external_id(accNum: str) -> str:
     """
@@ -472,12 +476,14 @@ async def gtc_external_id(accNum: str) -> str:
             The GlyTouCan ID (also called as accession number) to find the external resources linked the ID.
 
     Returns:
-        - entry_label: Label of the external resource (e.g., KEGG GLYCAN, GlyGen)
-        - id: External identifier from the partner database
-        - url: Direct URL to the partner database entry
-        - from: Source database name
-        - description: Description of the partner database
-        - partnerurl: Homepage of the partner database
+        format: json
+        fields:
+            - entry_label: Label of the external resource (e.g., KEGG GLYCAN, GlyGen)
+            - id: External identifier from the partner database
+            - url: Direct URL to the partner database entry
+            - from: Source database name
+            - description: Description of the partner database
+            - partnerurl: Homepage of the partner database
     """
     url = f"https://sparqlist.glycosmos.org/sparqlist/api/gtc_external_id"
     params = {
@@ -488,6 +494,96 @@ async def gtc_external_id(accNum: str) -> str:
     response.raise_for_status()
     data = response.json()
     return json.dumps(data)
+
+
+@mcp.tool(enabled=True) # TODO: which gene id?
+async def gene_and_organism_annotation(tax_id: str, gene_id: str) -> str:
+    """
+    Map a gene in a given species (by NCBI Taxonomy ID and gene symbol) to UniProt IDs, 
+    protein names, synonyms, and lineage information. Useful for annotating genes across species.
+
+    Args:
+        - tax_id (str): NCBI Taxonomy ID (e.g., "9606" for human).
+        - gene_id (str): Gene symbol or identifier (e.g., "BRCA1").
+
+    Returns:
+        format: json
+        fields:
+            - tg: TogoGenome gene URI
+            - up: UniProt protein URIs
+            - rs: RefSeq identifiers
+            - protein_name: Common protein name
+            - synonym_name: Gene synonyms
+            - recommended_name: UniProt recommended protein name
+            - ec_name: EC enzyme classification numbers
+            - alternative_name: Alternate names
+            - lineage: Full taxonomic lineage
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/gene_and_organism_annotation"
+    params = {
+        "tax_id": tax_id,
+        "gene_id": gene_id
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
+
+@mcp.tool(enabled=True)
+async def uniprot_aa_seq(up_id: str) -> str:
+    """
+    Retrieve the amino acid sequence and length of a glycoprotein given its UniProt accession ID.
+    Input is a UniProt ID (e.g., "P02873"). Returns the raw amino acid sequence and its length.
+
+    Args:
+        up_id: UniProt protein accession ID (e.g., "P02873").
+
+    Returns:
+        format: json
+        fields:
+            - aa_seq: full amino acid sequence string
+            - length: length of the sequence in amino acids
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/uniprot_aa_seq"
+    params = {
+        "up_id": up_id
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
+
+@mcp.tool(enabled=True)
+async def gtcId2Seq(id: str) -> str:
+    """
+    Retrieve glycan sequences from GlyTouCan by accession number.
+      Supports both WURCS and GlycoCT sequence formats. Input is a GlyTouCan ID
+      (e.g., "G95616YE"). Returns sequence data if available.
+
+    Args:
+        id: GlyTouCan accession number (e.g., "G95616YE").
+
+    Returns:
+        format: json
+        fields:
+            - GlyTouCan: the accession number provided
+            - WURCS: WURCS sequence string (if available)
+            - GlycoCT: GlycoCT sequence string (if available)
+    """
+    url = f"https://sparqlist.glycosmos.org/sparqlist/api/gtcId2Seq"
+    params = {
+        "id": id
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    return json.dumps(data)
+
 
 if __name__ == "__main__":
     mcp.run()
