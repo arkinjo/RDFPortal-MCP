@@ -1,499 +1,150 @@
-sample_rdf_entries:
-  belnapia_moabensis_type_strain:
-    description: Type strain of Belnapia moabensis with complete taxonomic classification
-    RDF: |
-      strain:38 a bacdive:Strain ;
-        rdfs:label "Belnapia moabensis 38" ;
-        dct:description "Belnapia moabensis CP2C is a chemolithoautotroph bacterium isolated from environmental samples." ;
-        bacdive:hasSpecies "Belnapia moabensis" ;
-        bacdive:hasBacDiveID "38"^^xsd:integer ;
-        bacdive:hasTaxID "2606680"^^xsd:integer ;
-        bacdive:isTypeStrain "1"^^xsd:boolean ;
-        bacdive:hasDesignation "CP2C" ;
-        bacdive:hasGenus "Belnapia" ;
-        bacdive:hasSpeciesEpithet "moabensis" ;
-        bacdive:hasStrainNames "38", "CP2C" ;
-        bacdive:hasStrainNumber "CP2C" ;
-        bacdive:hasFamily "Acetobacteraceae" ;
-        bacdive:hasOrder "Rhizobiales" ;
-        bacdive:hasClass "Alphaproteobacteria" ;
-        bacdive:hasPhylum "Proteobacteria" ;
-        bacdive:hasDomain "Bacteria" ;
-        bacdive:hasTaxonomicRank "species" ;
-        bacdive:matchesTaxIDLevel "species" ;
-        bacdive:hasReference reference:12345 .
-
-  escherichia_coli_morphology:
-    description: E. coli strain with cell shape, size, and Gram stain information
-    RDF: |
-      strain:135877 a bacdive:Strain ;
-        rdfs:label "Escherichia coli 135877" ;
-        bacdive:hasSpecies "Escherichia coli" ;
-        bacdive:hasGenus "Escherichia" ;
-        bacdive:hasFamily "Enterobacteriaceae" .
-      
-      cell_shape:91971 a bacdive:CellShape, bacdive:CellMorphology, bacdive:Phenotype ;
-        rdfs:label "rod-shaped" ;
-        bacdive:describesStrain strain:135877 ;
-        bacdive:hasReference reference:54321 .
-      
-      cell_size:12345 a bacdive:CellSize, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        rdfs:label "2.0-6.0 x 1.1-1.5 μm" ;
-        bacdive:describesStrain strain:135877 ;
-        bacdive:hasLength "2.0-6.0" ;
-        bacdive:hasLengthRangeStart "2.0"^^xsd:float ;
-        bacdive:hasLengthRangeEnd "6.0"^^xsd:float ;
-        bacdive:hasLengthUnit "μm" ;
-        bacdive:hasWidth "1.3"^^xsd:float ;
-        bacdive:hasWidthRangeStart "1.1"^^xsd:float ;
-        bacdive:hasWidthRangeEnd "1.5"^^xsd:float ;
-        bacdive:hasWidthUnit "μm" ;
-        bacdive:hasPhenotypeInformation "2.3"^^xsd:float ;
-        bacdive:hasReference reference:54321 .
-      
-      gram_stain:91971 a bacdive:GramStain, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        rdfs:label "Gram negative" ;
-        bacdive:hasGramStain "negative" ;
-        bacdive:hasPhenotypeInformation "Gram-negative rod" ;
-        bacdive:describesStrain strain:135877 ;
-        bacdive:hasReference reference:54321 .
-
-  motile_bacterium_example:
-    description: Motile bacterium with detailed motility information
-    RDF: |
-      strain:138995 a bacdive:Strain ;
-        bacdive:hasSpecies "Bacillus subtilis" ;
-        bacdive:hasGenus "Bacillus" .
-      
-      cell_motility:98879 a bacdive:CellMotility, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        rdfs:label "1"^^xsd:boolean ;
-        bacdive:describesStrain strain:138995 ;
-        bacdive:isMotile "1"^^xsd:boolean ;
-        bacdive:hasPhenotypeInformation "1"^^xsd:boolean ;
-        bacdive:hasReference reference:67890 .
-
-  colony_morphology_example:
-    description: Colony morphology with detailed growth characteristics
-    RDF: |
-      strain:67890 a bacdive:Strain ;
-        bacdive:hasSpecies "Bacillus subtilis" .
-      
-      colony_morphology:12345 a bacdive:ColonyMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        bacdive:describesStrain strain:67890 ;
-        bacdive:hasColonyColor "white" ;
-        bacdive:hasColonyShape "circular" ;
-        bacdive:hasColonyLength "2-5 mm" ;
-        bacdive:hasColonyLengthRangeStart "2.0"^^xsd:float ;
-        bacdive:hasColonyLengthRangeEnd "5.0"^^xsd:float ;
-        bacdive:hasColonyMorphologyInformation "smooth, opaque colonies" ;
-        bacdive:hasIncubationPeriod "24-48 hours" ;
-        bacdive:hasIncubationPeriodRangeStart "24.0"^^xsd:float ;
-        bacdive:hasIncubationPeriodRangeEnd "48.0"^^xsd:float ;
-        bacdive:hasIncubationInformation "aerobic incubation at 37°C" ;
-        bacdive:hasGrowthInformation "good growth" ;
-        bacdive:hasMediumComposition "nutrient agar" ;
-        bacdive:hasReference reference:98765 .
-
-  culture_collection_number_example:
-    description: Culture collection number with external links
-    RDF: |
-      strain:23456 a bacdive:Strain ;
-        bacdive:hasSpecies "Streptomyces coelicolor" .
-      
-      collection_number:34567 a bacdive:CultureCollectionNumber, bacdive:Identifier, bacdive:OrganismIdentifier, bacdive:StrainNumber ;
-        rdfs:label "DSM 40233" ;
-        bacdive:describesStrain strain:23456 ;
-        bacdive:hasLink "https://www.dsmz.de/collection/catalogue/details/culture/DSM-40233" ;
-        bacdive:hasReference reference:11111 .
-
-  culture_medium_example:
-    description: Culture medium with MediaDive cross-reference
-    RDF: |
-      strain:6758 a bacdive:Strain ;
-        bacdive:hasSpecies "Lactobacillus acidophilus" .
-      
-      culture_medium:135091 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CultureMedium ;
-        rdfs:label "CIP Medium 23" ;
-        bacdive:describesStrain strain:6758 ;
-        bacdive:hasGrowthInformation "1"^^xsd:boolean ;
-        bacdive:hasMediaDiveID "23" ;
-        bacdive:hasMediaLink <https://catalogue-crbip.pasteur.fr/fiche_milieu.xhtml?crbip=23> ;
-        bacdive:hasMediumGrowth "1"^^xsd:boolean ;
-        bacdive:providedBy "CIP" ;
-        bacdive:hasReference reference:116038 .
-
-  temperature_ph_conditions:
-    description: Temperature and pH growth conditions for thermophile
-    RDF: |
-      strain:16650 a bacdive:Strain ;
-        bacdive:hasSpecies "Saccharolobus solfataricus" .
-      
-      culture_temp:78901 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CultureTemperature ;
-        rdfs:label "optimal growth at 80°C" ;
-        bacdive:describesStrain strain:16650 ;
-        bacdive:hasTemperatureRangeStart "80.0"^^xsd:float ;
-        bacdive:hasTemperatureRangeEnd "80.0"^^xsd:float ;
-        bacdive:hasGrowthInformation "87.0"^^xsd:float ;
-        bacdive:growthObserved "excellent growth" ;
-        bacdive:hasTestType "growth test" ;
-        bacdive:hasReference reference:22222 .
-      
-      culture_ph:78902 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CulturePH ;
-        rdfs:label "acidophilic growth pH 2.0-4.0" ;
-        bacdive:describesStrain strain:16650 ;
-        bacdive:hasPHRangeStart "2.0"^^xsd:float ;
-        bacdive:hasPHRangeEnd "4.0"^^xsd:float ;
-        bacdive:hasGrowthInformation "good growth at pH 3.0" ;
-        bacdive:hasTestAbility "acid tolerance" ;
-        bacdive:hasTestType "pH tolerance test" ;
-        bacdive:hasReference reference:22222 .
-
-  enzyme_activity_example:
-    description: Enzyme activity with EC number classification
-    RDF: |
-      strain:134671 a bacdive:Strain ;
-        bacdive:hasSpecies "Terribacillus saccharophilus" .
-      
-      enzyme:45678 a bacdive:Enzyme, bacdive:GeneProduct, bacdive:Protein ;
-        rdfs:label "alcohol dehydrogenase" ;
-        bacdive:describesStrain strain:134671 ;
-        bacdive:hasActivity "positive" ;
-        bacdive:hasECNumber "EC 1.1.1.1" ;
-        bacdive:hasEnzyme "alcohol dehydrogenase" ;
-        bacdive:hasReference reference:33333 .
-
-  gc_content_example:
-    description: GC content with methodology information
-    RDF: |
-      strain:3086 a bacdive:Strain ;
-        bacdive:hasSpecies "Corynebacterium glutamicum" .
-      
-      gc_content:14751 a bacdive:GCContent, bacdive:MolecularProperty, bacdive:PropertyOrAttribute ;
-        rdfs:label "54.0 mol% GC" ;
-        bacdive:describesStrain strain:3086 ;
-        bacdive:hasGCContentRangeStart "54.0"^^xsd:float ;
-        bacdive:hasGCContentRangeEnd "54.0"^^xsd:float ;
-        bacdive:hasGCInformation "54.0"^^xsd:float ;
-        bacdive:hasGCMethod "thermal denaturation, midpoint method (Tm)" ;
-        bacdive:hasReference reference:44444 .
-
-  halophily_salt_tolerance:
-    description: Halophilic bacterium with salt tolerance information
-    RDF: |
-      strain:56789 a bacdive:Strain ;
-        bacdive:hasSpecies "Halobacterium salinarum" .
-      
-      halophily:67890 a bacdive:MetabolicPhenotype, bacdive:Phenotype, bacdive:SaltTolerance ;
-        bacdive:describesStrain strain:56789 ;
-        bacdive:hasReference reference:55555 .
-
-  isolation_location_example:
-    description: Isolation source and geographic location information
-    RDF: |
-      strain:78901 a bacdive:Strain ;
-        bacdive:hasSpecies "Thermotoga maritima" .
-      
-      isolation:12345 a bacdive:IsolationInformation, bacdive:IsolationSource, bacdive:Origin ;
-        rdfs:label "marine hydrothermal vent sediment" ;
-        bacdive:describesStrain strain:78901 .
-      
-      location:23456 a bacdive:LocationOfOrigin, bacdive:Origin ;
-        rdfs:label "North Atlantic Ocean, hydrothermal vent field" ;
-        bacdive:describesStrain strain:78901 ;
-        bacdive:hasCountry "International Waters" ;
-        bacdive:hasLatitude "36.2"^^xsd:float ;
-        bacdive:hasLongitude "-33.9"^^xsd:float ;
-        bacdive:hasLocation "36.2"^^xsd:float .
-
-  oxygen_tolerance_example:
-    description: Oxygen tolerance classification
-    RDF: |
-      strain:89012 a bacdive:Strain ;
-        bacdive:hasSpecies "Clostridium botulinum" .
-      
-      oxygen_tolerance:34567 a bacdive:MetabolicPhenotype, bacdive:OxygenTolerance, bacdive:Phenotype ;
-        bacdive:describesStrain strain:89012 ;
-        bacdive:hasOxygenTolerance "obligate anaerobe" ;
-        bacdive:hasGrowthInformation "no growth in aerobic conditions" ;
-        bacdive:hasReference reference:66666 .
-
-  risk_assessment_example:
-    description: Biosafety risk assessment information
-    RDF: |
-      strain:90123 a bacdive:Strain ;
-        bacdive:hasSpecies "Salmonella enterica" .
-      
-      risk_assessment:45678 a bacdive:RiskAssessment ;
-        rdfs:label "BSL-2 pathogen" ;
-        rdfs:comment "Requires biosafety level 2 containment due to pathogenic potential" ;
-        bacdive:describesStrain strain:90123 ;
-        bacdive:hasBiosafetyLevel "BSL-2" ;
-        bacdive:hasReference reference:77777 .
-
-  sequence_16s_example:
-    description: 16S rRNA sequence with complete metadata
-    RDF: |
-      strain:10742 a bacdive:Strain ;
-        bacdive:hasSpecies "Nocardia nova" .
-      
-      sequence_16s:54321 a bacdive:16SSequence, bacdive:NucleotideSequence, bacdive:RNASequence, bacdive:rRNASequence ;
-        rdfs:label "16S rRNA gene sequence" ;
-        bacdive:describesStrain strain:10742 ;
-        bacdive:hasSequenceAccession "AY191250" ;
-        bacdive:fromSequenceDB "ena" ;
-        bacdive:hasSequenceInformation "nearly complete 16S rRNA gene sequence" ;
-        bacdive:hasSequenceLength "1487"^^xsd:integer ;
-        bacdive:hasTaxID "37425"^^xsd:integer ;
-        bacdive:hasReference reference:88888 .
-
-  genome_sequence_example:
-    description: Complete genome sequence information
-    RDF: |
-      strain:101234 a bacdive:Strain ;
-        bacdive:hasSpecies "Escherichia coli" .
-      
-      genome_sequence:65432 a bacdive:DNASequence, bacdive:GenomeSequence, bacdive:NucleotideSequence ;
-        rdfs:label "complete genome sequence" ;
-        bacdive:describesStrain strain:101234 ;
-        bacdive:hasSequenceAccession "NC_000913.3" ;
-        bacdive:fromSequenceDB "genbank" ;
-        bacdive:hasAssemblyLevel "complete" ;
-        bacdive:hasSequenceInformation "complete genome assembly" ;
-        bacdive:hasTaxID "511145"^^xsd:integer ;
-        bacdive:hasReference reference:99999 .
-
-  strain_designation_example:
-    description: Strain designation and naming information
-    RDF: |
-      strain:112345 a bacdive:Strain ;
-        bacdive:hasSpecies "Streptomyces avermitilis" .
-      
-      strain_designation:76543 a bacdive:Identifier, bacdive:OrganismIdentifier, bacdive:StrainDesignation, bacdive:StrainNumber ;
-        rdfs:label "MA-4680" ;
-        bacdive:describesStrain strain:112345 ;
-        bacdive:hasReference reference:10101 .
-
-  enrichment_procedure_example:
-    description: Enrichment procedure for isolation
-    RDF: |
-      strain:18157 a bacdive:Strain ;
-        bacdive:hasSpecies "Cystobacter sp." .
-      
-      enrichment:15449 a bacdive:EnrichmentProcedure, bacdive:IsolationInformation, bacdive:IsolationProcedure, bacdive:Origin ;
-        rdfs:label "w+Sarc (water agar + nutrient bacteria cells)" ;
-        bacdive:describesStrain strain:18157 .
-
-  nutrition_type_example:
-    description: Nutritional type classification
-    RDF: |
-      strain:170921 a bacdive:Strain ;
-        bacdive:hasSpecies "Ramlibacter lithotrophicus" .
-      
-      nutrition_type:87654 a bacdive:MetabolicPhenotype, bacdive:NutritionType, bacdive:Phenotype ;
-        rdfs:label "chemolithoautotroph" ;
-        bacdive:describesStrain strain:170921 ;
-        bacdive:hasReference reference:12121 .
-
-  pathogenicity_example:
-    description: Pathogenicity information for multiple hosts
-    RDF: |
-      strain:134567 a bacdive:Strain ;
-        bacdive:hasSpecies "Agrobacterium tumefaciens" .
-      
-      pathogenicity:98765 a bacdive:ConceptualEntity, bacdive:Pathogenicity ;
-        bacdive:describesStrain strain:134567 ;
-        bacdive:isHumanPathogen "no" ;
-        bacdive:isAnimalPathogen "no" ;
-        bacdive:isPlantPathogen "yes" ;
-        bacdive:isPathogen "yes" ;
-        bacdive:hasReference reference:13131 .
-
-  pigmentation_example:
-    description: Detailed pigmentation information
-    RDF: |
-      strain:131 a bacdive:Strain ;
-        bacdive:hasSpecies "Acidobacterium capsulatum" .
-      
-      pigmentation:1 a bacdive:CellPigmentation, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        rdfs:label "orange pigmentation" ;
-        bacdive:describesStrain strain:131 ;
-        bacdive:hasPigmentName "orange" ;
-        bacdive:hasPigmentProduction "1"^^xsd:boolean ;
-        bacdive:hasPigmentInformation "1"^^xsd:boolean ;
-        bacdive:hasReference reference:14141 .
-
-  spore_formation_example:
-    description: Spore formation capability information
-    RDF: |
-      strain:145678 a bacdive:Strain ;
-        bacdive:hasSpecies "Bacillus cereus" .
-      
-      spore_formation:87654 a bacdive:MicrobialPhenotype, bacdive:Phenotype, bacdive:SporeFormation ;
-        rdfs:label "endospore-forming" ;
-        rdfs:comment "forms heat-resistant endospores under nutrient limitation" ;
-        bacdive:describesStrain strain:145678 ;
-        bacdive:hasAbility "1"^^xsd:boolean ;
-        bacdive:hasReference reference:15151 .
-
-  comprehensive_reference_example:
-    description: Reference with complete bibliographic information and external links
-    RDF: |
-      reference:115969 a bacdive:Reference ;
-        dct:creator "Curators of the CIP" ;
-        rdfs:seeAlso <https://catalogue-crbip.pasteur.fr/fiche_catalogue.xhtml?crbip=CIP%20111405> ;
-        bacdive:hasBibliographicInformation "catalogue" ;
-        bacdive:hasCatalogueID "CIP 111405" ;
-        bacdive:hasCatalogueInformation "CIP 111405", "Collection of Institut Pasteur" ;
-        bacdive:hasCatalogueInstitution "Collection of Institut Pasteur" ;
-        bacdive:hasDocumentType "catalogue" .# BacDive RDF Schema - Metadata-Interoperability-Exchange (MIE) File
-
 schema_info: 
-  title: BacDive RDF Schema
-  description: A comprehensive bacterial strain database providing detailed phenotypic, genotypic, and taxonomic information for prokaryotic microorganisms
-  endpoint: https://rdfportal.org/primary/sparql
-  base_uri: https://purl.dsmz.de/
+  title: "BacDive RDF Schema"
+  description: "A comprehensive bacterial strain database providing detailed phenotypic, genotypic, and taxonomic information for prokaryotic microorganisms"
+  endpoint: "https://rdfportal.org/primary/sparql"
+  base_uri: "https://purl.dsmz.de/"
   graphs:
-    - http://rdfportal.org/dataset/bacdive
+    - "http://rdfportal.org/dataset/bacdive"
 
 prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  dc: http://purl.org/dc/elements/1.1/
-  dct: http://purl.org/dc/terms/
-  skos: http://www.w3.org/2004/02/skos/core#
-  obo: http://purl.obolibrary.org/obo/
-  bacdive: https://purl.dsmz.de/schema/
-  strain: https://purl.dsmz.de/bacdive/strain/
-  reference: https://purl.dsmz.de/bacdive/reference/
-  cell_shape: https://purl.dsmz.de/bacdive/cell_shape/
-  cell_size: https://purl.dsmz.de/bacdive/cell_size/
-  culture_medium: https://purl.dsmz.de/mediadive/culture_medium/
-  cell_motility: https://purl.dsmz.de/bacdive/cell_motility/
-  colony_morphology: https://purl.dsmz.de/bacdive/colony_morphology/
-  culture_collection_number: https://purl.dsmz.de/bacdive/culture_collection_number/
-  culture_ph: https://purl.dsmz.de/bacdive/culture_pH/
-  culture_temp: https://purl.dsmz.de/bacdive/culture_temp/
-  enzyme: https://purl.dsmz.de/bacdive/enzyme/
-  gc_content: https://purl.dsmz.de/bacdive/gc_content/
-  gram_stain: https://purl.dsmz.de/bacdive/gram_stain/
-  halophily: https://purl.dsmz.de/bacdive/halophily/
-  isolation: https://purl.dsmz.de/bacdive/isolation/
-  location: https://purl.dsmz.de/bacdive/location/
-  oxygen_tolerance: https://purl.dsmz.de/bacdive/oxygen_tolerance/
-  risk_assessment: https://purl.dsmz.de/bacdive/risk_assessment/
-  sequence_16s: https://purl.dsmz.de/bacdive/sequence_16S/
-  sequence_genomes: https://purl.dsmz.de/bacdive/sequence_genomes/
-  strain_designation: https://purl.dsmz.de/bacdive/strain_designation/
-  nutrition_type: https://purl.dsmz.de/bacdive/nutrition_type/
-  pathogenicity: https://purl.dsmz.de/bacdive/pathogenicity/
-  pigmentation: https://purl.dsmz.de/bacdive/pigmentation/
-  enrichment: https://purl.dsmz.de/bacdive/enrichment
-  spore_formation: https://purl.dsmz.de/bacdive/spore_formation
+  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  xsd: "http://www.w3.org/2001/XMLSchema#"
+  dc: "http://purl.org/dc/elements/1.1/"
+  dct: "http://purl.org/dc/terms/"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+  obo: "http://purl.obolibrary.org/obo/"
+  bacdive: "https://purl.dsmz.de/schema/"
+  strain: "https://purl.dsmz.de/bacdive/strain/"
+  reference: "https://purl.dsmz.de/bacdive/reference/"
+  cell_shape: "https://purl.dsmz.de/bacdive/cell_shape/"
+  cell_size: "https://purl.dsmz.de/bacdive/cell_size/"
+  culture_medium: "https://purl.dsmz.de/mediadive/culture_medium/"
+  cell_motility: "https://purl.dsmz.de/bacdive/cell_motility/"
+  colony_morphology: "https://purl.dsmz.de/bacdive/colony_morphology/"
+  culture_collection_number: "https://purl.dsmz.de/bacdive/culture_collection_number/"
+  culture_ph: "https://purl.dsmz.de/bacdive/culture_pH/"
+  culture_temp: "https://purl.dsmz.de/bacdive/culture_temp/"
+  enzyme: "https://purl.dsmz.de/bacdive/enzyme/"
+  gc_content: "https://purl.dsmz.de/bacdive/gc_content/"
+  gram_stain: "https://purl.dsmz.de/bacdive/gram_stain/"
+  halophily: "https://purl.dsmz.de/bacdive/halophily/"
+  isolation: "https://purl.dsmz.de/bacdive/isolation/"
+  location: "https://purl.dsmz.de/bacdive/location/"
+  oxygen_tolerance: "https://purl.dsmz.de/bacdive/oxygen_tolerance/"
+  risk_assessment: "https://purl.dsmz.de/bacdive/risk_assessment/"
+  sequence_16s: "https://purl.dsmz.de/bacdive/sequence_16S/"
+  sequence_genomes: "https://purl.dsmz.de/bacdive/sequence_genomes/"
+  strain_designation: "https://purl.dsmz.de/bacdive/strain_designation/"
+  nutrition_type: "https://purl.dsmz.de/bacdive/nutrition_type/"
+  pathogenicity: "https://purl.dsmz.de/bacdive/pathogenicity/"
+  pigmentation: "https://purl.dsmz.de/bacdive/pigmentation/"
+  enrichment: "https://purl.dsmz.de/bacdive/enrichment"
+  spore_formation: "https://purl.dsmz.de/bacdive/spore_formation"
 
 shape_expressions:
-  bacdive:Strain:
-    description: Central entity representing bacterial strains with comprehensive taxonomic classification, identifiers, and phenotypic data
+  "bacdive:Strain":
+    description: "Central entity representing bacterial strains with comprehensive taxonomic classification, identifiers, and phenotypic data"
     properties:
-      rdfs:label:
-        description: Complete strain name including species and strain designation
-        type: xsd:string
+      "rdfs:label":
+        description: "Complete strain name including species and strain designation"
+        type: "xsd:string"
         required: true
-      dct:description:
-        description: Detailed textual description of the strain including isolation and characteristics
-        type: xsd:string
+      "dct:description":
+        description: "Detailed textual description of the strain including isolation and characteristics"
+        type: "xsd:string"
         required: false
-      bacdive:hasBacDiveID:
-        description: Unique BacDive database identifier (integer)
-        type: xsd:integer
+      "bacdive:hasBacDiveID":
+        description: "Unique BacDive database identifier (integer)"
+        type: "xsd:integer"
         required: true
-      bacdive:hasTaxID:
-        description: NCBI Taxonomy database cross-reference identifier
-        type: xsd:integer
+      "bacdive:hasTaxID":
+        description: "NCBI Taxonomy database cross-reference identifier"
+        type: "xsd:integer"
         required: true
-      bacdive:hasClass:
-        description: Taxonomic class classification
-        type: xsd:string
+      "bacdive:hasClass":
+        description: "Taxonomic class classification"
+        type: "xsd:string"
         required: true
-      bacdive:hasDesignation:
-        description: Primary strain designation or laboratory code
-        type: xsd:string
+      "bacdive:hasDesignation":
+        description: "Primary strain designation or laboratory code"
+        type: "xsd:string"
         required: false
-      bacdive:hasDomain:
-        description: Taxonomic domain (Bacteria, Archaea, Eukarya)
-        type: xsd:string
+      "bacdive:hasDomain":
+        description: "Taxonomic domain (Bacteria, Archaea, Eukarya)"
+        type: "xsd:string"
         required: true
-      bacdive:hasFamily:
-        description: Taxonomic family classification
-        type: xsd:string
+      "bacdive:hasFamily":
+        description: "Taxonomic family classification"
+        type: "xsd:string"
         required: true
-      bacdive:hasGenus:
-        description: Taxonomic genus classification
-        type: xsd:string
+      "bacdive:hasGenus":
+        description: "Taxonomic genus classification"
+        type: "xsd:string"
         required: true
-      bacdive:hasOrder:
-        description: Taxonomic order classification
-        type: xsd:string
+      "bacdive:hasOrder":
+        description: "Taxonomic order classification"
+        type: "xsd:string"
         required: true
-      bacdive:hasPhylum:
-        description: Taxonomic phylum classification
-        type: xsd:string
+      "bacdive:hasPhylum":
+        description: "Taxonomic phylum classification"
+        type: "xsd:string"
         required: true
-      bacdive:hasReference:
-        description: Link to reference describing the strain
-        type: bacdive:Reference
+      "bacdive:hasReference":
+        description: "Link to reference describing the strain"
+        type: "bacdive:Reference"
         required: false
-      bacdive:hasSpecies:
-        description: Full binomial species name
-        type: xsd:string
+      "bacdive:hasSpecies":
+        description: "Full binomial species name"
+        type: "xsd:string"
         required: true
-      bacdive:hasSpeciesEpithet:
-        description: Species epithet portion of the scientific name
-        type: xsd:string
+      "bacdive:hasSpeciesEpithet":
+        description: "Species epithet portion of the scientific name"
+        type: "xsd:string"
         required: true
-      bacdive:hasStrainNames:
-        description: Alternative strain names and synonyms
-        type: xsd:string
+      "bacdive:hasStrainNames":
+        description: "Alternative strain names and synonyms"
+        type: "xsd:string"
         required: false
-      bacdive:hasStrainNumber:
-        description: Strain number identifier
-        type: xsd:string
+      "bacdive:hasStrainNumber":
+        description: "Strain number identifier"
+        type: "xsd:string"
         required: false
-      bacdive:hasTaxonomicRank:
-        description: Taxonomic rank level
-        type: xsd:string
+      "bacdive:hasTaxonomicRank":
+        description: "Taxonomic rank level"
+        type: "xsd:string"
         required: false
-      bacdive:isTypeStrain:
-        description: Boolean flag indicating nomenclatural type strain status
-        type: xsd:boolean
+      "bacdive:isTypeStrain":
+        description: "Boolean flag indicating nomenclatural type strain status"
+        type: "xsd:boolean"
         required: false
-      bacdive:matchesTaxIDLevel:
-        description: Level at which taxonomic ID matches (species, genus, etc.)
-        type: xsd:string
+      "bacdive:matchesTaxIDLevel":
+        description: "Level at which taxonomic ID matches (species, genus, etc.)"
+        type: "xsd:string"
         required: false
 
-  bacdive:CellMotility:
-    description: Information about bacterial motility capabilities
+  "bacdive:CellMotility":
+    description: "Information about bacterial motility capabilities"
     properties:
-      rdfs:label:
-        description: Textual description of motility
-        type: xsd:boolean
+      "rdfs:label":
+        description: "Textual description of motility"
+        type: "xsd:boolean"
         required: false
-      bacdive:describesStrain:
-        description: Reference to the strain this motility describes
-        type: bacdive:Strain
+      "bacdive:describesStrain":
+        description: "Reference to the strain this motility describes"
+        type: "bacdive:Strain"
         required: true
-      bacdive:hasPhenotypeInformation:
-        description: Additional phenotypic information about motility
-        type: xsd:boolean
+      "bacdive:hasPhenotypeInformation":
+        description: "Additional phenotypic information about motility"
+        type: "xsd:boolean"
         required: false
-      bacdive:hasReference:
-        description: Literature reference for motility data
-        type: bacdive:Reference
+      "bacdive:hasReference":
+        description: "Literature reference for motility data"
+        type: "bacdive:Reference"
         required: false
-      bacdive:isMotile:
-        description: Binary flag for motility (0 = non-motile, 1 = motile)
-        type: xsd:boolean
+      "bacdive:isMotile":
+        description: "Binary flag for motility (0 = non-motile, 1 = motile)"
+        type: "xsd:boolean"
         required: true
 
   bacdive:CellShape:
@@ -1155,9 +806,9 @@ shape_expressions:
         description: Boolean flag for spore formation ability (0 = no, 1 = yes)
         type: xsd:boolean
         required: false
-      bacdive:hasReference:
-        description: Literature reference for spore formation data
-        type: bacdive:Reference
+              bacdive:hasReference:
+        description: "Literature reference for spore formation data"
+        type: "bacdive:Reference"
         required: false
 
 sample_rdf_entries:
@@ -1166,67 +817,348 @@ sample_rdf_entries:
     RDF: |
       strain:38 a bacdive:Strain ;
         rdfs:label "Belnapia moabensis 38" ;
+        dct:description "Belnapia moabensis CP2C is a chemolithoautotroph bacterium isolated from environmental samples." ;
         bacdive:hasSpecies "Belnapia moabensis" ;
+        bacdive:hasBacDiveID "38"^^xsd:integer ;
+        bacdive:hasTaxID "2606680"^^xsd:integer ;
         bacdive:isTypeStrain "1"^^xsd:boolean ;
         bacdive:hasDesignation "CP2C" ;
         bacdive:hasGenus "Belnapia" ;
+        bacdive:hasSpeciesEpithet "moabensis" ;
+        bacdive:hasStrainNames "38", "CP2C" ;
+        bacdive:hasStrainNumber "CP2C" ;
         bacdive:hasFamily "Acetobacteraceae" ;
         bacdive:hasOrder "Rhizobiales" ;
         bacdive:hasClass "Alphaproteobacteria" ;
         bacdive:hasPhylum "Proteobacteria" ;
-        bacdive:hasDomain "Bacteria" .
+        bacdive:hasDomain "Bacteria" ;
+        bacdive:hasTaxonomicRank "species" ;
+        bacdive:matchesTaxIDLevel "species" ;
+        bacdive:hasReference reference:12345 .
 
   escherichia_coli_morphology:
-    description: E. coli strain with cell shape and Gram stain information
+    description: E. coli strain with cell shape, size, and Gram stain information
     RDF: |
       strain:135877 a bacdive:Strain ;
         rdfs:label "Escherichia coli 135877" ;
-        bacdive:hasSpecies "Escherichia coli" .
+        bacdive:hasSpecies "Escherichia coli" ;
+        bacdive:hasGenus "Escherichia" ;
+        bacdive:hasFamily "Enterobacteriaceae" .
       
-      cell_shape:12345 a bacdive:CellShape, bacdive:CellMorphology, bacdive:Phenotype ;
+      cell_shape:91971 a bacdive:CellShape, bacdive:CellMorphology, bacdive:Phenotype ;
         rdfs:label "rod-shaped" ;
-        bacdive:describesStrain strain:135877 .
+        bacdive:describesStrain strain:135877 ;
+        bacdive:hasReference reference:54321 .
       
-      gram_stain:67890 a bacdive:GramStain, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
+      cell_size:12345 a bacdive:CellSize, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
+        rdfs:label "2.0-6.0 x 1.1-1.5 μm" ;
+        bacdive:describesStrain strain:135877 ;
+        bacdive:hasLength "2.0-6.0" ;
+        bacdive:hasLengthRangeStart "2.0"^^xsd:float ;
+        bacdive:hasLengthRangeEnd "6.0"^^xsd:float ;
+        bacdive:hasLengthUnit "μm" ;
+        bacdive:hasWidth "1.3"^^xsd:float ;
+        bacdive:hasWidthRangeStart "1.1"^^xsd:float ;
+        bacdive:hasWidthRangeEnd "1.5"^^xsd:float ;
+        bacdive:hasWidthUnit "μm" ;
+        bacdive:hasPhenotypeInformation "2.3"^^xsd:float ;
+        bacdive:hasReference reference:54321 .
+      
+      gram_stain:91971 a bacdive:GramStain, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
         rdfs:label "Gram negative" ;
         bacdive:hasGramStain "negative" ;
-        bacdive:describesStrain strain:135877 .
+        bacdive:hasPhenotypeInformation "Gram-negative rod" ;
+        bacdive:describesStrain strain:135877 ;
+        bacdive:hasReference reference:54321 .
 
-  orange_pigment_producer:
-    description: Bacterial strain producing orange pigments
+  motile_bacterium_example:
+    description: Motile bacterium with detailed motility information
     RDF: |
-      strain:131 a bacdive:Strain ;
-        bacdive:hasSpecies "Acidobacterium capsulatum" .
+      strain:138995 a bacdive:Strain ;
+        bacdive:hasSpecies "Bacillus subtilis" ;
+        bacdive:hasGenus "Bacillus" .
       
-      pigmentation:1 a bacdive:CellPigmentation, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
-        bacdive:hasPigmentName "orange" ;
-        bacdive:hasPigmentProduction "1"^^xsd:boolean ;
-        bacdive:describesStrain strain:131 .
+      cell_motility:98879 a bacdive:CellMotility, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
+        rdfs:label "1"^^xsd:boolean ;
+        bacdive:describesStrain strain:138995 ;
+        bacdive:isMotile "1"^^xsd:boolean ;
+        bacdive:hasPhenotypeInformation "1"^^xsd:boolean ;
+        bacdive:hasReference reference:67890 .
 
-  corynebacterium_gc_content:
-    description: Corynebacterium glutamicum with GC content data
+  colony_morphology_example:
+    description: Colony morphology with detailed growth characteristics
+    RDF: |
+      strain:67890 a bacdive:Strain ;
+        bacdive:hasSpecies "Bacillus subtilis" .
+      
+      colony_morphology:12345 a bacdive:ColonyMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
+        bacdive:describesStrain strain:67890 ;
+        bacdive:hasColonyColor "white" ;
+        bacdive:hasColonyShape "circular" ;
+        bacdive:hasColonyLength "2-5 mm" ;
+        bacdive:hasColonyLengthRangeStart "2.0"^^xsd:float ;
+        bacdive:hasColonyLengthRangeEnd "5.0"^^xsd:float ;
+        bacdive:hasColonyMorphologyInformation "smooth, opaque colonies" ;
+        bacdive:hasIncubationPeriod "24-48 hours" ;
+        bacdive:hasIncubationPeriodRangeStart "24.0"^^xsd:float ;
+        bacdive:hasIncubationPeriodRangeEnd "48.0"^^xsd:float ;
+        bacdive:hasIncubationInformation "aerobic incubation at 37°C" ;
+        bacdive:hasGrowthInformation "good growth" ;
+        bacdive:hasMediumComposition "nutrient agar" ;
+        bacdive:hasReference reference:98765 .
+
+  culture_collection_number_example:
+    description: Culture collection number with external links
+    RDF: |
+      strain:23456 a bacdive:Strain ;
+        bacdive:hasSpecies "Streptomyces coelicolor" .
+      
+      collection_number:34567 a bacdive:CultureCollectionNumber, bacdive:Identifier, bacdive:OrganismIdentifier, bacdive:StrainNumber ;
+        rdfs:label "DSM 40233" ;
+        bacdive:describesStrain strain:23456 ;
+        bacdive:hasLink "https://www.dsmz.de/collection/catalogue/details/culture/DSM-40233" ;
+        bacdive:hasReference reference:11111 .
+
+  culture_medium_example:
+    description: Culture medium with MediaDive cross-reference
+    RDF: |
+      strain:6758 a bacdive:Strain ;
+        bacdive:hasSpecies "Lactobacillus acidophilus" .
+      
+      culture_medium:135091 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CultureMedium ;
+        rdfs:label "CIP Medium 23" ;
+        bacdive:describesStrain strain:6758 ;
+        bacdive:hasGrowthInformation "1"^^xsd:boolean ;
+        bacdive:hasMediaDiveID "23" ;
+        bacdive:hasMediaLink <https://catalogue-crbip.pasteur.fr/fiche_milieu.xhtml?crbip=23> ;
+        bacdive:hasMediumGrowth "1"^^xsd:boolean ;
+        bacdive:providedBy "CIP" ;
+        bacdive:hasReference reference:116038 .
+
+  temperature_ph_conditions:
+    description: Temperature and pH growth conditions for thermophile
+    RDF: |
+      strain:16650 a bacdive:Strain ;
+        bacdive:hasSpecies "Saccharolobus solfataricus" .
+      
+      culture_temp:78901 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CultureTemperature ;
+        rdfs:label "optimal growth at 80°C" ;
+        bacdive:describesStrain strain:16650 ;
+        bacdive:hasTemperatureRangeStart "80.0"^^xsd:float ;
+        bacdive:hasTemperatureRangeEnd "80.0"^^xsd:float ;
+        bacdive:hasGrowthInformation "87.0"^^xsd:float ;
+        bacdive:growthObserved "excellent growth" ;
+        bacdive:hasTestType "growth test" ;
+        bacdive:hasReference reference:22222 .
+      
+      culture_ph:78902 a bacdive:ConceptualEntity, bacdive:CultureCondition, bacdive:CulturePH ;
+        rdfs:label "acidophilic growth pH 2.0-4.0" ;
+        bacdive:describesStrain strain:16650 ;
+        bacdive:hasPHRangeStart "2.0"^^xsd:float ;
+        bacdive:hasPHRangeEnd "4.0"^^xsd:float ;
+        bacdive:hasGrowthInformation "good growth at pH 3.0" ;
+        bacdive:hasTestAbility "acid tolerance" ;
+        bacdive:hasTestType "pH tolerance test" ;
+        bacdive:hasReference reference:22222 .
+
+  enzyme_activity_example:
+    description: Enzyme activity with EC number classification
+    RDF: |
+      strain:134671 a bacdive:Strain ;
+        bacdive:hasSpecies "Terribacillus saccharophilus" .
+      
+      enzyme:45678 a bacdive:Enzyme, bacdive:GeneProduct, bacdive:Protein ;
+        rdfs:label "alcohol dehydrogenase" ;
+        bacdive:describesStrain strain:134671 ;
+        bacdive:hasActivity "positive" ;
+        bacdive:hasECNumber "EC 1.1.1.1" ;
+        bacdive:hasEnzyme "alcohol dehydrogenase" ;
+        bacdive:hasReference reference:33333 .
+
+  gc_content_example:
+    description: GC content with methodology information
     RDF: |
       strain:3086 a bacdive:Strain ;
         bacdive:hasSpecies "Corynebacterium glutamicum" .
       
-      gc_content:12345 a bacdive:GCContent, bacdive:MolecularProperty, bacdive:PropertyOrAttribute ;
-        rdfs:label "54% GC content" ;
+      gc_content:14751 a bacdive:GCContent, bacdive:MolecularProperty, bacdive:PropertyOrAttribute ;
+        rdfs:label "54.0 mol% GC" ;
+        bacdive:describesStrain strain:3086 ;
         bacdive:hasGCContentRangeStart "54.0"^^xsd:float ;
         bacdive:hasGCContentRangeEnd "54.0"^^xsd:float ;
+        bacdive:hasGCInformation "54.0"^^xsd:float ;
         bacdive:hasGCMethod "thermal denaturation, midpoint method (Tm)" ;
-        bacdive:describesStrain strain:3086 .
+        bacdive:hasReference reference:44444 .
 
-  sequence_with_accession:
-    description: 16S rRNA sequence with database cross-reference
+  halophily_salt_tolerance:
+    description: Halophilic bacterium with salt tolerance information
+    RDF: |
+      strain:56789 a bacdive:Strain ;
+        bacdive:hasSpecies "Halobacterium salinarum" .
+      
+      halophily:67890 a bacdive:MetabolicPhenotype, bacdive:Phenotype, bacdive:SaltTolerance ;
+        bacdive:describesStrain strain:56789 ;
+        bacdive:hasReference reference:55555 .
+
+  isolation_location_example:
+    description: Isolation source and geographic location information
+    RDF: |
+      strain:78901 a bacdive:Strain ;
+        bacdive:hasSpecies "Thermotoga maritima" .
+      
+      isolation:12345 a bacdive:IsolationInformation, bacdive:IsolationSource, bacdive:Origin ;
+        rdfs:label "marine hydrothermal vent sediment" ;
+        bacdive:describesStrain strain:78901 .
+      
+      location:23456 a bacdive:LocationOfOrigin, bacdive:Origin ;
+        rdfs:label "North Atlantic Ocean, hydrothermal vent field" ;
+        bacdive:describesStrain strain:78901 ;
+        bacdive:hasCountry "International Waters" ;
+        bacdive:hasLatitude "36.2"^^xsd:float ;
+        bacdive:hasLongitude "-33.9"^^xsd:float ;
+        bacdive:hasLocation "36.2"^^xsd:float .
+
+  oxygen_tolerance_example:
+    description: Oxygen tolerance classification
+    RDF: |
+      strain:89012 a bacdive:Strain ;
+        bacdive:hasSpecies "Clostridium botulinum" .
+      
+      oxygen_tolerance:34567 a bacdive:MetabolicPhenotype, bacdive:OxygenTolerance, bacdive:Phenotype ;
+        bacdive:describesStrain strain:89012 ;
+        bacdive:hasOxygenTolerance "obligate anaerobe" ;
+        bacdive:hasGrowthInformation "no growth in aerobic conditions" ;
+        bacdive:hasReference reference:66666 .
+
+  risk_assessment_example:
+    description: Biosafety risk assessment information
+    RDF: |
+      strain:90123 a bacdive:Strain ;
+        bacdive:hasSpecies "Salmonella enterica" .
+      
+      risk_assessment:45678 a bacdive:RiskAssessment ;
+        rdfs:label "BSL-2 pathogen" ;
+        rdfs:comment "Requires biosafety level 2 containment due to pathogenic potential" ;
+        bacdive:describesStrain strain:90123 ;
+        bacdive:hasBiosafetyLevel "BSL-2" ;
+        bacdive:hasReference reference:77777 .
+
+  sequence_16s_example:
+    description: 16S rRNA sequence with complete metadata
     RDF: |
       strain:10742 a bacdive:Strain ;
         bacdive:hasSpecies "Nocardia nova" .
       
       sequence_16s:54321 a bacdive:16SSequence, bacdive:NucleotideSequence, bacdive:RNASequence, bacdive:rRNASequence ;
+        rdfs:label "16S rRNA gene sequence" ;
+        bacdive:describesStrain strain:10742 ;
         bacdive:hasSequenceAccession "AY191250" ;
         bacdive:fromSequenceDB "ena" ;
-        bacdive:describesStrain strain:10742 ;
-        bacdive:hasReference reference:12345 .
+        bacdive:hasSequenceInformation "nearly complete 16S rRNA gene sequence" ;
+        bacdive:hasSequenceLength "1487"^^xsd:integer ;
+        bacdive:hasTaxID "37425"^^xsd:integer ;
+        bacdive:hasReference reference:88888 .
+
+  genome_sequence_example:
+    description: Complete genome sequence information
+    RDF: |
+      strain:101234 a bacdive:Strain ;
+        bacdive:hasSpecies "Escherichia coli" .
+      
+      genome_sequence:65432 a bacdive:DNASequence, bacdive:GenomeSequence, bacdive:NucleotideSequence ;
+        rdfs:label "complete genome sequence" ;
+        bacdive:describesStrain strain:101234 ;
+        bacdive:hasSequenceAccession "NC_000913.3" ;
+        bacdive:fromSequenceDB "genbank" ;
+        bacdive:hasAssemblyLevel "complete" ;
+        bacdive:hasSequenceInformation "complete genome assembly" ;
+        bacdive:hasTaxID "511145"^^xsd:integer ;
+        bacdive:hasReference reference:99999 .
+
+  strain_designation_example:
+    description: Strain designation and naming information
+    RDF: |
+      strain:112345 a bacdive:Strain ;
+        bacdive:hasSpecies "Streptomyces avermitilis" .
+      
+      strain_designation:76543 a bacdive:Identifier, bacdive:OrganismIdentifier, bacdive:StrainDesignation, bacdive:StrainNumber ;
+        rdfs:label "MA-4680" ;
+        bacdive:describesStrain strain:112345 ;
+        bacdive:hasReference reference:10101 .
+
+  enrichment_procedure_example:
+    description: Enrichment procedure for isolation
+    RDF: |
+      strain:18157 a bacdive:Strain ;
+        bacdive:hasSpecies "Cystobacter sp." .
+      
+      enrichment:15449 a bacdive:EnrichmentProcedure, bacdive:IsolationInformation, bacdive:IsolationProcedure, bacdive:Origin ;
+        rdfs:label "w+Sarc (water agar + nutrient bacteria cells)" ;
+        bacdive:describesStrain strain:18157 .
+
+  nutrition_type_example:
+    description: Nutritional type classification
+    RDF: |
+      strain:170921 a bacdive:Strain ;
+        bacdive:hasSpecies "Ramlibacter lithotrophicus" .
+      
+      nutrition_type:87654 a bacdive:MetabolicPhenotype, bacdive:NutritionType, bacdive:Phenotype ;
+        rdfs:label "chemolithoautotroph" ;
+        bacdive:describesStrain strain:170921 ;
+        bacdive:hasReference reference:12121 .
+
+  pathogenicity_example:
+    description: Pathogenicity information for multiple hosts
+    RDF: |
+      strain:134567 a bacdive:Strain ;
+        bacdive:hasSpecies "Agrobacterium tumefaciens" .
+      
+      pathogenicity:98765 a bacdive:ConceptualEntity, bacdive:Pathogenicity ;
+        bacdive:describesStrain strain:134567 ;
+        bacdive:isHumanPathogen "no" ;
+        bacdive:isAnimalPathogen "no" ;
+        bacdive:isPlantPathogen "yes" ;
+        bacdive:isPathogen "yes" ;
+        bacdive:hasReference reference:13131 .
+
+  pigmentation_example:
+    description: Detailed pigmentation information
+    RDF: |
+      strain:131 a bacdive:Strain ;
+        bacdive:hasSpecies "Acidobacterium capsulatum" .
+      
+      pigmentation:1 a bacdive:CellPigmentation, bacdive:CellMorphology, bacdive:MicrobialPhenotype, bacdive:Phenotype ;
+        rdfs:label "orange pigmentation" ;
+        bacdive:describesStrain strain:131 ;
+        bacdive:hasPigmentName "orange" ;
+        bacdive:hasPigmentProduction "1"^^xsd:boolean ;
+        bacdive:hasPigmentInformation "1"^^xsd:boolean ;
+        bacdive:hasReference reference:14141 .
+
+  spore_formation_example:
+    description: Spore formation capability information
+    RDF: |
+      strain:145678 a bacdive:Strain ;
+        bacdive:hasSpecies "Bacillus cereus" .
+      
+      spore_formation:87654 a bacdive:MicrobialPhenotype, bacdive:Phenotype, bacdive:SporeFormation ;
+        rdfs:label "endospore-forming" ;
+        rdfs:comment "forms heat-resistant endospores under nutrient limitation" ;
+        bacdive:describesStrain strain:145678 ;
+        bacdive:hasAbility "1"^^xsd:boolean ;
+        bacdive:hasReference reference:15151 .
+
+  comprehensive_reference_example:
+    description: Reference with complete bibliographic information and external links
+    RDF: |
+      reference:115969 a bacdive:Reference ;
+        dct:creator "Curators of the CIP" ;
+        rdfs:seeAlso <https://catalogue-crbip.pasteur.fr/fiche_catalogue.xhtml?crbip=CIP%20111405> ;
+        bacdive:hasBibliographicInformation "catalogue" ;
+        bacdive:hasCatalogueID "CIP 111405" ;
+        bacdive:hasCatalogueInformation "CIP 111405", "Collection of Institut Pasteur" ;
+        bacdive:hasCatalogueInstitution "Collection of Institut Pasteur" ;
+        bacdive:hasDocumentType "catalogue" .# BacDive RDF Schema - Metadata-Interoperability-Exchange (MIE) File
 
 sparql_query_examples:
   get_type_strain_belnapia:
@@ -1623,7 +1555,7 @@ architectural_notes:
   semantic_modeling:
     namespace_organization:
       - Primary namespace: https://purl.dsmz.de/schema/ for all bacterial-specific properties
-      - Utilizes standard vocabularies like RDFS, Dublin Core (dct), and XML Schema (xsd) for common metadata properties
+      - Standard vocabularies: rdfs:, dct:, xsd: for common metadata properties
       - Consistent URI patterns for all shape expressions and properties
     property_design:
       - Descriptive property names with clear semantic meaning (hasGramStain, isTypeStrain, describesStrain)
@@ -2038,7 +1970,7 @@ biological_query_examples:
             BIND(CONCAT(STR(?gc_start), "% GC") AS ?gc_content)
           }
         }
-      } LIMIT 10
+      } LIMIT 10 20
 
   get_spore_formation_data:
     description: Query spore formation capabilities (both positive and negative cases)

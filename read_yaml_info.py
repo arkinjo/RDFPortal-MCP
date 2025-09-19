@@ -1,7 +1,7 @@
 import os
 import yaml
 
-def read_schema_info_from_resources(resources_dir="resources", output_file="schema_summary.yaml"):
+def read_schema_info_from_resources(resources_dir="mie", output_file="schema_summary.yaml"):
     """
     Reads all YAML files in a given directory, extracts the title and 
     description from the 'schema_info' section, and saves them to a YAML file.

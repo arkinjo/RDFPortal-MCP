@@ -1,7 +1,7 @@
 # This is the template for creating a MIE (Metadata-Interoperability-Exchange) file.
 schema_info: 
   # Replace with actual schema information
-  title: DBNAME RDF Schema # Replace DBNAME with the database name.
+  title: DBNAME # Replace DBNAME with the database name.
   description: A comprehensive resource for human relations and genetics # Replace with a concise description about the database.
   endpoint: http://example.org/sparql
   base_uri: http://example.org/

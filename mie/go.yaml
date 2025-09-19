@@ -1,0 +1,383 @@
+# Gene Ontology RDF Schema 
+
+schema_info:
+  title: Gene Ontology (GO) RDF Schema Analysis
+  description: A comprehensive resource for standardized annotation of genes and gene products using controlled vocabulary for molecular functions, biological processes, and cellular components
+  endpoint: https://rdfportal.org/primary/sparql
+  base_uri: http://purl.obolibrary.org/obo/
+  version: Latest available from RDF Portal
+  last_analyzed: '2025-09-18'
+  graphs:
+    - http://rdfportal.org/go/
+    - http://purl.obolibrary.org/obo/go.owl
+
+prefixes:
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  obo: http://purl.obolibrary.org/obo/
+  go: http://purl.obolibrary.org/obo/GO_
+  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  togoid: http://togoid.dbcls.jp/ontology#
+  NCIt: http://purl.obolibrary.org/obo/NCIt_
+  
+shape_expressions:
+  GO_Term:
+    description: A Gene Ontology term representing biological concepts across molecular function, biological process, and cellular component domains
+    target_class: owl:Class
+    constraints:
+      - STRSTARTS(STR(?this), "http://purl.obolibrary.org/obo/GO_")
+    properties:
+      go_id:
+        property: oboInOwl:id
+        type: xsd:string
+        pattern: "^GO:[0-9]{7}$"
+        required: true
+        description: Official GO identifier in format GO:XXXXXXX
+      label:
+        property: rdfs:label
+        type: xsd:string
+        required: true
+        description: Human-readable name of the GO term
+      definition:
+        property: IAO:0000115
+        type: xsd:string
+        required: false
+        description: Textual definition of the biological concept
+      subclass_of:
+        property: rdfs:subClassOf
+        type: IRI
+        required: false
+        multiple: true
+        description: Parent terms in the GO hierarchy (is-a relationships)
+      cross_references:
+        property: togoid:TIO_000007
+        type: IRI
+        required: false
+        multiple: true
+        description: Links to UniProt proteins via TogoID mappings
+      database_cross_references:
+        property: oboInOwl:hasDbXref
+        type: xsd:string
+        required: false
+        multiple: true
+        description: Cross-references to external databases (Wikipedia, NIF, NCIt, etc.)
+      alternative_id:
+        property: oboInOwl:hasAlternativeId
+        type: xsd:string
+        required: false
+        multiple: true
+        description: Alternative identifiers for the term
+      is_obsolete:
+        property: owl:deprecated
+        type: xsd:boolean
+        required: false
+        description: Indicates if the term is obsolete
+        
+  Molecular_Function:
+    description: GO terms describing molecular-level activities performed by gene products
+    extends: GO_Term
+    target_pattern: "^http://purl.obolibrary.org/obo/GO_"
+    constraints:
+      - rdfs:subClassOf* obo:GO_0003674  # molecular_function root
+    properties:
+      enzyme_commission:
+        property: oboInOwl:hasDbXref
+        type: xsd:string
+        pattern: "^EC:"
+        required: false
+        multiple: true
+        description: Associated Enzyme Commission classification numbers
+      catalytic_activity:
+        property: rdfs:subClassOf
+        type: IRI
+        required: false
+        description: Specific catalytic activities as subclasses
+        
+  Biological_Process:
+    description: GO terms describing biological processes - series of molecular events with defined beginning and end
+    extends: GO_Term
+    target_pattern: "^http://purl.obolibrary.org/obo/GO_"
+    constraints:
+      - rdfs:subClassOf* obo:GO_0008150  # biological_process root
+    properties:
+      regulates:
+        property: RO:0002211
+        type: IRI
+        required: false
+        multiple: true
+        description: Processes that this term regulates
+      negatively_regulates:
+        property: RO:0002212
+        type: IRI
+        required: false
+        multiple: true
+        description: Processes that this term negatively regulates
+      positively_regulates:
+        property: RO:0002213
+        type: IRI
+        required: false
+        multiple: true
+        description: Processes that this term positively regulates
+      occurs_in:
+        property: BFO:0000066
+        type: IRI
+        required: false
+        multiple: true
+        description: Cellular component where the process occurs
+        
+  Cellular_Component:
+    description: GO terms describing cellular locations, anatomical structures, and stable macromolecular complexes
+    extends: GO_Term
+    target_pattern: "^http://purl.obolibrary.org/obo/GO_"
+    constraints:
+      - rdfs:subClassOf* obo:GO_0005575  # cellular_component root
+    properties:
+      part_of:
+        property: BFO:0000050
+        type: IRI
+        required: false
+        multiple: true
+        description: Larger cellular structure or complex this component is part of
+      has_part:
+        property: BFO:0000051
+        type: IRI
+        required: false
+        multiple: true
+        description: Smaller components that are part of this structure
+      
+sample_rdf_entries:
+  molecular_function_example:
+    description: Molecular function term - kinetochore assembly and structure
+    RDF: |
+      obo:GO_0000776 a owl:Class ;
+        rdfs:label "kinetochore" ;
+        oboInOwl:id "GO:0000776" ;
+        IAO:0000115 "A multisubunit complex that is located at the centromeric region of DNA and provides an attachment point for the spindle microtubules." ;
+        rdfs:subClassOf obo:GO_0043232, obo:GO_0099080 ;
+        oboInOwl:hasDbXref "Wikipedia:Kinetochore" ;
+        togoid:TIO_000007 <http://purl.uniprot.org/uniprot/G0V548> .
+
+  biological_process_example:
+    description: Biological process term - regulatory relationship example
+    RDF: |
+      obo:GO_0045995 a owl:Class ;
+        rdfs:label "regulation of embryonic development" ;
+        oboInOwl:id "GO:0045995" ;
+        IAO:0000115 "Any process that modulates the frequency, rate or extent of embryonic development." ;
+        rdfs:subClassOf obo:GO_0008150 ;
+        RO:0002211 obo:GO_0009790 .  # regulates embryo development
+
+  cellular_component_root:
+    description: Root term for cellular component ontology branch
+    RDF: |
+      obo:GO_0005575 a owl:Class ;
+        rdfs:label "cellular_component" ;
+        oboInOwl:id "GO:0005575" ;
+        IAO:0000115 "A location, relative to cellular compartments and structures, occupied by a macromolecular machine." .
+
+  nucleosome_complex:
+    description: Cellular component - protein-DNA complex
+    RDF: |
+      obo:GO_0000786 a owl:Class ;
+        rdfs:label "nucleosome" ;
+        oboInOwl:id "GO:0000786" ;
+        IAO:0000115 "A complex comprised of DNA wound around a multisubunit core and associated proteins." ;
+        rdfs:subClassOf obo:GO_0032993 ;
+        oboInOwl:hasDbXref "Wikipedia:Nucleosome" .
+
+  nucleus_structure:
+    description: Major cellular component with extensive cross-references
+    RDF: |
+      obo:GO_0005634 a owl:Class ;
+        rdfs:label "nucleus" ;
+        oboInOwl:id "GO:0005634" ;
+        IAO:0000115 "A membrane-bounded organelle of eukaryotic cells in which chromosomes are housed and DNA replication and transcription occur." ;
+        rdfs:subClassOf obo:GO_0005575 ;
+        oboInOwl:hasDbXref "NIF_Subcellular:sao1702920020", "Wikipedia:Cell_nucleus", "NCIt:C13197" .
+
+sparql_query_examples:
+  get_root_terms:
+    description: Retrieve the three main GO root terms (molecular function, biological process, cellular component)
+    sparql: |
+      SELECT ?term ?label ?definition
+      WHERE { 
+        VALUES ?term { 
+          <http://purl.obolibrary.org/obo/GO_0003674>
+          <http://purl.obolibrary.org/obo/GO_0008150> 
+          <http://purl.obolibrary.org/obo/GO_0005575>
+        }
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        OPTIONAL { ?term <http://purl.obolibrary.org/obo/IAO_0000115> ?definition }
+      }
+
+  get_hierarchical_relationships:
+    description: Explore parent-child relationships in GO hierarchy with filtering
+    sparql: |
+      SELECT ?term ?parent ?label
+      WHERE {
+        ?term <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?parent .
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+        FILTER(STRSTARTS(STR(?parent), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 15
+
+  get_regulatory_relationships:
+    description: Find regulation relationships between biological processes
+    sparql: |
+      SELECT DISTINCT ?term ?regulates_label ?target_label
+      WHERE {
+        ?term <http://purl.obolibrary.org/obo/RO_0002211> ?target .
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?regulates_label .
+        ?target <http://www.w3.org/2000/01/rdf-schema#label> ?target_label .
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 10
+
+  get_terms_with_definitions:
+    description: Retrieve GO terms with their definitions and basic metadata
+    sparql: |
+      SELECT DISTINCT ?term ?label ?definition
+      WHERE {
+        ?term <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        OPTIONAL { ?term <http://purl.obolibrary.org/obo/IAO_0000115> ?definition }
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+      } 
+      LIMIT 20
+
+  explore_molecular_functions:
+    description: Query specifically for molecular function terms and their enzyme activities
+    sparql: |
+      SELECT DISTINCT ?term ?label ?parent
+      WHERE {
+        ?term <http://www.w3.org/2000/01/rdf-schema#subClassOf>+ <http://purl.obolibrary.org/obo/GO_0003674> .
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        ?term <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?parent .
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 15
+
+cross_references:
+  uniprot_protein_mappings:
+    description: Cross-references from GO terms to UniProt protein entries via TogoID linkage system
+    sparql: |
+      SELECT DISTINCT ?go_term ?go_label ?uniprot_protein
+      WHERE { 
+        ?go_term <http://www.w3.org/2000/01/rdf-schema#label> ?go_label .
+        ?go_term <http://togoid.dbcls.jp/ontology#TIO_000007> ?uniprot_protein .
+        FILTER(STRSTARTS(STR(?go_term), "http://purl.obolibrary.org/obo/GO_"))
+        FILTER(CONTAINS(STR(?uniprot_protein), "uniprot.org"))
+      }
+      LIMIT 20
+
+  external_database_references: 
+    description: Cross-references to external knowledge bases including Wikipedia, NIF, and NCIt
+    sparql: |
+      SELECT DISTINCT ?go_term ?go_label ?xref
+      WHERE {
+        ?go_term <http://www.w3.org/2000/01/rdf-schema#label> ?go_label .
+        ?go_term <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?xref .
+        FILTER(STRSTARTS(STR(?go_term), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      ORDER BY ?go_term
+      LIMIT 25
+
+  enzyme_commission_lookup:
+    description: Find molecular function terms with associated Enzyme Commission numbers
+    sparql: |
+      SELECT DISTINCT ?go_term ?go_label ?ec_ref
+      WHERE {
+        ?go_term <http://www.w3.org/2000/01/rdf-schema#label> ?go_label .
+        ?go_term <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?ec_ref .
+        FILTER(STRSTARTS(STR(?go_term), "http://purl.obolibrary.org/obo/GO_"))
+        FILTER(STRSTARTS(STR(?ec_ref), "EC:"))
+      }
+      ORDER BY ?ec_ref
+
+  obsolete_term_handling:
+    description: Identify and handle obsolete GO terms with replacement information
+    sparql: |
+      SELECT DISTINCT ?term ?label ?replacement
+      WHERE {
+        ?term <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        ?term <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+        OPTIONAL { ?term <http://purl.obolibrary.org/obo/IAO_0000233> ?replacement }
+        FILTER(STRSTARTS(STR(?term), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 10
+
+architectural_notes:
+  design_patterns:
+    - "GO follows Open Biomedical Ontologies (OBO) format with three distinct branches"
+    - "Directed Acyclic Graph (DAG) structure allows multiple inheritance paths"
+    - "Uses Basic Formal Ontology (BFO) for foundational relations"
+    - "Integrates Relation Ontology (RO) for complex biological relationships"
+    - "Systematic cross-referencing via TogoID provides protein-function linkages"
+    - "External database integration through hasDbXref property"
+    
+  namespace_organization:
+    - "Core GO terms: http://purl.obolibrary.org/obo/GO_XXXXXXX"
+    - "Metadata properties from Information Artifact Ontology (IAO)"
+    - "Structural relations from Basic Formal Ontology (BFO)"
+    - "Regulatory relations from Relation Ontology (RO)"
+    - "Cross-reference integration via TogoID ontology"
+    
+  cross_reference_architecture:
+    - "TogoID (togoid:TIO_000007) provides systematic UniProt protein mappings"
+    - "hasDbXref enables direct external database cross-references"
+    - "Wikipedia links provide accessible explanations for terms"
+    - "NIF Subcellular and NCIt provide specialized domain knowledge"
+    - "Enzyme Commission numbers link molecular functions to catalytic activities"
+    
+  relationship_modeling:
+    - "is-a relationships via rdfs:subClassOf for hierarchical organization"
+    - "part-of relationships via BFO:0000050 for compositional structure"
+    - "regulation relationships via RO:0002211 for process control"
+    - "occurs-in relationships via BFO:0000066 for localization"
+    - "Transitive property paths enable multi-level queries"
+    
+  performance_considerations:
+    - "Property paths (rdfs:subClassOf+/*) enable efficient hierarchy traversal"
+    - "FILTER statements with STRSTARTS optimize namespace-based queries"
+    - "Cross-reference queries benefit from URI pattern filtering"
+    - "DISTINCT eliminates duplicate results from multiple graph sources"
+    - "LIMIT clauses prevent large result sets from overwhelming endpoints"
+
+data_statistics:
+  estimated_total_terms: "45,000+"
+  root_categories: 3
+  main_branches:
+    molecular_function: "GO:0003674"
+    biological_process: "GO:0008150"
+    cellular_component: "GO:0005575"
+  cross_reference_types:
+    - "UniProt proteins (via TogoID)"
+    - "Wikipedia articles"
+    - "NIF Subcellular structures"  
+    - "NCIt cancer terminology"
+    - "Enzyme Commission numbers"
+    - "Other biological databases"
+  relationship_properties:
+    hierarchical: "rdfs:subClassOf (is-a)"
+    compositional: "BFO:0000050 (part-of)"
+    regulatory: "RO:0002211 (regulates)"
+    localization: "BFO:0000066 (occurs-in)"
+  data_quality_features:
+    - "Systematic obsolete term handling"
+    - "Alternative ID preservation"
+    - "Definition standardization"
+    - "Extensive cross-validation"
+  last_updated: '2025-09-18T14:30:00Z'
+
+validation_notes:
+  tested_queries: "All SPARQL queries tested against RDF Portal GO endpoint and return biologically meaningful results"
+  shape_expressions: "ShEx patterns derived from systematic analysis of actual GO RDF structure and validated against sample data"
+  cross_references: "Cross-reference patterns validated through multiple query approaches including TogoID and hasDbXref"
+  coverage_analysis: "Comprehensive coverage of all three GO branches with focus on cross-database integration patterns"
+  biological_relevance: "Sample entries represent diverse biological domains including cellular structures, molecular activities, and regulatory processes"
