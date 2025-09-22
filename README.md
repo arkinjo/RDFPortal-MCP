@@ -27,7 +27,8 @@ uv sync
 
 ## Configuration
 ### Claude Desktop Configuration
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `~\AppData\Roaming\Claude\claude_desktop_config.json`
 ```json
 {
     "mcpServers": {
