@@ -49,8 +49,8 @@ PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 """
 
-# The Shex files are used to define the shape expressions for SPARQL queries. 
-SHEX_FILES = {
+# The MIE files are used to define the shape expressions for SPARQL queries. 
+MIE_FILES = {
     "uniprot": "mie/uniprot.yaml",
     "pdb": "mie/pdb.yaml",
     "chembl": "mie/chembl.yaml",
@@ -125,7 +125,7 @@ def generate_MIE_file(
     Returns:
         str: The generated examples in YAML format.
     """
-    with open(MIE_TEMPLATE, "r") as file:
+    with open(MIE_TEMPLATE, "r", encoding="utf-8") as file:
         mie_template = file.read()
 
     return (
@@ -171,7 +171,7 @@ def generate_rdf_config(
     Returns:
         str: The generated examples in YAML format.
     """
-    with open(RDF_CONFIG_TEMPLATE, "r") as file:
+    with open(RDF_CONFIG_TEMPLATE, "r", encoding="utf-8") as file:
         template = file.read()
     return (
     f"Study the RDF Schema of {dbname} by exploring the database."
@@ -454,25 +454,28 @@ SELECT DISTINCT ?graph WHERE {
         description="Use this before constructing SPARQL queries to get the RDF schema of a specific RDF database."
 )
 async def describe_rdf_schema(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SHEX_FILES.keys())}.")]
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(MIE_FILES.keys())}.")]
     ) -> str:
     f"""
     Get the RDF schema of a specific RDF database in YAML format, which can be used as a hint to build a SPARQL query.
 
     Args:
-        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(SHEX_FILES.keys())}.
+        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(MIE_FILES.keys())}.
 
     Returns:
         str: The RDF schema information in YAML format.
     """
-    shex_file = SHEX_FILES.get(dbname)
-    if not shex_file:
+    mie_file = MIE_FILES.get(dbname)
+    if not mie_file:
         raise ValueError(f"Unknown database: {dbname}")
     try:
-        with open(shex_file, "r") as file:
-            return file.read()
+        with open(mie_file, "r", encoding="utf-8") as file:
+            content = file.read()
+            response_text = f"""Content-type: application/yaml; charset=utf-8
+{content}"""
+            return response_text
     except FileNotFoundError:
-        return f"Error: The schema file for '{dbname}' was not found at the path '{shex_file}'."
+        return f"Error: The schema file for '{dbname}' was not found at the path '{mie_file}'."
 
 
 if __name__ == "__main__":
