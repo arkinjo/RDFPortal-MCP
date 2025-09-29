@@ -12,7 +12,8 @@ Additional functionalities are also provided that interact with a few REST APIs 
 # macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Windows... I have no idea, sorry.
+# Windows
+> powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 ### Install RDFPortal-MCP server
 ```bash
@@ -27,7 +28,8 @@ uv sync
 
 ## Configuration
 ### Claude Desktop Configuration
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `~\AppData\Roaming\Claude\claude_desktop_config.json`
 ```json
 {
     "mcpServers": {
