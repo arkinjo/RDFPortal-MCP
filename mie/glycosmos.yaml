@@ -1,377 +1,885 @@
 schema_info:
-  title: Glycosmos RDF Portal
-  description: Comprehensive integrated glycomics knowledgebase providing glycan structures, glycoproteins, glycogenes, disease associations, and multi-omics relationships. Glycosmos aggregates data from GlyTouCan (glycan registry), various glycomics databases, and cross-references to major biological databases including UniProt, PubChem, KEGG, and more.
+  title: GlycoCosmos RDF Database
+  description: |
+    GlycoCosmos is a comprehensive glycoscience portal that integrates multiple databases and resources 
+    related to glycans, glycoproteins, glycogenes, and their biological functions. The RDF dataset provides 
+    structured, linked data covering glycan structures (GlyTouCan), glycosylation sites on proteins, 
+    glycan-related genes, glycoepitopes, lectin-glycan interactions (SugarBind), pathways, taxonomy, 
+    and cross-references to external databases like UniProt, ChEBI, PubChem, KEGG, and more.
+    
+    The database is particularly valuable for researchers studying:
+    - Glycan structures and their biological contexts
+    - Protein glycosylation patterns and sites
+    - Glycan-related genetic variations
+    - Glycoepitope recognition and antibody binding
+    - Lectin-glycan interactions
+    - Disease associations with glycans
+    - Cross-species glycan distributions
+  
   endpoint: https://ts.glycosmos.org/sparql
-  base_uri: http://rdf.glycosmos.org/
-  graphs: # Core graphs in the Glycosmos system
-    - http://rdf.glytoucan.org/core # GlyTouCan registry core data
-    - http://rdf.glycosmos.org/glycans # Main glycan entities
-    - http://rdf.glycosmos.org/glycans/glycosequence # Glycan sequence formats (WURCS, GlycoCT, IUPAC)
-    - http://rdf.glycosmos.org/glycoprotein # Glycoprotein annotations
-    - http://rdf.glycosmos.org/glycogenes # Glycosylation-related genes
-    - http://rdf.glycosmos.org/disease # Disease-glycan associations
-    - http://rdf.glycosmos.org/pathway # Metabolic pathways
-    - http://rdf.glycosmos.org/kegg # KEGG pathway mappings
-    - http://rdf.glytoucan.org/partner # Cross-references to external databases
+  base_uri: http://rdf.glycoinfo.org/
+  version: 2025-01-validated
+  graphs:
+    # Core GlyTouCan glycan repository
+    - http://rdf.glytoucan.org/core
+    - http://rdf.glytoucan.org/partner
+    - http://rdf.glytoucan.org/partner/bcsdb
+    - http://rdf.glytoucan.org/partner/glycome-db
+    - http://rdf.glytoucan.org/partner/jcggdb_aist
+    - http://rdf.glytoucan.org/partner/glycoepitope
+    
+    # Glycan annotations and metadata
+    - http://rdf.glycosmos.org/glycans
+    - http://rdf.glycosmos.org/glycans/glycosequence
+    - http://rdf.glycosmos.org/glycans/wurcsrdf
+    - http://rdf.glycosmos.org/glycans/motif_label
+    - http://rdf.glycosmos.org/glycans/subsumption
+    - http://rdf.glycosmos.org/glycans/taxon
+    - http://rdf.glycosmos.org/glycans/literature
+    - http://rdf.glycosmos.org/glycans/glycoshape
+    - http://rdf.glycosmos.org/glycans/trivialname
+    - http://rdf.glycosmos.org/glycans/glycobase
+    - http://rdf.glycosmos.org/glycans/glycostore
+    - http://rdf.glycosmos.org/glycans/inference
+    
+    # Glycoproteins and glycosylation
+    - http://rdf.glycosmos.org/glycoprotein
+    - http://rdf.glycosmos.org/mcaw_glycans
+    - http://glycosmos.org/uniprot2mcaw
+    
+    # Glycogenes
+    - http://rdf.glycosmos.org/glycogenes
+    - http://rdf.glycosmos.org/hgnc
+    - http://rdf.glycosmos.org/chipatlas_genes
+    - http://rdf.glycosmos.org/chipatlas_colo
+    
+    # GlycoEpitopes
+    - http://rdf.glycoinfo.org/glycoepitope
+    
+    # Lectin-glycan interactions
+    - http://rdf.glycosmos.org/sugarbind
+    - http://rdf.glycosmos.org/lectin
+    
+    # Pathways and enzymes
+    - http://rdf.glycosmos.org/pathway
+    - http://rdf.glycosmos.org/pathway_reactome
+    - http://rdf.glycosmos.org/pathway/inference
+    - http://rdf.glycosmos.org/Pathways_LPS
+    - http://rdf.glycosmos.org/Rhea
+    - http://rdf.glycosmos.org/cazy
+    
+    # Disease associations
+    - http://rdf.glycosmos.org/disease
+    - http://rdf.glycosmos.org/disease/pubchem
+    - http://rdf.glycosmos.org/hpo
+    - http://rdf.glycosmos.org/mondo
+    
+    # Additional resources
+    - http://rdf.glycoinfo.org/ggdb
+    - http://rdf.glycoinfo.org/ggdonto
+    - http://rdf.glycoinfo.org/gdgdb
+    - http://rdf.glycoinfo.org/gpdb
+    - http://rdf.glycoinfo.org/gpdb2gtc
+    - http://rdf.glycoinfo.org/lfdb
+    - http://rdf.glycoinfo.org/paconto
+    - http://rdf.glycoinfo.org/jcgg_str2gtcid
+    - http://www.flyglycodb.org/fgdb
+    - http://rdf.glycosmos.org/glycomeatlas
+    - http://rdf.glycosmos.org/glycoparadb
+    - http://rdf.glycosmos.org/galaxy
+    - http://rdf.glycosmos.org/pgatlas
+    - http://totalglycome.glycosmos.org
+    - http://rdf.glycosmos.org/carbogrove
+    - http://rdf.glycosmos.org/matrixdb
+    - http://rdf.glycosmos.org/psicquic
+    - http://rdf.glycosmos.org/plantgarden
+    - http://rdf.glycosmos.org/HPA
+    - http://rdf.glycosmos.org/ecodab
+    
+    # Glycolipids
+    - http://rdf.glycosmos.org/glycolipid
+    - http://rdf.glycosmos.org/swisslipids
+    - http://rdf.glycosmos.org/lipidmaps_gene
+    
+    # External database integrations
+    - http://rdf.glycosmos.org/kegg
+    - http://rdf.glycosmos.org/pubchem
+    - http://rdf.glycosmos.org/pubmed
+    - http://rdf.glycosmos.org/genomealliance
+    - http://rdf.glycosmos.org/mbgd
+    - http://rdf.glycosmos.org/uberon
+    - http://ddbj.nig.ac.jp/ontologies/taxonomy/
+    - http://purl.obolibrary.org/obo/go.owl
+    - http://purl.obolibrary.org/obo/eco.owl
+    - http://purl.obolibrary.org/obo/uberon
+    - http://purl.obolibrary.org/obo/doid
+    - http://semanticscience.org/ontology/sio.owl
 
 prefixes:
+  # Standard ontologies
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   owl: http://www.w3.org/2002/07/owl#
   xsd: http://www.w3.org/2001/XMLSchema#
-  dcterms: http://purl.org/dc/terms/
-  glycan: http://purl.jp/bio/12/glyco/glycan#
-  conjugate: http://purl.jp/bio/12/glyco/conjugate#
-  glytoucan: http://www.glytoucan.org/glyco/owl/glytoucan#
-  sio: http://semanticscience.org/resource/
-  uniprot: http://purl.uniprot.org/core/
-  faldo: http://biohackathon.org/resource/faldo#
   skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+  foaf: http://xmlns.com/foaf/0.1/
+  
+  # Core glycan ontologies
+  glycan: http://purl.jp/bio/12/glyco/glycan#
+  glytoucan: http://www.glytoucan.org/glyco/owl/glytoucan#
+  glycoconjugate: http://purl.jp/bio/12/glyco/conjugate#
+  glyconavi: http://glyconavi.org/owl#
+  glycoepitope: http://www.glycoepitope.jp/epitopes/glycoepitope.owl#
+  
+  # GlycoCosmos resources
+  glycoinfo: http://rdf.glycoinfo.org/glycan/
+  glycosmos: http://glycosmos.org/
+  sugarbind: http://rdf.glycoinfo.org/SugarBind/ontology#
+  
+  # Bioinformatics standards
+  uniprot: http://purl.uniprot.org/core/
+  sio: http://semanticscience.org/resource/
+  faldo: http://biohackathon.org/resource/faldo#
+  identifiers: http://identifiers.org/
+  orth: http://purl.org/net/orth#
+  
+  # External databases
+  chebi: http://purl.obolibrary.org/obo/CHEBI_
+  go: http://purl.obolibrary.org/obo/GO_
+  doid: http://purl.obolibrary.org/obo/DOID_
+  ncit: http://purl.obolibrary.org/obo/NCIT_
+  uberon: http://purl.obolibrary.org/obo/UBERON_
+  
+  # Pathway ontologies
+  biopax: http://www.biopax.org/release/biopax-level3.owl#
 
-shape_expressions:
-  # Glycan structure - core entity in GlyTouCan
-  glycan:Saccharide {
-    rdf:type [glycan:Saccharide] ;
-    glytoucan:has_primary_id xsd:string ;  # GlyTouCan accession ID (e.g., G00003VQ)
-    glycan:has_Resource_entry IRI ? ;      # Link to resource entry
-    glycan:has_glycosequence @<GlycanSequence>* ; # Multiple sequence formats
-    rdfs:label xsd:string ? ;              # Human-readable label
-    dcterms:identifier xsd:string ? ;      # Identifier
-    glycan:has_image IRI ? ;               # Image representation
-    glycan:has_reducing_end_monosaccharide_residue IRI ? ; # Reducing end info
-    glycan:has_anomer IRI ? ;              # Alpha/beta configuration
-    glycan:has_ring_type IRI ? ;           # Pyranose/furanose
-    glycan:has_motif IRI* ;                # Glycan motifs
-    glycan:has_archetype IRI ? ;           # Archetype relationship
-    skos:altLabel xsd:string* ;            # Alternative names
+shape_expressions: |
+  # GlycoCosmos Shape Expressions (ShExC)
+  # Validated and corrected based on actual RDF data structure testing (2025-01)
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+  PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
+  PREFIX glycoconjugate: <http://purl.jp/bio/12/glyco/conjugate#>
+  PREFIX glyconavi: <http://glyconavi.org/owl#>
+  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX uniprot: <http://purl.uniprot.org/core/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#>
+  PREFIX glycoepitope: <http://www.glycoepitope.jp/epitopes/glycoepitope.owl#>
+  
+  # Glycan (Saccharide) Shape
+  # Represents a glycan structure registered in GlyTouCan
+  <SaccharideShape> {
+    a [ glycan:Saccharide ] ;
+    glytoucan:has_primary_id xsd:string ;  # GlyTouCan ID (e.g., "G00051MO")
+    glycan:has_Resource_entry IRI * ;       # Links to resource entry
   }
   
-  # Glycan sequence in various formats
-  <GlycanSequence> {
-    rdf:type [glycan:Glycosequence] ;
-    glycan:in_carbohydrate_format IRI ;    # Format type (WURCS, GlycoCT, IUPAC)
-    glycan:has_sequence xsd:string ;       # The actual sequence string
+  # Resource Entry Shape
+  # Cross-references to external databases (ChEBI, PubChem, etc.)
+  <ResourceEntryShape> {
+    a [ glycan:Resource_entry ] ;
+    rdfs:label xsd:string ? ;               # Database name (e.g., "ChEBI")
+    dcterms:identifier xsd:string ? ;       # Database-specific ID
   }
   
-  # Glycoprotein with glycosylation sites
-  glycan:Glycoprotein {
-    rdf:type [glycan:Glycoprotein] ;
-    rdfs:label xsd:string ? ;              # Protein name
-    rdfs:seeAlso IRI* ;                    # Cross-references (UniProt, etc.)
-    glycan:has_taxon IRI ? ;               # Taxonomic information
-    conjugate:glycosylated_at @<GlycosylationSite>* ; # Glycosylation sites
+  # Glycoprotein Shape
+  # Represents a protein with glycosylation sites
+  <GlycoproteinShape> {
+    a [ glycan:Glycoprotein ] ;
+    rdfs:label xsd:string ;                 # Protein name
+    rdfs:seeAlso IRI * ;                    # Links to UniProt or other databases
+    glycan:has_taxon IRI ? ;                # Taxonomic origin
+    glycoconjugate:glycosylated_at @<GlycosylationSiteShape> * ;
   }
   
-  # Glycosylation site annotation
-  <GlycosylationSite> {
-    rdf:type [conjugate:Glycosylation_Site] ;
-    faldo:location @<Position> ? ;         # Position on protein sequence
-    uniprot:annotation @<GlycosylationAnnotation> ? ; # Annotation details
+  # Glycosylation Site Shape
+  # Specific amino acid position where glycan is attached
+  <GlycosylationSiteShape> {
+    a [ glycoconjugate:Glycosylation_Site ] ;
+    sio:SIO_000772 IRI ;                    # References protein (UniProt)
+    faldo:location @<FaldoLocationShape> ? ;
+    dcterms:references IRI * ;              # References to literature/data sources
+    glycoconjugate:has_saccharide IRI * ;   # Attached glycan structures
   }
   
-  # Position information
-  <Position> {
-    rdf:type [faldo:ExactPosition] ;
-    faldo:position xsd:integer ;           # Residue number
+  # FALDO Position Shape
+  # Describes the exact position on the protein sequence
+  <FaldoLocationShape> {
+    a [ faldo:ExactPosition ] OR [ faldo:FuzzyPosition ] ;
+    faldo:position xsd:integer ;            # Amino acid position number
   }
   
-  # Glycosylation annotation
-  <GlycosylationAnnotation> {
-    rdf:type [uniprot:Glycosylation_Annotation] ;
-    # Additional annotation properties
+  # Glycogene Shape
+  # Genes involved in glycosylation processes
+  <GlycogeneShape> {
+    a [ glycan:Glycogene ] AND [ sio:SIO_010035 ] ;
+    rdfs:label xsd:string ;                 # Gene symbol (e.g., "CSF1R")
+    rdfs:seeAlso IRI * ;                    # Links to gene databases
+    glycan:has_taxon IRI ? ;                # Species
+    dcterms:description xsd:string ? ;      # Gene function description
+    sio:SIO_000255 . * ;                    # References (blank nodes)
   }
   
-  # Glyco-related genes
-  glycan:Glycogene {
-    rdf:type [glycan:Glycogene] ;
-    rdfs:label xsd:string ? ;              # Gene name
-    glycan:has_taxon IRI ? ;               # Species
-    # Additional gene properties
+  # Glycan Epitope Shape (CORRECTED)
+  # Immunologically recognized glycan motifs
+  <GlycanEpitopeShape> {
+    a [ glycan:Glycan_epitope ] ;
+    rdfs:label xsd:string ;                 # Common name (e.g., "Lewis a")
+    skos:altLabel xsd:string * ;            # Alternative names
+    dcterms:identifier xsd:string ? ;       # Epitope ID (e.g., "EP0007")
+    glycan:has_glycosequence IRI * ;        # CORRECTED: Associated glycan structures (was has_epitope_structure)
+    glycan:has_resource_entry IRI * ;       # Links to external resources
+    glycoepitope:has_antibody IRI * ;       # Antibodies recognizing this epitope
+    glycoepitope:has_affinity_to IRI * ;    # Binding partners
+    glycoepitope:organism IRI * ;           # Source organisms
+    glycoepitope:tissue IRI * ;             # Tissue locations
   }
   
-  # Disease entities (note: limited properties available)
-  glycan:Disease {
-    rdf:type [glycan:Disease] ;
-    # Note: Most disease entities only have type information
+  # Glycan Motif Shape
+  # Structural glycan motifs with WURCS notation
+  <GlycanMotifShape> {
+    rdfs:label xsd:string ;                 # Motif name
+    dcterms:identifier xsd:string ;         # GlyTouCan ID
+    glyconavi:has_preferred_name xsd:string ? ;
+    glyconavi:has_wurcs xsd:string ? ;      # WURCS sequence notation
+    glyconavi:has_reducingend xsd:string ? ;
+    glyconavi:has_aglycon xsd:string ? ;
   }
   
-  # Cross-reference partners
-  glytoucan:Partner {
-    rdf:type [glytoucan:Partner] ;
-    rdfs:label xsd:string ? ;              # Partner database name
+  # Lectin Shape (SugarBind) - CORRECTED
+  # Lectins that bind to glycans
+  <LectinShape> {
+    a [ sugarbind:Lectin ] ;
+    rdfs:label xsd:string ;                 # Lectin name
+    rdfs:seeAlso IRI * ;                    # External references
+    sugarbind:uniprotId IRI * ;             # CORRECTED: UniProt protein ID (was associated_with_disease)
+    dcterms:references IRI * ;              # Literature references
+    foaf:homepage IRI ? ;                   # Homepage
+  }
+  
+  # Antibody Shape (GlycoEpitope)
+  # Antibodies recognizing glycan epitopes
+  <AntibodyShape> {
+    a [ glycan:Antibody ] ;
+    rdfs:label xsd:string ;
+  }
+  
+  # Taxonomy Record Shape
+  # Links glycans to source organisms
+  <TaxonomyRecordShape> {
+    a [ sio:SIO_001394 ] ;                  # Database record
+    sio:SIO_000255 IRI ;                    # References taxonomy
+    sio:SIO_000772 IRI ;                    # References glycan
+    glycan:is_from_source IRI ? ;
   }
 
 sample_rdf_entries:
-  - title: Heparan sulfate disaccharide glycan
-    description: GlyTouCan glycan G00003VQ with multiple sequence formats including WURCS, GlycoCT, and IUPAC Extended notations
+  - title: Glycan (Saccharide) with GlyTouCan ID
+    description: |
+      Core glycan entry from GlyTouCan database with primary identifier and resource entry link.
+      Represents the minimal information for a registered glycan structure.
     rdf: |
       @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
       @prefix glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#> .
+      
+      <http://rdf.glycoinfo.org/glycan/G00051MO> a glycan:Saccharide ;
+        glytoucan:has_primary_id "G00051MO" ;
+        glycan:has_Resource_entry <http://rdf.glycoinfo.org/resource-entry/G00051MO> .
+  
+  - title: Glycan with External Database Cross-References
+    description: |
+      Glycan entry with cross-references to ChEBI and PubChem databases, demonstrating
+      integration with chemical databases for glycan compounds.
+    rdf: |
+      @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
       
-      <http://rdf.glycoinfo.org/glycan/G00003VQ> a glycan:Saccharide ;
-          glytoucan:has_primary_id "G00003VQ" ;
-          rdfs:label "GlyCosmos Glycans: G00003VQ" ;
-          dcterms:identifier "G00003VQ" ;
-          glycan:has_Resource_entry <http://rdf.glycoinfo.org/resource-entry/G00003VQ> ;
-          glycan:has_glycosequence <http://rdf.glycoinfo.org/glycan/G00003VQ_wurcs> ,
-                                   <http://rdf.glycoinfo.org/glycan/G00003VQ_glycoct> ,
-                                   <http://rdf.glycoinfo.org/glycan/G00003VQ_iupac_extended> .
+      <http://purl.obolibrary.org/obo/CHEBI_146500> a glycan:Resource_entry ;
+        rdfs:label "ChEBI" ;
+        dcterms:identifier "146500" .
       
-      <http://rdf.glycoinfo.org/glycan/G00003VQ_wurcs> a glycan:Glycosequence ;
-          glycan:in_carbohydrate_format glycan:carbohydrate_format_wurcs ;
-          glycan:has_sequence "WURCS=2.0/4,5,5/[a2112h-1b_1-5_2*NCC/3=O][a2122A-1b_1-5][a2112h-1a_1-5][a2122h-1b_1-5]/1-2-1-3-4/a3-b1_b4-c1_c4-d1_d3-e1_a1-e4~n" .
-      
-      <http://rdf.glycoinfo.org/glycan/G00003VQ_iupac_extended> a glycan:Glycosequence ;
-          glycan:in_carbohydrate_format glycan:carbohydrate_format_iupac_extended ;
-          glycan:has_sequence "[4)-β-D-Glcp-(1→3)-α-D-Galp-(1→4)-β-D-GalpNAc-(1→4)-β-D-GlcpA-(1→3)-β-D-GalpNAc-(1→]n" .
-
-  - title: MHC class I glycoprotein
-    description: Glycoprotein entry with UniProt cross-reference and glycosylation site annotation
+      <http://rdf.glycoinfo.org/glycan/G01416HI>
+        glycan:has_resource_entry <http://purl.obolibrary.org/obo/CHEBI_146500> .
+  
+  - title: Glycoprotein with Glycosylation Sites
+    description: |
+      Human protein Alpha-1-acid glycoprotein 1 (P02763) with multiple N-glycosylation
+      sites at specific amino acid positions. Demonstrates protein-glycan conjugate data.
     rdf: |
       @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
-      @prefix conjugate: <http://purl.jp/bio/12/glyco/conjugate#> .
+      @prefix glycoconjugate: <http://purl.jp/bio/12/glyco/conjugate#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix faldo: <http://biohackathon.org/resource/faldo#> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      
+      <http://glycosmos.org/glycoprotein/P02763> a glycan:Glycoprotein ;
+        rdfs:label "Alpha-1-acid glycoprotein 1" ;
+        glycan:has_taxon <http://identifiers.org/taxonomy/9606> ;
+        glycoconjugate:glycosylated_at <http://glycosmos.org/glycosylationsite/SITE00187901> .
+      
+      <http://glycosmos.org/glycosylationsite/SITE00187901> a glycoconjugate:Glycosylation_Site ;
+        sio:SIO_000772 <http://rdf.glycoinfo.org/dbid/glygen/P02763> ;
+        faldo:location <http://glycosmos.org/location/LOC00187901> .
+      
+      <http://glycosmos.org/location/LOC00187901> a faldo:ExactPosition ;
+        faldo:position 33 .
+  
+  - title: Glycogene with Taxonomy and Description
+    description: |
+      Human CSF1R gene (colony stimulating factor 1 receptor) involved in glycosylation,
+      showing gene annotation with organism and functional description.
+    rdf: |
+      @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix dcterms: <http://purl.org/dc/terms/> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      
+      <http://glycosmos.org/glycogene/1436> a glycan:Glycogene , sio:SIO_010035 ;
+        rdfs:label "CSF1R" ;
+        glycan:has_taxon <http://identifiers.org/taxonomy/9606> ;
+        dcterms:description "colony stimulating factor 1 receptor" .
+  
+  - title: Glycan Epitope (Lewis Antigens)
+    description: |
+      GlycoEpitope database entries for Lewis blood group antigens, showing
+      immunologically important glycan structures with alternative names.
+    rdf: |
+      @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+      
+      <http://www.glycoepitope.jp/epitopes/EP0007> a glycan:Glycan_epitope ;
+        rdfs:label "Lewis a" ;
+        skos:altLabel "Le<sup>a</sup>" ;
+        glycan:has_glycosequence <http://www.glycoepitope.jp/epitopes/EP0007/glycoct> .
+      
+      <http://www.glycoepitope.jp/epitopes/EP0011> a glycan:Glycan_epitope ;
+        rdfs:label "Lewis x" ;
+        skos:altLabel "Le<sup>x</sup>,X-hapten,CD15" ;
+        glycan:has_glycosequence <http://www.glycoepitope.jp/epitopes/EP0011/glycoct> .
+      
+      <http://www.glycoepitope.jp/epitopes/EP0012> a glycan:Glycan_epitope ;
+        rdfs:label "Sialyl Lewis x" ;
+        skos:altLabel "Sialyl Le<sup>x</sup>,CD15s,sCD15" ;
+        glycan:has_glycosequence <http://www.glycoepitope.jp/epitopes/EP0012/glycoct> .
+  
+  - title: Glycan Motif with WURCS Notation
+    description: |
+      N-Glycan core structure with WURCS sequence notation, demonstrating
+      structural representation of glycan motifs.
+    rdf: |
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix dcterms: <http://purl.org/dc/terms/> .
+      @prefix glyconavi: <http://glyconavi.org/owl#> .
+      
+      <http://glycoinfo.org/motif/G00026MO> 
+        rdfs:label "N-Glycan core basic" ;
+        dcterms:identifier "G00026MO" ;
+        glyconavi:has_preferred_name "N-Glycan core basic" ;
+        glyconavi:has_wurcs "WURCS=2.0/4,5,4/[u2122h_2*NCC/3=O][a2122h-1b_1-5_2*NCC/3=O][a1122h-1b_1-5][a1122h-1a_1-5]/1-2-3-4-4/a4-b1_b4-c1_c3-d1_c6-e1" .
+  
+  - title: Lectin-Glycan Binding Protein (SugarBind)
+    description: |
+      Lectin entry from SugarBind database showing protein with UniProt cross-reference,
+      important for understanding molecular recognition and protein-glycan interactions.
+    rdf: |
+      @prefix sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
       
-      <http://glycosmos.org/glycoprotein/A0A0D5CCD3> a glycan:Glycoprotein ;
-          rdfs:label "MHC class I antigen (Fragment)" ;
-          rdfs:seeAlso <http://purl.uniprot.org/uniprot/A0A0D5CCD3> ,
-                       <http://acgg.asia/gpdb2/GPDB0008279> ;
-          glycan:has_taxon <http://identifiers.org/taxonomy/9606> ;
-          conjugate:glycosylated_at <http://glycosmos.org/glycosylationsite/SITE00007746> .
-
-  - title: Glycosylation site with position
-    description: Specific glycosylation site with exact amino acid position
-    rdf: |
-      @prefix conjugate: <http://purl.jp/bio/12/glyco/conjugate#> .
-      @prefix faldo: <http://biohackathon.org/resource/faldo#> .
-      @prefix uniprot: <http://purl.uniprot.org/core/> .
-      
-      <http://glycosmos.org/glycosylationsite/SITE00007746> a conjugate:Glycosylation_Site ;
-          faldo:location [
-              a faldo:ExactPosition ;
-              faldo:position 123
-          ] ;
-          uniprot:annotation [
-              a uniprot:Glycosylation_Annotation
-          ] .
-
-  - title: Disease entity
-    description: Disease entity (note: limited properties available in current data)
-    rdf: |
-      @prefix glycan: <http://purl.jp/bio/12/glyco/glycan#> .
-      
-      <http://glycosmos.org/disease/DOID:0001816> a glycan:Disease .
-
-  - title: Partner database cross-reference
-    description: Partner database entry for external cross-references
-    rdf: |
-      @prefix glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#> .
-      
-      <http://rdf.glytoucan.org/partner/glycoepitope> a glytoucan:Partner .
+      <http://rdf.glycoinfo.org/SugarBind/Id/LEC100> a sugarbind:Lectin ;
+        rdfs:label "Neurotoxine ganglioside binding site" ;
+        sugarbind:uniprotId <http://purl.uniprot.org/uniprot/Q9LBR1> .
 
 sparql_query_examples:
-  molecular_biology:
-    - title: Get glycan structure with sequence formats
-      description: Retrieve a glycan with all its sequence representations (WURCS, GlycoCT, IUPAC)
-      question: What are the different sequence formats available for glycan G00003VQ?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
-        SELECT ?glycan ?sequence_format ?sequence_string
-        FROM <http://rdf.glycosmos.org/glycans/glycosequence>
-        WHERE {
-          ?glycan glytoucan:has_primary_id "G00003VQ" .
-          ?glycan glycan:has_glycosequence ?seq .
-          ?seq glycan:in_carbohydrate_format ?sequence_format .
-          ?seq glycan:has_sequence ?sequence_string .
-        }
-
-    - title: Find glycoproteins by organism
-      description: List glycoproteins from human (taxonomy 9606) with their UniProt cross-references
-      question: Which human glycoproteins are annotated in Glycosmos?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?glycoprotein ?label ?uniprot_id
-        FROM <http://rdf.glycosmos.org/glycoprotein>
-        WHERE {
-          ?glycoprotein a glycan:Glycoprotein .
-          ?glycoprotein glycan:has_taxon <http://identifiers.org/taxonomy/9606> .
-          ?glycoprotein rdfs:label ?label .
-          ?glycoprotein rdfs:seeAlso ?uniprot_id .
-          FILTER(CONTAINS(STR(?uniprot_id), "uniprot"))
-        }
-        LIMIT 20
-
-    - title: Glycans with reducing end information
-      description: Sample glycans with their reducing end monosaccharide residues
-      question: What reducing end information is available for glycans?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        SELECT ?glycan ?reducing_end
-        FROM <http://rdf.glycosmos.org/glycans/glycosequence>
-        WHERE {
-          ?glycan a glycan:Saccharide .
-          ?glycan glycan:has_reducing_end_monosaccharide_residue ?reducing_end .
-        }
-        LIMIT 20
-
-    - title: Glycans with motif annotations
-      description: Find glycans that have specific structural motifs
-      question: Which glycans have annotated structural motifs?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        SELECT ?glycan ?motif
-        FROM <http://rdf.glycosmos.org/glycans/glycosequence>
-        WHERE {
-          ?glycan a glycan:Saccharide .
-          ?glycan glycan:has_motif ?motif .
-        }
-        LIMIT 20
-
-  biomedical_research:
-    - title: Disease entities in Glycosmos
-      description: List disease entities that are linked to glycan information
-      question: What diseases are represented in the Glycosmos disease graph?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        SELECT ?disease
-        FROM <http://rdf.glycosmos.org/disease>
-        WHERE {
-          ?disease a glycan:Disease .
-        }
-        LIMIT 20
-
-    - title: Glycosylation site counts by protein
-      description: Count glycosylation sites for each glycoprotein
-      question: How many glycosylation sites do different proteins have?
-      complexity: intermediate
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        PREFIX conjugate: <http://purl.jp/bio/12/glyco/conjugate#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?glycoprotein ?protein_name (COUNT(?site) as ?site_count)
-        FROM <http://rdf.glycosmos.org/glycoprotein>
-        WHERE {
-          ?glycoprotein a glycan:Glycoprotein .
-          ?glycoprotein rdfs:label ?protein_name .
-          ?glycoprotein conjugate:glycosylated_at ?site .
-        }
-        GROUP BY ?glycoprotein ?protein_name
-        ORDER BY DESC(?site_count)
-        LIMIT 20
-
-  genomics:
-    - title: Glycogenes by species
-      description: Explore glycosylation-related genes across different species
-      question: How many glycogenes are annotated for different species?
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        SELECT ?taxon (COUNT(?gene) as ?gene_count)
-        FROM <http://rdf.glycosmos.org/glycogenes>
-        WHERE {
-          ?gene a glycan:Glycogene .
-          ?gene glycan:has_taxon ?taxon .
-        }
-        GROUP BY ?taxon
-        ORDER BY DESC(?gene_count)
-        LIMIT 20
-
-    - title: Pathway-related proteins
-      description: Proteins and genes involved in metabolic pathways
-      question: Which proteins and genes are linked to pathway information?
-      complexity: basic
-      sparql: |
-        PREFIX uniprot: <http://purl.uniprot.org/core/>
-        SELECT DISTINCT ?protein ?gene
-        FROM <http://rdf.glycosmos.org/pathway>
-        WHERE {
-          ?protein a uniprot:Protein .
-          ?protein uniprot:encodedBy ?gene .
-        }
-        LIMIT 20
-
-  cross_references:
-    - title: GlyTouCan partner databases
-      description: List all partner databases integrated with GlyTouCan
-      complexity: basic
-      sparql: |
-        PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
-        SELECT ?partner
-        FROM <http://rdf.glytoucan.org/partner>
-        WHERE {
-          ?partner a glytoucan:Partner .
-        }
-
-    - title: UniProt to glycoprotein cross-references
-      description: Map UniProt proteins to their glycoprotein annotations in Glycosmos
-      complexity: basic
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?glycoprotein ?uniprot_id ?protein_name
-        FROM <http://rdf.glycosmos.org/glycoprotein>
-        WHERE {
-          ?glycoprotein a glycan:Glycoprotein .
-          ?glycoprotein rdfs:seeAlso ?uniprot_id .
-          ?glycoprotein rdfs:label ?protein_name .
-          FILTER(CONTAINS(STR(?uniprot_id), "purl.uniprot.org"))
-        }
-        LIMIT 20
-
-    - title: Glycan sequence format distribution
-      description: Count how many glycan sequences are available in each format
-      complexity: intermediate
-      sparql: |
-        PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
-        SELECT ?format (COUNT(?sequence) as ?count)
-        FROM <http://rdf.glycosmos.org/glycans/glycosequence>
-        WHERE {
-          ?sequence a glycan:Glycosequence .
-          ?sequence glycan:in_carbohydrate_format ?format .
-        }
-        GROUP BY ?format
-        ORDER BY DESC(?count)
-
-architectural_notes:
-  data_integration: |
-    Glycosmos follows a federated architecture integrating multiple specialized databases:
-    - GlyTouCan serves as the central glycan registry with unique accession numbers
-    - Sequence data is stored in multiple formats (WURCS, GlycoCT, IUPAC Extended) for interoperability
-    - Cross-references connect to major biological databases (UniProt, KEGG, PubChem, etc.)
-    - Disease associations use standardized ontologies but have limited property information
-    - Taxonomic information links to NCBI Taxonomy for species-specific analysis
+  - title: Count Total Glycans in GlyTouCan
+    description: Returns the total number of unique glycan structures registered in GlyTouCan database.
+    question: How many glycan structures are registered in GlyTouCan?
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      
+      SELECT (COUNT(DISTINCT ?saccharide) as ?totalGlycans)
+      FROM <http://rdf.glytoucan.org/core>
+      WHERE {
+        ?saccharide a glycan:Saccharide .
+      }
   
-  performance_considerations: |
-    - Use specific graph URIs in FROM clauses to limit query scope and improve performance
-    - The glycosequence graph contains over 1.3M triples - filter by glycan ID when possible
-    - Glycoprotein graph has 400K+ glycosylation sites - use LIMIT in exploratory queries
-    - Complex aggregation queries may timeout - use simple filters and LIMIT clauses
-    - Disease entities have minimal properties - mainly just type information available
+  - title: Find Glycan by GlyTouCan ID
+    description: Retrieves basic information for a specific glycan using its GlyTouCan accession ID.
+    question: What information is available for glycan G00051MO?
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
+      
+      SELECT ?glycan ?primaryId ?resourceEntry
+      FROM <http://rdf.glytoucan.org/core>
+      WHERE {
+        ?glycan a glycan:Saccharide ;
+          glytoucan:has_primary_id "G00051MO" .
+        OPTIONAL { ?glycan glytoucan:has_primary_id ?primaryId }
+        OPTIONAL { ?glycan glycan:has_Resource_entry ?resourceEntry }
+      }
   
-  semantic_patterns: |
-    - Glycan structures use has_glycosequence to link to multiple format representations
-    - Glycoproteins connect to glycosylation sites via conjugate:glycosylated_at
-    - Position information follows FALDO ontology for genomic coordinates
-    - Cross-references use rdfs:seeAlso patterns consistently
-    - Partner databases are typed with glytoucan:Partner for cross-reference management
-    - Many entity types have minimal metadata - focus on structural relationships
+  - title: Get Glycan Cross-References to ChEBI
+    description: Finds glycans with cross-references to the ChEBI chemical database.
+    question: Which glycans have ChEBI identifiers?
+    complexity: intermediate
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT ?glycan ?chebiEntry ?chebiId
+      FROM <http://rdf.glycosmos.org/glycans>
+      WHERE {
+        ?chebiEntry a glycan:Resource_entry ;
+          rdfs:label "ChEBI" ;
+          dcterms:identifier ?chebiId .
+        ?glycan glycan:has_resource_entry ?chebiEntry .
+      }
+      LIMIT 100
+  
+  - title: Count Glycoproteins by Species
+    description: Aggregates glycoprotein counts by organism, showing species distribution.
+    question: How many glycoproteins are there for each species?
+    complexity: intermediate
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      
+      SELECT ?taxon (COUNT(DISTINCT ?protein) as ?proteinCount)
+      FROM <http://rdf.glycosmos.org/glycoprotein>
+      WHERE {
+        ?protein a glycan:Glycoprotein ;
+          glycan:has_taxon ?taxon .
+      }
+      GROUP BY ?taxon
+      ORDER BY DESC(?proteinCount)
+      LIMIT 20
+  
+  - title: Find Human Glycoproteins with Glycosylation Sites
+    description: Retrieves human glycoproteins with their glycosylation site positions.
+    question: Which human proteins have glycosylation sites and at which positions?
+    complexity: intermediate
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX glycoconjugate: <http://purl.jp/bio/12/glyco/conjugate#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?protein ?proteinLabel ?site ?position
+      FROM <http://rdf.glycosmos.org/glycoprotein>
+      WHERE {
+        ?protein a glycan:Glycoprotein ;
+          rdfs:label ?proteinLabel ;
+          glycan:has_taxon <http://identifiers.org/taxonomy/9606> ;
+          glycoconjugate:glycosylated_at ?site .
+        ?site sio:SIO_000772 ?uniprotRef ;
+          faldo:location ?location .
+        ?location faldo:position ?position .
+      }
+      LIMIT 100
+  
+  - title: Search Lewis Blood Group Antigens
+    description: Finds all Lewis antigen epitopes and their alternative names from GlycoEpitope.
+    question: What Lewis antigens are in the database with their alternative names?
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?epitope ?label ?altLabel
+      FROM <http://rdf.glycoinfo.org/glycoepitope>
+      WHERE {
+        ?epitope a glycan:Glycan_epitope ;
+          rdfs:label ?label .
+        OPTIONAL { ?epitope skos:altLabel ?altLabel }
+        FILTER(CONTAINS(?label, "Lewis"))
+      }
+      ORDER BY ?label
+  
+  - title: Find Glycogenes for Human
+    description: Retrieves glycan-related genes for humans with gene symbols and descriptions.
+    question: What are the glycan-related genes in humans?
+    complexity: intermediate
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT DISTINCT ?gene ?geneSymbol ?description
+      FROM <http://rdf.glycosmos.org/glycogenes>
+      WHERE {
+        ?gene a glycan:Glycogene ;
+          rdfs:label ?geneSymbol ;
+          glycan:has_taxon <http://identifiers.org/taxonomy/9606> .
+        OPTIONAL { ?gene dcterms:description ?description }
+      }
+      ORDER BY ?geneSymbol
+      LIMIT 100
+  
+  - title: Get N-Glycan Motifs with WURCS
+    description: Retrieves N-glycan motif structures with names and WURCS notation.
+    question: What N-glycan motifs are defined with WURCS sequences?
+    complexity: intermediate
+    sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX glyconavi: <http://glyconavi.org/owl#>
+      
+      SELECT ?motif ?label ?gtcId ?wurcs
+      FROM <http://rdf.glycosmos.org/glycans/motif_label>
+      WHERE {
+        ?motif rdfs:label ?label ;
+          dcterms:identifier ?gtcId ;
+          glyconavi:has_wurcs ?wurcs .
+        FILTER(CONTAINS(?label, "N-Glycan"))
+      }
+      LIMIT 20
+  
+  - title: Search Lectins with UniProt IDs
+    description: Retrieves lectin proteins and their UniProt identifiers from SugarBind database.
+    question: Which lectins are available and what are their UniProt IDs?
+    complexity: basic
+    sparql: |
+      PREFIX sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?lectin ?lectinLabel ?uniprotId
+      FROM <http://rdf.glycosmos.org/sugarbind>
+      WHERE {
+        ?lectin a sugarbind:Lectin ;
+          rdfs:label ?lectinLabel .
+        OPTIONAL { ?lectin sugarbind:uniprotId ?uniprotId }
+      }
+      LIMIT 50
+  
+  - title: Find All Glycan Epitopes with Glycosequences
+    description: Lists all glycoepitopes with their common names and associated glycan structure sequences.
+    question: What are all the glycan epitopes in the database with their structures?
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      
+      SELECT ?epitope ?primaryName ?alternativeName ?glycosequence
+      FROM <http://rdf.glycoinfo.org/glycoepitope>
+      WHERE {
+        ?epitope a glycan:Glycan_epitope ;
+          rdfs:label ?primaryName .
+        OPTIONAL { ?epitope skos:altLabel ?alternativeName }
+        OPTIONAL { ?epitope glycan:has_glycosequence ?glycosequence }
+      }
+      ORDER BY ?primaryName
+      LIMIT 100
+
+cross_references:
+  - title: Glycan to UniProt via Glycoproteins
+    description: |
+      Links glycans to proteins through glycosylation sites. Connects GlyTouCan glycan
+      structures to UniProt protein entries via glycoconjugate relationships.
+      TESTED AND VALIDATED - Returns actual glycan-protein-site-UniProt linkages.
+    complexity: intermediate
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX glycoconjugate: <http://purl.jp/bio/12/glyco/conjugate#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?glycan ?protein ?uniprotRef ?site
+      FROM <http://rdf.glycosmos.org/glycoprotein>
+      WHERE {
+        ?protein a glycan:Glycoprotein ;
+          glycoconjugate:glycosylated_at ?site .
+        ?site sio:SIO_000772 ?uniprotRef ;
+          glycoconjugate:has_saccharide ?glycan .
+      }
+      LIMIT 100
+  
+  - title: Glycan to ChEBI Chemical Database
+    description: |
+      Maps glycan structures to ChEBI chemical ontology entries, providing chemical
+      identifiers for glycan compounds. Uses Resource_entry pattern with dcterms:identifier.
+      TESTED AND VALIDATED - Returns real glycan-ChEBI mappings.
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      
+      SELECT ?glycan ?chebiURI ?chebiId
+      FROM <http://rdf.glycosmos.org/glycans>
+      WHERE {
+        ?glycan glycan:has_resource_entry ?chebiURI .
+        ?chebiURI a glycan:Resource_entry ;
+          rdfs:label "ChEBI" ;
+          dcterms:identifier ?chebiId .
+        FILTER(STRSTARTS(STR(?chebiURI), "http://purl.obolibrary.org/obo/CHEBI_"))
+      }
+      LIMIT 100
+  
+  - title: Glycan to PubChem Compound
+    description: |
+      Cross-references glycan structures to PubChem compound and substance databases,
+      enabling cheminformatics analysis. Direct resource entry links to PubChem CIDs.
+      TESTED AND VALIDATED - Returns actual glycan-PubChem compound mappings.
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      
+      SELECT ?glycan ?pubchemEntry
+      FROM <http://rdf.glycosmos.org/glycans>
+      WHERE {
+        ?glycan glycan:has_resource_entry ?pubchemEntry .
+        FILTER(STRSTARTS(STR(?pubchemEntry), "http://rdf.glycoinfo.org/pubchem/"))
+      }
+      LIMIT 100
+  
+  - title: Glycogene to Taxonomy
+    description: |
+      Maps glycan-related genes to their source organisms using NCBI Taxonomy identifiers,
+      enabling cross-species comparative analysis. Uses identifiers.org namespace.
+      TESTED AND VALIDATED - Returns genes from human, mouse, rat, and other species.
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?gene ?geneLabel ?taxonId
+      FROM <http://rdf.glycosmos.org/glycogenes>
+      WHERE {
+        ?gene a glycan:Glycogene ;
+          rdfs:label ?geneLabel ;
+          glycan:has_taxon ?taxonId .
+        FILTER(STRSTARTS(STR(?taxonId), "http://identifiers.org/taxonomy/"))
+      }
+      LIMIT 100
+  
+  - title: Epitope to Glycan Structure Sequences (CORRECTED)
+    description: |
+      Links glycoepitope identifiers to their corresponding glycan structure sequences,
+      connecting immunological epitopes to molecular structures. Uses has_glycosequence property.
+      CORRECTED PROPERTY: glycan:has_glycosequence (not has_epitope_structure)
+      TESTED AND VALIDATED - Returns Lewis antigens, gangliosides, blood group antigens, etc.
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?epitope ?epitopeLabel ?glycanStructure
+      FROM <http://rdf.glycoinfo.org/glycoepitope>
+      WHERE {
+        ?epitope a glycan:Glycan_epitope ;
+          rdfs:label ?epitopeLabel ;
+          glycan:has_glycosequence ?glycanStructure .
+      }
+      LIMIT 100
+  
+  - title: Lectin to UniProt Proteins (CORRECTED)
+    description: |
+      Retrieves lectin-protein relationships from SugarBind, linking lectins to their
+      UniProt protein identifiers. Important for understanding protein-glycan interactions.
+      CORRECTED PROPERTY: sugarbind:uniprotId (disease associations not directly available)
+      TESTED AND VALIDATED - Returns lectins with UniProt IDs including viral hemagglutinins,
+      bacterial adhesins, and other carbohydrate-binding proteins.
+    complexity: basic
+    sparql: |
+      PREFIX sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?lectin ?lectinName ?uniprotId
+      FROM <http://rdf.glycosmos.org/sugarbind>
+      WHERE {
+        ?lectin a sugarbind:Lectin ;
+          rdfs:label ?lectinName ;
+          sugarbind:uniprotId ?uniprotId .
+      }
+      LIMIT 100
+  
+  - title: Glycoprotein to Taxonomy
+    description: |
+      Maps glycoproteins to their source organisms, useful for comparative glycobiology
+      studies across species. Links proteins to NCBI Taxonomy via glycan:has_taxon.
+      TESTED AND VALIDATED - Returns proteins from diverse organisms.
+    complexity: basic
+    sparql: |
+      PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?protein ?proteinLabel ?taxon
+      FROM <http://rdf.glycosmos.org/glycoprotein>
+      WHERE {
+        ?protein a glycan:Glycoprotein ;
+          rdfs:label ?proteinLabel ;
+          glycan:has_taxon ?taxon .
+      }
+      LIMIT 100
+
+architectural_notes: |
+  ## Data Architecture
+  
+  ### Multi-Graph Structure
+  GlycoCosmos employs a distributed graph architecture with over 100 named graphs, each 
+  representing different datasets or data types. This design enables:
+  - Modular data management and updates
+  - Clear data provenance tracking
+  - Efficient querying of specific data domains
+  - Independent versioning of different resources
+  
+  ### Core Graphs
+  1. **GlyTouCan Core** (http://rdf.glytoucan.org/core): Central glycan repository with 117,864 structures
+  2. **Glycoprotein** (http://rdf.glycosmos.org/glycoprotein): 153,178 glycoproteins with 414,798 sites
+  3. **Glycogenes** (http://rdf.glycosmos.org/glycogenes): 423,164 gene entries
+  4. **GlycoEpitope** (http://rdf.glycoinfo.org/glycoepitope): Immunological epitope data
+  5. **SugarBind** (http://rdf.glycosmos.org/sugarbind): Lectin-glycan interaction data
+  
+  ### Integration Patterns
+  
+  **Glycan-Protein Linking**:
+  - Uses FALDO ontology for precise position specification
+  - SIO ontology (SIO_000772) for referencing external proteins
+  - Supports both exact and fuzzy position annotations
+  
+  **Cross-Database References**:
+  - Resource_entry pattern for external database links
+  - Consistent use of dcterms:identifier for database-specific IDs
+  - rdfs:seeAlso for related resources
+  
+  **Taxonomic Classification**:
+  - NCBI Taxonomy integration via identifiers.org URIs
+  - SIO_001394 for database records linking glycans to organisms
+  
+  ### Validation Notes (2025-01)
+  
+  **Tested Cross-References**:
+  All cross-reference queries have been validated against the live database:
+  - ✅ Glycan → UniProt (via glycosylation sites)
+  - ✅ Glycan → ChEBI (chemical identifiers)
+  - ✅ Glycan → PubChem (compound IDs)
+  - ✅ Glycogene → Taxonomy (NCBI)
+  - ✅ Epitope → Glycan structures (using has_glycosequence)
+  - ✅ Lectin → UniProt (protein IDs)
+  
+  **Property Corrections**:
+  - Epitopes use `glycan:has_glycosequence` NOT `glycan:has_epitope_structure`
+  - Lectins have `sugarbind:uniprotId` for protein links
+  - Disease associations for lectins are not directly available via single property
+  
+  ### Performance Considerations
+  
+  1. **Query Optimization**:
+     - Always specify FROM graph when possible to reduce search space
+     - Use FILTER efficiently - apply early in query execution
+     - Limit result sets appropriately for large datasets
+  
+  2. **Common Patterns**:
+     - For glycan lookups: Start with GlyTouCan core graph
+     - For protein data: Use glycoprotein graph with optional joins
+     - For cross-references: Query specific annotation graphs
+  
+  3. **Data Volume**:
+     - Glycoproteins have 31× glycosylation sites (414,798 sites / 153,178 proteins)
+     - Many-to-many relationships are common (glycans-proteins, genes-pathways)
+     - Consider pagination for large result sets
+  
+  ### Ontology Usage
+  
+  **Core Ontologies**:
+  - Glycan Ontology (GLYCAN): Primary domain ontology
+  - FALDO: Sequence feature positions
+  - SIO: Semantic science relationships
+  - Dublin Core: Metadata
+  - SKOS: Vocabulary and labeling
+  
+  **External Ontologies**:
+  - ChEBI: Chemical entities
+  - GO: Gene functions
+  - UniProt Core: Protein annotations
+  - NCBI Taxonomy: Organism classification
+  
+  ### Data Quality Notes
+  
+  - GlyTouCan IDs follow pattern G[0-9]{5}[A-Z]{2}
+  - WURCS notation is standard for glycan structure representation
+  - Multiple naming schemes exist for epitopes (use skos:altLabel)
+  - Taxonomy links use http://identifiers.org/taxonomy/ namespace
+  
+  ### Recommended Query Strategies
+  
+  1. **Finding Glycans**: Start with GlyTouCan core, then join to annotation graphs
+  2. **Protein Glycosylation**: Query glycoprotein graph, filter by taxonomy if needed
+  3. **Gene Analysis**: Use glycogenes graph with optional pathway joins
+  4. **Epitope Search**: Query glycoepitope graph, use text filters on labels
+  5. **Cross-database**: Use multiple FROM clauses or federated queries
+  
+  ### Known Limitations
+  
+  - HGNC gene cross-references may not be directly linked via rdfs:seeAlso
+  - Lectin-disease associations require indirect queries through UniProt and disease databases
+  - Some external database IDs may be outdated or deprecated
 
 data_statistics:
-  total_glycans: 117864  # Saccharide entities in core graph
-  glycan_sequences: 697181  # Sequence format representations
-  glycoproteins: 153178  # Annotated glycoproteins
-  glycosylation_sites: 414798  # Individual glycosylation sites
-  glycogenes: 423164  # Glycosylation-related genes
-  disease_associations: 4372  # Disease entities (minimal properties)
-  partner_databases: 29  # External database partners
-  graphs_total: 100+  # Named graphs in the system
-  sequence_formats: 3  # WURCS, GlycoCT, IUPAC Extended
+  total_glycans: 117864
+  total_glycoproteins: 153178
+  total_glycosylation_sites: 414798
+  total_glycogenes: 423164
+  total_epitopes: 173
+  total_lectins: 739
+  total_antibodies: 614
+  
+  graph_statistics:
+    - graph: http://rdf.glytoucan.org/core
+      triples_estimated: ~350000
+      primary_class: glycan:Saccharide
+      count: 117864
+    
+    - graph: http://rdf.glycosmos.org/glycoprotein
+      triples_estimated: ~3000000
+      primary_classes:
+        - glycan:Glycoprotein (153178)
+        - glycoconjugate:Glycosylation_Site (414798)
+        - faldo:ExactPosition (407793)
+    
+    - graph: http://rdf.glycosmos.org/glycogenes
+      triples_estimated: ~2500000
+      primary_class: glycan:Glycogene
+      count: 423164
+    
+    - graph: http://rdf.glycoinfo.org/glycoepitope
+      triples_estimated: ~15000
+      primary_classes:
+        - glycan:Glycan_epitope (173)
+        - glycan:Antibody (614)
+    
+    - graph: http://rdf.glycosmos.org/sugarbind
+      triples_estimated: ~20000
+      primary_class: sugarbind:Lectin
+      count: 739
+  
+  integration_coverage:
+    uniprot_proteins: extensive
+    chebi_compounds: moderate
+    pubchem_compounds: extensive
+    ncbi_taxonomy: comprehensive
+    kegg_pathways: moderate
+    reactome_pathways: moderate
+    disease_ontologies: moderate (DOID, MONDO, HPO)
+  
+  validation_status:
+    date: 2025-01
+    queries_tested: 17
+    cross_references_validated: 7
+    corrections_made: 3
+    notes: |
+      All SPARQL queries and cross-reference examples have been tested against
+      the live database. Property names corrected based on actual RDF structure.
+      Shape expressions updated to reflect validated properties.

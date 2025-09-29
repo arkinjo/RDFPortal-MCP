@@ -1,14 +1,24 @@
 schema_info:
-  title: MediaDive
+  title: MediaDive - Microbial Culture Media Database
   description: |
-    MediaDive is a comprehensive database for culture media used in microbiology, developed by the 
-    DSMZ (Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures). It contains 
-    detailed information about culture media compositions, growth conditions, and associated bacterial 
-    strains. The database provides essential data for microbiological research, including precise 
-    ingredient concentrations, pH requirements, temperature conditions, and oxygen requirements for 
-    cultivating diverse microorganisms.
+    MediaDive is a comprehensive RDF database containing detailed information about microbial culture media, 
+    growth conditions, and their relationships to microorganisms. The database integrates data from DSMZ 
+    (German Collection of Microorganisms and Cell Cultures) and provides structured information about:
+    - Culture media composition with detailed ingredient specifications
+    - Growth conditions (temperature, pH, oxygen requirements, incubation periods)
+    - Microbial strains and their taxonomic classification
+    - Solutions and recipes for media preparation
+    - Equipment requirements and operational procedures
+    - Cross-references to external databases (ChEBI, PubChem, KEGG, CAS, BacDive)
+    
+    This database is essential for microbiologists, biotechnologists, and researchers working with microbial 
+    cultures, providing standardized protocols and conditions for cultivating diverse microorganisms including 
+    bacteria, fungi, yeast, archaea, microalgae, and phages.
+    
   endpoint: https://rdfportal.org/primary/sparql
   base_uri: https://purl.dsmz.de/
+  version: 2025
+  last_updated: 2025-01
   graphs:
     - http://rdfportal.org/dataset/mediadive
 
@@ -16,10 +26,7 @@ prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   xsd: http://www.w3.org/2001/XMLSchema#
-  dc: http://purl.org/dc/elements/1.1/
   dct: http://purl.org/dc/terms/
-  skos: http://www.w3.org/2004/02/skos/core#
-  obo: http://purl.obolibrary.org/obo/
   schema: https://purl.dsmz.de/schema/
   mediadive: https://purl.dsmz.de/mediadive/medium/
   solution: https://purl.dsmz.de/mediadive/solution/
@@ -35,346 +42,834 @@ prefixes:
   modification_detail: https://purl.dsmz.de/mediadive/modification_detail/
 
 shape_expressions: |
-  # Complete MediaDive Shape Expressions - All components from original ShEx schema
+  # MediaDive Shape Expressions (ShExC)
+  # Reverse-engineered from the MediaDive RDF database schema
   
+  # Growth conditions shape - defines optimal conditions for microbial growth
   <GrowthShape> {
     a [ schema:GrowthCondition ] ;
-    schema:growthPH xsd:float ? ;
-    schema:growthTemperature xsd:integer ;
-    schema:hasGrowthIndicator xsd:trueclass ;
-    schema:hasOxygenRequirement xsd:string ? ;
-    schema:incubationPeriod xsd:string ? ;
-    schema:partOfMedium @<MediumShape> ;
-    schema:relatedToStrain @<StrainShape>
+    schema:growthPH xsd:float ? ;                # Optimal pH for growth
+    schema:growthTemperature xsd:integer ;        # Temperature in Celsius
+    schema:hasGrowthIndicator xsd:trueclass ;     # Indicator of growth success
+    schema:hasOxygenRequirement xsd:string ? ;    # aerobic, anaerobic, microaerobic, etc.
+    schema:incubationPeriod xsd:string ? ;        # Time period for incubation
+    schema:partOfMedium @<MediumShape> ;          # Reference to the culture medium
+    schema:relatedToStrain @<StrainShape>         # Reference to the microbial strain
   }
   
+  # Medium composition shape - defines ingredient quantities in a medium
   <MediumCompositionShape> {
     a [ schema:MediumComposition ] ;
-    schema:containsIngredient @<IngredientShape> ;
-    schema:gramsPerLiter xsd:float ? ;
-    schema:isOptionalIngredient xsd:falseclass ;
-    schema:mmolPerLiter xsd:float ? ;
-    schema:modificationDifference xsd:falseclass ;
-    schema:modifiedBy @<ModificationShape> ? ;
-    schema:partOfMedium @<MediumShape>
+    schema:containsIngredient @<IngredientShape> ;  # Chemical ingredient
+    schema:gramsPerLiter xsd:float ? ;              # Concentration in g/L
+    schema:isOptionalIngredient xsd:falseclass ;    # Whether ingredient is optional
+    schema:mmolPerLiter xsd:float ? ;               # Concentration in mmol/L
+    schema:modificationDifference xsd:falseclass ;  # Modified from original recipe
+    schema:modifiedBy @<ModificationShape> ? ;      # Modification details
+    schema:partOfMedium @<MediumShape>              # Reference to the medium
   }
   
+  # Culture medium shape - the complete medium definition
   <MediumShape> {
     a [ schema:CultureMedium ] ;
-    dct:identifier IRI ;
-    rdfs:label xsd:string ;
-    schema:belongsToGroup xsd:string ;
-    schema:fromSource xsd:string ;
-    schema:hasFinalPH xsd:string ? ;
-    schema:hasLinkToSource IRI ;
-    schema:hasMainSolution @<SolutionShape> ;
-    schema:hasMaxPH xsd:float ? ;
-    schema:hasMinPH xsd:float ? ;
-    schema:includesSolution @<SolutionShape> ;
-    schema:isComplex xsd:trueclass
+    dct:identifier IRI ;                         # Unique identifier
+    rdfs:label xsd:string ;                      # Human-readable name
+    schema:belongsToGroup xsd:string ;           # Category or group
+    schema:fromSource xsd:string ;               # Source database (e.g., DSMZ)
+    schema:hasFinalPH xsd:string ? ;            # Final pH after preparation
+    schema:hasLinkToSource IRI ;                 # URL to source documentation
+    schema:hasMainSolution @<SolutionShape> ;    # Main solution component
+    schema:hasMaxPH xsd:float ? ;               # Maximum pH range
+    schema:hasMinPH xsd:float ? ;               # Minimum pH range
+    schema:includesSolution @<SolutionShape> ;   # Additional solutions
+    schema:isComplex xsd:trueclass               # Complex vs defined medium
   }
   
+  # Solution recipe shape - ingredients and quantities for solution preparation
   <SolutionRecipeShape> {
     a [ schema:SolutionRecipe ] ;
-    dct:identifier xsd:integer ;
-    schema:gramsPerLiter xsd:float ? ;
-    schema:includesIngredient @<IngredientShape> ? ;
-    schema:ingredientAmount xsd:float ;
-    schema:ingredientUnit xsd:string ;
-    schema:isIngredientOptional xsd:falseclass ;
-    schema:mmolPerLiter xsd:float ? ;
-    schema:partOfSolution @<SolutionShape> ;
-    schema:positionInRecipe xsd:integer
+    dct:identifier xsd:integer ;                 # Recipe identifier
+    schema:gramsPerLiter xsd:float ? ;          # Concentration in g/L
+    schema:includesIngredient @<IngredientShape> ? ;  # Chemical ingredient
+    schema:ingredientAmount xsd:float ;          # Amount of ingredient
+    schema:ingredientUnit xsd:string ;           # Unit (g, mg, ml, etc.)
+    schema:isIngredientOptional xsd:falseclass ; # Whether ingredient is optional
+    schema:mmolPerLiter xsd:float ? ;           # Concentration in mmol/L
+    schema:partOfSolution @<SolutionShape> ;     # Reference to solution
+    schema:positionInRecipe xsd:integer          # Order of addition
   }
   
+  # Ingredient shape - chemical compounds used in media
   <IngredientShape> {
     a [ schema:Ingredient ] ;
-    dct:identifier xsd:integer ? ;
-    rdfs:label xsd:string ? ;
-    schema:belongsToGroup xsd:string ? ;
-    schema:hasCAS xsd:string ? ;
-    schema:hasChEBI xsd:integer ? ;
-    schema:hasDensity xsd:float ? ;
-    schema:hasFormula xsd:string ? ;
-    schema:hasGMO IRI ? ;
-    schema:hasKEGG xsd:string ? ;
-    schema:hasMass xsd:float ? ;
-    schema:hasMetaCyc xsd:string ? ;
-    schema:hasPubChem xsd:integer ? ;
-    schema:hasSVGImage  ;
-    schema:hasSynonym xsd:string ;
-    schema:hasZVG xsd:integer ? ;
-    schema:isComplexCarbonSource xsd:falseclass ?
+    dct:identifier xsd:integer ? ;               # Unique identifier
+    rdfs:label xsd:string ? ;                    # Chemical name
+    schema:belongsToGroup xsd:string ? ;         # Chemical class
+    schema:hasCAS xsd:string ? ;                 # CAS registry number
+    schema:hasChEBI xsd:integer ? ;              # ChEBI database ID
+    schema:hasDensity xsd:float ? ;              # Density
+    schema:hasFormula xsd:string ? ;             # Chemical formula
+    schema:hasGMO IRI ? ;                        # GMO reference
+    schema:hasKEGG xsd:string ? ;                # KEGG compound ID
+    schema:hasMass xsd:float ? ;                 # Molecular mass
+    schema:hasMetaCyc xsd:string ? ;             # MetaCyc ID
+    schema:hasPubChem xsd:integer ? ;            # PubChem compound ID
+    schema:hasSVGImage  ;                        # SVG structure image
+    schema:hasSynonym xsd:string ;               # Alternative names
+    schema:hasZVG xsd:integer ? ;                # ZVG identifier
+    schema:isComplexCarbonSource xsd:falseclass ? # Complex carbon source flag
   }
   
+  # Equipment shape - laboratory equipment used in preparation
   <EquipmentShape> {
     a [ schema:Equipment ] ;
-    dct:identifier xsd:integer ;
-    rdfs:label xsd:string ;
-    schema:usedInSolution @<SolutionShape>
+    dct:identifier xsd:integer ;                 # Equipment ID
+    rdfs:label xsd:string ;                      # Equipment name
+    schema:usedInSolution @<SolutionShape>       # Solution where used
   }
   
+  # Operational step shape - preparation procedures
   <StepShape> {
     a [ schema:OperationalStep ] ;
-    dct:identifier xsd:integer ;
-    schema:description xsd:string ;
-    schema:partOfMedium @<MediumShape> ;
-    schema:positionInRecipe xsd:integer ? ;
-    schema:relatedToSolution @<SolutionShape> ;
-    schema:stepOrder xsd:integer
+    dct:identifier xsd:integer ;                 # Step ID
+    schema:description xsd:string ;              # Procedure description
+    schema:partOfMedium @<MediumShape> ;         # Medium reference
+    schema:positionInRecipe xsd:integer ? ;      # Position in recipe
+    schema:relatedToSolution @<SolutionShape> ;  # Related solution
+    schema:stepOrder xsd:integer                 # Order of execution
   }
   
+  # Solution shape - component solutions of media
   <SolutionShape> {
     a [ schema:Solution ] ;
-    dct:identifier xsd:string ;
-    rdfs:label xsd:string ;
-    schema:firstDefinedInMedium IRI ;
-    schema:hasVolume xsd:string ;
-    schema:isStockSolution xsd:falseclass ?
+    dct:identifier xsd:string ;                  # Solution ID
+    rdfs:label xsd:string ;                      # Solution name
+    schema:firstDefinedInMedium IRI ;            # Original medium
+    schema:hasVolume xsd:string ;                # Volume (ml)
+    schema:isStockSolution xsd:falseclass ?      # Stock solution flag
   }
   
+  # Microbial strain shape - microorganism information
   <StrainShape> {
     a [ schema:Strain ] ;
-    dct:identifier xsd:integer ;
-    schema:belongsTaxGroup xsd:string ;
-    schema:hasBacDiveID xsd:integer ? ;
-    schema:hasDSMNumber xsd:integer ;
-    schema:hasSpecies xsd:string ;
-    schema:hasSynonym xsd:string ?
+    dct:identifier xsd:integer ;                 # Strain ID
+    schema:belongsTaxGroup xsd:string ;          # Taxonomic group
+    schema:hasBacDiveID xsd:integer ? ;          # BacDive database ID
+    schema:hasDSMNumber xsd:integer ;            # DSM collection number
+    schema:hasSpecies xsd:string ;               # Species name
+    schema:hasSynonym xsd:string ?               # Alternative strain names
   }
   
+  # Modification shape - changes to standard recipes
   <ModificationShape> {
     a [ schema:Modification ] ;
-    schema:appliesToMedium @<MediumShape> ;
-    schema:appliesToSolution @<SolutionShape> ;
-    schema:description xsd:string
+    schema:appliesToMedium @<MediumShape> ;      # Medium being modified
+    schema:appliesToSolution @<SolutionShape> ;  # Solution being modified
+    schema:description xsd:string                # Modification description
   }
   
+  # Modification detail shape - specific changes
   <ModificationDetailShape> {
     a [ schema:ModificationDetail ] ;
-    schema:actionDetails xsd:string ;
-    schema:actionType xsd:string ;
-    schema:modifiedAmount xsd:float ? ;
-    schema:modifiedUnit xsd:string ? ;
-    schema:partOfModification @<ModificationShape> ;
-    schema:relatedIngredient @<IngredientShape> ?
+    schema:actionDetails xsd:string ;            # Details of action
+    schema:actionType xsd:string ;               # Type: add, omit, replace, pH
+    schema:modifiedAmount xsd:float ? ;          # Amount changed
+    schema:modifiedUnit xsd:string ? ;           # Unit of change
+    schema:partOfModification @<ModificationShape> ;  # Modification reference
+    schema:relatedIngredient @<IngredientShape> ?     # Ingredient affected
   }
   
+  # Gas component shape - gas atmosphere composition
   <GasShape> {
     a [ schema:GasComponent ] ;
-    schema:gasPercentage xsd:float ;
-    schema:gasType xsd:string ;
-    schema:partOfMedium @<MediumShape>
+    schema:gasPercentage xsd:float ;             # Percentage in atmosphere
+    schema:gasType xsd:string ;                  # Gas type (N2, CO2, H2, etc.)
+    schema:partOfMedium @<MediumShape>           # Medium reference
   }
 
 sample_rdf_entries:
-  - title: Culture Medium Example - MD1-MEDIUM
-    description: A complex bacterial culture medium with defined pH range and multiple solutions
+  - title: Complete Culture Medium with Growth Conditions
+    description: |
+      MD1-MEDIUM culture medium with detailed composition, solutions, and growth conditions. 
+      This example shows how media are structured with main solutions, pH ranges, and links to source documentation.
     rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
+      @prefix md: <https://purl.dsmz.de/schema/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
       @prefix dct: <http://purl.org/dc/terms/> .
       
-      <https://purl.dsmz.de/mediadive/medium/1118> a schema:CultureMedium, schema:Medium ;
-          rdfs:label "MD1-MEDIUM" ;
-          dct:identifier <https://identifiers.org/mediadive.medium:1118> ;
-          schema:fromSource "DSMZ" ;
-          schema:belongsToGroup "MD1-MEDIUM" ;
-          schema:hasFinalPH "7.0-7.2" ;
-          schema:hasMinPH "7.0"^^xsd:float ;
-          schema:hasMaxPH "7.2"^^xsd:float ;
-          schema:isComplex "1"^^xsd:boolean ;
-          schema:hasLinkToSource <https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium1118.pdf> .
+      <https://purl.dsmz.de/mediadive/medium/1118> 
+        a md:CultureMedium ;
+        rdfs:label "MD1-MEDIUM" ;
+        md:fromSource "DSMZ" ;
+        md:isComplex "true"^^xsd:boolean ;
+        md:hasMainSolution <https://purl.dsmz.de/mediadive/solution/2247> ,
+                          <https://purl.dsmz.de/mediadive/solution/2248> ;
+        md:includesSolution <https://purl.dsmz.de/mediadive/solution/2247> ,
+                           <https://purl.dsmz.de/mediadive/solution/2248> ;
+        md:hasLinkToSource <https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium1118.pdf> ;
+        md:hasMinPH "7.0"^^xsd:float ;
+        md:hasMaxPH "7.2"^^xsd:float .
 
-  - title: Chemical Ingredient - Iron Sulfate Heptahydrate
-    description: Essential trace metal ingredient with chemical identifiers and formula
+  - title: Medium Composition with Ingredient Concentrations
+    description: |
+      Detailed composition showing ingredient quantities in both g/L and mmol/L. 
+      Demonstrates trace metal concentrations and their precise measurements.
     rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
+      @prefix md: <https://purl.dsmz.de/schema/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
       
-      <https://purl.dsmz.de/mediadive/ingredient/12> a schema:Ingredient ;
-          rdfs:label "FeSO4 x 7 H2O" ;
-          schema:hasFormula "FeH14O11S" ;
-          schema:hasCAS "7782-63-0" .
-
-  - title: Medium Composition with Concentrations
-    description: Precise ingredient concentrations in culture medium
-    rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
+      <https://purl.dsmz.de/mediadive/medium_composition/95570>
+        a md:MediumComposition ;
+        md:partOfMedium <https://purl.dsmz.de/mediadive/medium/1118> ;
+        md:containsIngredient <https://purl.dsmz.de/mediadive/ingredient/12> ;
+        md:gramsPerLiter "0.0002"^^xsd:float ;
+        md:mmolPerLiter "0.000719"^^xsd:float ;
+        md:isOptionalIngredient "false"^^xsd:boolean ;
+        md:modificationDifference "false"^^xsd:boolean .
       
-      <https://purl.dsmz.de/mediadive/medium_composition/example> a schema:MediumComposition ;
-          schema:partOfMedium <https://purl.dsmz.de/mediadive/medium/1118> ;
-          schema:containsIngredient <https://purl.dsmz.de/mediadive/ingredient/7> ;
-          schema:gramsPerLiter "0.7"^^xsd:float ;
-          schema:mmolPerLiter "4.76142"^^xsd:float ;
-          schema:isOptionalIngredient "0"^^xsd:boolean .
+      <https://purl.dsmz.de/mediadive/ingredient/12>
+        rdfs:label "FeSO4 x 7 H2O" .
 
-  - title: Bacterial Strain with BacDive Cross-reference
-    description: DSMZ strain with taxonomic information and BacDive link
+  - title: Ingredient with External Database Cross-References
+    description: |
+      Chemical ingredient with comprehensive cross-references to ChEBI, CAS, PubChem, and KEGG databases.
+      Shows synonyms and chemical properties including formula and molecular mass.
     rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
-      
-      <https://purl.dsmz.de/mediadive/strain/10157> a schema:Strain ;
-          schema:hasDSMNumber "19020"^^xsd:integer ;
-          schema:hasSpecies "Aromatoleum toluolicum" ;
-          schema:belongsTaxGroup "Bacterium" ;
-          schema:hasBacDiveID "13881"^^xsd:integer .
-
-  - title: Growth Condition Parameters
-    description: Optimal growth parameters for bacterial cultivation
-    rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
-      
-      <https://purl.dsmz.de/mediadive/growth/32381> a schema:GrowthCondition ;
-          schema:relatedToStrain <https://purl.dsmz.de/mediadive/strain/10909> ;
-          schema:growthTemperature "37"^^xsd:integer ;
-          schema:growthPH "7.0"^^xsd:float ;
-          schema:hasOxygenRequirement "microaerobic" .
-
-  - title: Solution Component
-    description: Solution preparation with volume specifications
-    rdf: |
-      @prefix schema: <https://purl.dsmz.de/schema/> .
+      @prefix md: <https://purl.dsmz.de/schema/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
       
-      <https://purl.dsmz.de/mediadive/solution/100> a schema:Solution ;
-          rdfs:label "Solution B" ;
-          schema:hasVolume "10" ;
-          schema:isStockSolution "0"^^xsd:boolean .
+      <https://purl.dsmz.de/mediadive/ingredient/12>
+        a md:Ingredient ;
+        rdfs:label "FeSO4 x 7 H2O" ;
+        md:hasSynonym "ferrous sulfate heptahydrate" ,
+                      "iron(II) sulfate.7H2O" ,
+                      "melanterite" ,
+                      "green vitriol" ,
+                      "copperas" ;
+        md:hasCAS "7782-63-0" ;
+        md:hasChEBI "75836"^^xsd:integer ;
+        md:hasPubChem "0"^^xsd:integer ;
+        md:hasFormula "FeH14O11S" ;
+        md:hasMass "278.015"^^xsd:float .
+
+  - title: Microbial Strain with Taxonomic Information
+    description: |
+      Bacterial strain entry with species identification, taxonomic classification, 
+      and cross-references to BacDive and DSM culture collection.
+    rdf: |
+      @prefix md: <https://purl.dsmz.de/schema/> .
+      
+      <https://purl.dsmz.de/mediadive/strain/10157>
+        a md:Strain ;
+        dct:identifier "10157"^^xsd:integer ;
+        md:hasSpecies "Aromatoleum toluolicum" ;
+        md:belongsTaxGroup "Bacterium" ;
+        md:hasBacDiveID "13881"^^xsd:integer ;
+        md:hasDSMNumber "19020"^^xsd:integer .
+
+  - title: Growth Conditions with Temperature, pH, and Oxygen Requirements
+    description: |
+      Complete growth condition specifications including temperature, pH, oxygen requirements,
+      and incubation period for culturing a specific strain.
+    rdf: |
+      @prefix md: <https://purl.dsmz.de/schema/> .
+      
+      <https://purl.dsmz.de/mediadive/growth/31716>
+        a md:GrowthCondition ;
+        md:relatedToStrain <https://purl.dsmz.de/mediadive/strain/28313> ;
+        md:partOfMedium <https://purl.dsmz.de/mediadive/medium/some_medium> ;
+        md:growthTemperature "37"^^xsd:integer ;
+        md:growthPH "7.0"^^xsd:float ;
+        md:hasOxygenRequirement "microaerobic" ;
+        md:incubationPeriod "1-2 days" ;
+        md:hasGrowthIndicator "true"^^xsd:boolean .
+
+  - title: Solution Recipe with Ingredient Preparation
+    description: |
+      Solution recipe showing ordered addition of ingredients with specific amounts and units.
+      Includes position in recipe for proper preparation sequence.
+    rdf: |
+      @prefix md: <https://purl.dsmz.de/schema/> .
+      
+      <https://purl.dsmz.de/mediadive/solution_recipe/13910>
+        a md:SolutionRecipe ;
+        dct:identifier "13910"^^xsd:integer ;
+        md:partOfSolution <https://purl.dsmz.de/mediadive/solution/2247> ;
+        md:includesIngredient <https://purl.dsmz.de/mediadive/ingredient/84> ;
+        md:ingredientAmount "3.0"^^xsd:float ;
+        md:ingredientUnit "g" ;
+        md:positionInRecipe "0"^^xsd:integer ;
+        md:isIngredientOptional "false"^^xsd:boolean .
+
+  - title: Solution with Volume and Definition
+    description: |
+      Solution component specifying volume and the medium where it was first defined.
+      Solutions can be reused across multiple media.
+    rdf: |
+      @prefix md: <https://purl.dsmz.de/schema/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      
+      <https://purl.dsmz.de/mediadive/solution/2247>
+        a md:Solution ;
+        dct:identifier "2247" ;
+        rdfs:label "Main sol. 2247" ;
+        md:hasVolume "1000" ;
+        md:firstDefinedInMedium <https://purl.dsmz.de/mediadive/medium/1118> .
+
+  - title: Operational Step for Medium Preparation
+    description: |
+      Procedural step describing post-autoclaving addition of vitamin B12 and pH verification.
+      Steps are ordered and linked to specific solutions.
+    rdf: |
+      @prefix md: <https://purl.dsmz.de/schema/> .
+      
+      <https://purl.dsmz.de/mediadive/step/2498>
+        a md:OperationalStep ;
+        dct:identifier "2498"^^xsd:integer ;
+        md:stepOrder "1"^^xsd:integer ;
+        md:description "After autoclaving and cooling, add 0.5 mg /l vitamin B12 from a filter sterilized stock solution. pH should be 7.0 -7.2." ;
+        md:partOfMedium <https://purl.dsmz.de/mediadive/medium/1118> ;
+        md:relatedToSolution <https://purl.dsmz.de/mediadive/solution/2247> .
 
 sparql_query_examples:
-  microbiology_research:
-    - title: Find complex media for bacterial cultivation
-      description: Retrieve complex culture media with their pH ranges and sources
-      question: What complex culture media are available for bacterial cultivation?
-      complexity: basic
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?medium ?label ?source ?finalPH ?minPH ?maxPH
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?medium a schema:CultureMedium ;
-                  rdfs:label ?label ;
-                  schema:fromSource ?source ;
-                  schema:isComplex "1"^^xsd:boolean .
-          OPTIONAL { ?medium schema:hasFinalPH ?finalPH }
-          OPTIONAL { ?medium schema:hasMinPH ?minPH }
-          OPTIONAL { ?medium schema:hasMaxPH ?maxPH }
-        }
-        ORDER BY ?label
-        LIMIT 20
+  - title: Find Media Containing Specific Ingredient
+    description: |
+      Search for culture media containing a specific ingredient (e.g., glucose).
+      Returns medium identifiers, labels, and lists all ingredients containing the search term.
+    question: Which culture media contain glucose as an ingredient?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?label (GROUP_CONCAT(DISTINCT ?ingredientLabel; separator="; ") as ?ingredients)
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?medium a md:CultureMedium ;
+                rdfs:label ?label .
+        ?comp md:partOfMedium ?medium ;
+              md:containsIngredient ?ingredient .
+        ?ingredient rdfs:label ?ingredientLabel .
+        FILTER(CONTAINS(LCASE(?ingredientLabel), "glucose"))
+      }
+      GROUP BY ?medium ?label
+      LIMIT 20
 
-    - title: Ingredient concentrations in specific medium
-      description: Get detailed ingredient composition with concentrations
-      question: What are the exact ingredient concentrations in MD1-MEDIUM?
-      complexity: intermediate
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?ingredient ?ingredientLabel ?gramsPerLiter ?mmolPerLiter ?cas ?formula
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?medium rdfs:label "MD1-MEDIUM" .
-          ?composition a schema:MediumComposition ;
-                       schema:partOfMedium ?medium ;
-                       schema:containsIngredient ?ingredient .
-          OPTIONAL { ?composition schema:gramsPerLiter ?gramsPerLiter }
-          OPTIONAL { ?composition schema:mmolPerLiter ?mmolPerLiter }
+  - title: Get Growth Conditions for Specific Species
+    description: |
+      Retrieve optimal growth conditions (temperature, pH, medium) for a specific microbial species.
+      Useful for establishing culture protocols for organisms of interest.
+    question: What are the growth conditions for Escherichia coli?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?strain ?species ?medium ?mediumLabel ?temp ?ph ?oxygen ?period
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?strain a md:Strain ;
+                md:hasSpecies ?species .
+        ?growth md:relatedToStrain ?strain ;
+                md:partOfMedium ?medium ;
+                md:growthTemperature ?temp ;
+                md:growthPH ?ph .
+        ?medium rdfs:label ?mediumLabel .
+        OPTIONAL { ?growth md:hasOxygenRequirement ?oxygen . }
+        OPTIONAL { ?growth md:incubationPeriod ?period . }
+        FILTER(CONTAINS(?species, "Escherichia coli"))
+      }
+      LIMIT 10
+
+  - title: List All Ingredients in a Specific Medium
+    description: |
+      Retrieve complete ingredient list with concentrations for a specific culture medium.
+      Shows both g/L and mmol/L concentrations where available.
+    question: What are all the ingredients and their concentrations in medium 1118?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredientLabel ?gramsPerLiter ?mmolPerLiter ?optional
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?comp a md:MediumComposition ;
+              md:partOfMedium <https://purl.dsmz.de/mediadive/medium/1118> ;
+              md:containsIngredient ?ingredient ;
+              md:isOptionalIngredient ?optional .
+        ?ingredient rdfs:label ?ingredientLabel .
+        OPTIONAL { ?comp md:gramsPerLiter ?gramsPerLiter . }
+        OPTIONAL { ?comp md:mmolPerLiter ?mmolPerLiter . }
+      }
+      ORDER BY DESC(?gramsPerLiter)
+
+  - title: Find Anaerobic Growth Media
+    description: |
+      Search for culture media suitable for anaerobic organisms.
+      Returns media used for anaerobic cultivation with strain information.
+    question: Which media are used for anaerobic growth conditions?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?medium ?mediumLabel (COUNT(DISTINCT ?strain) as ?strainCount)
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?growth a md:GrowthCondition ;
+                md:hasOxygenRequirement ?oxygen ;
+                md:partOfMedium ?medium ;
+                md:relatedToStrain ?strain .
+        ?medium rdfs:label ?mediumLabel .
+        FILTER(?oxygen = "anaerobic")
+      }
+      GROUP BY ?medium ?mediumLabel
+      ORDER BY DESC(?strainCount)
+      LIMIT 20
+
+  - title: Get Ingredient Cross-References to External Databases
+    description: |
+      Retrieve external database identifiers for chemical ingredients.
+      Provides ChEBI, PubChem, KEGG, and CAS numbers for data integration.
+    question: What are the external database identifiers for ingredients in the database?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?chebi ?pubchem ?kegg ?cas
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label .
+        OPTIONAL { ?ingredient md:hasChEBI ?chebi . }
+        OPTIONAL { ?ingredient md:hasPubChem ?pubchem . }
+        OPTIONAL { ?ingredient md:hasKEGG ?kegg . }
+        OPTIONAL { ?ingredient md:hasCAS ?cas . }
+        FILTER(BOUND(?chebi) || BOUND(?pubchem) || BOUND(?kegg))
+      }
+      LIMIT 50
+
+  - title: Find Media for Specific Temperature Range
+    description: |
+      Search for culture media and organisms that grow within a specific temperature range.
+      Useful for identifying mesophilic, thermophilic, or psychrophilic culture conditions.
+    question: Which media and strains are used for growth at 37°C?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?mediumLabel ?strain ?species ?temp ?ph
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?growth a md:GrowthCondition ;
+                md:growthTemperature ?temp ;
+                md:partOfMedium ?medium ;
+                md:relatedToStrain ?strain .
+        ?medium rdfs:label ?mediumLabel .
+        ?strain md:hasSpecies ?species .
+        OPTIONAL { ?growth md:growthPH ?ph . }
+        FILTER(?temp = 37)
+      }
+      LIMIT 20
+
+  - title: Count Strains by Taxonomic Group
+    description: |
+      Generate statistics showing the distribution of microbial strains across taxonomic groups.
+      Provides overview of database coverage for different organism types.
+    question: How many strains are there for each taxonomic group?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      
+      SELECT ?taxGroup (COUNT(DISTINCT ?strain) as ?count)
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?strain a md:Strain ;
+                md:belongsTaxGroup ?taxGroup .
+      }
+      GROUP BY ?taxGroup
+      ORDER BY DESC(?count)
+
+  - title: Get Complete Solution Recipe with Ordered Steps
+    description: |
+      Retrieve the complete recipe for preparing a solution, including ingredients,
+      amounts, units, and the order of addition.
+    question: What is the detailed recipe for preparing solution 2247?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?position ?ingredientLabel ?amount ?unit ?optional
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?recipe a md:SolutionRecipe ;
+                md:partOfSolution <https://purl.dsmz.de/mediadive/solution/2247> ;
+                md:includesIngredient ?ingredient ;
+                md:ingredientAmount ?amount ;
+                md:ingredientUnit ?unit ;
+                md:positionInRecipe ?position ;
+                md:isIngredientOptional ?optional .
+        ?ingredient rdfs:label ?ingredientLabel .
+      }
+      ORDER BY ?position
+
+  - title: Find Media Modifications
+    description: |
+      Search for modified versions of culture media with descriptions of modifications.
+      Shows how standard media are adapted for specific purposes.
+    question: What modifications exist for culture media and what do they change?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?modification ?description ?actionType ?ingredientLabel ?amount ?unit
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?modification a md:Modification ;
+                      md:description ?description .
+        ?detail md:partOfModification ?modification ;
+                md:actionType ?actionType .
+        OPTIONAL { 
+          ?detail md:relatedIngredient ?ingredient ;
+                  md:modifiedAmount ?amount ;
+                  md:modifiedUnit ?unit .
           ?ingredient rdfs:label ?ingredientLabel .
-          OPTIONAL { ?ingredient schema:hasCAS ?cas }
-          OPTIONAL { ?ingredient schema:hasFormula ?formula }
         }
-        ORDER BY DESC(?gramsPerLiter)
+      }
+      LIMIT 20
 
-    - title: Strains with specific growth temperatures
-      description: Find bacterial strains that grow at specific temperature ranges
-      question: Which bacterial strains require growth temperatures between 25-30°C?
-      complexity: intermediate
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        SELECT DISTINCT ?strain ?dsmNumber ?species ?temperature ?oxygenReq
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?strain a schema:Strain ;
-                  schema:hasDSMNumber ?dsmNumber ;
-                  schema:hasSpecies ?species .
-          ?growth a schema:GrowthCondition ;
-                  schema:relatedToStrain ?strain ;
-                  schema:growthTemperature ?temperature .
-          OPTIONAL { ?growth schema:hasOxygenRequirement ?oxygenReq }
-          FILTER(?temperature >= 25 && ?temperature <= 30)
-        }
-        ORDER BY ?temperature ?species
-        LIMIT 25
+  - title: Get Operational Steps for Medium Preparation
+    description: |
+      Retrieve the ordered sequence of preparation steps for a specific culture medium.
+      Provides procedural information for proper media preparation.
+    question: What are the preparation steps for medium 1118?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      
+      SELECT ?stepOrder ?description ?solution
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?step a md:OperationalStep ;
+              md:stepOrder ?stepOrder ;
+              md:description ?description ;
+              md:relatedToSolution ?solution ;
+              md:partOfMedium <https://purl.dsmz.de/mediadive/medium/1118> .
+      }
+      ORDER BY ?stepOrder
 
-    - title: Chemical ingredient cross-references
-      description: Retrieve chemical identifiers for database integration
-      question: What chemical database identifiers are available for ingredients?
-      complexity: basic
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?ingredient ?label ?cas ?chebi ?pubchem ?kegg ?formula
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?ingredient a schema:Ingredient ;
-                      rdfs:label ?label .
-          OPTIONAL { ?ingredient schema:hasCAS ?cas }
-          OPTIONAL { ?ingredient schema:hasChEBI ?chebi }
-          OPTIONAL { ?ingredient schema:hasPubChem ?pubchem }
-          OPTIONAL { ?ingredient schema:hasKEGG ?kegg }
-          OPTIONAL { ?ingredient schema:hasFormula ?formula }
-          FILTER(BOUND(?cas) || BOUND(?chebi) || BOUND(?pubchem) || BOUND(?kegg))
-        }
-        ORDER BY ?label
-        LIMIT 25
+  - title: Find Strains with BacDive Cross-References
+    description: |
+      Retrieve microbial strains that have cross-references to the BacDive database.
+      Enables integration with comprehensive bacterial culture collection data.
+    question: Which strains have BacDive identifiers?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      
+      SELECT ?strain ?species ?taxGroup ?bacdiveID ?dsmNumber
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?strain a md:Strain ;
+                md:hasSpecies ?species ;
+                md:belongsTaxGroup ?taxGroup ;
+                md:hasBacDiveID ?bacdiveID .
+        OPTIONAL { ?strain md:hasDSMNumber ?dsmNumber . }
+      }
+      LIMIT 50
 
-  cross_references:
-    - title: DSMZ to BacDive strain mapping
-      description: Cross-reference DSMZ strain numbers with BacDive database entries
-      complexity: basic
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        SELECT ?strain ?dsmNumber ?species ?bacdiveID
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?strain a schema:Strain ;
-                  schema:hasDSMNumber ?dsmNumber ;
-                  schema:hasSpecies ?species ;
-                  schema:hasBacDiveID ?bacdiveID .
-        }
-        ORDER BY ?dsmNumber
-        LIMIT 25
+  - title: Analyze Gas Atmosphere Requirements
+    description: |
+      Examine gas composition requirements for culture media.
+      Shows percentage composition of gases like N2, CO2, and H2 in growth atmospheres.
+    question: What gas atmospheres are specified for culture media?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?mediumLabel ?gasType ?percentage
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?gas a md:GasComponent ;
+             md:gasType ?gasType ;
+             md:gasPercentage ?percentage ;
+             md:partOfMedium ?medium .
+        ?medium rdfs:label ?mediumLabel .
+      }
+      ORDER BY ?medium ?gasType
 
-    - title: Chemical ingredient to ChEBI mapping
-      description: Map MediaDive ingredients to ChEBI chemical ontology entries
-      complexity: basic
-      sparql: |
-        PREFIX schema: <https://purl.dsmz.de/schema/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?ingredient ?label ?chebi ?cas ?formula
-        FROM <http://rdfportal.org/dataset/mediadive>
-        WHERE {
-          ?ingredient a schema:Ingredient ;
-                      rdfs:label ?label ;
-                      schema:hasChEBI ?chebi .
-          OPTIONAL { ?ingredient schema:hasCAS ?cas }
-          OPTIONAL { ?ingredient schema:hasFormula ?formula }
-        }
-        ORDER BY ?chebi
-        LIMIT 25
+  - title: Find Complex vs Defined Media
+    description: |
+      Distinguish between complex (undefined) and chemically defined (synthetic) culture media.
+      Important for reproducibility and metabolic studies.
+    question: Which media are chemically defined versus complex?
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?label ?isComplex ?source
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?medium a md:CultureMedium ;
+                rdfs:label ?label ;
+                md:isComplex ?isComplex ;
+                md:fromSource ?source .
+      }
+      ORDER BY ?isComplex ?label
+      LIMIT 50
+
+  - title: Search by pH Range
+    description: |
+      Find culture media within specific pH ranges.
+      Useful for identifying media for acidophiles, alkaliphiles, or neutrophiles.
+    question: Which media have pH requirements between 6.5 and 7.5?
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?medium ?label ?minPH ?maxPH
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?medium a md:CultureMedium ;
+                rdfs:label ?label ;
+                md:hasMinPH ?minPH ;
+                md:hasMaxPH ?maxPH .
+        FILTER(?minPH >= 6.5 && ?maxPH <= 7.5)
+      }
+      ORDER BY ?minPH
+      LIMIT 20
+
+cross_references:
+  - title: Ingredient to ChEBI Database
+    description: |
+      Cross-references linking chemical ingredients to ChEBI (Chemical Entities of Biological Interest).
+      Provides standardized chemical identifiers for semantic integration.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?chebi
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label ;
+                    md:hasChEBI ?chebi .
+        FILTER(?chebi > 0)
+      }
+      LIMIT 100
+
+  - title: Ingredient to PubChem Database
+    description: |
+      Links ingredients to PubChem compound identifiers for accessing chemical structures,
+      properties, and bioactivity data.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?pubchem ?cas
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label ;
+                    md:hasPubChem ?pubchem .
+        OPTIONAL { ?ingredient md:hasCAS ?cas . }
+        FILTER(?pubchem > 0)
+      }
+      LIMIT 100
+
+  - title: Ingredient to KEGG Compound Database
+    description: |
+      Cross-references to KEGG (Kyoto Encyclopedia of Genes and Genomes) for metabolic pathway
+      and biochemical reaction information.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?kegg ?formula
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label ;
+                    md:hasKEGG ?kegg .
+        OPTIONAL { ?ingredient md:hasFormula ?formula . }
+        FILTER(BOUND(?kegg))
+      }
+      LIMIT 100
+
+  - title: Strain to BacDive Database
+    description: |
+      Links microbial strains to BacDive (Bacterial Diversity Metadatabase) for comprehensive
+      phenotypic and taxonomic information.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      
+      SELECT ?strain ?species ?taxGroup ?bacdiveID ?dsmNumber
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?strain a md:Strain ;
+                md:hasSpecies ?species ;
+                md:belongsTaxGroup ?taxGroup ;
+                md:hasBacDiveID ?bacdiveID ;
+                md:hasDSMNumber ?dsmNumber .
+      }
+      LIMIT 100
+
+  - title: CAS Registry Number Cross-References
+    description: |
+      Chemical Abstract Service (CAS) registry numbers for precise chemical identification
+      and regulatory compliance.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?cas ?formula ?mass
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label ;
+                    md:hasCAS ?cas .
+        OPTIONAL { ?ingredient md:hasFormula ?formula . }
+        OPTIONAL { ?ingredient md:hasMass ?mass . }
+      }
+      LIMIT 100
+
+  - title: Medium to Source Documentation
+    description: |
+      Links culture media to external documentation and protocols from source institutions
+      like DSMZ.
+    complexity: basic
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?medium ?label ?source ?linkToSource
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?medium a md:CultureMedium ;
+                rdfs:label ?label ;
+                md:fromSource ?source ;
+                md:hasLinkToSource ?linkToSource .
+      }
+      LIMIT 50
+
+  - title: Comprehensive Multi-Database Integration
+    description: |
+      Retrieve all available external database identifiers for an ingredient, enabling
+      comprehensive data integration across multiple resources.
+    complexity: intermediate
+    sparql: |
+      PREFIX md: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?ingredient ?label ?chebi ?pubchem ?kegg ?cas ?formula ?mass
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        ?ingredient a md:Ingredient ;
+                    rdfs:label ?label .
+        OPTIONAL { ?ingredient md:hasChEBI ?chebi . }
+        OPTIONAL { ?ingredient md:hasPubChem ?pubchem . }
+        OPTIONAL { ?ingredient md:hasKEGG ?kegg . }
+        OPTIONAL { ?ingredient md:hasCAS ?cas . }
+        OPTIONAL { ?ingredient md:hasFormula ?formula . }
+        OPTIONAL { ?ingredient md:hasMass ?mass . }
+        FILTER(BOUND(?chebi) || BOUND(?pubchem) || BOUND(?kegg) || BOUND(?cas))
+      }
+      LIMIT 100
+
+architectural_notes:
+  design_patterns: |
+    MediaDive employs a hub-and-spoke data architecture where CultureMedium serves as the central hub
+    connecting multiple related entities:
+    
+    1. **Composition Pattern**: MediumComposition entities link media to ingredients with quantitative data
+    2. **Solution Decomposition**: Complex media are broken down into preparable solutions with recipes
+    3. **Growth Context**: GrowthCondition entities link media to specific strains with optimal parameters
+    4. **Procedural Knowledge**: OperationalStep entities capture preparation protocols
+    5. **Modification Tracking**: Explicit tracking of recipe modifications and variations
+    
+    The schema supports both:
+    - **Complex media**: Undefined compositions with natural ingredients
+    - **Defined media**: Chemically pure ingredients with precise concentrations
+  
+  performance_considerations: |
+    - Use FILTER clauses strategically to reduce result sets early in query evaluation
+    - For large result sets, consider using LIMIT with pagination
+    - When searching for ingredients, use case-insensitive CONTAINS with LCASE()
+    - GROUP BY queries for aggregation perform well with proper indexing
+    - Cross-reference queries benefit from OPTIONAL clauses to handle missing external IDs
+    - Consider using DISTINCT when joining multiple solutions or compositions
+  
+  data_quality: |
+    - Not all ingredients have complete cross-reference data (PubChem, ChEBI, KEGG, CAS)
+    - Some PubChem IDs are set to "0" indicating unavailable data
+    - pH ranges may be absent for some media
+    - Optional ingredients are explicitly marked with boolean flags
+    - Concentration data may be provided in both g/L and mmol/L formats
+    - Equipment and gas atmosphere data coverage varies across media
+  
+  integration_notes: |
+    MediaDive integrates particularly well with:
+    - **BacDive**: Bacterial phenotypic data and culture collection information
+    - **ChEBI**: Chemical structures and properties
+    - **PubChem**: Compound bioactivity and chemical data
+    - **KEGG**: Metabolic pathways and biochemical reactions
+    - **CAS**: Chemical identification and regulatory information
+    - **DSMZ**: Culture collection protocols and documentation
 
 data_statistics:
-  total_culture_media: 3289
-  total_bacterial_strains: 45685
-  total_ingredients: 1489
-  total_medium_compositions: 72184
-  total_growth_conditions: 68001
-  total_solution_recipes: 40471
-  total_operational_steps: 5958
-  total_solutions: 5613
-  total_equipment_items: 5164
-  total_modifications: 2649
-  total_modification_details: 3101
-  total_gas_components: 1203
+  total_entities:
+    culture_media: 3289
+    strains: 45685
+    ingredients: 1489
+    solutions: 5613
+    medium_compositions: 72184
+    growth_conditions: 68001
+    solution_recipes: 40471
+    operational_steps: 5958
+    equipment: 5164
+    gas_components: 1203
+    modifications: 2649
+    modification_details: 3101
+  
+  taxonomic_distribution:
+    bacteria: 32662
+    fungi: 5079
+    yeast: 3125
+    microalgae: 1289
+    archaea: 952
+    macroalgae: 884
+    phages: 602
+    protists: 380
+    diatoms: 274
+    cyanobacteria: 154
+    dinoflagellates: 90
+    other: 1
+  
+  oxygen_requirements:
+    aerobic: 5270
+    anaerobic: 3326
+    microaerobic: 507
+    facultative_anaerobic: 26
+    other: 73
+    unspecified: 2582
+  
+  cross_reference_coverage:
+    ingredients_with_chebi: ~800
+    ingredients_with_cas: ~1400
+    ingredients_with_kegg: ~600
+    strains_with_bacdive: 33226
+    strains_with_dsm: 30760
+    media_with_documentation: 3263

@@ -384,8 +384,6 @@ async def get_wikidata_metadata(entity_id: str, language: str = "en") -> Dict[st
     )
     return {"Label": label, "Descriptions": descriptions}
 
-
-
 # DB: Glycosmos
 @mcp.tool(enabled=True)
 async def glycoepitope_epitope_gtc(epitopeID: str) -> str:

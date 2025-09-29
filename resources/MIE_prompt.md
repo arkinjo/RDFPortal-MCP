@@ -52,6 +52,7 @@ Systematically explore and document the __DBNAME__ RDF schema by following these
 - `get_graph_list(dbname)` - List named graphs in database
 - `run_sparql(dbname, sparql_query)` - Execute SPARQL queries
 - `get_shex(dbname)` - Retrieve ShEx schema if available
+- `get_MIE_file(dbname)` - Retrieve existing MIE file if available
 - `save_MIE_file(dbname, mie_content)` - Save the final MIE file
 
 ## Example SPARQL Query Pattern
@@ -78,7 +79,7 @@ prefixes:
   # Standard and database-specific prefixes
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 
-shape_expressions:
+shape_expressions: |
   # Reverse-engineered from actual data. Add descriptions as comments.
   # Adhere to the ShExC (ShEx Compact) syntax.
   
@@ -91,7 +92,7 @@ sample_rdf_entries:
       # RDF entry
   
 sparql_query_examples:
-  # 10+ tested, working queries
+  # 7+ tested, working queries
   - title: Strain of the day # A descriptive title for the query.
     description: Do this and that to answer this question. # What the SPARQL query does.
     question: What is the strain of the day? # A biologically relevant question, in natural language, to be answered by the SPARQL query.

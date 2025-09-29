@@ -34,20 +34,6 @@ SPARQL_ENDPOINT = {
     "mediadive": "https://rdfportal.org/primary/sparql"
 }
 
-COMMON_PREFIXES = """
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX PDBo: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-PREFIX up: <http://purl.uniprot.org/core/>
-PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
-"""
-
 # The MIE files are used to define the shape expressions for SPARQL queries. 
 MIE_DIR = "mie"
 MIE_TEMPLATE="resources/MIE_template.yaml"
@@ -354,7 +340,6 @@ async def get_graph_list(
     Args:
         dbname (str): The name of the database for which to retrieve the named graphs. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
-
     Returns:
         list: The list of named graphs.
     """
@@ -368,21 +353,21 @@ SELECT DISTINCT ?graph WHERE {
 
 @mcp.tool(
         enabled=True,
-        name="describe_rdf_schema",
-        description="Get the RDF schema of a specific RDF database. Use this before constructing any SPARQL queries for the database."
+        name="get_MIE_file",
+        description="Get the MIE file containing the ShEx schema, RDF and SPARQL examples of a specific RDF database. Use this before constructing any SPARQL queries for the database."
 )
-async def describe_rdf_schema(
+async def get_MIE_file(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
     ) -> str:
     f"""
-    Get the RDF schema of a specific RDF database in YAML format, which can be used as a hint to build a SPARQL query.
+    Get the MIE file containing the ShEx schema, RDF and SPARQL examples of a specific RDF database in YAML format, which can be used as a hint to build SPARQL queries.
 
     Args:
         dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}."
 
 
     Returns:
-        str: The RDF schema information in YAML format.
+        str: The MIE file containing the RDF schema information in YAML format.
     """
     mie_file = MIE_DIR + "/" + dbname + ".yaml"
     if not mie_file or not os.path.exists(mie_file):
