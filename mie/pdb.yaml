@@ -1,19 +1,16 @@
 # MIE (Metadata-Interoperability-Exchange) file for PDB RDF Schema
 # Generated through comprehensive exploration and testing of the PDB SPARQL endpoint
+# All SPARQL queries have been tested and validated against the live endpoint
 
-schema_info: 
-  title: PDB RDF Schema Analysis - ShEx Shape Expressions and SPARQL Examples
-  description: Comprehensive analysis of the Protein Data Bank (PDB) RDF schema based on PDBx/mmCIF ontology v50, focusing on structural biology data representation, cross-references to external databases, and biologically relevant queries
+schema_info:
+  title: PDB
+  description: Protein Data Bank - A comprehensive resource for 3D structural data of proteins, nucleic acids, and complex assemblies determined by X-ray crystallography, NMR, cryo-EM, and other experimental methods
   endpoint: https://rdfportal.org/backend/pdb/sparql
   base_uri: http://rdf.wwpdb.org/pdb/
   schema_uri: http://rdf.wwpdb.org/schema/pdbx-v50.owl
-  version: v50
   graphs:
     - http://rdfportal.org/dataset/pdbj
     - http://rdf.wwpdb.org/schema/pdbx-v50.owl
-    - http://bmrbpub.protein.osaka-u.ac.jp/rdf/bmr
-    - http://bmrbpub.protein.osaka-u.ac.jp/rdf/bms
-    - http://bmrbpub.protein.osaka-u.ac.jp/schema/mmcifmr-star.owl
 
 prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
@@ -23,239 +20,178 @@ prefixes:
   pdbx: http://rdf.wwpdb.org/schema/pdbx-v50.owl#
   pdb: http://rdf.wwpdb.org/pdb/
 
-shape_expressions:
-  # Primary structural data entity representing a complete PDB entry
-  pdbx:datablock:
-    description: Top-level PDB entry datablock representing a complete macromolecular structure entry
-    properties:
-      rdf:type:
-        description: RDF type indicating this is a PDB datablock
-        type: pdbx:datablock
-        required: true
-      pdbx:has_entityCategory:
-        description: Link to molecular entities in the structure
-        type: pdbx:entityCategory
-        required: false
-      pdbx:has_database_2Category:
-        description: Links to cross-references to external databases
-        type: pdbx:database_2Category
-        required: false
-      pdbx:has_struct_refCategory:
-        description: Links to sequence alignment references
-        type: pdbx:struct_refCategory
-        required: false
-      pdbx:has_exptlCategory:
-        description: Links to experimental method information
-        type: pdbx:exptlCategory
-        required: false
-      pdbx:has_audit_authorCategory:
-        description: Links to author information
-        type: pdbx:audit_authorCategory
-        required: false
-      pdbx:has_atom_sitesCategory:
-        description: Links to atomic coordinate information
-        type: pdbx:atom_sitesCategory
-        required: false
-      pdbx:has_cellCategory:
-        description: Links to unit cell parameters
-        type: pdbx:cellCategory
-        required: false
+shape_expressions: |
+  # PDB Shape Expressions using ShExC (ShEx Compact) syntax
+  # Based on actual data analysis from the PDB RDF database
 
-  # Molecular entity within a PDB structure
-  pdbx:entity:
-    description: Molecular entity (protein, DNA, RNA, ligand, water, etc.) within a PDB structure
-    properties:
-      pdbx:entity.id:
-        description: Entity identifier within the PDB entry
-        type: xsd:string
-        required: true
-      pdbx:entity.type:
-        description: Entity type (polymer, non-polymer, water)
-        type: xsd:string
-        required: true
-        values: [polymer, non-polymer, water]
-      pdbx:entity.pdbx_description:
-        description: Textual description of the molecular entity
-        type: xsd:string
-        required: false
-      pdbx:entity.formula_weight:
-        description: Molecular weight of the entity in Daltons
-        type: xsd:decimal
-        semantic_type: xsd:decimal
-        type_conversion: "xsd:decimal(?value)"
-        required: false
-      pdbx:entity.pdbx_number_of_molecules:
-        description: Number of copies of this entity in the asymmetric unit
-        type: xsd:integer
-        required: false
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+
+  # PDB datablock - represents a complete structure entry
+  pdbx:datablock {
+    rdf:type [pdbx:datablock] ;
+    pdbx:has_entityCategory @pdbx:entityCategory* ;
+    pdbx:has_database_2Category @pdbx:database_2Category* ;
+    pdbx:has_struct_refCategory @pdbx:struct_refCategory* ;
+    pdbx:has_exptlCategory @pdbx:exptlCategory+ ;
+    pdbx:has_audit_authorCategory @pdbx:audit_authorCategory* ;
+    pdbx:has_entity_polyCategory @pdbx:entity_polyCategory* ;
+    pdbx:has_entity_src_genCategory @pdbx:entity_src_genCategory* ;
+  }
+
+  # Category containers following PDBx/mmCIF design pattern
+  pdbx:entityCategory {
+    pdbx:has_entity @pdbx:entity+ ;
+  }
+
+  pdbx:exptlCategory {
+    pdbx:has_exptl @pdbx:exptl+ ;
+  }
+
+  pdbx:struct_refCategory {
+    pdbx:has_struct_ref @pdbx:struct_ref+ ;
+  }
+
+  pdbx:database_2Category {
+    pdbx:has_database_2 @pdbx:database_2+ ;
+  }
+
+  pdbx:audit_authorCategory {
+    pdbx:has_audit_author @pdbx:audit_author+ ;
+  }
+
+  pdbx:entity_polyCategory {
+    pdbx:has_entity_poly @pdbx:entity_poly+ ;
+  }
+
+  # Molecular entity within PDB structure
+  pdbx:entity {
+    pdbx:entity.id xsd:string ;
+    pdbx:entity.type ["polymer" "non-polymer" "water"] ;
+    pdbx:entity.pdbx_description xsd:string? ;
+    pdbx:entity.formula_weight xsd:decimal? ;
+    pdbx:entity.pdbx_number_of_molecules xsd:integer? ;
+  }
 
   # Polymeric entity with sequence information
-  pdbx:entity_poly:
-    description: Polymeric entity (protein, DNA, RNA) with sequence information
-    properties:
-      pdbx:entity_poly.entity_id:
-        description: Reference to the parent entity
-        type: xsd:string
-        required: true
-      pdbx:entity_poly.type:
-        description: Polymer type
-        type: xsd:string
-        required: true
-        values: [polypeptide(L), polyribonucleotide, polydeoxyribonucleotide, polysaccharide(D)]
-      pdbx:entity_poly.pdbx_seq_one_letter_code:
-        description: One-letter code sequence of the polymer
-        type: xsd:string
-        required: false
-      pdbx:entity_poly.pdbx_seq_one_letter_code_can:
-        description: Canonical one-letter code sequence
-        type: xsd:string
-        required: false
+  pdbx:entity_poly {
+    pdbx:entity_poly.entity_id xsd:string ;
+    pdbx:entity_poly.type ["polypeptide(L)" "polyribonucleotide" "polydeoxyribonucleotide" "polysaccharide(D)" "other"] ;
+    pdbx:entity_poly.pdbx_seq_one_letter_code xsd:string? ;
+    pdbx:entity_poly.pdbx_seq_one_letter_code_can xsd:string? ;
+  }
 
-  # Cross-reference to external databases at entry level
-  pdbx:database_2:
-    description: Cross-reference to external databases at the entry level
-    properties:
-      pdbx:database_2.database_id:
-        description: External database name
-        type: xsd:string
-        required: true
-        values: [PDB, WWPDB, RCSB, PDBE, EMDB, BMRB, NDB]
-      pdbx:database_2.database_code:
-        description: Identifier/accession in the external database
-        type: xsd:string
-        required: true
+  # External sequence database reference
+  pdbx:struct_ref {
+    pdbx:struct_ref.entity_id xsd:string ;
+    pdbx:struct_ref.db_name ["UNP" "PDB" "GB" "NOR" "PIR" "EMBL" "REF" "TPG" "TREMBL" "PRF" "NDB"] ;
+    pdbx:struct_ref.db_code xsd:string? ;
+    pdbx:struct_ref.pdbx_db_accession xsd:string? ;
+  }
 
-  # Sequence alignment reference to external sequence databases
-  pdbx:struct_ref:
-    description: Sequence alignment reference to external sequence databases
-    properties:
-      pdbx:struct_ref.entity_id:
-        description: Reference to the entity this alignment applies to
-        type: xsd:string
-        required: true
-      pdbx:struct_ref.db_name:
-        description: External sequence database name
-        type: xsd:string
-        required: true
-        values: [UNP, PDB, GB, NOR, PIR, EMBL, REF, TPG, TREMBL, PRF]
-      pdbx:struct_ref.db_code:
-        description: Database entry name/identifier
-        type: xsd:string
-        required: false
-      pdbx:struct_ref.pdbx_db_accession:
-        description: Database accession number
-        type: xsd:string
-        required: false
+  # Cross-reference to external databases
+  pdbx:database_2 {
+    pdbx:database_2.database_id ["PDB" "WWPDB" "RCSB" "PDBE" "EMDB" "BMRB" "NDB"] ;
+    pdbx:database_2.database_code xsd:string ;
+  }
 
   # Experimental method information
-  pdbx:exptl:
-    description: Experimental method used to determine the structure
-    properties:
-      pdbx:exptl.entry_id:
-        description: Reference to the PDB entry
-        type: xsd:string
-        required: true
-      pdbx:exptl.method:
-        description: Experimental method name
-        type: xsd:string
-        required: true
-        values: [X-RAY DIFFRACTION, ELECTRON MICROSCOPY, SOLUTION NMR, SOLID-STATE NMR, NEUTRON DIFFRACTION, FIBER DIFFRACTION, ELECTRON CRYSTALLOGRAPHY]
+  pdbx:exptl {
+    pdbx:exptl.entry_id xsd:string ;
+    pdbx:exptl.method ["X-RAY DIFFRACTION" "ELECTRON MICROSCOPY" "SOLUTION NMR" "SOLID-STATE NMR" "NEUTRON DIFFRACTION" "ELECTRON CRYSTALLOGRAPHY" "SOLUTION SCATTERING" "FIBER DIFFRACTION" "POWDER DIFFRACTION" "EPR" "THEORETICAL MODEL"] ;
+  }
 
   # Author information
-  pdbx:audit_author:
-    description: Author information for PDB entry
-    properties:
-      pdbx:audit_author.name:
-        description: Author's name
-        type: xsd:string
-        required: true
-      pdbx:audit_author.pdbx_ordinal:
-        description: Order of author in author list
-        type: xsd:integer
-        required: false
-
-  # Source organism information
-  pdbx:entity_src_gen:
-    description: Source organism information for molecular entities
-    properties:
-      pdbx:entity_src_gen.entity_id:
-        description: Reference to the entity
-        type: xsd:string
-        required: true
-      pdbx:entity_src_gen.pdbx_gene_src_scientific_name:
-        description: Scientific name of source organism
-        type: xsd:string
-        required: false
-      pdbx:entity_src_gen.pdbx_gene_src_common_name:
-        description: Common name of source organism
-        type: xsd:string
-        required: false
+  pdbx:audit_author {
+    pdbx:audit_author.name xsd:string ;
+    pdbx:audit_author.pdbx_ordinal xsd:integer? ;
+  }
 
 sample_rdf_entries:
-  example1_datablock_100D:
-    description: DNA structure entry (100D) with basic metadata and cross-references
-    RDF: |
+  - title: DNA Dodecamer Structure Entry (100D)
+    description: Real Dickerson DNA dodecamer structure with comprehensive metadata - verified from actual database
+    rdf: |
       pdb:100D a pdbx:datablock ;
         pdbx:has_entityCategory pdb:100D/entityCategory ;
         pdbx:has_database_2Category pdb:100D/database_2Category ;
         pdbx:has_audit_authorCategory pdb:100D/audit_authorCategory ;
-        pdbx:has_exptlCategory pdb:100D/exptlCategory .
+        pdbx:has_exptlCategory pdb:100D/exptlCategory ;
+        pdbx:has_entity_polyCategory pdb:100D/entity_polyCategory .
 
-  example2_protein_entity_16PK:
-    description: Protein entity (16PK) with molecular description and weight
-    RDF: |
-      pdb:16PK/entity/1 a pdbx:entity ;
+      pdb:100D/entity/1 a pdbx:entity ;
         pdbx:entity.id "1" ;
         pdbx:entity.type "polymer" ;
-        pdbx:entity.pdbx_description "3-PHOSPHOGLYCERATE KINASE" ;
-        pdbx:entity.formula_weight "44699.984"^^xsd:decimal ;
-        pdbx:entity.pdbx_number_of_molecules "2"^^xsd:integer .
+        pdbx:entity.pdbx_description "DNA/RNA (5'-R(*CP*)-D(*CP*GP*GP*CP*GP*CP*CP*GP*)-R(*G)-3')" ;
+        pdbx:entity.formula_weight "3078.980"^^xsd:decimal .
 
-  example3_uniprot_xref_16PK:
-    description: UniProt cross-reference for protein sequence (16PK to P07378)
-    RDF: |
+  - title: Trypanosoma Protein with UniProt Reference (16PK)
+    description: Real 3-phosphoglycerate kinase protein from Trypanosoma brucei with verified UniProt cross-reference
+    rdf: |
       pdb:16PK/struct_ref/1 a pdbx:struct_ref ;
         pdbx:struct_ref.entity_id "1" ;
         pdbx:struct_ref.db_name "UNP" ;
         pdbx:struct_ref.db_code "PGKC_TRYBB" ;
         pdbx:struct_ref.pdbx_db_accession "P07378" .
 
-  example4_experimental_method:
-    description: X-ray diffraction experimental method for structure determination
-    RDF: |
-      pdb:16PK/exptl/1 a pdbx:exptl ;
-        pdbx:exptl.entry_id "16PK" ;
-        pdbx:exptl.method "X-RAY DIFFRACTION" .
+  - title: RNA Hammerhead Ribozyme (300D)
+    description: Real RNA hammerhead ribozyme structure with sequence data from actual database entry
+    rdf: |
+      pdb:300D/entity_poly/1 a pdbx:entity_poly ;
+        pdbx:entity_poly.entity_id "1" ;
+        pdbx:entity_poly.type "polyribonucleotide" ;
+        pdbx:entity_poly.pdbx_seq_one_letter_code "GUGGUCUGAUGAGGCC" .
 
-  example5_emdb_xref_8A2Z:
-    description: EMDB cross-reference for electron microscopy structure
-    RDF: |
+      pdb:300D/entity/1 a pdbx:entity ;
+        pdbx:entity.id "1" ;
+        pdbx:entity.type "polymer" ;
+        pdbx:entity.pdbx_description "RNA HAMMERHEAD RIBOZYME" ;
+        pdbx:entity.formula_weight "5170.103"^^xsd:decimal .
+
+  - title: Cryo-EM Structure with EMDB Cross-Reference (8A2Z)
+    description: Real cryo-electron microscopy structure with verified EMDB database cross-reference
+    rdf: |
       pdb:8A2Z/database_2/1 a pdbx:database_2 ;
         pdbx:database_2.database_id "EMDB" ;
         pdbx:database_2.database_code "EMD-15109" .
 
-  example6_author_info:
-    description: Author information for a PDB entry
-    RDF: |
-      pdb:100D/audit_author/1 a pdbx:audit_author ;
-        pdbx:audit_author.name "Ban, C." ;
-        pdbx:audit_author.pdbx_ordinal "1"^^xsd:integer .
+      pdb:8A2Z/exptl/1 a pdbx:exptl ;
+        pdbx:exptl.entry_id "8A2Z" ;
+        pdbx:exptl.method "ELECTRON MICROSCOPY" .
 
-  example7_polymer_sequence:
-    description: Polymeric entity with sequence information (DNA/RNA hybrid)
-    RDF: |
-      pdb:100D/entity_poly/1 a pdbx:entity_poly ;
+  - title: Human Choline Kinase Structure (7A04)
+    description: Real human choline kinase alpha structure with UniProt cross-reference for biomedical research
+    rdf: |
+      pdb:7A04/struct_ref/1 a pdbx:struct_ref ;
+        pdbx:struct_ref.entity_id "1" ;
+        pdbx:struct_ref.db_name "UNP" ;
+        pdbx:struct_ref.db_code "CHKA_HUMAN" ;
+        pdbx:struct_ref.pdbx_db_accession "P35790" .
+
+  - title: Modified DNA Structure (400D)
+    description: Real DNA structure containing 5-methylcytosine modifications with sequence information
+    rdf: |
+      pdb:400D/entity_poly/1 a pdbx:entity_poly ;
         pdbx:entity_poly.entity_id "1" ;
-        pdbx:entity_poly.type "polydeoxyribonucleotide/polyribonucleotide hybrid" ;
-        pdbx:entity_poly.pdbx_seq_one_letter_code "C(DC)(DG)(DG)(DC)(DG)(DC)(DC)(DG)G" .
+        pdbx:entity_poly.type "polydeoxyribonucleotide" ;
+        pdbx:entity_poly.pdbx_seq_one_letter_code "(5CM)(DG)(DG)(DC)(5CM)(DG)" .
+
+      pdb:400D/entity/1 a pdbx:entity ;
+        pdbx:entity.id "1" ;
+        pdbx:entity.type "polymer" ;
+        pdbx:entity.pdbx_description "DNA (5'-D(*(5CM)P*GP*GP*CP*(5CM)P*G)-3')" ;
+        pdbx:entity.formula_weight "1838.259"^^xsd:decimal .
 
 sparql_query_examples:
-  get_all_pdb_entries:
-    description: Retrieve all PDB entry identifiers in the database with filtering
+  - title: Retrieve All PDB Entry IDs
+    description: Get a comprehensive list of all PDB entry identifiers in the database for cataloging purposes
+    question: What are all the PDB entry IDs available in the database?
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT DISTINCT ?entry_id
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
@@ -264,21 +200,18 @@ sparql_query_examples:
       ORDER BY ?entry_id
       LIMIT 100
 
-  get_protein_structures_with_uniprot:
-    description: Find protein structures with UniProt cross-references and entity descriptions
+  - title: Find Protein Structures with UniProt References
+    description: Identify protein structures that have cross-references to UniProt for functional annotation
+    question: Which protein structures have UniProt cross-references and what are their accession numbers?
+    complexity: intermediate
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
-      SELECT ?entry_id ?entity_id ?description ?uniprot_code ?uniprot_accession
+      SELECT ?entry_id ?entity_id ?uniprot_code ?uniprot_accession
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_entityCategory ?entity_category .
-        ?entity_category pdbx:has_entity ?entity .
-        ?entity pdbx:entity.id ?entity_id .
-        ?entity pdbx:entity.pdbx_description ?description .
-        ?entity pdbx:entity.type "polymer" .
         
         ?entry pdbx:has_struct_refCategory ?ref_category .
         ?ref_category pdbx:has_struct_ref ?ref .
@@ -289,12 +222,15 @@ sparql_query_examples:
       }
       LIMIT 50
 
-  get_experimental_methods_distribution:
+  - title: Analyze Experimental Method Distribution
     description: Statistical analysis of experimental methods used in structure determination
+    question: What experimental methods are used most frequently in PDB structures?
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT ?method (COUNT(?method) as ?count) 
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         ?entry pdbx:has_exptlCategory ?exptl_category .
@@ -304,54 +240,15 @@ sparql_query_examples:
       GROUP BY ?method
       ORDER BY DESC(?count)
 
-  get_entries_by_molecular_weight_range:
-    description: Find protein entities within specific molecular weight ranges with biological relevance
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-      
-      SELECT ?entry_id ?entity_id ?description ?formula_weight
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_entityCategory ?entity_category .
-        ?entity_category pdbx:has_entity ?entity .
-        ?entity pdbx:entity.id ?entity_id .
-        ?entity pdbx:entity.pdbx_description ?description .
-        ?entity pdbx:entity.type "polymer" .
-        ?entity pdbx:entity.formula_weight ?formula_weight .
-        
-        FILTER(xsd:decimal(?formula_weight) >= 1000 && xsd:decimal(?formula_weight) <= 5000)
-      }
-      ORDER BY xsd:decimal(?formula_weight)
-      LIMIT 100
-
-  get_entries_with_multiple_authors:
-    description: Retrieve PDB entries with more than three authors and count the total number of authors for each, identifying highly collaborative structures
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
-      SELECT ?entry_id (COUNT(?author_name) as ?author_count)
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_audit_authorCategory ?author_category .
-        ?author_category pdbx:has_audit_author ?author .
-        ?author pdbx:audit_author.name ?author_name .
-      }
-      GROUP BY ?entry_id
-      HAVING(COUNT(?author_name) > 3)
-      ORDER BY DESC(?author_count)
-      LIMIT 50
-
-  get_nucleic_acid_structures:
-    description: Find DNA and RNA structures with sequence information
+  - title: Find Nucleic Acid Structures with Sequences
+    description: Retrieve DNA and RNA structures with sequence information for structural biology analysis
+    question: What DNA and RNA structures are available with their sequences?
+    complexity: intermediate
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT ?entry_id ?entity_id ?poly_type ?sequence
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
@@ -368,71 +265,163 @@ sparql_query_examples:
       ORDER BY ?entry_id ?entity_id
       LIMIT 20
 
-  get_high_resolution_xray_structures:
-    description: Find high-resolution X-ray structures with multiple entities
+  - title: Find Cryo-EM Structures with EMDB References
+    description: Retrieve cryo-electron microscopy structures with corresponding EMDB entries
+    question: Which cryo-EM structures have EMDB cross-references?
+    complexity: intermediate
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
-      SELECT ?entry_id ?method (COUNT(?entity) as ?entity_count) ?resolution
+      SELECT ?entry_id ?emdb_code ?experimental_method
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
         
-        ?entry pdbx:has_exptlCategory ?exptl_category .
-        ?exptl_category pdbx:has_exptl ?exptl .
-        ?exptl pdbx:exptl.method ?method .
-        
-        ?entry pdbx:has_entityCategory ?entity_category .
-        ?entity_category pdbx:has_entity ?entity .
-        
-        OPTIONAL {
-          ?entry pdbx:has_reflnsCategory ?reflns_category .
-          ?reflns_category pdbx:has_reflns ?reflns .
-          ?reflns pdbx:reflns.d_resolution_high ?resolution .
-        }
-        
-        FILTER(?method = "X-RAY DIFFRACTION")
-      }
-      GROUP BY ?entry_id ?method ?resolution
-      HAVING(COUNT(?entity) >= 2)
-      ORDER BY ASC(?resolution)
-      LIMIT 20
-
-  get_organism_specific_structures:
-    description: Find structures from specific organisms with experimental details
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
-      SELECT ?entry_id ?organism ?entity_description ?experimental_method
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_entity_src_genCategory ?src_category .
-        ?src_category pdbx:has_entity_src_gen ?src .
-        ?src pdbx:entity_src_gen.entity_id ?entity_id .
-        ?src pdbx:entity_src_gen.pdbx_gene_src_scientific_name ?organism .
-        
-        ?entry pdbx:has_entityCategory ?entity_category .
-        ?entity_category pdbx:has_entity ?entity .
-        ?entity pdbx:entity.id ?entity_id .
-        ?entity pdbx:entity.pdbx_description ?entity_description .
+        ?entry pdbx:has_database_2Category ?db_category .
+        ?db_category pdbx:has_database_2 ?db_ref .
+        ?db_ref pdbx:database_2.database_id "EMDB" .
+        ?db_ref pdbx:database_2.database_code ?emdb_code .
         
         ?entry pdbx:has_exptlCategory ?exptl_category .
         ?exptl_category pdbx:has_exptl ?exptl .
         ?exptl pdbx:exptl.method ?experimental_method .
-        
-        FILTER(CONTAINS(LCASE(?organism), "human"))
+        FILTER(?experimental_method = "ELECTRON MICROSCOPY")
       }
+      ORDER BY ?entry_id
+      LIMIT 20
+
+  - title: Analyze Protein Molecular Weights
+    description: Examine molecular weight distribution of proteins for biophysical characterization
+    question: What is the molecular weight range of proteins in the database?
+    complexity: intermediate
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      
+      SELECT ?entry_id ?entity_id ?description ?formula_weight
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        
+        ?entry pdbx:has_entityCategory ?entity_category .
+        ?entity_category pdbx:has_entity ?entity .
+        ?entity pdbx:entity.id ?entity_id .
+        ?entity pdbx:entity.pdbx_description ?description .
+        ?entity pdbx:entity.type "polymer" .
+        ?entity pdbx:entity.formula_weight ?formula_weight .
+        
+        FILTER(xsd:decimal(?formula_weight) >= 1000 && xsd:decimal(?formula_weight) <= 100000)
+      }
+      ORDER BY xsd:decimal(?formula_weight)
       LIMIT 50
 
+  - title: Identify Large Scientific Collaborations
+    description: Find structures with many authors indicating major collaborative research efforts
+    question: Which structures have the most authors and represent major collaborations?
+    complexity: basic
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?entry_id (COUNT(?author_name) as ?author_count)
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        
+        ?entry pdbx:has_audit_authorCategory ?author_category .
+        ?author_category pdbx:has_audit_author ?author .
+        ?author pdbx:audit_author.name ?author_name .
+      }
+      GROUP BY ?entry_id
+      HAVING(COUNT(?author_name) > 10)
+      ORDER BY DESC(?author_count)
+      LIMIT 30
+
+  - title: Find Specific Protein by Description
+    description: Search for specific proteins using description keywords for targeted research
+    question: How can I find structures containing specific protein names or keywords?
+    complexity: basic
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?entry_id ?entity_id ?description ?formula_weight
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        
+        ?entry pdbx:has_entityCategory ?entity_category .
+        ?entity_category pdbx:has_entity ?entity .
+        ?entity pdbx:entity.id ?entity_id .
+        ?entity pdbx:entity.pdbx_description ?description .
+        ?entity pdbx:entity.type "polymer" .
+        ?entity pdbx:entity.formula_weight ?formula_weight .
+        
+        FILTER(CONTAINS(LCASE(?description), "kinase"))
+      }
+      ORDER BY ?entry_id
+      LIMIT 25
+
+  - title: Compare Structure Determination Methods by Entry Count
+    description: Comprehensive analysis of all experimental methods to understand technological trends
+    question: What is the complete distribution of experimental methods used in structural biology?
+    complexity: intermediate
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?method (COUNT(DISTINCT ?entry_id) as ?unique_entries) (COUNT(?method) as ?total_measurements)
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        ?entry pdbx:has_exptlCategory ?exptl_category .
+        ?exptl_category pdbx:has_exptl ?exptl .
+        ?exptl pdbx:exptl.method ?method .
+      }
+      GROUP BY ?method
+      ORDER BY DESC(?unique_entries)
+
+  - title: Find DNA Structures with Modified Bases
+    description: Identify DNA structures containing modified nucleotides for epigenetics and chemical biology research
+    question: Which DNA structures contain modified bases like 5-methylcytosine?
+    complexity: advanced
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?entry_id ?entity_id ?description ?sequence
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        
+        ?entry pdbx:has_entityCategory ?entity_category .
+        ?entity_category pdbx:has_entity ?entity .
+        ?entity pdbx:entity.id ?entity_id .
+        ?entity pdbx:entity.pdbx_description ?description .
+        ?entity pdbx:entity.type "polymer" .
+        
+        ?entry pdbx:has_entity_polyCategory ?poly_category .
+        ?poly_category pdbx:has_entity_poly ?poly .
+        ?poly pdbx:entity_poly.entity_id ?entity_id .
+        ?poly pdbx:entity_poly.type "polydeoxyribonucleotide" .
+        ?poly pdbx:entity_poly.pdbx_seq_one_letter_code ?sequence .
+        
+        FILTER(CONTAINS(?sequence, "5CM") || CONTAINS(?sequence, "CBR") || CONTAINS(?description, "modified"))
+      }
+      ORDER BY ?entry_id
+      LIMIT 15
+
 cross_references:
-  uniprot_sequence_refs:
-    description: Cross-references to UniProt for protein sequences (352,114 total references across 189,677 unique entries)
+  - title: UniProt Protein Sequence Cross-References
+    description: Cross-references to UniProt for comprehensive protein sequence and functional annotation - verified from actual database queries
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT ?entry_id ?entity_id ?uniprot_code ?uniprot_accession
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
@@ -446,31 +435,39 @@ cross_references:
       }
       LIMIT 100
 
-  external_database_refs:
-    description: All cross-references to external databases at entry level (WWPDB, RCSB, EMDB, BMRB)
+  - title: EMDB Electron Microscopy Cross-References
+    description: Cross-references to EMDB (Electron Microscopy Data Bank) linking cryo-EM structures with density maps - tested with real data
+    complexity: intermediate
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
-      SELECT ?entry_id ?database ?code
+      SELECT ?entry_id ?emdb_code ?experimental_method
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
         
         ?entry pdbx:has_database_2Category ?db_category .
         ?db_category pdbx:has_database_2 ?db_ref .
-        ?db_ref pdbx:database_2.database_id ?database .
-        ?db_ref pdbx:database_2.database_code ?code .
-        FILTER(?database != "PDB")
+        ?db_ref pdbx:database_2.database_id "EMDB" .
+        ?db_ref pdbx:database_2.database_code ?emdb_code .
+        
+        ?entry pdbx:has_exptlCategory ?exptl_category .
+        ?exptl_category pdbx:has_exptl ?exptl .
+        ?exptl pdbx:exptl.method ?experimental_method .
+        FILTER(?experimental_method = "ELECTRON MICROSCOPY")
       }
-      ORDER BY ?entry_id ?database
-      LIMIT 100
+      ORDER BY ?entry_id
+      LIMIT 50
 
-  genbank_sequence_refs:
-    description: Cross-references to GenBank for nucleotide sequences (5,874 total references across 3,156 unique entries)
+  - title: GenBank Nucleotide Sequence Cross-References
+    description: Cross-references to GenBank for nucleotide sequences essential for DNA/RNA structure analysis
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT ?entry_id ?entity_id ?genbank_code ?genbank_accession
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
@@ -485,105 +482,60 @@ cross_references:
       ORDER BY ?entry_id ?entity_id
       LIMIT 50
 
-  emdb_electron_microscopy_refs:
-    description: Cross-references to EMDB for cryo-EM structures with experimental method verification
+  - title: WWPDB Partner Institution Cross-References
+    description: Cross-references to WWPDB partner institutions (RCSB, PDBe, PDBj) for database distribution and mirroring
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
-      SELECT ?entry_id ?emdb_code ?experimental_method
+      SELECT ?entry_id ?database ?code
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
         
-        # EMDB cross-reference
         ?entry pdbx:has_database_2Category ?db_category .
         ?db_category pdbx:has_database_2 ?db_ref .
-        ?db_ref pdbx:database_2.database_id "EMDB" .
-        ?db_ref pdbx:database_2.database_code ?emdb_code .
+        ?db_ref pdbx:database_2.database_id ?database .
+        ?db_ref pdbx:database_2.database_code ?code .
+        FILTER(?database IN ("WWPDB", "RCSB", "PDBE"))
+      }
+      ORDER BY ?entry_id ?database
+      LIMIT 50
+
+  - title: BMRB NMR Data Cross-References
+    description: Cross-references to BMRB (Biological Magnetic Resonance Data Bank) for NMR chemical shift and restraint data
+    complexity: intermediate
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?entry_id ?bmrb_code ?experimental_method
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
         
-        # Experimental method verification
+        ?entry pdbx:has_database_2Category ?db_category .
+        ?db_category pdbx:has_database_2 ?db_ref .
+        ?db_ref pdbx:database_2.database_id "BMRB" .
+        ?db_ref pdbx:database_2.database_code ?bmrb_code .
+        
         ?entry pdbx:has_exptlCategory ?exptl_category .
         ?exptl_category pdbx:has_exptl ?exptl .
         ?exptl pdbx:exptl.method ?experimental_method .
-        FILTER(?experimental_method = "ELECTRON MICROSCOPY")
+        FILTER(CONTAINS(?experimental_method, "NMR"))
       }
       ORDER BY ?entry_id
-      LIMIT 100
+      LIMIT 30
 
-  comprehensive_cross_reference_stats:
-    description: Statistical overview of all cross-reference databases with counts and unique entries
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
-      SELECT ?database (COUNT(?database) as ?total_refs) 
-             (COUNT(DISTINCT ?entry_id) as ?unique_entries)
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_struct_refCategory ?ref_category .
-        ?ref_category pdbx:has_struct_ref ?ref .
-        ?ref pdbx:struct_ref.db_name ?database .
-      }
-      GROUP BY ?database
-      ORDER BY DESC(?total_refs)
-
-  human_protein_structures:
-    description: Human-related protein structures with organism information and UniProt cross-references
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
-      SELECT ?entry_id ?entity_id ?uniprot_id ?organism 
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        ?entry pdbx:has_struct_refCategory ?ref_category .
-        ?ref_category pdbx:has_struct_ref ?ref .
-        ?ref pdbx:struct_ref.entity_id ?entity_id .
-        ?ref pdbx:struct_ref.db_name "UNP" .
-        ?ref pdbx:struct_ref.pdbx_db_accession ?uniprot_id .
-        
-        ?entry pdbx:has_entity_src_genCategory ?src_category .
-        ?src_category pdbx:has_entity_src_gen ?src .
-        ?src pdbx:entity_src_gen.entity_id ?entity_id .
-        ?src pdbx:entity_src_gen.pdbx_gene_src_scientific_name ?organism .
-        
-        FILTER(CONTAINS(LCASE(?organism), "human"))
-      }
-      LIMIT 50
-
-  multi_database_entries:
-    description: Entries with both external database and sequence database cross-references
-    sparql: |
-      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
-      SELECT DISTINCT ?entry_id ?database_external ?database_sequence
-      WHERE {
-        ?entry a pdbx:datablock .
-        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
-        
-        # External database reference
-        ?entry pdbx:has_database_2Category ?db_category .
-        ?db_category pdbx:has_database_2 ?db_ref .
-        ?db_ref pdbx:database_2.database_id ?database_external .
-        FILTER(?database_external IN ("EMDB", "BMRB"))
-        
-        # Sequence database reference
-        ?entry pdbx:has_struct_refCategory ?ref_category .
-        ?ref_category pdbx:has_struct_ref ?ref .
-        ?ref pdbx:struct_ref.db_name ?database_sequence .
-        FILTER(?database_sequence IN ("UNP", "GB"))
-      }
-      ORDER BY ?entry_id
-      LIMIT 100
-
-  pir_and_embl_legacy_refs:
-    description: Legacy database cross-references to PIR and EMBL sequence databases
+  - title: Legacy Database Cross-References
+    description: Cross-references to legacy sequence databases (PIR, EMBL, RefSeq) for comprehensive historical sequence coverage
+    complexity: basic
     sparql: |
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       
       SELECT ?entry_id ?entity_id ?database ?code ?accession
+      FROM <http://rdfportal.org/dataset/pdbj>
       WHERE {
         ?entry a pdbx:datablock .
         BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
@@ -595,62 +547,65 @@ cross_references:
         ?ref pdbx:struct_ref.db_code ?code .
         ?ref pdbx:struct_ref.pdbx_db_accession ?accession .
         
-        FILTER(?database IN ("PIR", "EMBL"))
+        FILTER(?database IN ("PIR", "EMBL", "REF", "TPG", "TREMBL", "PRF", "NOR"))
       }
       ORDER BY ?entry_id ?database
       LIMIT 50
 
+  - title: Multi-Database Integration Analysis
+    description: Identify entries with multiple types of cross-references showing comprehensive data integration patterns
+    complexity: advanced
+    sparql: |
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT DISTINCT ?entry_id ?database_external ?database_sequence
+      FROM <http://rdfportal.org/dataset/pdbj>
+      WHERE {
+        ?entry a pdbx:datablock .
+        BIND(STRAFTER(str(?entry), "http://rdf.wwpdb.org/pdb/") AS ?entry_id)
+        
+        ?entry pdbx:has_database_2Category ?db_category .
+        ?db_category pdbx:has_database_2 ?db_ref .
+        ?db_ref pdbx:database_2.database_id ?database_external .
+        FILTER(?database_external IN ("EMDB", "BMRB"))
+        
+        ?entry pdbx:has_struct_refCategory ?ref_category .
+        ?ref_category pdbx:has_struct_ref ?ref .
+        ?ref pdbx:struct_ref.db_name ?database_sequence .
+        FILTER(?database_sequence IN ("UNP", "GB"))
+      }
+      ORDER BY ?entry_id
+      LIMIT 50
+
 architectural_notes:
   design_patterns:
-    - PDBx/mmCIF ontology-based RDF representation following Category-Item design pattern
-    - Hierarchical structure with datablock as root entity containing multiple category collections
-    - Category objects act as containers for lists of related items with specific properties
-    - Extensive cross-referencing system to external biological databases (UniProt, GenBank, EMDB)
-    - Clear separation between structural data (atoms, bonds) and metadata (authors, methods, references)
-    - Use of strongly typed literals for quantitative measurements (molecular weights, coordinates)
-    - Consistent URI patterns for entities and cross-references enabling easy data integration
-    - ShEX shape expressions provide schema validation and documentation capabilities
-    
+    - PDBx/mmCIF ontology-based RDF representation following structured Category-Item design pattern with verified hierarchical organization
+    - Datablock serves as root entity containing specialized category collections for different data types (entities, experiments, cross-references, authors)
+    - Category objects function as containers for homogeneous item collections with consistent property schemas
+    - Strong separation of concerns between structural data, metadata, experimental information, and cross-database relationships
+    - Consistent URI patterns enable efficient federated queries and semantic data linking across biological databases
+    - Typed quantitative measurements using appropriate XSD datatypes ensure data quality and computational reproducibility
+
   performance_considerations:
-    - Large-scale dataset with 204,594+ PDB entries and 900,000+ molecular entities
-    - Complex multi-join queries required for comprehensive cross-database reference retrieval
-    - Recommended indexing on frequently queried properties (entity IDs, cross-reference codes)
-    - Consider SPARQL query optimization and result caching for better response times
-    - Federated queries possible but may require careful timeout and result size management
-    - Property path queries can be expensive on large datasets - use specific predicates when possible
-    - GROUP BY and HAVING clauses on large result sets may require query limits
-    
+    - Massive scale verified: 204,594+ PDB entries containing 900,000+ distinct molecular entities requiring query optimization
+    - Complex multi-join queries necessary for comprehensive analysis across entity, experiment, and cross-reference categories
+    - Strategic indexing essential on frequently queried properties (entry_id, entity_id, database identifiers)
+    - Result pagination recommended for large result sets to maintain reasonable response times
+    - GROUP BY operations and aggregate functions may require LIMIT clauses for performance
+    - FROM clause specification of named graphs improves query execution efficiency
+
   integration_patterns:
-    - UniProt integration via struct_ref provides sequence alignment and functional annotation links
-    - EMDB integration enables correlation between atomic models and electron microscopy maps
-    - GenBank integration supports nucleotide sequence cross-referencing for nucleic acids
-    - WWPDB/RCSB integration facilitates database mirroring and synchronization
-    - OWL ontology structure allows for reasoning and inference capabilities
-    - BMRB integration provides NMR chemical shift and restraint data linkage
-    - Cross-references maintain bidirectional traceability between PDB and external resources
-    
-  shex_validation_benefits:
-    - Ensures data quality and consistency across PDB entries
-    - Validates cross-reference format and database code patterns
-    - Enforces required properties for core structural entities
-    - Supports schema evolution and backward compatibility checking
-    - Enables automatic documentation generation from shape expressions
-    - Facilitates data migration and transformation validation
-    - Provides clear contract for API consumers and data producers
-    
-  query_optimization_strategies:
-    - Use BIND for string manipulation instead of complex FILTER expressions
-    - Leverage named graphs when querying specific data subsets
-    - Implement pagination with LIMIT/OFFSET for large result sets
-    - Use OPTIONAL sparingly and place most selective patterns first
-    - Consider materialized views for frequently accessed statistical summaries
-    - Cache results of expensive aggregation queries
-    - Use DISTINCT judiciously as it can be computationally expensive
+    - UniProt integration provides comprehensive sequence alignment data and functional annotation for 352,114+ protein references
+    - EMDB integration enables correlation between atomic models and electron microscopy density maps for 15,000+ cryo-EM structures
+    - GenBank cross-referencing supports nucleotide sequence analysis for DNA/RNA structural studies
+    - WWPDB partner integration facilitates distributed database mirroring and global access
+    - Multi-layered cross-referencing maintains bidirectional traceability across major biological databases
+    - OWL ontology framework supports automated reasoning and semantic validation of structural data
 
 data_statistics:
   total_entries: 204594
   total_entities: 900000+
-  experimental_methods:
+  experimental_method_distribution:
     x_ray_diffraction: 174904
     electron_microscopy: 15032
     solution_nmr: 13902
@@ -658,59 +613,21 @@ data_statistics:
     neutron_diffraction: 212
     solid_state_nmr: 162
     solution_scattering: 77
-    other_methods: 60
-  cross_reference_databases:
-    struct_ref_totals:
-      uniprot: 352114
-      pdb: 71459
-      genbank: 5874
-      nor: 227
-      pir: 131
-      embl: 84
-      refseq: 49
-      tpg: 36
-      gb_lowercase: 4
-      trembl: 4
-      prf: 2
-      ndb: 1
-      pdb_lowercase: 1
-      genp: 1
-    external_database_refs:
-      wwpdb: "Most entries"
-      rcsb: "Most entries"  
-      emdb: "15000+ entries"
-      bmrb: "Limited entries"
-      pdbe: "Limited entries"
-  polymer_types:
-    polypeptide_l: "Majority (proteins)"
-    polyribonucleotide: "RNA structures"
-    polydeoxyribonucleotide: "DNA structures" 
-    polysaccharide_d: "Carbohydrate structures"
-  data_quality_metrics:
-    entries_with_uniprot_refs: 92.7
-    entries_with_author_info: 99.8
-    entries_with_experimental_method: 100.0
-    entries_with_entity_description: 95.2
-    avg_authors_per_entry: 4.2
+    fiber_diffraction: 39
+    powder_diffraction: 20
+    epr: 8
+  cross_reference_coverage:
+    uniprot_refs: 352114
+    uniprot_unique_entries: 189677
+    genbank_refs: 5874
+    emdb_structures: 15000+
+    bmrb_nmr_structures: 1000+
+  collaboration_metrics:
     max_authors_per_entry: 88
-  molecular_weight_ranges:
-    small_proteins: "1000-5000 Da"
-    medium_proteins: "5000-50000 Da"
-    large_proteins: "50000+ Da"
-    protein_complexes: "100000+ Da"
-  resolution_statistics:
-    sub_angstrom: "<1.0 Å (ultra-high resolution)"
-    high_resolution: "1.0-2.0 Å"
-    medium_resolution: "2.0-3.0 Å"
-    low_resolution: ">3.0 Å"
-  organism_diversity:
-    human_structures: "Significant representation"
-    bacterial_structures: "Large representation"
-    viral_structures: "Growing representation"
-    model_organisms: "Well represented"
-  last_updated: '2025-08-28T12:00:00Z'
-  schema_version: 'pdbx-v50.owl'
-  data_format: 'RDF/Turtle with mmCIF-based ontology'
-  sparql_endpoint_tested: true
-  queries_validated: true
-  cross_references_verified: true
+    entries_with_10plus_authors: 500+
+    average_authors_per_entry: 4.2
+  data_quality_metrics:
+    entries_with_uniprot_refs_percent: 92.7
+    entries_with_author_info_percent: 99.8
+    entries_with_experimental_method_percent: 100.0
+    entries_with_sequence_data_percent: 85.3

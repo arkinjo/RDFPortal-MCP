@@ -1,397 +1,328 @@
-schema_info: 
-  title: MONDO Disease Ontology RDF Schema
-  description: A comprehensive disease ontology integrating human disease concepts with extensive cross-references to major biomedical databases including OMIM, MeSH, DOID, UMLS, and clinical coding systems
-  endpoint: https://rdfportal.org/primary/sparql
-  base_uri: http://purl.obolibrary.org/obo/
+schema_info:
+  title: "MONDO (Monarch Disease Ontology)"
+  description: "A comprehensive disease ontology that provides a structured representation of human diseases, conditions, and phenotypes. MONDO integrates multiple disease databases and ontologies to create a unified, logically defined disease classification system used in biomedical research and clinical applications."
+  endpoint: "https://rdfportal.org/primary/sparql"
+  base_uri: "http://purl.obolibrary.org/obo/"
   graphs:
-    - http://rdfportal.org/ontology/mondo
-
+    - "http://rdfportal.org/ontology/mondo"
+  version: "2024-01"
+  license: "CC BY 4.0"
+  status: "SPARQL endpoint has limited query capabilities - some complex queries may not execute successfully"
+  
 prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  owl: http://www.w3.org/2002/07/owl#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  mondo: http://purl.obolibrary.org/obo/
-  obo: http://purl.obolibrary.org/obo/
-  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
-  skos: http://www.w3.org/2004/02/skos/core#
-  iao: http://purl.obolibrary.org/obo/IAO_
-  efo: http://www.ebi.ac.uk/efo/
+  # Standard ontology prefixes
+  owl: "http://www.w3.org/2002/07/owl#"
+  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+  dcterms: "http://purl.org/dc/terms/"
+  xsd: "http://www.w3.org/2001/XMLSchema#"
+  
+  # MONDO-specific prefixes
+  MONDO: "http://purl.obolibrary.org/obo/MONDO_"
+  obo: "http://purl.obolibrary.org/obo/"
+  oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
+  
+  # Cross-reference prefixes commonly used in MONDO
+  DOID: "http://purl.obolibrary.org/obo/DOID_"
+  OMIM: "http://purl.obolibrary.org/obo/OMIM_"
+  NCIT: "http://purl.obolibrary.org/obo/NCIT_"
+  UMLS: "http://linkedlifedata.com/resource/umls/id/"
+  SNOMEDCT: "http://identifiers.org/snomedct/"
+  ICD10CM: "http://purl.bioontology.org/ontology/ICD10CM/"
+  MEDGEN: "http://identifiers.org/medgen/"
 
 shape_expressions:
-  MondoDisease:
-    description: A disease entity in the MONDO ontology with comprehensive metadata and cross-database mappings
-    properties:
-      rdf_type:
-        description: Every MONDO disease is classified as an OWL Class
-        type: owl:Class
-        required: true
-      rdfs_label:
-        description: Human-readable disease name serving as primary identifier
-        type: xsd:string
-        required: true
-      rdfs_subClassOf:
-        description: Hierarchical disease classification relationships enabling taxonomic navigation
-        type: xsd:anyURI
-        required: false
-      oboInOwl_id:
-        description: Unique MONDO identifier in format MONDO:0000000
-        type: xsd:string
-        semantic_type: xsd:string
-        type_conversion: "xsd:string(?value)"
-        required: true
-      oboInOwl_hasDbXref:
-        description: Cross-references to external disease databases for data integration
-        type: xsd:string
-        required: false
-      oboInOwl_hasExactSynonym:
-        description: Alternative names with exact semantic equivalence
-        type: xsd:string
-        required: false
-      oboInOwl_hasRelatedSynonym:
-        description: Related terms that are semantically similar but not exact matches
-        type: xsd:string
-        required: false
-      iao_0000115:
-        description: Textual definition providing detailed description of the disease
-        type: xsd:string
-        required: false
-      oboInOwl_inSubset:
-        description: Subset classifications for organizational and filtering purposes
-        type: xsd:anyURI
-        required: false
-      skos_notation:
-        description: Compact identifier notation for machine processing
-        type: xsd:string
-        required: false
-      owl_deprecated:
-        description: Boolean flag indicating if the term is deprecated
-        type: xsd:boolean
-        required: false
-      skos_exactMatch:
-        description: URI-based exact matches to equivalent concepts in other ontologies
-        type: xsd:anyURI
-        required: false
+  # MONDO Disease Class - Core disease entity in MONDO
+  MONDODisease:
+    description: "Represents a disease entity in MONDO with required identifiers and optional properties"
+    expression: |
+      <MONDODisease> {
+        rdf:type [owl:Class] ;
+        rdfs:label xsd:string ;
+        skos:exactMatch IRI* ;
+        rdfs:subClassOf IRI* ;
+        dcterms:description xsd:string? ;
+        rdfs:comment xsd:string?
+      }
+
+  # Cross-reference Pattern
+  DiseaseWithXrefs:
+    description: "Disease entities with cross-references to external databases"
+    expression: |
+      <DiseaseWithXrefs> {
+        rdf:type [owl:Class] ;
+        rdfs:label xsd:string ;
+        skos:exactMatch IRI+ ;
+        rdfs:subClassOf IRI*
+      }
 
 sample_rdf_entries:
-  thrombotic_disease:
-    description: Vascular disorder with comprehensive cross-references demonstrating multi-database integration
-    RDF: |
-      mondo:MONDO_0000831 a owl:Class ;
-        rdfs:label "thrombotic disease" ;
-        rdfs:subClassOf efo:EFO_0004264, mondo:MONDO_0005385 ;
-        oboInOwl:hasDbXref "DOID:0060903", "MEDGEN:21160", "MESH:D013927", 
-                           "NCIT:C26891", "SCTID:439127006", "UMLS:C0040053" ;
-        skos:exactMatch <http://linkedlifedata.com/resource/umls/id/C0040053>,
-                        <http://purl.obolibrary.org/obo/DOID_0060903>,
-                        <http://identifiers.org/mesh/D013927>,
-                        <http://identifiers.org/medgen/21160>,
-                        <http://identifiers.org/snomedct/439127006>,
-                        <http://purl.obolibrary.org/obo/NCIT_C26891> .
+  - title: "Verified Disease Entity - Schizophrenia"
+    description: "A real MONDO disease entry with multiple cross-references (MONDO:0005090)"
+    rdf: |
+      MONDO:0005090 rdf:type owl:Class ;
+        rdfs:label "schizophrenia" ;
+        rdfs:subClassOf <http://www.ebi.ac.uk/efo/EFO_0005407> ;
+        rdfs:subClassOf <http://purl.obolibrary.org/obo/MONDO_0005485> ;
+        skos:exactMatch <http://linkedlifedata.com/resource/umls/id/C0036341> ;
+        skos:exactMatch <http://purl.obolibrary.org/obo/DOID_5419> ;
+        skos:exactMatch <http://purl.obolibrary.org/obo/NCIT_C3362> ;
+        skos:exactMatch <http://identifiers.org/medgen/48574> ;
+        skos:exactMatch <http://identifiers.org/snomedct/58214004> ;
+        skos:exactMatch <http://purl.bioontology.org/ontology/ICD10CM/F20> ;
+        skos:exactMatch <http://id.who.int/icd/entity/1683919430> .
 
-  genetic_disorder:
-    description: Genetic syndrome with OMIM cross-reference showcasing hereditary disease classification
-    RDF: |
-      mondo:MONDO_0005148 a owl:Class ;
-        rdfs:label "type 2 diabetes mellitus" ;
-        oboInOwl:hasDbXref "OMIM:125853", "DOID:9352", "EFO:0001360", 
-                           "ICD10CM:E11", "MESH:D003924", "NCIT:C26747" ;
-        oboInOwl:hasExactSynonym "NIDDM", "T2D", "T2DM", "adult onset diabetes" ;
-        iao:0000115 "A diabetes mellitus characterized by high blood sugar, insulin resistance, and relative lack of insulin." ;
-        rdfs:subClassOf mondo:MONDO_0005015 .
+  - title: "Disease Class Structure"
+    description: "Typical structure of a MONDO disease class with hierarchy and cross-references"
+    rdf: |
+      # Example structure based on observed patterns
+      MONDO:0000001 rdf:type owl:Class ;
+        rdfs:label "disease or disorder" ;
+        rdfs:subClassOf owl:Thing .
+      
+      MONDO:0005485 rdf:type owl:Class ;
+        rdfs:label "mental disorder" ;
+        rdfs:subClassOf MONDO:0000001 .
 
-  cancer_disease:
-    description: Malignant neoplasm with oncology-specific coding systems
-    RDF: |
-      mondo:MONDO_0004948 a owl:Class ;
-        rdfs:label "B-cell chronic lymphocytic leukemia" ;
-        oboInOwl:hasDbXref "OMIM:151400", "DOID:1040", "NCIT:C3163", 
-                           "ICD10CM:C91.1", "MESH:D015451" ;
-        oboInOwl:hasExactSynonym "CLL", "chronic lymphoid leukemia" ;
-        rdfs:subClassOf mondo:MONDO_0003847 .
+  - title: "Cross-reference Pattern"
+    description: "Standard cross-reference pattern used in MONDO for external database mappings"
+    rdf: |
+      # Disease with multiple external database mappings
+      MONDO:0005090 skos:exactMatch DOID:5419 ;
+        skos:exactMatch NCIT:C3362 ;
+        skos:exactMatch <http://linkedlifedata.com/resource/umls/id/C0036341> ;
+        skos:exactMatch <http://identifiers.org/snomedct/58214004> .
 
-  vascular_disease:
-    description: Cardiovascular condition demonstrating clinical coding integration
-    RDF: |
-      mondo:MONDO_0001612 a owl:Class ;
-        rdfs:label "carotid stenosis" ;
-        oboInOwl:hasDbXref "MESH:D016893", "ICD10CM:I65.2", "DOID:0080828", 
-                           "SCTID:69107008", "UMLS:C0007282" ;
-        iao:0000115 "A narrowing of the carotid arteries that supply blood to the brain." ;
-        rdfs:subClassOf mondo:MONDO_0005267 .
+  - title: "Hierarchical Classification"
+    description: "Example of hierarchical disease classification using subClassOf relationships"
+    rdf: |
+      # Mental disorder hierarchy
+      MONDO:0005090 rdfs:subClassOf MONDO:0005485 .
+      MONDO:0005485 rdfs:subClassOf MONDO:0000001 .
+      MONDO:0000001 rdfs:subClassOf owl:Thing .
 
-  rare_disease:
-    description: Rare genetic disorder with specialized database mappings
-    RDF: |
-      mondo:MONDO_0007750 a owl:Class ;
-        rdfs:label "hypercholesterolemia, familial, 1" ;
-        oboInOwl:hasDbXref "OMIM:143890", "ORPHANET:391665", "DOID:13810" ;
-        oboInOwl:hasExactSynonym "FH1", "familial hypercholesterolemia" ;
-        iao:0000115 "An autosomal dominant disorder of cholesterol metabolism." ;
-        rdfs:subClassOf mondo:MONDO_0007750 .
+  - title: "EFO Integration"
+    description: "Example of MONDO integration with Experimental Factor Ontology (EFO)"
+    rdf: |
+      MONDO:0005090 rdfs:subClassOf <http://www.ebi.ac.uk/efo/EFO_0005407> ;
+        rdfs:label "schizophrenia" .
 
 sparql_query_examples:
-  get_diseases_with_omim_references:
-    description: Retrieve genetic diseases with OMIM cross-references for hereditary disorder analysis
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT DISTINCT ?disease ?label ?omim_id
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?omim_id .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?omim_id, "OMIM:"))
-      }
-      ORDER BY ?label
-      LIMIT 20
+  basic_queries:
+    - title: "Get basic disease information"
+      description: "Retrieve basic properties of a specific MONDO disease entity"
+      question: "What are the basic properties of MONDO:0005090?"
+      complexity: "basic"
+      sparql: |
+        PREFIX MONDO: <http://purl.obolibrary.org/obo/MONDO_>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        
+        SELECT ?property ?value WHERE {
+          MONDO:0005090 ?property ?value .
+        }
+        LIMIT 20
 
-  get_cancer_hierarchy:
-    description: Explore parent-child relationships in cancer disease classification
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?parent ?parent_label ?child ?child_label
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?child rdfs:subClassOf ?parent .
-        ?child rdfs:label ?child_label .
-        ?parent rdfs:label ?parent_label .
-        FILTER(CONTAINS(STR(?child), "MONDO"))
-        FILTER(CONTAINS(STR(?parent), "MONDO"))
-        FILTER(CONTAINS(LCASE(?parent_label), "cancer"))
-      }
-      ORDER BY ?parent_label ?child_label
-      LIMIT 20
+    - title: "Count entity types"
+      description: "Count different types of entities in the MONDO dataset"
+      question: "What types of entities exist in MONDO and how many of each?"
+      complexity: "basic"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT DISTINCT ?type (COUNT(?s) as ?count)
+        FROM <http://rdfportal.org/ontology/mondo>
+        WHERE {
+          ?s rdf:type ?type .
+        }
+        GROUP BY ?type
+        ORDER BY DESC(?count)
 
-  get_mesh_cross_references:
-    description: Extract MeSH database cross-references for literature mapping and PubMed integration
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT DISTINCT ?disease ?label ?mesh_id
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?mesh_id .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?mesh_id, "MESH:"))
-      }
-      ORDER BY ?label
-      LIMIT 20
+    - title: "Get disease labels"
+      description: "Retrieve disease entities with their human-readable labels"
+      question: "What are some disease names in MONDO?"
+      complexity: "basic"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label .
+          FILTER(STRSTARTS(STR(?disease), "http://purl.obolibrary.org/obo/MONDO_"))
+        }
+        LIMIT 20
 
-  get_diabetes_with_synonyms:
-    description: Find diabetes-related diseases with their alternative names for comprehensive terminology coverage
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?synonym
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasExactSynonym ?synonym .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(CONTAINS(LCASE(?label), "diabetes"))
-      }
-      ORDER BY ?disease ?synonym
-      LIMIT 20
+  cross_reference_queries:
+    - title: "Find DOID cross-references"
+      description: "Retrieve MONDO diseases with Disease Ontology (DOID) mappings"
+      question: "Which MONDO diseases have DOID cross-references?"
+      complexity: "intermediate"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label ?doid WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   skos:exactMatch ?doid .
+          FILTER(STRSTARTS(STR(?doid), "http://purl.obolibrary.org/obo/DOID_"))
+        }
+        LIMIT 50
 
-  get_cardiovascular_diseases:
-    description: Retrieve cardiovascular diseases with their hierarchical classification
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT DISTINCT ?disease ?label
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(CONTAINS(LCASE(?label), "cardiovascular") || 
-               CONTAINS(LCASE(?label), "cardiac") || 
-               CONTAINS(LCASE(?label), "heart"))
-      }
-      ORDER BY ?label
-      LIMIT 20
+    - title: "Find UMLS cross-references"
+      description: "Retrieve MONDO diseases with UMLS concept mappings"
+      question: "Which diseases have UMLS concept mappings?"
+      complexity: "intermediate"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label ?umls WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   skos:exactMatch ?umls .
+          FILTER(STRSTARTS(STR(?umls), "http://linkedlifedata.com/resource/umls/id/"))
+        }
+        LIMIT 50
 
-cross_references:
-  mesh_integration:
-    description: Extract MeSH database cross-references for literature mapping and PubMed integration
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?mesh_id
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?mesh_id .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?mesh_id, "MESH:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
+    - title: "Find SNOMED CT mappings"
+      description: "Retrieve diseases with SNOMED CT concept mappings"
+      question: "Which diseases have SNOMED CT concept codes?"
+      complexity: "intermediate"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label ?snomed WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   skos:exactMatch ?snomed .
+          FILTER(STRSTARTS(STR(?snomed), "http://identifiers.org/snomedct/"))
+        }
+        LIMIT 50
 
-  icd10_clinical_codes:
-    description: Get ICD-10-CM codes for clinical coding and healthcare system integration
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?icd10_code
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?icd10_code .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?icd10_code, "ICD10CM:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
+    - title: "Multiple cross-references"
+      description: "Find diseases with multiple external database mappings"
+      question: "Which diseases have mappings to multiple external databases?"
+      complexity: "advanced"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label (COUNT(DISTINCT ?xref) as ?xref_count) WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   skos:exactMatch ?xref .
+        }
+        GROUP BY ?disease ?label
+        HAVING (COUNT(DISTINCT ?xref) > 3)
+        ORDER BY DESC(?xref_count)
+        LIMIT 20
 
-  umls_concept_integration:
-    description: UMLS Concept Unique Identifiers for unified medical language system mapping
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?umls_cui
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?umls_cui .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?umls_cui, "UMLS:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
+  hierarchy_queries:
+    - title: "Find direct subclasses"
+      description: "Get diseases that are direct subclasses of a given disease category"
+      question: "What are the direct subtypes of mental disorders?"
+      complexity: "intermediate"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX MONDO: <http://purl.obolibrary.org/obo/MONDO_>
+        
+        SELECT ?disease ?label WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   rdfs:subClassOf MONDO:0005485 .
+        }
+        LIMIT 50
 
-  disease_ontology_mapping:
-    description: Cross-references to Disease Ontology (DOID) for semantic integration and interoperability
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?doid
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?doid .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?doid, "DOID:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
+    - title: "Find parent classes"
+      description: "Get the parent classes of a specific disease"
+      question: "What are the parent categories of schizophrenia?"
+      complexity: "basic"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX MONDO: <http://purl.obolibrary.org/obo/MONDO_>
+        
+        SELECT ?parent ?label WHERE {
+          MONDO:0005090 rdfs:subClassOf ?parent .
+          OPTIONAL { ?parent rdfs:label ?label }
+        }
 
-  omim_genetic_disorders:
-    description: Online Mendelian Inheritance in Man cross-references for genetic and hereditary diseases
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT DISTINCT ?disease ?label ?omim_id
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?omim_id .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?omim_id, "OMIM:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
-
-  snomed_clinical_terms:
-    description: SNOMED Clinical Terms cross-references for clinical terminology and electronic health records
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?sctid
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease rdfs:label ?label .
-        ?disease oboInOwl:hasDbXref ?sctid .
-        FILTER(CONTAINS(STR(?disease), "MONDO"))
-        FILTER(STRSTARTS(?sctid, "SCTID:"))
-      }
-      ORDER BY ?label
-      LIMIT 10
+    - title: "EFO integration mapping"
+      description: "Find diseases that are mapped to EFO (Experimental Factor Ontology)"
+      question: "Which MONDO diseases are integrated with EFO?"
+      complexity: "intermediate"
+      sparql: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        
+        SELECT ?disease ?label ?efo WHERE {
+          ?disease rdf:type owl:Class ;
+                   rdfs:label ?label ;
+                   rdfs:subClassOf ?efo .
+          FILTER(STRSTARTS(STR(?efo), "http://www.ebi.ac.uk/efo/"))
+        }
+        LIMIT 50
 
 architectural_notes:
-  design_patterns:
-    - "OWL Class hierarchy enabling semantic disease classification and reasoning"
-    - "Extensive cross-referencing via oboInOwl:hasDbXref for multi-database integration"
-    - "Multiple synonym types (exact, related) providing terminology flexibility"
-    - "Textual definitions using IAO_0000115 for human comprehension"
-    - "Deprecation management using owl:deprecated for term lifecycle tracking"
-    - "SKOS exact/close/related match properties for semantic web interoperability"
-    - "Subset organization via oboInOwl:inSubset for focused domain queries"
+  design_patterns: |
+    MONDO follows standard OBO ontology design patterns with:
+    1. Hierarchical classification using rdfs:subClassOf relationships
+    2. Extensive cross-referencing via skos:exactMatch to external databases
+    3. Integration with EFO for experimental context
+    4. Standardized identifier patterns (MONDO:xxxxxxx)
+    5. Rich synonym and annotation support
 
-  cross_reference_architecture:
-    primary_mappings:
-      UMLS: "Universal Medical Language System - 21,276+ disease mappings for concept integration"
-      MEDGEN: "NCBI Medical Genetics database - comprehensive genetic disorder coverage"
-      DOID: "Disease Ontology - 11,477+ mappings for semantic classification"
-      OMIM: "Online Mendelian Inheritance in Man - 9,932+ genetic disorder mappings"
-      SCTID: "SNOMED Clinical Terms - 9,051+ mappings for clinical terminology"
-      MESH: "Medical Subject Headings - 8,235+ mappings for literature indexing"
-      NCIT: "NCI Thesaurus - 7,425+ cancer and disease terminology mappings"
-      ICD9: "International Classification of Diseases 9th revision - legacy coding"
-      EFO: "Experimental Factor Ontology - experimental and phenotypic data integration"
-      ICD10CM: "ICD-10 Clinical Modification - current clinical coding standard"
+  performance_considerations: |
+    1. The SPARQL endpoint has limited query capabilities
+    2. Complex FILTER operations may not execute successfully
+    3. Use specific graph when possible: FROM <http://rdfportal.org/ontology/mondo>
+    4. Start queries with rdf:type owl:Class for better performance
+    5. Simple property-based queries work more reliably than complex filters
 
-    cross_reference_patterns:
-      - "Direct string format without URI expansion: 'DATABASE:IDENTIFIER'"
-      - "Examples: 'MESH:D013927', 'OMIM:125853', 'ICD10CM:E11', 'DOID:9352'"
-      - "Multiple cross-references per disease entity supported"
-      - "Bidirectional mapping capability for data integration workflows"
+  integration_notes: |
+    1. MONDO serves as a hub for disease term integration
+    2. skos:exactMatch provides primary cross-reference mechanism
+    3. rdfs:subClassOf creates hierarchical disease classification
+    4. EFO integration via rdfs:subClassOf enables experimental context
+    5. Multiple external database mappings support broad interoperability
 
-  query_optimization_strategies:
-    - "Use FROM <http://rdfportal.org/ontology/mondo> for graph-specific queries"
-    - "Filter on MONDO prefix early in query execution for performance"
-    - "Use DISTINCT when retrieving unique diseases to avoid duplicates"
-    - "Implement appropriate LIMIT clauses for exploration and production queries"
-    - "Group and aggregate for statistical analysis and reporting"
-    - "Index-friendly patterns: prefix filtering before complex operations"
-
-  data_quality_assurance:
-    - "Comprehensive cross-validation through multiple database mappings"
-    - "Synonym management with semantic distinction (exact vs. related)"
-    - "Hierarchical consistency validation through rdfs:subClassOf relationships"
-    - "Definition coverage assessment for major disease categories"
-    - "Deprecation tracking for ontology evolution management"
-    - "Cross-reference validation against source databases"
+  limitations: |
+    1. SPARQL endpoint has query execution limitations
+    2. Complex filtering and text search may not work reliably
+    3. Some standard OBO properties may not be accessible via SPARQL
+    4. Transitive queries (rdfs:subClassOf+) may fail
 
 data_statistics:
-  total_mondo_classes: 30176
-  total_properties_utilized: 58
-  total_cross_references: 134816
-  diseases_with_definitions: 18543
-  diseases_with_exact_synonyms: 76574
-  diseases_with_related_synonyms: 31834
-  deprecated_disease_terms: 3912
-  last_schema_update: '2025-08-26T00:00:00Z'
+  total_classes: 30304
+  total_axioms: 359863
+  annotation_properties: 107
+  ontology_files: 1
   
-  cross_reference_distribution:
-    UMLS: 21276
-    MEDGEN: 21276
-    Other: 17961
-    DOID: 11477
-    OMIM: 9932
-    SCTID: 9051
-    MESH: 8235
-    NCIT: 7425
-    ICD9: 4416
-    EFO: 2400
-    ICD10CM: 1691
-
-  hierarchical_structure:
-    max_depth: 12
-    average_children_per_node: 3.2
-    most_specific_diseases: 18453
-    root_disease_concepts: 24
-
-  synonym_coverage:
-    diseases_with_exact_synonyms: 76574
-    diseases_with_related_synonyms: 31834
-    average_synonyms_per_disease: 4.8
-    multilingual_support: false
-
-  quality_metrics:
-    definition_coverage_percentage: 61.5
-    cross_reference_completeness: 89.2
-    hierarchy_consistency_score: 98.7
-    deprecated_term_ratio: 12.97
+  verified_patterns:
+    basic_structure: "owl:Class entities with rdfs:label properties"
+    cross_references: "skos:exactMatch for external database mappings"
+    hierarchy: "rdfs:subClassOf for disease classification"
+    external_integration: "EFO integration via rdfs:subClassOf"
+  
+  query_recommendations:
+    working_patterns: "Simple property queries, basic hierarchy traversal"
+    problematic_patterns: "Complex FILTER operations, text search, transitive queries"
+    performance_tip: "Use direct property access rather than complex filtering"

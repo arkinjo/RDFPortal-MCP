@@ -1,5 +1,5 @@
 # This is a YAML document
-# This is the template for creating a MIE (Metadata-Interoperability-Exchange) file.
+# This is a YAML template for creating a MIE (Metadata-Interoperability-Exchange) file.
 schema_info: 
   # Replace with actual schema information
   title: DBNAME # Replace DBNAME with the database name.

@@ -1,5 +1,6 @@
 import httpx
 import json
+import os
 from fastmcp import FastMCP
 from typing import Annotated
 from pydantic import Field
@@ -33,8 +34,6 @@ SPARQL_ENDPOINT = {
     "mediadive": "https://rdfportal.org/primary/sparql"
 }
 
-SPARQL_ENDPOINT_KEYS = list(SPARQL_ENDPOINT.keys())
-
 COMMON_PREFIXES = """
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -50,43 +49,11 @@ PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
 """
 
 # The MIE files are used to define the shape expressions for SPARQL queries. 
-MIE_FILES = {
-    "uniprot": "mie/uniprot.yaml",
-    "pdb": "mie/pdb.yaml",
-    "chembl": "mie/chembl.yaml",
-    "chebi": "mie/chebi.yaml",
-    "go": "mie/go.yaml",
-    "mesh": "mie/mesh.yaml",
-    "taxonomy": "mie/taxonomy.yaml",
-    "wikidata": "mie/wikidata.yaml",
-    "pubchem": "mie/pubchem.yaml",
-    "reactome": "mie/reactome.yaml",
-    "mondo": "mie/mondo.yaml",
-    "ddbj": "mie/ddbj.yaml",
-    "glycosmos": "mie/glycosmos.yaml",
-    "bacdive": "mie/bacdive.yaml",
-    "mediadive": "mie/mediadive.yaml"
-}
-
+MIE_DIR = "mie"
 MIE_TEMPLATE="resources/MIE_template.yaml"
-RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
+MIE_PROMPT="resources/MIE_prompt.md"
 
-# Example entries for RDF databases
-EXAMPLE_ENTRIES = {
-    "chebi": ["http://purl.obolibrary.org/obo/CHEBI_27744", "http://purl.obolibrary.org/obo/CHEBI_75974"],
-    "pubchem": ["http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID2519", "http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/AID1"],
-    "uniprot": ["http://purl.uniprot.org/uniprot/Q9NYK1", "http://purl.uniprot.org/uniprot/P0A7Y3"],
-    "pdb": ["http://rdf.wwpdb.org/pdb/101M","http://rdf.wwpdb.org/pdb/1D3Z"],
-    "chembl": ["http://rdf.ebi.ac.uk/resource/chembl/assay/CHEMBL1176701","http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL1906"],
-    "mesh": ["http://id.nlm.nih.gov/mesh/2025/A01.378.100"],
-    "go": ["http://purl.obolibrary.org/obo/GO_0008150", "http://purl.obolibrary.org/obo/GO_0003674"],
-    "taxonomy": ["http://identifiers.org/taxonomy/116609", "http://identifiers.org/taxonomy/9606"],
-    "wikidata": ["http://www.wikidata.org/entity/Q7187", "http://www.wikidata.org/entity/Q40108"],
-    "reactome": ["http://www.reactome.org/biopax/68/49646#Pathway227","http://www.reactome.org/biopax/68/49646#BiochemicalReaction1002"],
-    "mondo": ["http://purl.obolibrary.org/obo/MONDO_0000831","http://purl.obolibrary.org/obo/MONDO_0004784"],
-    "ddbj": ["http://identifiers.org/bioproject/PRJNA594547","http://identifiers.org/biosample/SAMN12636418"],
-    "glycosmos": ["http://glycosmos.org/glycogene/25", "http://purl.obolibrary.org/obo/CHEBI_146500"]
-}
+RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # -- prompts --
 
@@ -97,22 +64,19 @@ def hello() -> str:
     This prompt provides an overview of the available tools and their usage.
     """
     return (
-        "Welcome to the RDF Portal MCP Server! "
-        f"This server has access to the following RDF databases: {', '.join(SPARQL_ENDPOINT.keys())}.\n"
-        "You can use the following tools to interact with RDF data:\n"
-        "- `get_sparql_endpoints`: Get available SPARQL endpoints.\n"
-        "- `run_sparql`: Execute a SPARQL query on a specified endpoint.\n"
-        "- `run_example_query`: Run an example SPARQL query on a specific RDF database.\n"
-        "- `get_class_list`: Get a list of classes in an RDF database that match a given URI.\n"
-        "- `get_property_list`: Get a list of properties in an RDF database that match a given URI.\n"
-        "- `get_graph_list`: Get named graphs in a specific RDF database.\n"
-        "- `describe_rdf_schema`: Get the RDF schema of a specific RDF database. Use this before constructing SPARQL queries.\n"
-        "When constructing SPARQL queries, ensure that you use the correct prefixes and URIs, "
-        "start simple, use OPTIONAL extensively, build queries step-by-step, and test with known entities."
-        "Use type conversion such as xsd:decimal() or xsd:dateTime() in your queries when appropriate."
+        f"""Welcome to TogoMCP, an MCP server for querying the RDF Portal! 
+This server has access to the following RDF databases: {', '.join(SPARQL_ENDPOINT.keys())}.
+You can use the following tools to interact with RDF data:
+- `get_sparql_endpoints`: Get available SPARQL endpoints.
+- `run_sparql`: Execute a SPARQL query on a specified endpoint.
+- `get_graph_list`: Get named graphs in a specific RDF database.
+- `describe_rdf_schema`: Get the RDF schema of a specific RDF database. Use this before constructing SPARQL queries.
+When constructing SPARQL queries, ensure that you use the correct prefixes and URIs, 
+start simple, use OPTIONAL extensively, build queries step-by-step, and test with known entities.
+Use type conversion such as xsd:decimal() or xsd:dateTime() in your queries when appropriate."""
     )
 
-@mcp.prompt(enabled=True, name="Generate a MIE file")
+@mcp.tool(enabled=True, name="Generate_MIE_file", description="Instructions for generating an MIE (Metadata Interoperability Exchange) file")
 def generate_MIE_file(
     dbname: Annotated[str, Field(description=f"The name of the database to explore. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> str:
@@ -123,30 +87,13 @@ def generate_MIE_file(
         dbname (str): The name of the database to explore. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
     Returns:
-        str: The generated examples in YAML format.
+        str: The prompt for generating the MIE file for the database.
     """
-    with open(MIE_TEMPLATE, "r", encoding="utf-8") as file:
-        mie_template = file.read()
+    with open(MIE_PROMPT, "r", encoding="utf-8") as file:
+        mie_prompt = file.read()
 
-    return (
-    f"Explore the shape expression for the {dbname} RDF schema as deeply as possible"
-    "In particular, pay close attention to how cross-references to other databases are handled."
-    "Construct and run several SPARQL queries based on the shape expression to retrieve biologically relevant data."
-    "Make sure the SPARQL queries are well-formed and return meaningful results."
-    "Save the obtained shape expressions, along with the RDF and SPARQL query examples,"
-    "in YAML format so that you can reference them later."
-    "The YAML file should be based on the following template:"
-    "\n\n"
-   f"{MIE_TEMPLATE}"
-   "\n\n"
-   f"{mie_template}"
-    "\n\n"
-    "Use `get_sparql_endpoints` to find available SPARQL endpoints."
-    "Use `run_example_query` to get a feel for the data structure."
-    "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
-    "Test all the SPARQL queries and cross-references thoroughly."
-    "Also, check if all the RDF examples really exist in the database."
-    )
+    return mie_prompt.replace("__DBNAME__", dbname)
+
 
 @mcp.prompt(name="Validate SPARQL and RDF examples")
 def validate_sparql_and_rdf() -> str:
@@ -182,12 +129,33 @@ def generate_rdf_config(
    f"{template}"
     "\n\n"
     "Use `get_sparql_endpoints` to find available SPARQL endpoints."
-    "Use `run_example_query` to get a feel for the data structure."
-    "Then, use `get_class_list`, `get_property_list`, and `get_graphs_in_database` to explore classes, properties, and named graphs in the database."
+    "Then, use `get_graph_list` to explore relevant named graphs, classes, and properties in the database."
  
     )
 
 # --- Tools for RDF Portal --- #
+
+@mcp.tool(enabled=True, name="save_MIE_file", description="Save the provided MIE content to a file named after the database.")
+def save_MIE_file(
+    dbname: Annotated[str,Field(description=f"database name. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
+    mie_content: Annotated[str,Field(description="The content of the MIE file to save.", default="#empty MIE file")]
+    ) -> str:
+    """ 
+    Saves the provided MIE content to a file named after the database.
+
+    Returns:
+        str: A confirmation message indicating the result of the save operation.
+    """
+    try:
+        # Ensure the MIE directory exists
+        os.makedirs(MIE_DIR, exist_ok=True)
+
+        file_path = os.path.join(MIE_DIR, f"{dbname}.yaml")
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(mie_content)
+        return f"Successfully saved MIE file to {file_path}."
+    except (IOError, OSError) as e:
+        return f"Error: Could not save MIE file for '{dbname}'. Reason: {e}"
 
 @mcp.tool()
 async def get_sparql_endpoints() -> str:
@@ -197,7 +165,7 @@ async def get_sparql_endpoints() -> str:
     """
     return json.dumps(SPARQL_ENDPOINT)
 
-@mcp.tool()
+@mcp.tool(enabled=False)
 async def get_void(
     graph_uri: Annotated[str,Field(description="Graph URI to explore. Use `get_graph_list` to get appropriate graph URI.")]
 ) -> list:
@@ -260,7 +228,7 @@ WHERE {{
 # Making this a @mcp.tool() becomes an error, so we keep it as a function.
 async def execute_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
-    dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")]
+    dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> list:
     """ Execute a SPARQL query on RDF Portal. 
     Args:
@@ -293,7 +261,7 @@ async def execute_sparql(
 )
 async def run_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
 ) -> list:
     """
     Run a SPARQL query on a specific RDF database. Use `describe_rdf_schema()` to understand the RDF graph structure of the database.
@@ -307,70 +275,20 @@ async def run_sparql(
     """
     return await execute_sparql(sparql_query, dbname)
 
-@mcp.tool()
-async def run_example_query(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
-) -> list:
-    """
-    Run an example SPARQL query on a specific RDF database.
-    Use this to start exploring the structure and content of the database.
-    Args:
-        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
-    Returns:
-        list: List of example RDF triples.
- """
-    if dbname not in SPARQL_ENDPOINT:
-        raise ValueError(f"Unknown database: {dbname}")
-    entries = ' '.join(f'<{entry}>' for entry in EXAMPLE_ENTRIES.get(dbname, []))
-    sparql_query = f"""
-    SELECT ?subject ?predicate ?object
-    WHERE {{
-        VALUES ?subject {{ {entries} }}
-        ?subject ?predicate ?object .
-        FILTER (!isBlank(?object))
-    }} LIMIT 20
-    """
-    return await execute_sparql(sparql_query, dbname)
-
-@mcp.tool(enabled=False)
-async def get_example_query(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
-) -> str:
-    """
-    Run an example SPARQL query on a specific RDF database.
-    Use this to start exploring the structure and content of the database.
-    Args:
-        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
-    Returns:
-        str: The example RDF triples in JSON format.
- """
-    if dbname not in SPARQL_ENDPOINT:
-        raise ValueError(f"Unknown database: {dbname}")
-    entries = ' '.join(f'<{entry}>' for entry in EXAMPLE_ENTRIES.get(dbname, []))
-    sparql_query = f"""
-    SELECT ?subject ?predicate ?object
-    WHERE {{
-        VALUES ?subject {{ {entries} }}
-        ?subject ?predicate ?object .
-        FILTER (!isBlank(?object))
-    }} LIMIT 20
-    """
-    return sparql_query
-
 # --- Tools for exploring RDF databases ---
 @mcp.tool(
-        enabled=True,
+        enabled=False,
         name="get_class_list",
         description="Get a list of classes in the RDF database that match the given URI."
 )
 async def get_class_list(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
     uri: Annotated[str, Field(description="The URI to match classes. `http://...`")]) -> list:
     f"""
     Get a list of classes in the RDF database that match the given URI.
 
     Args:
-        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
         uri (str): The URI to match classes.
 
     Returns:
@@ -390,19 +308,19 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
     return await execute_sparql(sparql_query, dbname)
 
 @mcp.tool(
-        enabled=True,
+        enabled=False,
         name="get_property_list",
         description="Get a list of properties in the RDF database that match the given URI."
 )
 async def get_property_list(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")],
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
     uri: Annotated[str, Field(description="The URI to match properties. `http://...`")]
 ) -> list:
     f"""
     Get a list of properties in the RDF database that match the given URI.
 
     Args:
-        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+        dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
         uri (str): The URI to match properties.
 
     Returns:
@@ -428,13 +346,13 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
         description="Get a list of named graphs in a specific RDF database."
 )
 async def get_graph_list(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.")]
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
     ) -> list:
     f"""
     Get a list of named graphs in a specific RDF database.
 
     Args:
-        dbname (str): The name of the database for which to retrieve the named graphs. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
+        dbname (str): The name of the database for which to retrieve the named graphs. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
 
     Returns:
@@ -451,31 +369,46 @@ SELECT DISTINCT ?graph WHERE {
 @mcp.tool(
         enabled=True,
         name="describe_rdf_schema",
-        description="Use this before constructing SPARQL queries to get the RDF schema of a specific RDF database."
+        description="Get the RDF schema of a specific RDF database. Use this before constructing any SPARQL queries for the database."
 )
 async def describe_rdf_schema(
-    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(MIE_FILES.keys())}.")]
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
     ) -> str:
     f"""
     Get the RDF schema of a specific RDF database in YAML format, which can be used as a hint to build a SPARQL query.
 
     Args:
-        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(MIE_FILES.keys())}.
+        dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}."
+
 
     Returns:
         str: The RDF schema information in YAML format.
     """
-    mie_file = MIE_FILES.get(dbname)
-    if not mie_file:
-        raise ValueError(f"Unknown database: {dbname}")
+    mie_file = MIE_DIR + "/" + dbname + ".yaml"
+    if not mie_file or not os.path.exists(mie_file):
+        return f"Error: The schema file for '{dbname}' was not found."
     try:
         with open(mie_file, "r", encoding="utf-8") as file:
             content = file.read()
             response_text = f"""Content-type: application/yaml; charset=utf-8
 {content}"""
             return response_text
-    except FileNotFoundError:
-        return f"Error: The schema file for '{dbname}' was not found at the path '{mie_file}'."
+    except Exception as e:
+        return f"Error reading schema file for '{dbname}': {e}"
+
+@mcp.tool(enabled=True)
+async def get_shex(
+    dbname: Annotated[str, Field(description=f"database name. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    shex_file = "shex/" + dbname + ".shex"
+    if not os.path.exists(shex_file):
+        return f"Error: The shex file for '{dbname}' was not found."
+    try:
+        with open(shex_file, "r", encoding="utf-8") as file:
+            content = file.read()
+            return content
+    except Exception as e:
+        return f"Error reading shex file for '{dbname}': {e}"
 
 
 if __name__ == "__main__":

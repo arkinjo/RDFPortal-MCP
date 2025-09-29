@@ -1,0 +1,117 @@
+# RDF-Config file for Protein Data Bank (PDB) RDF dataset
+endpoint:
+  - https://rdfportal.org/backend/pdb/sparql
+  - graph:
+    - http://rdfportal.org/dataset/pdbj
+    - http://rdf.wwpdb.org/schema/pdbx-v50.owl
+    - http://bmrbpub.protein.osaka-u.ac.jp/rdf/bmr
+    - http://bmrbpub.protein.osaka-u.ac.jp/rdf/bms
+
+metadata:
+  title: Protein Data Bank RDF
+  description: The Protein Data Bank (PDB) RDF representation contains comprehensive structural biology data including protein, nucleic acid, and complex molecular structures determined by X-ray crystallography, NMR spectroscopy, and cryo-electron microscopy. This dataset includes cross-references to external databases such as UniProt, EMDB, and GenBank, providing rich interconnected biological data for structural bioinformatics research.
+  tags: [Protein, DNA, RNA, Structure, Crystallography, NMR, Cryo-EM, UniProt, EMDB, Molecular Biology]
+  provider: wwPDB
+  creators:
+    - name: wwPDB Consortium
+      affiliation: Worldwide Protein Data Bank
+  version: pdbx-v50
+  issued: 2024-01-01
+  licenses:
+    - https://www.wwpdb.org/about/policy
+
+prefix:
+  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  owl: <http://www.w3.org/2002/07/owl#>
+  xsd: <http://www.w3.org/2001/XMLSchema#>
+  pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+  pdb: <http://rdf.wwpdb.org/pdb/>
+  dcterms: <http://purl.org/dc/terms/>
+  foaf: <http://xmlns.com/foaf/0.1/>
+
+model:
+  - PdbEntry pdb:100D:
+    - a: pdbx:datablock
+    - pdbx:has_entityCategory:
+      - entity_category: pdb:100D/entityCategory
+    - pdbx:has_audit_authorCategory:
+      - author_category: pdb:100D/audit_authorCategory
+    - pdbx:has_exptlCategory:
+      - experimental_category: pdb:100D/exptlCategory
+    - pdbx:has_database_2Category:
+      - database_category: pdb:100D/database_2Category
+    - pdbx:has_struct_refCategory*:
+      - struct_ref_category: pdb:100D/struct_refCategory
+
+  - Entity pdb:100D/entity/1:
+    - a: pdbx:entity
+    - pdbx:entity.id:
+      - entity_id: "1"
+    - pdbx:entity.type:
+      - entity_type: "polymer"
+    - pdbx:entity.pdbx_description:
+      - description: "DNA/RNA (5'-R(*CP*)-D(*CP*GP*GP*CP*GP*CP*CP*GP*)-R(*G)-3')"
+    - pdbx:entity.formula_weight:
+      - molecular_weight: "3078.980"
+
+  - Author pdb:100D/audit_author/1:
+    - a: pdbx:audit_author
+    - pdbx:audit_author.name:
+      - author_name: "Ban, C."
+    - pdbx:audit_author.pdbx_ordinal:
+      - author_order: "1"
+
+  - ExperimentalMethod pdb:100D/exptl/1:
+    - a: pdbx:exptl
+    - pdbx:exptl.method:
+      - experimental_method: "X-RAY DIFFRACTION"
+    - pdbx:exptl.entry_id:
+      - entry_id: "100D"
+
+  - PolymerEntity pdb:100D/entity_poly/1:
+    - a: pdbx:entity_poly
+    - pdbx:entity_poly.entity_id:
+      - entity_id: "1"
+    - pdbx:entity_poly.type:
+      - polymer_type: "polydeoxyribonucleotide/polyribonucleotide hybrid"
+    - pdbx:entity_poly.pdbx_seq_one_letter_code:
+      - sequence: "C(DC)(DG)(DG)(DC)(DG)(DC)(DC)(DG)G"
+
+  - UniprotReference pdb:16PK/struct_ref/1:
+    - a: pdbx:struct_ref
+    - pdbx:struct_ref.entity_id:
+      - entity_id: "1"
+    - pdbx:struct_ref.db_name:
+      - database_name: "UNP"
+    - pdbx:struct_ref.db_code:
+      - database_code: "PGKC_TRYBB"
+    - pdbx:struct_ref.pdbx_db_accession:
+      - accession_number: "P07378"
+
+  - EmdbReference pdb:8A2Z/database_2/1:
+    - a: pdbx:database_2
+    - pdbx:database_2.database_id:
+      - external_database: "EMDB"
+    - pdbx:database_2.database_code:
+      - external_code: "EMD-15109"
+
+  - ProteinEntity pdb:16PK/entity/1:
+    - a: pdbx:entity
+    - pdbx:entity.id:
+      - entity_id: "1"
+    - pdbx:entity.type:
+      - entity_type: "polymer"
+    - pdbx:entity.pdbx_description:
+      - description: "3-PHOSPHOGLYCERATE KINASE"
+    - pdbx:entity.formula_weight+:
+      - molecular_weight: "44699.984"
+
+  - RnaEntity pdb:300D/entity_poly/1:
+    - a: pdbx:entity_poly
+    - pdbx:entity_poly.entity_id:
+      - entity_id: "1"
+    - pdbx:entity_poly.type:
+      - polymer_type: "polyribonucleotide"
+    - pdbx:entity_poly.pdbx_seq_one_letter_code:
+      - rna_sequence: "GUGGUCUGAUGAGGCC"

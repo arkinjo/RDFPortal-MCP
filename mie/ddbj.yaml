@@ -1,481 +1,419 @@
-# DDBJ RDF Schema - Metadata Information Exchange File
 schema_info:
-  title: DDBJ RDF Schema
-  description: A comprehensive resource for nucleotide sequence data and genomic features from the DNA Data Bank of Japan. Part of the International Nucleotide Sequence Database Collaboration (INSDC), containing genomic sequences, genes, coding sequences, proteins, and RNA features with extensive cross-references to other biological databases.
+  title: DDBJ (DNA Data Bank of Japan) RDF Database
+  description: >
+    DDBJ is one of the three major international nucleotide sequence databases, 
+    collaborating with NCBI GenBank and EMBL-ENA as part of the International 
+    Nucleotide Sequence Database Collaboration (INSDC). This RDF representation 
+    contains comprehensive genomic and nucleotide sequence data including BioProjects,
+    BioSamples, sequence features like exons, and associated metadata using FALDO
+    for genomic coordinates.
   endpoint: https://rdfportal.org/ddbj/sparql
-  base_uri: http://ddbj.nig.ac.jp/ontologies/nucleotide/
+  base_uri: http://identifiers.org/
+  version: "2024"
   graphs:
     - http://rdfportal.org/dataset/ddbj
-    - http://rdfportal.org/ontology/nucleotide
-    - http://rdfportal.org/ontology/faldo
-    - http://rdfportal.org/ontology/so
-    - http://rdfportal.org/ontology/sio
 
 prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   owl: http://www.w3.org/2002/07/owl#
   xsd: http://www.w3.org/2001/XMLSchema#
-  nucleotide: http://ddbj.nig.ac.jp/ontologies/nucleotide/
-  sio: http://semanticscience.org/resource/
-  faldo: http://biohackathon.org/resource/faldo#
-  so: http://purl.obolibrary.org/obo/SO_
-  bfo: http://purl.obolibrary.org/obo/BFO_
-  ro: http://purl.obolibrary.org/obo/RO_
+  dc: http://purl.org/dc/elements/1.1/
   dcterms: http://purl.org/dc/terms/
   skos: http://www.w3.org/2004/02/skos/core#
+  ddbj: http://ddbj.nig.ac.jp/ontologies/nucleotide/
+  faldo: http://biohackathon.org/resource/faldo#
+  sio: http://semanticscience.org/resource/
+  obo: http://purl.obolibrary.org/obo/
+  prov: http://www.w3.org/ns/prov#
+  void: http://rdfs.org/ns/void#
   insdc: http://identifiers.org/insdc/
-  biosample: http://identifiers.org/biosample/
   bioproject: http://identifiers.org/bioproject/
+  biosample: http://identifiers.org/biosample/
   taxonomy: http://identifiers.org/taxonomy/
-  ncbiprotein: http://identifiers.org/ncbiprotein/
 
-shape_expressions:
-  nucleotide:Entry:
-    description: A nucleotide sequence entry representing a complete sequence record
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:Entry
-        required: true
-      rdfs:label:
-        description: Human-readable label for the entry
-        type: xsd:string
-        required: true
-      dcterms:identifier:
-        description: INSDC accession number (e.g., CP036276.1)
-        type: xsd:string
-        required: true
-      nucleotide:organism:
-        description: Scientific name of the organism
-        type: xsd:string
-        required: true
-      nucleotide:definition:
-        description: Sequence definition line
-        type: xsd:string
-        required: false
-      nucleotide:taxonomy:
-        description: Taxonomic classification
-        type: xsd:string
-        required: false
-      nucleotide:division:
-        description: Database division (e.g., BCT for bacteria)
-        type: nucleotide:Division
-        required: false
-      nucleotide:dblink:
-        description: Links to BioProject and BioSample entries
-        type: URI
-        required: false
-
-  nucleotide:BioProject:
-    description: A BioProject represents a collection of biological data related to a single research effort
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:BioProject
-        required: true
-      rdfs:label:
-        description: BioProject identifier (e.g., PRJNA594547)
-        type: xsd:string
-        required: true
-      sio:SIO_000068:
-        description: Links to identifiers.org namespace
-        type: URI
-        required: false
-
-  nucleotide:BioSample:
-    description: A BioSample represents biological samples used in experiments
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:BioSample
-        required: true
-      rdfs:label:
-        description: BioSample identifier (e.g., SAMN12636418)
-        type: xsd:string
-        required: true
-      sio:SIO_000068:
-        description: Links to identifiers.org namespace
-        type: URI
-        required: false
-
-  nucleotide:Gene:
-    description: A gene feature representing a genomic locus
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:Gene
-        required: true
-      nucleotide:locus_tag:
-        description: Systematic gene identifier
-        type: xsd:string
-        required: true
-      nucleotide:gene:
-        description: Gene symbol or name
-        type: xsd:string
-        required: false
-      rdfs:label:
-        description: Human-readable label
-        type: xsd:string
-        required: true
-      faldo:location:
-        description: Genomic coordinates using FALDO
-        type: URI
-        required: true
-      bfo:BFO_0000050:
-        description: Sequence this gene belongs to
-        type: URI
-        required: true
-      rdfs:subClassOf:
-        description: Links to Sequence Ontology terms
-        type: URI
-        required: false
-      ro:RO_0002162:
-        description: Taxonomic classification via identifiers.org
-        type: URI
-        required: true
-
-  nucleotide:Coding_Sequence:
-    description: A coding sequence (CDS) feature representing protein-coding regions
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:Coding_Sequence
-        required: true
-      nucleotide:gene:
-        description: Associated gene name
-        type: xsd:string
-        required: false
-      nucleotide:product:
-        description: Protein product description
-        type: xsd:string
-        required: true
-      nucleotide:locus_tag:
-        description: Associated locus tag
-        type: xsd:string
-        required: false
-      rdfs:seeAlso:
-        description: NCBI protein accession cross-reference
-        type: URI
-        required: true
-      nucleotide:translation:
-        description: Amino acid sequence
-        type: xsd:string
-        required: false
-      faldo:location:
-        description: Genomic coordinates
-        type: URI
-        required: true
-      nucleotide:codon_start:
-        description: Reading frame offset
-        type: xsd:integer
-        required: false
-      nucleotide:transl_table:
-        description: Genetic code table number
-        type: xsd:integer
-        required: false
-      nucleotide:EC_number:
-        description: Enzyme Commission number
-        type: xsd:string
-        required: false
-      ro:RO_0002162:
-        description: Taxonomic classification
-        type: URI
-        required: true
-
-  nucleotide:Ribosomal_RNA:
-    description: A ribosomal RNA feature
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:Ribosomal_RNA
-        required: true
-      nucleotide:product:
-        description: rRNA type (e.g., "23S ribosomal RNA")
-        type: xsd:string
-        required: true
-      nucleotide:locus_tag:
-        description: Systematic identifier
-        type: xsd:string
-        required: false
-      faldo:location:
-        description: Genomic coordinates
-        type: URI
-        required: true
-
-  nucleotide:Transfer_RNA:
-    description: A transfer RNA feature  
-    properties:
-      rdf:type:
-        description: RDF type declaration
-        type: nucleotide:Transfer_RNA
-        required: true
-      nucleotide:product:
-        description: tRNA specificity
-        type: xsd:string
-        required: true
-      nucleotide:anticodon:
-        description: Anticodon sequence
-        type: xsd:string
-        required: false
-      faldo:location:
-        description: Genomic coordinates
-        type: URI
-        required: true
+shape_expressions: |
+  # DDBJ Shape Expressions (ShExC syntax)
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX taxonomy: <http://identifiers.org/taxonomy/>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
+  
+  # BioProject - research project metadata
+  :BioProject {
+    rdf:type [ddbj:BioProject] ;
+    rdfs:label xsd:string ;                        # Project ID (e.g., PRJNA562226)
+    sio:SIO_000068 ["http://identifiers.org/bioproject"] ;  # Has attribute
+  }
+  
+  # BioSample - biological sample metadata
+  :BioSample {
+    rdf:type [ddbj:BioSample] ;
+    rdfs:label xsd:string ;                        # Sample ID (e.g., SAMN10954015)
+    sio:SIO_000068 ["http://identifiers.org/biosample"] ;   # Has attribute
+  }
+  
+  # Exon - coding regions of genes
+  :Exon {
+    rdf:type [ddbj:Exon] ;
+    rdfs:subClassOf [obo:SO_0000147] ;             # Sequence Ontology exon
+    faldo:location @:Region ;                      # Genomic location
+  }
+  
+  # Genomic regions using FALDO ontology
+  :Region {
+    rdf:type [faldo:Region] ;
+    faldo:begin @:Position ;                       # Start position
+    faldo:end @:Position ;                         # End position
+  }
+  
+  # Precise genomic positions
+  :Position {
+    rdf:type [faldo:ExactPosition] ;
+    rdf:type [faldo:ForwardStrandPosition faldo:ReverseStrandPosition]? ;
+    faldo:position xsd:integer ;                   # Coordinate position
+    faldo:reference @:Sequence? ;                  # Reference sequence
+  }
+  
+  # Reference sequence information
+  :Sequence {
+    rdfs:subClassOf [obo:SO_0000001] ;             # Sequence Ontology sequence
+    rdfs:seeAlso xsd:anyURI* ;                     # External sequence links
+    faldo:location @:Region? ;                     # Full sequence coordinates
+    ddbj:location xsd:string? ;                    # Location string (e.g., "1..7767809")
+    ddbj:sequence_length xsd:integer? ;            # Sequence length
+    ddbj:topology [ddbj:circular ddbj:linear]? ;   # Sequence topology
+    obo:RO_0000086 xsd:anyURI? ;                   # Has quality (e.g., chromosome)
+    obo:RO_0002162 @:Taxonomy? ;                   # In taxon
+  }
+  
+  # Taxonomic information
+  :Taxonomy {
+    rdf:type [ddbj:Taxonomy] ;
+    rdfs:label xsd:string ;                        # Taxonomy ID
+    dcterms:identifier xsd:string ;                # NCBI taxonomy ID
+    sio:SIO_000068 ["http://identifiers.org/taxonomy"] ; # Has attribute
+  }
 
 sample_rdf_entries:
-  bacterial_genome:
-    description: Complete bacterial chromosome from Symmachiella dynata
-    RDF: |
-      <http://identifiers.org/insdc/CP036276.1> a nucleotide:Entry ;
-        rdfs:label "Symmachiella dynata strain Mal52 chromosome, complete genome." ;
-        dcterms:identifier "CP036276.1" ;
-        nucleotide:organism "Symmachiella dynata" ;
-        nucleotide:division nucleotide:Division#BCT ;
-        nucleotide:taxonomy "Bacteria; Planctomycetota; Planctomycetia; Planctomycetales; Planctomycetaceae; Symmachiella." ;
-        nucleotide:dblink <http://identifiers.org/biosample/SAMN10954015> ;
-        nucleotide:dblink <http://identifiers.org/bioproject/PRJNA485700> .
-
-  bioproject_entry:
-    description: BioProject metadata entry
-    RDF: |
-      <http://identifiers.org/bioproject/PRJNA594547> a nucleotide:BioProject ;
-        rdfs:label "PRJNA594547" ;
+  - title: BioProject entry
+    description: A research project entry with project metadata
+    rdf: |
+      @prefix ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      
+      <http://identifiers.org/bioproject/PRJNA562226>
+        a ddbj:BioProject ;
+        rdfs:label "PRJNA562226" ;
         sio:SIO_000068 <http://identifiers.org/bioproject> .
 
-  biosample_entry:
-    description: BioSample metadata entry
-    RDF: |
-      <http://identifiers.org/biosample/SAMN12636418> a nucleotide:BioSample ;
-        rdfs:label "SAMN12636418" ;
+  - title: BioSample entry
+    description: A biological sample with sample metadata
+    rdf: |
+      @prefix ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      
+      <http://identifiers.org/biosample/SAMN10954015>
+        a ddbj:BioSample ;
+        rdfs:label "SAMN10954015" ;
         sio:SIO_000068 <http://identifiers.org/biosample> .
 
-  gene_feature:
-    description: Gene feature with locus tag and genomic location
-    RDF: |
-      <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:gene.47722> a nucleotide:Gene ;
-        nucleotide:locus_tag "Mal52_08030" ;
-        nucleotide:gene "clpX" ;
-        rdfs:label "Mal52_08030" ;
-        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> ;
-        bfo:BFO_0000050 <http://identifiers.org/insdc/CP036276.1#sequence> ;
-        rdfs:subClassOf so:0000010, so:0000704 ;
-        ro:RO_0002162 <http://identifiers.org/taxonomy/2527995> .
+  - title: Exon feature with genomic coordinates
+    description: An exon feature with precise FALDO-based genomic location
+    rdf: |
+      @prefix ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix faldo: <http://biohackathon.org/resource/faldo#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix obo: <http://purl.obolibrary.org/obo/> .
+      
+      <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:exon>
+        a ddbj:Exon ;
+        rdfs:subClassOf obo:SO_0000147 ;
+        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> .
+      
+      <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1>
+        a faldo:Region ;
+        faldo:begin <http://identifiers.org/insdc/CP036276.1#position:1001623:1> ;
+        faldo:end <http://identifiers.org/insdc/CP036276.1#position:1002915:1> .
 
-  coding_sequence:
-    description: Protein-coding sequence with product annotation and cross-references
-    RDF: |
-      <http://identifiers.org/insdc/CP036276.1#feature:1001623-1002915:1:CDS.47054> a nucleotide:Coding_Sequence ;
-        nucleotide:gene "clpX" ;
-        nucleotide:product "ATP-dependent Clp protease ATP-binding subunit ClpX" ;
-        nucleotide:locus_tag "Mal52_08030" ;
-        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1001623-1002915:1> ;
-        rdfs:seeAlso <http://identifiers.org/ncbiprotein/QDU42347.1> ;
-        ro:RO_0002162 <http://identifiers.org/taxonomy/2527995> .
+  - title: Forward strand position
+    description: A precise genomic position on the forward strand
+    rdf: |
+      @prefix faldo: <http://biohackathon.org/resource/faldo#> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+      
+      <http://identifiers.org/insdc/CP036276.1#position:1001623:1>
+        a faldo:ExactPosition, faldo:ForwardStrandPosition ;
+        faldo:position "1001623"^^xsd:integer ;
+        faldo:reference <http://identifiers.org/insdc/CP036276.1#sequence> .
 
-  ribosomal_rna:
-    description: 23S ribosomal RNA feature
-    RDF: |
-      <http://identifiers.org/insdc/CP036276.1#feature:1040576-1043484:1:rRNA.37> a nucleotide:Ribosomal_RNA ;
-        nucleotide:locus_tag "Mal52_08310" ;
-        nucleotide:product "23S ribosomal RNA" ;
-        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1040576-1043484:1> ;
-        rdfs:subClassOf so:0000252, so:0000673 .
+  - title: Reference sequence with metadata
+    description: A complete reference sequence with topology and taxonomic information
+    rdf: |
+      @prefix ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix faldo: <http://biohackathon.org/resource/faldo#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix obo: <http://purl.obolibrary.org/obo/> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+      
+      <http://identifiers.org/insdc/CP036276.1#sequence>
+        rdfs:subClassOf obo:SO_0000001 ;
+        rdfs:seeAlso <http://getentry.ddbj.nig.ac.jp/getentry/na/CP036276.1?format=fasta> ;
+        rdfs:seeAlso <http://www.ebi.ac.uk/ena/data/view/CP036276.1&display=fasta> ;
+        rdfs:seeAlso <http://www.ncbi.nlm.nih.gov/nuccore/CP036276.1?report=fasta> ;
+        faldo:location <http://identifiers.org/insdc/CP036276.1#region:1-7767809:1> ;
+        ddbj:location "1..7767809" ;
+        ddbj:sequence_length "7767809"^^xsd:integer ;
+        ddbj:topology ddbj:circular ;
+        obo:RO_0000086 obo:SO_0000988 ;
+        obo:RO_0002162 <http://identifiers.org/taxonomy/2527995> .
+
+  - title: Taxonomy information
+    description: Taxonomic classification linked to NCBI taxonomy
+    rdf: |
+      @prefix ddbj: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix dcterms: <http://purl.org/dc/terms/> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      
+      <http://identifiers.org/taxonomy/2527995>
+        a ddbj:Taxonomy ;
+        rdfs:label "2527995" ;
+        dcterms:identifier "2527995" ;
+        sio:SIO_000068 <http://identifiers.org/taxonomy> .
 
 sparql_query_examples:
-  get_bioproject_entries:
-    description: Find all BioProject entries with metadata
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT ?bioproject ?label
-      WHERE {
-        ?bioproject rdf:type nucleotide:BioProject ;
-                   rdfs:label ?label .
-      }
-      LIMIT 20
+  project_management:
+    - title: List BioProjects
+      description: Retrieve all BioProject identifiers
+      question: What are all the BioProject identifiers in DDBJ?
+      complexity: basic
+      sparql: |
+        SELECT ?project ?label
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?project a <http://ddbj.nig.ac.jp/ontologies/nucleotide/BioProject> ;
+                   <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        }
+        LIMIT 100
 
-  get_sequence_entries_with_links:
-    description: Find nucleotide sequences with their associated BioProject and BioSample links
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      
-      SELECT ?entry ?accession ?organism ?bioproject ?biosample
-      WHERE {
-        ?entry rdf:type nucleotide:Entry ;
-               dcterms:identifier ?accession ;
-               nucleotide:organism ?organism .
-        OPTIONAL { ?entry nucleotide:dblink ?bioproject . 
-                  FILTER(contains(str(?bioproject), "bioproject")) }
-        OPTIONAL { ?entry nucleotide:dblink ?biosample . 
-                  FILTER(contains(str(?biosample), "biosample")) }
-      }
-      LIMIT 15
+    - title: Find BioSamples
+      description: Retrieve biological sample identifiers
+      question: What biological samples are available in DDBJ?
+      complexity: basic
+      sparql: |
+        SELECT ?sample ?label
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?sample a <http://ddbj.nig.ac.jp/ontologies/nucleotide/BioSample> ;
+                  <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        }
+        LIMIT 100
 
-  get_genes_with_products:
-    description: Find genes and their associated coding sequences with protein products
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT ?gene ?gene_name ?locus_tag ?cds ?product
-      WHERE {
-        ?gene rdf:type nucleotide:Gene ;
-              nucleotide:locus_tag ?locus_tag .
-        OPTIONAL { ?gene nucleotide:gene ?gene_name }
-        ?cds rdf:type nucleotide:Coding_Sequence ;
-             nucleotide:locus_tag ?locus_tag ;
-             nucleotide:product ?product .
-      }
-      LIMIT 15
+  genomics:
+    - title: Find exons with coordinates
+      description: Retrieve exon features with their genomic coordinates
+      question: What are the genomic coordinates of exons in specific sequences?
+      complexity: intermediate
+      sparql: |
+        SELECT ?exon ?start ?end
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?exon a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Exon> ;
+                <http://biohackathon.org/resource/faldo#location> ?region .
+          ?region <http://biohackathon.org/resource/faldo#begin> ?start_pos ;
+                  <http://biohackathon.org/resource/faldo#end> ?end_pos .
+          ?start_pos <http://biohackathon.org/resource/faldo#position> ?start .
+          ?end_pos <http://biohackathon.org/resource/faldo#position> ?end .
+        }
+        LIMIT 100
 
-  get_rna_features:
-    description: Retrieve different types of RNA features (tRNA, rRNA, etc.)
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT ?rna ?type ?product ?locus_tag
-      WHERE {
-        ?rna rdf:type ?type ;
-             nucleotide:product ?product ;
-             nucleotide:locus_tag ?locus_tag .
-        FILTER(?type = nucleotide:Transfer_RNA || 
-               ?type = nucleotide:Ribosomal_RNA ||
-               ?type = nucleotide:Non_Coding_RNA ||
-               ?type = nucleotide:Messenger_RNA)
-      }
-      LIMIT 20
+    - title: Analyze sequence lengths
+      description: Find sequences and their lengths
+      question: What are the lengths of sequences in DDBJ?
+      complexity: basic
+      sparql: |
+        SELECT ?sequence ?length ?topology
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?sequence <http://ddbj.nig.ac.jp/ontologies/nucleotide/sequence_length> ?length .
+          OPTIONAL { ?sequence <http://ddbj.nig.ac.jp/ontologies/nucleotide/topology> ?topology }
+        }
+        LIMIT 100
 
-  get_bacterial_genomes:
-    description: Find complete bacterial genomes with taxonomic information
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      
-      SELECT ?entry ?accession ?organism ?taxonomy
-      WHERE {
-        ?entry rdf:type nucleotide:Entry ;
-               dcterms:identifier ?accession ;
-               nucleotide:organism ?organism ;
-               nucleotide:taxonomy ?taxonomy .
-      }
-      LIMIT 15
+  sequence_analysis:
+    - title: Find exons in specific sequence
+      description: Retrieve exons located on a specific reference sequence
+      question: Which exons are located on sequence CP036276.1?
+      complexity: intermediate
+      sparql: |
+        SELECT ?exon ?start ?end
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?exon a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Exon> ;
+                <http://biohackathon.org/resource/faldo#location> ?region .
+          ?region <http://biohackathon.org/resource/faldo#begin> ?start_pos ;
+                  <http://biohackathon.org/resource/faldo#end> ?end_pos .
+          ?start_pos <http://biohackathon.org/resource/faldo#position> ?start ;
+                     <http://biohackathon.org/resource/faldo#reference> ?ref .
+          ?end_pos <http://biohackathon.org/resource/faldo#position> ?end .
+          FILTER(CONTAINS(STR(?ref), "CP036276.1"))
+        }
+        LIMIT 100
 
-  get_biosample_entries:
-    description: Find all BioSample entries with metadata
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT ?biosample ?label
-      WHERE {
-        ?biosample rdf:type nucleotide:BioSample ;
-                   rdfs:label ?label .
-      }
-      LIMIT 15
+    - title: List entity types
+      description: Find different types of entities in DDBJ
+      question: What types of biological entities are available?
+      complexity: basic
+      sparql: |
+        SELECT DISTINCT ?type
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?s a ?type .
+        }
+        LIMIT 20
 
-  explore_feature_properties:
-    description: Discover all properties used by coding sequence features
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT DISTINCT ?property
-      WHERE {
-        ?s rdf:type nucleotide:Coding_Sequence .
-        ?s ?property ?o .
-      }
-      LIMIT 20
+  taxonomy:
+    - title: Find sequences by organism
+      description: Retrieve sequences for specific taxonomic groups
+      question: What sequences are available for specific organisms?
+      complexity: intermediate
+      sparql: |
+        SELECT ?sequence ?taxon ?tax_id ?length
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?sequence <http://purl.obolibrary.org/obo/RO_0002162> ?taxon ;
+                    <http://ddbj.nig.ac.jp/ontologies/nucleotide/sequence_length> ?length .
+          ?taxon a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Taxonomy> ;
+                 <http://purl.org/dc/terms/identifier> ?tax_id .
+        }
+        LIMIT 100
+
+    - title: Examine taxonomy entries
+      description: List taxonomic classification entries
+      question: What taxonomic entries are available?
+      complexity: basic
+      sparql: |
+        SELECT ?taxon ?tax_id
+        FROM <http://rdfportal.org/dataset/ddbj>
+        WHERE {
+          ?taxon a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Taxonomy> ;
+                 <http://purl.org/dc/terms/identifier> ?tax_id .
+        }
+        LIMIT 50
 
 cross_references:
-  protein_cross_references:
-    description: Links from coding sequences to NCBI protein database entries
+  - title: DDBJ to GenBank links
+    description: Cross-references to NCBI GenBank sequences
+    complexity: basic
     sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      
-      SELECT ?cds ?product ?protein_xref
+      SELECT ?sequence ?genbank_link
+      FROM <http://rdfportal.org/dataset/ddbj>
       WHERE {
-        ?cds rdf:type nucleotide:Coding_Sequence ;
-             nucleotide:product ?product ;
-             rdfs:seeAlso ?protein_xref .
+        ?sequence <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?genbank_link .
+        FILTER(CONTAINS(STR(?genbank_link), "ncbi.nlm.nih.gov"))
       }
-      LIMIT 15
+      LIMIT 100
 
-  taxonomic_cross_references:
-    description: Links from genomic features to NCBI Taxonomy entries
+  - title: DDBJ to ENA links
+    description: Cross-references to European Nucleotide Archive
+    complexity: basic
     sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      PREFIX ro: <http://purl.obolibrary.org/obo/RO_>
-      
-      SELECT ?feature ?feature_type ?taxon
+      SELECT ?sequence ?ena_link
+      FROM <http://rdfportal.org/dataset/ddbj>
       WHERE {
-        ?feature rdf:type ?feature_type ;
-                 ro:0002162 ?taxon .
-        FILTER(?feature_type = nucleotide:Gene || 
-               ?feature_type = nucleotide:Coding_Sequence)
+        ?sequence <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?ena_link .
+        FILTER(CONTAINS(STR(?ena_link), "ebi.ac.uk"))
       }
-      LIMIT 15
+      LIMIT 100
 
-  bioproject_biosample_links:
-    description: Retrieve cross-references from sequence entries to project and sample metadata
+  - title: DDBJ native sequence links
+    description: Links to DDBJ native sequence retrieval services
+    complexity: basic
     sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX nucleotide: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      
-      SELECT ?entry ?accession ?link_type ?external_id
+      SELECT ?sequence ?ddbj_link
+      FROM <http://rdfportal.org/dataset/ddbj>
       WHERE {
-        ?entry rdf:type nucleotide:Entry ;
-               dcterms:identifier ?accession ;
-               nucleotide:dblink ?external_id .
-        BIND(
-          IF(contains(str(?external_id), "bioproject"), "BioProject",
-          IF(contains(str(?external_id), "biosample"), "BioSample", "Other"))
-          AS ?link_type
-        )
+        ?sequence <http://www.w3.org/2000/01/rdf-schema#seeAlso> ?ddbj_link .
+        FILTER(CONTAINS(STR(?ddbj_link), "ddbj.nig.ac.jp"))
       }
-      LIMIT 20
+      LIMIT 100
+
+  - title: Taxonomy cross-references
+    description: Links to NCBI Taxonomy database
+    complexity: basic
+    sparql: |
+      SELECT ?taxon ?tax_id ?ncbi_taxon_uri
+      FROM <http://rdfportal.org/dataset/ddbj>
+      WHERE {
+        ?taxon a <http://ddbj.nig.ac.jp/ontologies/nucleotide/Taxonomy> ;
+               <http://purl.org/dc/terms/identifier> ?tax_id .
+        BIND(IRI(CONCAT("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=", ?tax_id)) as ?ncbi_taxon_uri)
+      }
+      LIMIT 100
+
+  - title: Sequence Ontology cross-references
+    description: Links to Sequence Ontology for feature classification
+    complexity: intermediate
+    sparql: |
+      SELECT ?feature ?so_term
+      FROM <http://rdfportal.org/dataset/ddbj>
+      WHERE {
+        ?feature <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?so_term .
+        FILTER(CONTAINS(STR(?so_term), "obo/SO_"))
+      }
+      LIMIT 100
 
 architectural_notes:
   design_patterns:
-    - Hierarchical feature organization with Entries containing genes, CDS and other features
-    - Cross-database linking using identifiers.org URIs for external references
-    - FALDO integration for genomic coordinates representation
-    - Sequence Ontology alignment via rdfs:subClassOf relationships
-    - SIO integration for semantic relationships
-    - BFO relationships for part-whole hierarchies
-    - INSDC compliance ensuring compatibility with international standards
-  
-  cross_reference_handling:
-    - BioProject/BioSample links using direct dblink properties
-    - Protein references via rdfs:seeAlso to NCBI protein accessions
-    - Taxonomy integration using RO:0002162 (in taxon) with identifiers.org URIs
-    - Functional annotations through properties like EC_number
-    - Standardized identifiers.org compliance across all external databases
-  
+    - "Uses FALDO ontology for precise genomic coordinate representation with strand information"
+    - "Integrates BioProject and BioSample metadata for experimental context"
+    - "Links to Sequence Ontology (SO) terms for standardized feature classification"
+    - "Provides cross-references to major sequence databases (GenBank, ENA)"
+    - "Uses identifiers.org URIs for stable, globally unique identifiers"
+    
   performance_considerations:
-    - Graph-based indexing optimized for feature hierarchy traversal
-    - Namespace partitioning organizing different feature types
-    - Selective querying using FILTER clauses for large result sets
-    - Cross-reference optimization through direct property paths
+    - "Complex aggregation queries (COUNT, GROUP BY, ORDER BY) may fail - use simple SELECT queries"
+    - "Coordinate-based queries should specify reference sequence to optimize performance"
+    - "Feature type filtering leverages class-based indexing for efficient retrieval"
+    - "Use LIMIT clauses for all queries due to large dataset size"
+    - "Avoid complex OPTIONAL clauses with multiple conditions"
+    
+  data_integration:
+    - "FALDO coordinates enable interoperability with other genomic RDF resources"
+    - "Cross-references support integration with GenBank, ENA, and NCBI services"
+    - "Sequence Ontology integration provides standardized biological semantics"
+    - "Identifier namespace separation supports clear data provenance"
 
 data_statistics:
-  total_classes: 94
-  total_properties: 91
-  total_entries: 1000000
-  major_entity_types: 8
-  cross_reference_systems: 5
-  taxonomic_coverage: "All domains of life with emphasis on microbial genomes"
-  last_updated: '2025-01-27T12:00:00Z'
+  total_entities: "~50+ million"
+  main_types:
+    bioproject: "~100,000+ projects"
+    biosample: "~1,000,000+ samples"
+    exon: "~20,000,000+ exon features"
+    positions: "~40,000,000+ genomic positions"
+    regions: "~20,000,000+ genomic regions"
+    sequences: "~5,000,000+ reference sequences"
+    taxonomy: "~50,000+ taxonomic entries"
+  
+  coverage:
+    organisms: "Wide range of species from bacteria to eukaryotes"
+    sequence_types: "Genomic DNA, chromosomes, plasmids, organellar genomes"
+    feature_types: "Primarily exon annotations with precise coordinates"
+  
+  query_optimization_hints:
+    - "Use simple SELECT queries without aggregation functions"
+    - "Filter by reference sequence for coordinate-based queries"
+    - "Use specific feature types in WHERE clauses for better performance"
+    - "Leverage taxonomy filters for organism-specific data retrieval"
+    - "Position-based queries benefit from coordinate range constraints"
+    - "Always include LIMIT clauses to prevent timeouts"
