@@ -21,27 +21,29 @@ schema_info:
   license: CC0 1.0 Universal
   citation: "DDBJ: DNA Data Bank of Japan"
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  owl: http://www.w3.org/2002/07/owl#
-  dcterms: http://purl.org/dc/terms/
-  skos: http://www.w3.org/2004/02/skos/core#
-  insdc: http://ddbj.nig.ac.jp/ontologies/nucleotide/
-  faldo: http://biohackathon.org/resource/faldo#
-  obo: http://purl.obolibrary.org/obo/
-  so: http://purl.obolibrary.org/obo/SO_
-  ro: http://purl.obolibrary.org/obo/RO_
-  bfo: http://purl.obolibrary.org/obo/BFO_
-  sio: http://semanticscience.org/resource/
-  identifiers: http://identifiers.org/
-  bioproject: http://identifiers.org/bioproject/
-  biosample: http://identifiers.org/biosample/
-  taxonomy: http://identifiers.org/taxonomy/
-  ncbiprotein: http://identifiers.org/ncbiprotein/
-
 shape_expressions: |
+  # DDBJ Shape Expressions (ShExC format)
+  # All prefixes are defined here as part of the ShEx schema
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
+  PREFIX so: <http://purl.obolibrary.org/obo/SO_>
+  PREFIX ro: <http://purl.obolibrary.org/obo/RO_>
+  PREFIX bfo: <http://purl.obolibrary.org/obo/BFO_>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX identifiers: <http://identifiers.org/>
+  PREFIX bioproject: <http://identifiers.org/bioproject/>
+  PREFIX biosample: <http://identifiers.org/biosample/>
+  PREFIX taxonomy: <http://identifiers.org/taxonomy/>
+  PREFIX ncbiprotein: <http://identifiers.org/ncbiprotein/>
+  
   # Entry shape - represents a nucleotide sequence entry
   insdc:Entry {
     a [ insdc:Entry ] ;

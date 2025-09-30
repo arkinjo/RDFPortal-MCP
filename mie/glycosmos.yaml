@@ -115,62 +115,37 @@ schema_info:
     - http://purl.obolibrary.org/obo/doid
     - http://semanticscience.org/ontology/sio.owl
 
-prefixes:
-  # Standard ontologies
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  owl: http://www.w3.org/2002/07/owl#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  skos: http://www.w3.org/2004/02/skos/core#
-  dcterms: http://purl.org/dc/terms/
-  foaf: http://xmlns.com/foaf/0.1/
-  
-  # Core glycan ontologies
-  glycan: http://purl.jp/bio/12/glyco/glycan#
-  glytoucan: http://www.glytoucan.org/glyco/owl/glytoucan#
-  glycoconjugate: http://purl.jp/bio/12/glyco/conjugate#
-  glyconavi: http://glyconavi.org/owl#
-  glycoepitope: http://www.glycoepitope.jp/epitopes/glycoepitope.owl#
-  
-  # GlycoCosmos resources
-  glycoinfo: http://rdf.glycoinfo.org/glycan/
-  glycosmos: http://glycosmos.org/
-  sugarbind: http://rdf.glycoinfo.org/SugarBind/ontology#
-  
-  # Bioinformatics standards
-  uniprot: http://purl.uniprot.org/core/
-  sio: http://semanticscience.org/resource/
-  faldo: http://biohackathon.org/resource/faldo#
-  identifiers: http://identifiers.org/
-  orth: http://purl.org/net/orth#
-  
-  # External databases
-  chebi: http://purl.obolibrary.org/obo/CHEBI_
-  go: http://purl.obolibrary.org/obo/GO_
-  doid: http://purl.obolibrary.org/obo/DOID_
-  ncit: http://purl.obolibrary.org/obo/NCIT_
-  uberon: http://purl.obolibrary.org/obo/UBERON_
-  
-  # Pathway ontologies
-  biopax: http://www.biopax.org/release/biopax-level3.owl#
-
 shape_expressions: |
   # GlycoCosmos Shape Expressions (ShExC)
   # Validated and corrected based on actual RDF data structure testing (2025-01)
+  # All prefixes are defined here as part of the ShEx schema
   
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX foaf: <http://xmlns.com/foaf/0.1/>
   PREFIX glycan: <http://purl.jp/bio/12/glyco/glycan#>
   PREFIX glytoucan: <http://www.glytoucan.org/glyco/owl/glytoucan#>
   PREFIX glycoconjugate: <http://purl.jp/bio/12/glyco/conjugate#>
   PREFIX glyconavi: <http://glyconavi.org/owl#>
-  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-  PREFIX sio: <http://semanticscience.org/resource/>
-  PREFIX uniprot: <http://purl.uniprot.org/core/>
-  PREFIX dcterms: <http://purl.org/dc/terms/>
-  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-  PREFIX sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#>
   PREFIX glycoepitope: <http://www.glycoepitope.jp/epitopes/glycoepitope.owl#>
+  PREFIX glycoinfo: <http://rdf.glycoinfo.org/glycan/>
+  PREFIX glycosmos: <http://glycosmos.org/>
+  PREFIX sugarbind: <http://rdf.glycoinfo.org/SugarBind/ontology#>
+  PREFIX uniprot: <http://purl.uniprot.org/core/>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+  PREFIX identifiers: <http://identifiers.org/>
+  PREFIX orth: <http://purl.org/net/orth#>
+  PREFIX chebi: <http://purl.obolibrary.org/obo/CHEBI_>
+  PREFIX go: <http://purl.obolibrary.org/obo/GO_>
+  PREFIX doid: <http://purl.obolibrary.org/obo/DOID_>
+  PREFIX ncit: <http://purl.obolibrary.org/obo/NCIT_>
+  PREFIX uberon: <http://purl.obolibrary.org/obo/UBERON_>
+  PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
   
   # Glycan (Saccharide) Shape
   # Represents a glycan structure registered in GlyTouCan

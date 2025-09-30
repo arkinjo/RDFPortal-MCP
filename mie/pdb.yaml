@@ -12,21 +12,16 @@ schema_info:
     - http://rdfportal.org/dataset/pdbj
     - http://rdf.wwpdb.org/schema/pdbx-v50.owl
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  owl: http://www.w3.org/2002/07/owl#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  pdbx: http://rdf.wwpdb.org/schema/pdbx-v50.owl#
-  pdb: http://rdf.wwpdb.org/pdb/
-
 shape_expressions: |
   # PDB Shape Expressions using ShExC (ShEx Compact) syntax
-  # Based on actual data analysis from the PDB RDF database
+  # Reverse-engineered from actual data analysis of the PDB RDF database
 
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+  PREFIX pdb: <http://rdf.wwpdb.org/pdb/>
 
   # PDB datablock - represents a complete structure entry
   pdbx:datablock {

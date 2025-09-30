@@ -18,25 +18,15 @@ schema_info:
   license: CC BY 4.0
   homepage: http://geneontology.org/
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  owl: http://www.w3.org/2002/07/owl#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  obo: http://purl.obolibrary.org/obo/
-  oboInOwl: http://www.geneontology.org/formats/oboInOwl#
-  BFO: http://purl.obolibrary.org/obo/BFO_
-  RO: http://purl.obolibrary.org/obo/RO_
-  IAO: http://purl.obolibrary.org/obo/IAO_
-  skos: http://www.w3.org/2004/02/skos/core#
-
 shape_expressions: |
   # Gene Ontology Shape Expressions
   # Reverse-engineered from the GO RDF data structure
+  # All prefixes are defined here as part of the ShEx schema
   
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX obo: <http://purl.obolibrary.org/obo/>
   PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
   PREFIX BFO: <http://purl.obolibrary.org/obo/BFO_>

@@ -22,28 +22,28 @@ schema_info:
   graphs:
     - http://rdfportal.org/dataset/mediadive
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  dct: http://purl.org/dc/terms/
-  schema: https://purl.dsmz.de/schema/
-  mediadive: https://purl.dsmz.de/mediadive/medium/
-  solution: https://purl.dsmz.de/mediadive/solution/
-  solution_recipe: https://purl.dsmz.de/mediadive/solution_recipe/
-  gas: https://purl.dsmz.de/mediadive/gas/
-  equipment: https://purl.dsmz.de/mediadive/equipment/
-  ingredient: https://purl.dsmz.de/mediadive/ingredient/
-  strain: https://purl.dsmz.de/mediadive/strain/
-  growth: https://purl.dsmz.de/mediadive/growth/
-  medium_composition: https://purl.dsmz.de/mediadive/medium_composition/
-  step: https://purl.dsmz.de/mediadive/step/
-  modification: https://purl.dsmz.de/mediadive/modification/
-  modification_detail: https://purl.dsmz.de/mediadive/modification_detail/
-
 shape_expressions: |
   # MediaDive Shape Expressions (ShExC)
   # Reverse-engineered from the MediaDive RDF database schema
+  # All prefixes are defined here as part of the ShEx schema
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX schema: <https://purl.dsmz.de/schema/>
+  PREFIX mediadive: <https://purl.dsmz.de/mediadive/medium/>
+  PREFIX solution: <https://purl.dsmz.de/mediadive/solution/>
+  PREFIX solution_recipe: <https://purl.dsmz.de/mediadive/solution_recipe/>
+  PREFIX gas: <https://purl.dsmz.de/mediadive/gas/>
+  PREFIX equipment: <https://purl.dsmz.de/mediadive/equipment/>
+  PREFIX ingredient: <https://purl.dsmz.de/mediadive/ingredient/>
+  PREFIX strain: <https://purl.dsmz.de/mediadive/strain/>
+  PREFIX growth: <https://purl.dsmz.de/mediadive/growth/>
+  PREFIX medium_composition: <https://purl.dsmz.de/mediadive/medium_composition/>
+  PREFIX step: <https://purl.dsmz.de/mediadive/step/>
+  PREFIX modification: <https://purl.dsmz.de/mediadive/modification/>
+  PREFIX modification_detail: <https://purl.dsmz.de/mediadive/modification_detail/>
   
   # Growth conditions shape - defines optimal conditions for microbial growth
   <GrowthShape> {

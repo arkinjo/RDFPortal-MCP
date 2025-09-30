@@ -16,38 +16,31 @@ schema_info:
   graphs:
     - http://rdf.ebi.ac.uk/dataset/chembl
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  owl: http://www.w3.org/2002/07/owl#
-  skos: http://www.w3.org/2004/02/skos/core#
-  dc: http://purl.org/dc/elements/1.1/
-  dcterms: http://purl.org/dc/terms/
-  foaf: http://xmlns.com/foaf/0.1/
-  cco: http://rdf.ebi.ac.uk/terms/chembl#
-  sio: http://semanticscience.org/resource/
-  chembl_molecule: http://rdf.ebi.ac.uk/resource/chembl/molecule/
-  chembl_target: http://rdf.ebi.ac.uk/resource/chembl/target/
-  chembl_assay: http://rdf.ebi.ac.uk/resource/chembl/assay/
-  chembl_activity: http://rdf.ebi.ac.uk/resource/chembl/activity/
-  chembl_document: http://rdf.ebi.ac.uk/resource/chembl/document/
-  obo: http://purl.obolibrary.org/obo/
-  bao: http://www.bioassayontology.org/bao#
-  qudt: http://qudt.org/vocab/unit#
-  chebi: http://purl.obolibrary.org/obo/CHEBI_
-  efo: http://www.ebi.ac.uk/efo/
-
 shape_expressions: |
   # ChEMBL Shape Expressions (ShExC format)
   # Based on actual data patterns from ChEMBL RDF
+  # All prefixes are defined here as part of the ShEx schema
   
-  PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX chembl_molecule: <http://rdf.ebi.ac.uk/resource/chembl/molecule/>
+  PREFIX chembl_target: <http://rdf.ebi.ac.uk/resource/chembl/target/>
+  PREFIX chembl_assay: <http://rdf.ebi.ac.uk/resource/chembl/assay/>
+  PREFIX chembl_activity: <http://rdf.ebi.ac.uk/resource/chembl/activity/>
+  PREFIX chembl_document: <http://rdf.ebi.ac.uk/resource/chembl/document/>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
+  PREFIX bao: <http://www.bioassayontology.org/bao#>
+  PREFIX qudt: <http://qudt.org/vocab/unit#>
+  PREFIX chebi: <http://purl.obolibrary.org/obo/CHEBI_>
+  PREFIX efo: <http://www.ebi.ac.uk/efo/>
   
   # Small Molecule shape - represents chemical compounds
   cco:SmallMolecule {

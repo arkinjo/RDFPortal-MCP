@@ -9,90 +9,57 @@ schema_info:
   license: "CC BY 4.0"
   homepage: "https://www.ebi.ac.uk/chebi/"
 
-prefixes:
-  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
-  owl: "http://www.w3.org/2002/07/owl#"
-  obo: "http://purl.obolibrary.org/obo/"
-  chebi: "http://purl.obolibrary.org/obo/chebi/"
-  oboInOwl: "http://www.geneontology.org/formats/oboInOwl#"
-  IAO: "http://purl.obolibrary.org/obo/IAO_"
-  ro: "http://purl.obolibrary.org/obo/RO_"
-
-shape_expressions:
+shape_expressions: |
+  # ChEBI Chemical Entity ShEx Schema
+  # All prefixes are defined here as part of the ShEx schema
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
+  PREFIX chebi: <http://purl.obolibrary.org/obo/chebi/>
+  PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+  PREFIX IAO: <http://purl.obolibrary.org/obo/IAO_>
+  PREFIX ro: <http://purl.obolibrary.org/obo/RO_>
+  
   # ChEBI Chemical Entity Shape
-  ChEBI_ChemicalEntity:
-    description: "Represents a chemical entity in ChEBI with core properties"
-    type: "owl:Class"
-    target_class: "owl:Class"
-    required_properties:
-      - property: "rdfs:label"
-        datatype: "xsd:string"
-        description: "Primary name of the chemical entity"
-      - property: "rdf:type" 
-        value: "owl:Class"
-        description: "Entity type declaration"
-    optional_properties:
-      - property: "rdfs:subClassOf"
-        target: "ChEBI_ChemicalEntity"
-        description: "Hierarchical classification relationships"
-      - property: "chebi:formula"
-        datatype: "xsd:string"
-        description: "Molecular formula"
-      - property: "chebi:mass"
-        datatype: "xsd:decimal"
-        description: "Molecular mass in daltons"
-      - property: "chebi:monoisotopicmass"
-        datatype: "xsd:decimal"
-        description: "Monoisotopic mass"
-      - property: "chebi:charge"
-        datatype: "xsd:integer"
-        description: "Net charge of the molecule"
-      - property: "chebi:inchi"
-        datatype: "xsd:string"
-        description: "IUPAC International Chemical Identifier"
-      - property: "chebi:inchikey"
-        datatype: "xsd:string"
-        description: "Hashed version of InChI"
-      - property: "chebi:smiles"
-        datatype: "xsd:string"
-        description: "SMILES chemical structure notation"
-      - property: "IAO:0000115"
-        datatype: "xsd:string"
-        description: "Textual definition of the entity"
-      - property: "oboInOwl:hasExactSynonym"
-        datatype: "xsd:string"
-        description: "Exact synonyms for the entity"
-      - property: "oboInOwl:hasRelatedSynonym"
-        datatype: "xsd:string"
-        description: "Related synonyms"
-      - property: "oboInOwl:hasDbXref"
-        datatype: "xsd:string"
-        description: "Cross-references to external databases"
-      - property: "oboInOwl:hasAlternativeId"
-        datatype: "xsd:string"
-        description: "Alternative ChEBI identifiers"
-      - property: "oboInOwl:id"
-        datatype: "xsd:string"
-        description: "ChEBI identifier"
-      - property: "oboInOwl:hasOBONamespace"
-        datatype: "xsd:string"
-        description: "OBO namespace"
-      - property: "oboInOwl:inSubset"
-        target: "owl:Class"
-        description: "Subset membership (e.g., 3_STAR annotation)"
-
-  # ChEBI Role Relationship Shape
-  ChEBI_RoleRelationship:
-    description: "Represents functional roles of chemical entities"
-    type: "owl:Restriction"
-    required_properties:
-      - property: "owl:onProperty"
-        value: "ro:0000087"
-        description: "Has role relationship"
-      - property: "owl:someValuesFrom"
-        target: "ChEBI_ChemicalEntity"
-        description: "The specific role or function"
+  :ChEBIEntity {
+    # Core OWL typing
+    rdf:type [ owl:Class ] ;
+    
+    # Required properties
+    rdfs:label xsd:string ;  # Primary name of the chemical entity
+    
+    # Hierarchical classification
+    rdfs:subClassOf @:ChEBIEntity * ;  # Parent chemical classes
+    rdfs:subClassOf @:Restriction * ;  # Role-based restrictions
+    
+    # Chemical structural properties
+    chebi:formula xsd:string ? ;  # Molecular formula
+    chebi:mass xsd:decimal ? ;  # Molecular mass in daltons
+    chebi:monoisotopicmass xsd:decimal ? ;  # Monoisotopic mass
+    chebi:charge xsd:integer ? ;  # Net charge of the molecule
+    chebi:inchi xsd:string ? ;  # IUPAC International Chemical Identifier
+    chebi:inchikey xsd:string ? ;  # Hashed version of InChI
+    chebi:smiles xsd:string ? ;  # SMILES chemical structure notation
+    
+    # Annotations
+    IAO:0000115 xsd:string ? ;  # Textual definition
+    oboInOwl:hasExactSynonym xsd:string * ;  # Exact synonyms
+    oboInOwl:hasRelatedSynonym xsd:string * ;  # Related synonyms
+    oboInOwl:hasDbXref xsd:string * ;  # External database cross-references
+    oboInOwl:hasAlternativeId xsd:string * ;  # Alternative ChEBI IDs
+    oboInOwl:id xsd:string ? ;  # ChEBI identifier
+    oboInOwl:hasOBONamespace xsd:string ? ;  # OBO namespace
+    oboInOwl:inSubset IRI * ;  # Subset membership (e.g., 3_STAR)
+  }
+  
+  # Restriction Shape for Role Relationships
+  :Restriction {
+    rdf:type [ owl:Restriction ] ;
+    owl:onProperty IRI ;  # The role property (e.g., RO:0000087)
+    owl:someValuesFrom @:ChEBIEntity ;  # The role or function
+  }
 
 sample_rdf_entries:
   - title: "Biotin - B-Vitamin and Cofactor"

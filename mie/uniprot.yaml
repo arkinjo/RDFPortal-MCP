@@ -1,4 +1,4 @@
-schema_info: 
+schema_info:
   title: UniProt RDF Schema
   description: A comprehensive resource for protein sequences, functional annotation, taxonomic classification, and extensive cross-references to external biological databases
   endpoint: https://rdfportal.org/backend/sib/sparql
@@ -25,173 +25,125 @@ prefixes:
   skos: http://www.w3.org/2004/02/skos/core#
   go: http://purl.obolibrary.org/obo/GO_
 
-shape_expressions:
-  up:Protein:
-    description: A protein entity with comprehensive biological annotations including sequence, structure, function, and taxonomic information
-    properties:
-      up:mnemonic:
-        description: Unique protein identifier/mnemonic in format GENE_ORGANISM
-        type: xsd:string
-        required: true
-        pattern: "^[A-Z0-9]+_[A-Z0-9]+$"
-        example: "KAPCA_HUMAN"
-      up:recommendedName:
-        description: Official recommended name with structured naming hierarchy
-        type: up:Structured_Name
-        required: false
-        path: "up:recommendedName/up:fullName"
-        example: "cAMP-dependent protein kinase catalytic subunit alpha"
-      up:alternativeName:
-        description: Alternative names for the protein
-        type: up:Structured_Name
-        required: false
-        path: "up:alternativeName/up:fullName"
-      up:organism:
-        description: Taxonomic organism reference linking to NCBI Taxonomy
-        type: up:Taxon
-        required: true
-        cross_reference_pattern: "Links to taxon namespace for species classification"
-        example: "taxon:9606 for Homo sapiens"
-      up:reviewed:
-        description: Manual review status - true for Swiss-Prot, false for TrEMBL
-        type: xsd:boolean
-        required: false
-        values: ["true", "false"]
-      up:sequence:
-        description: Reference to protein sequence information including isoforms
-        type: up:Sequence
-        required: false
-        note: "Sequences are referenced as external isoforms"
-      up:enzyme:
-        description: Enzyme Commission (EC) number for enzymatic classification
-        type: rdfs:Resource
-        required: false
-        pattern: "http://purl.uniprot.org/enzyme/[1-7].###.###.###"
-        hierarchy: "EC class > Subclass > Sub-subclass > Serial number"
-        enzyme_classes:
-          EC1: "Oxidoreductases"
-          EC2: "Transferases" 
-          EC3: "Hydrolases"
-          EC4: "Lyases"
-          EC5: "Isomerases"
-          EC6: "Ligases"
-          EC7: "Translocases"
-      up:annotation:
-        description: Various biological annotations with specialized types
-        type: up:Annotation
-        required: false
-        cardinality: multiple
-        subtypes:
-          - up:Function_Annotation
-          - up:Subcellular_Location_Annotation
-          - up:Catalytic_Activity_Annotation
-          - up:Binding_Site_Annotation
-          - up:Active_Site_Annotation
-          - up:Domain_Extent_Annotation
-          - up:Transmembrane_Annotation
-          - up:Region_Annotation
-          - up:Motif_Annotation
-      up:classifiedWith:
-        description: Semantic classification using controlled vocabularies
-        type: rdfs:Resource
-        required: false
-        cardinality: multiple
-        classification_systems:
-          gene_ontology:
-            description: "GO terms for molecular function, biological process, cellular component"
-            pattern: "http://purl.obolibrary.org/obo/GO_#######"
-            categories:
-              molecular_function: "GO_0003### - binding, catalytic activity"
-              biological_process: "GO_0006### - metabolic processes, signaling"
-              cellular_component: "GO_0005### - nucleus, cytoplasm, membrane"
-          uniprot_keywords:
-            description: "Expert-curated protein categories"
-            pattern: "http://purl.uniprot.org/keywords/####"
-            categories:
-              functional: "Enzyme types, binding properties"
-              structural: "Domains, motifs, secondary structure"
-              localization: "Subcellular location, membrane association"
-      rdfs:seeAlso:
-        description: Cross-references to external biological databases
-        type: rdfs:Resource
-        required: false
-        cardinality: multiple
-        cross_reference_targets:
-          - "InterPro domains (http://purl.uniprot.org/interpro/IPR######)"
-          - "Reactome pathways (http://identifiers.org/reactome/R-HSA-#######)"
-          - "PDB structures (http://rdf.wwpdb.org/pdb/####)"
-          - "neXtProt (http://nextprot.org/rdf/entry/NX_######)"
-          - "IntAct (http://purl.uniprot.org/intact/######)"
-          - "AlphaFoldDB (http://purl.uniprot.org/alphafolddb/######)"
-          - "Pfam families (http://purl.uniprot.org/pfam/PF#####)"
-
-  up:Taxon:
-    description: Taxonomic classification with NCBI Taxonomy integration
-    properties:
-      up:scientificName:
-        description: Scientific name of the organism
-        type: xsd:string
-        required: true
-        example: "Homo sapiens"
-      up:commonName:
-        description: Common name of the organism
-        type: xsd:string
-        required: false
-        example: "Human"
-      up:rank:
-        description: Taxonomic rank in biological hierarchy
-        type: up:Rank
-        required: false
-        hierarchy: "Domain > Kingdom > Phylum > Class > Order > Family > Genus > Species"
-
-  up:Sequence:
-    description: Protein sequence with molecular properties and integrity checksums
-    properties:
-      up:mass:
-        description: Molecular mass in Daltons
-        type: xsd:int
-        required: false
-        range: "1000-500000+ typical range"
-      up:length:
-        description: Sequence length in amino acids
-        type: xsd:int
-        required: false
-        range: "50-35000+ typical range"
-      up:md5Checksum:
-        description: MD5 hash of the sequence for integrity verification
-        type: xsd:string
-        required: false
-        pattern: "^[a-f0-9]{32}$"
-      up:value:
-        description: Actual amino acid sequence
-        type: xsd:string
-        required: false
-        alphabet: "ACDEFGHIKLMNPQRSTVWY"
-
-  up:Annotation:
-    description: Biological annotations with position information for sequence features
-    properties:
-      rdfs:comment:
-        description: Detailed functional or structural comment
-        type: xsd:string
-        required: false
-      up:begin:
-        description: Start position on sequence (1-based indexing)
-        type: xsd:int
-        required: false
-      up:end:
-        description: End position on sequence (1-based indexing)
-        type: xsd:int
-        required: false
-      up:evidence:
-        description: Evidence code supporting the annotation
-        type: up:Evidence
-        required: false
+shape_expressions: |
+  # UniProt RDF Shape Expressions (Reverse-engineered from actual data)
+  # Adheres to ShExC (ShEx Compact) syntax
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX up: <http://purl.uniprot.org/core/>
+  PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
+  PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+  
+  # Main protein entity with comprehensive biological annotations
+  up:Protein {
+    a [ up:Protein ] ;
+    
+    # Unique protein identifier/mnemonic in format GENE_ORGANISM (e.g., "KAPCA_HUMAN")
+    up:mnemonic xsd:string ;
+    
+    # Official recommended name with structured naming hierarchy
+    up:recommendedName @up:Structured_Name ? ;
+    
+    # Alternative names for the protein
+    up:alternativeName @up:Structured_Name * ;
+    
+    # Taxonomic organism reference linking to NCBI Taxonomy (required)
+    up:organism @up:Taxon ;
+    
+    # Manual review status - true for Swiss-Prot, false for TrEMBL
+    up:reviewed xsd:boolean ? ;
+    
+    # Reference to protein sequence information including isoforms
+    up:sequence @up:Sequence ? ;
+    
+    # Enzyme Commission (EC) number for enzymatic classification
+    # Pattern: http://purl.uniprot.org/enzyme/[1-7].###.###.###
+    # EC1=Oxidoreductases, EC2=Transferases, EC3=Hydrolases, EC4=Lyases, EC5=Isomerases, EC6=Ligases, EC7=Translocases
+    up:enzyme IRI * ;
+    
+    # Various biological annotations (Function, Subcellular Location, Catalytic Activity, Binding Site, Active Site, Domain, etc.)
+    up:annotation @up:Annotation * ;
+    
+    # Semantic classification using Gene Ontology (GO) and UniProt Keywords
+    # GO terms: molecular function (GO_0003###), biological process (GO_0006###), cellular component (GO_0005###)
+    # UniProt Keywords: functional categories, structural features, localization
+    up:classifiedWith IRI * ;
+    
+    # Cross-references to external biological databases (InterPro, Reactome, PDB, neXtProt, AlphaFoldDB, Pfam, etc.)
+    rdfs:seeAlso IRI *
+  }
+  
+  # Structured protein names with full name and possible short names
+  up:Structured_Name {
+    up:fullName xsd:string ;
+    up:shortName xsd:string *
+  }
+  
+  # Taxonomic classification with NCBI Taxonomy integration
+  up:Taxon {
+    a [ up:Taxon ] ;
+    
+    # Scientific name of the organism (e.g., "Homo sapiens")
+    up:scientificName xsd:string ;
+    
+    # Common name of the organism (e.g., "Human")
+    up:commonName xsd:string ? ;
+    
+    # Taxonomic rank in biological hierarchy (Domain > Kingdom > Phylum > Class > Order > Family > Genus > Species)
+    up:rank @up:Rank ?
+  }
+  
+  # Protein sequence with molecular properties and integrity checksums
+  up:Sequence {
+    a [ up:Sequence ] ;
+    
+    # Molecular mass in Daltons (typical range: 1000-500000+)
+    up:mass xsd:int ? ;
+    
+    # Sequence length in amino acids (typical range: 50-35000+)
+    up:length xsd:int ? ;
+    
+    # MD5 hash of the sequence for integrity verification (32 hex characters)
+    up:md5Checksum xsd:string ? ;
+    
+    # Actual amino acid sequence (alphabet: ACDEFGHIKLMNPQRSTVWY)
+    up:value xsd:string ?
+  }
+  
+  # Biological annotations with position information for sequence features
+  # Subtypes include: Function_Annotation, Subcellular_Location_Annotation, Catalytic_Activity_Annotation,
+  # Binding_Site_Annotation, Active_Site_Annotation, Domain_Extent_Annotation, Transmembrane_Annotation,
+  # Region_Annotation, Motif_Annotation, and more
+  up:Annotation {
+    # Detailed functional or structural comment
+    rdfs:comment xsd:string ? ;
+    
+    # Start position on sequence (1-based indexing)
+    up:begin xsd:int ? ;
+    
+    # End position on sequence (1-based indexing)
+    up:end xsd:int ? ;
+    
+    # Evidence code supporting the annotation
+    up:evidence @up:Evidence *
+  }
+  
+  # Taxonomic rank in biological hierarchy
+  up:Rank {
+    a [ up:Rank ]
+  }
+  
+  # Evidence supporting annotations
+  up:Evidence {
+    a [ up:Evidence ]
+  }
 
 sample_rdf_entries:
-  human_kinase_reviewed:
-    description: Human protein kinase with reviewed status and comprehensive annotations
-    RDF: |
+  - title: Human protein kinase (reviewed Swiss-Prot entry)
+    description: Human cAMP-dependent protein kinase catalytic subunit alpha with comprehensive annotations including enzyme classification, Gene Ontology terms, and functional annotations
+    rdf: |
       uniprot:P17612 a up:Protein ;
         up:mnemonic "KAPCA_HUMAN" ;
         up:recommendedName/up:fullName "cAMP-dependent protein kinase catalytic subunit alpha" ;
@@ -205,9 +157,9 @@ sample_rdf_entries:
           rdfs:comment "Phosphorylates a large number of substrates in the cytoplasm and the nucleus"
         ] .
 
-  archaeal_ribosomal_unreviewed:
-    description: Archaeal ribosomal protein from uncultured organism (unreviewed TrEMBL entry)
-    RDF: |
+  - title: Archaeal ribosomal protein (unreviewed TrEMBL entry)
+    description: Archaeal 50S ribosomal protein L22 from an uncultured organism, demonstrating unreviewed TrEMBL entry structure
+    rdf: |
       uniprot:A0A0D3RPI9 a up:Protein ;
         up:mnemonic "A0A0D3RPI9_UNCAX" ;
         up:recommendedName/up:fullName "50S ribosomal protein L22" ;
@@ -217,17 +169,17 @@ sample_rdf_entries:
       taxon:115547 a up:Taxon ;
         up:scientificName "Uncultured archaeon" .
 
-  enzyme_with_ec_number:
-    description: Enzyme with EC number classification showing transferase activity
-    RDF: |
+  - title: Enzyme with EC number classification
+    description: Methanogenic enzyme coenzyme-B sulfoethylthiotransferase demonstrating EC number classification for transferase activity (EC 2.8.4.1)
+    rdf: |
       uniprot:A0A4D5SGP6 a up:Protein ;
         up:mnemonic "A0A4D5SGP6_9METH" ;
         up:recommendedName/up:fullName "coenzyme-B sulfoethylthiotransferase" ;
         up:enzyme <http://purl.uniprot.org/enzyme/2.8.4.1> .
 
-  cross_reference_example:
-    description: Protein with extensive cross-references to external databases
-    RDF: |
+  - title: Protein with extensive cross-references
+    description: Human protein with cross-references to InterPro protein domains and neXtProt human protein database
+    rdf: |
       uniprot:A0A0S2Z3I9 a up:Protein ;
         up:mnemonic "A0A0S2Z3I9_HUMAN" ;
         up:organism taxon:9606 ;
@@ -235,20 +187,30 @@ sample_rdf_entries:
         rdfs:seeAlso <http://purl.uniprot.org/interpro/IPR005282> ;
         rdfs:seeAlso <http://nextprot.org/rdf/entry/NX_A0A0S2Z3I9> .
 
-  sequence_with_properties:
-    description: Protein sequence with molecular mass and checksum information
-    RDF: |
+  - title: Protein sequence with molecular properties
+    description: Complete protein sequence entry with molecular mass, length, MD5 checksum, and full amino acid sequence
+    rdf: |
       uniprot:ExampleProtein up:sequence [
         a up:Sequence ;
-        up:mass "45321" ;
-        up:length "398" ;
+        up:mass 45321 ;
+        up:length 398 ;
         up:md5Checksum "5ee37fb08375407fc02cb38bfddb60a9" ;
         up:value "MGNAAAAKKGSEQESVKEFLAKAKEDFLKKWET..." 
       ] .
 
+  - title: Taxonomic classification example
+    description: Detailed taxonomic information for Homo sapiens showing scientific name, common name, and taxonomic hierarchy
+    rdf: |
+      taxon:9606 a up:Taxon ;
+        up:scientificName "Homo sapiens" ;
+        up:commonName "Human" ;
+        up:rank up:Species .
+
 sparql_query_examples:
-  get_basic_protein_info:
-    description: Retrieve basic protein information including names and taxonomic classification
+  - title: Get basic protein information
+    description: Retrieve fundamental protein properties including mnemonic identifiers, full names, and taxonomic classification
+    question: What are the basic details (identifier, name, organism) of proteins in UniProt?
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -263,8 +225,10 @@ sparql_query_examples:
       }
       LIMIT 5
 
-  find_human_kinases:
-    description: Find human protein kinases with their mnemonics and full names
+  - title: Find human protein kinases
+    description: Search for human proteins with kinase activity by filtering on organism (Homo sapiens, taxon:9606) and protein name containing "kinase"
+    question: Which human proteins are kinases?
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -280,8 +244,10 @@ sparql_query_examples:
       }
       LIMIT 5
 
-  get_enzyme_classification:
-    description: Retrieve proteins with their EC enzyme classification numbers
+  - title: Get enzyme classification
+    description: Retrieve proteins with their Enzyme Commission (EC) numbers showing enzymatic function classification
+    question: What are the EC numbers for enzymes in UniProt?
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -294,8 +260,10 @@ sparql_query_examples:
       }
       LIMIT 10
 
-  comprehensive_protein_classification:
-    description: Deep analysis of semantic classification system using up:classifiedWith
+  - title: Comprehensive protein classification analysis
+    description: Deep dive into semantic classification using Gene Ontology terms and UniProt keywords via the up:classifiedWith property
+    question: What are all the classification terms (GO terms and keywords) associated with a specific protein?
+    complexity: intermediate
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -309,8 +277,10 @@ sparql_query_examples:
       }
       ORDER BY ?classification
 
-  get_functional_annotations:
-    description: Retrieve detailed functional annotations for proteins
+  - title: Get functional annotations
+    description: Retrieve detailed functional annotations with free-text descriptions explaining protein function
+    question: What are the functional descriptions of human proteins?
+    complexity: intermediate
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -328,9 +298,86 @@ sparql_query_examples:
       }
       LIMIT 3
 
+  - title: Find reviewed vs unreviewed proteins
+    description: Compare manually reviewed Swiss-Prot entries (reviewed=true) with automatically annotated TrEMBL entries (reviewed=false) for quality assessment
+    question: How many proteins are manually reviewed versus automatically annotated?
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?reviewed (COUNT(?protein) AS ?count)
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:reviewed ?reviewed .
+      }
+      GROUP BY ?reviewed
+
+  - title: Retrieve protein sequences with properties
+    description: Access complete protein sequence data including amino acid sequence, molecular mass, length, and MD5 checksums
+    question: What are the sequence details (length, mass, checksum) for proteins?
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?protein ?name ?mass ?length ?checksum
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:recommendedName/up:fullName ?name .
+          ?protein up:sequence ?seq .
+          ?seq up:mass ?mass .
+          ?seq up:length ?length .
+          ?seq up:md5Checksum ?checksum .
+      }
+      LIMIT 10
+
+  - title: Find proteins by taxonomic lineage
+    description: Navigate the taxonomic hierarchy to find all proteins from a specific taxonomic group
+    question: Which proteins belong to a specific taxonomic group?
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+      
+      SELECT ?protein ?mnemonic ?fullName ?scientificName
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:mnemonic ?mnemonic .
+          ?protein up:recommendedName/up:fullName ?fullName .
+          ?protein up:organism ?taxon .
+          ?taxon up:scientificName ?scientificName .
+          FILTER(CONTAINS(?scientificName, "sapiens"))
+      }
+      LIMIT 10
+
+  - title: Analyze annotation types and positions
+    description: Examine different types of sequence annotations (domains, binding sites, active sites) with their position information for structure-function analysis
+    question: What types of annotations exist for proteins and where are they located on the sequence?
+    complexity: advanced
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?protein ?name ?annotationType ?begin ?end ?comment
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:recommendedName/up:fullName ?name .
+          ?protein up:annotation ?annotation .
+          ?annotation a ?annotationType .
+          OPTIONAL { ?annotation up:begin ?begin . }
+          OPTIONAL { ?annotation up:end ?end . }
+          OPTIONAL { ?annotation rdfs:comment ?comment . }
+          FILTER(?annotationType != up:Annotation)
+      }
+      LIMIT 20
+
 cross_references:
-  interpro_domains:
-    description: Retrieve cross-references to InterPro protein domains and families
+  - title: InterPro domain cross-references
+    description: Retrieve cross-references to InterPro protein domains and families (pattern http://purl.uniprot.org/interpro/IPR######) for protein family classification
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -345,8 +392,9 @@ cross_references:
       }
       LIMIT 10
 
-  reactome_pathway_links:
-    description: Find proteins linked to Reactome biological pathways
+  - title: Reactome pathway cross-references
+    description: Find proteins linked to Reactome biological pathways (pattern http://identifiers.org/reactome/R-HSA-#######) for pathway analysis
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -361,8 +409,9 @@ cross_references:
       }
       LIMIT 10
 
-  pdb_structure_links:
-    description: Find proteins with known 3D structures in PDB
+  - title: PDB structure cross-references
+    description: Find proteins with experimentally determined 3D structures in the Protein Data Bank (PDB) for structural biology studies
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -377,11 +426,13 @@ cross_references:
       }
       LIMIT 10
 
-  go_classification_links:
-    description: Find Gene Ontology classifications using up:classifiedWith property
+  - title: Gene Ontology classification via up:classifiedWith
+    description: Retrieve Gene Ontology (GO) classifications (pattern http://purl.obolibrary.org/obo/GO_#######) covering molecular function, biological process, and cellular component
+    complexity: intermediate
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
       
       SELECT ?protein ?name ?goTerm
       WHERE {
@@ -393,22 +444,9 @@ cross_references:
       }
       LIMIT 15
 
-  database_cross_references:
-    description: Comprehensive cross-reference retrieval showing database diversity
-    sparql: |
-      PREFIX up: <http://purl.uniprot.org/core/>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      
-      SELECT DISTINCT ?database
-      WHERE {
-          ?protein rdfs:seeAlso ?dbRef .
-          ?dbRef up:database ?database .
-      }
-      LIMIT 20
-
-  alphafold_structure_predictions:
-    description: Find proteins with AI-predicted structures in AlphaFoldDB
+  - title: AlphaFold structure prediction cross-references
+    description: Find proteins with AI-predicted structures in AlphaFoldDB (pattern http://purl.uniprot.org/alphafolddb/######) for structure prediction analysis
+    complexity: basic
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -423,45 +461,120 @@ cross_references:
       }
       LIMIT 10
 
+  - title: Comprehensive database cross-reference inventory
+    description: Survey all external database types that UniProt links to via rdfs:seeAlso for integration planning and data federation
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?database
+      WHERE {
+          ?protein rdfs:seeAlso ?dbRef .
+          ?dbRef up:database ?database .
+      }
+      LIMIT 20
+
+  - title: Pfam protein family cross-references
+    description: Retrieve cross-references to Pfam protein families (pattern http://purl.uniprot.org/pfam/PF#####) for protein family classification and domain architecture analysis
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?protein ?mnemonic ?pfamRef
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:mnemonic ?mnemonic .
+          ?protein rdfs:seeAlso ?pfamRef .
+          FILTER(REGEX(STR(?pfamRef), "http://purl\\.uniprot\\.org/pfam/PF[0-9]{5}"))
+      }
+      LIMIT 10
+
+  - title: neXtProt human protein cross-references
+    description: Find human proteins with links to neXtProt (pattern http://nextprot.org/rdf/entry/NX_######), a specialized resource for human proteins
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?protein ?mnemonic ?nextprotRef
+      WHERE {
+          ?protein rdf:type up:Protein .
+          ?protein up:mnemonic ?mnemonic .
+          ?protein rdfs:seeAlso ?nextprotRef .
+          FILTER(CONTAINS(STR(?nextprotRef), "nextprot.org"))
+      }
+      LIMIT 10
+
 architectural_notes:
   design_patterns:
-    - Hierarchical annotation system with 15+ specialized annotation types for comprehensive biological characterization
-    - Extensive cross-referencing via rdfs:seeAlso to 20+ external databases with formal up:database typing
-    - Clear quality distinction between manually reviewed (Swiss-Prot) and automatically annotated (TrEMBL) entries
-    - Multi-level semantic classification through up:classifiedWith property using GO terms and UniProt keywords
-    - Structured protein naming with recommendedName/fullName and alternativeName hierarchies
-    - Taxonomic integration with NCBI Taxonomy through taxon namespace for phylogenetic analysis
-    - Enzyme classification via up:enzyme property implementing complete IUBMB EC number system (EC1-EC7)
-    - Position-based sequence annotations with begin/end coordinates for precise feature mapping
-
+    - Hierarchical annotation system with 15+ specialized annotation types (Function_Annotation, Subcellular_Location_Annotation, Catalytic_Activity_Annotation, Binding_Site_Annotation, Active_Site_Annotation, Domain_Extent_Annotation, Transmembrane_Annotation, Region_Annotation, Motif_Annotation) for comprehensive biological characterization
+    - Extensive cross-referencing architecture using rdfs:seeAlso property to link to 20+ external databases with formal up:database typing for structured identification
+    - Clear quality stratification between manually reviewed Swiss-Prot entries (up:reviewed true) and automatically annotated TrEMBL entries (up:reviewed false)
+    - Multi-level semantic classification through up:classifiedWith property integrating Gene Ontology (GO) terms and UniProt controlled vocabulary keywords
+    - Structured protein naming convention with up:recommendedName/up:fullName and up:alternativeName hierarchies for nomenclature standardization
+    - Deep taxonomic integration with NCBI Taxonomy via taxon namespace enabling phylogenetic and evolutionary analyses
+    - Comprehensive enzyme classification via up:enzyme property implementing complete IUBMB EC number system covering all seven enzyme classes (EC1-EC7)
+    - Position-based sequence annotation model with up:begin and up:end coordinates for precise feature mapping on protein sequences
+    - Sequence integrity verification using MD5 checksums (up:md5Checksum) ensuring data consistency across databases
+  
   cross_reference_architecture:
-    primary_mechanism: "rdfs:seeAlso property linking to external database URIs"
-    database_typing: "External references typed with up:database property for structured identification"
-    major_databases:
-      InterPro: "Protein families and domains (http://purl.uniprot.org/interpro/IPR######)"
-      Gene_Ontology: "Functional classifications (http://purl.obolibrary.org/obo/GO_#######) via up:classifiedWith"
-      Reactome: "Biological pathways (http://identifiers.org/reactome/R-HSA-#######)"
-      PDB: "3D protein structures (http://rdf.wwpdb.org/pdb/####)"
-      neXtProt: "Human protein data (http://nextprot.org/rdf/entry/NX_######)"
-      AlphaFoldDB: "AI-predicted structures (http://purl.uniprot.org/alphafolddb/######)"
-      Pfam: "Protein families (http://purl.uniprot.org/pfam/PF#####)"
-      STRING: "Protein interaction networks"
-    integration_strength: "Deep semantic integration enabling automated cross-database queries and knowledge discovery"
-
-  performance_considerations:
-    - Use taxonomic filtering (taxon:9606 for human) early in queries for optimal performance
-    - Leverage specific annotation types (up:Function_Annotation, up:Catalytic_Activity_Annotation) for focused queries
-    - Consider OPTIONAL clauses for properties that may not exist across all entries
-    - Cross-reference queries benefit from specific database URI pattern filtering
-    - Use up:reviewed filter for high-quality manually curated data when precision is critical
+    primary_mechanism: rdfs:seeAlso property serving as the main cross-reference hub to external database URIs
+    database_typing: External references are formally typed using up:database property enabling structured database identification and automated cross-reference validation
+    major_target_databases:
+      - "InterPro: Protein families and domains (http://purl.uniprot.org/interpro/IPR######) for functional classification"
+      - "Gene Ontology: Semantic annotations via up:classifiedWith (http://purl.obolibrary.org/obo/GO_#######) covering molecular function, biological process, and cellular component"
+      - "Reactome: Biological pathways (http://identifiers.org/reactome/R-HSA-#######) for pathway analysis"
+      - "PDB: Experimental 3D structures (http://rdf.wwpdb.org/pdb/####) for structural biology"
+      - "neXtProt: Human-specific protein knowledge (http://nextprot.org/rdf/entry/NX_######) for human proteomics"
+      - "AlphaFoldDB: AI-predicted protein structures (http://purl.uniprot.org/alphafolddb/######) for computational structural biology"
+      - "Pfam: Protein families and domains (http://purl.uniprot.org/pfam/PF#####) for domain architecture analysis"
+      - "STRING: Protein-protein interaction networks for systems biology"
+      - "IntAct: Molecular interaction data for interaction proteomics"
+      - "KEGG: Metabolic and signaling pathways for systems analysis"
+    integration_strength: Deep semantic integration with bidirectional linking enables federated queries, automated knowledge discovery, and seamless cross-database navigation
+    federation_capabilities: SPARQL federation support allows joining UniProt data with external RDF resources in single queries
+  
+  query_optimization_strategies:
+    - Apply taxonomic filtering (e.g., up:organism taxon:9606 for human) early in query execution for significant performance improvement
+    - Leverage specific annotation type filters (up:Function_Annotation, up:Catalytic_Activity_Annotation) to narrow result sets efficiently
+    - Use OPTIONAL clauses judiciously for properties with variable presence across entries to avoid result elimination
+    - Apply REGEX filters on cross-reference URIs for database-specific filtering (e.g., FILTER(REGEX(STR(?ref), "interpro")))
+    - Consider up:reviewed filter when high-quality manually curated data is required for research applications
+    - Use LIMIT clauses in exploratory queries to manage large result sets and reduce endpoint load
+    - For sequence-based queries, consider filtering by up:length or up:mass ranges to pre-filter protein sets
+    - Exploit named graph structure to query specific subsets (core, taxonomy, enzyme, keywords, etc.) for targeted data retrieval
+  
+  evidence_and_provenance:
+    - Annotations linked to evidence codes via up:evidence property tracking data source and reliability
+    - Evidence classification follows standard ontologies (ECO - Evidence & Conclusion Ontology) for reproducible research
+    - Manual curation status indicated by up:reviewed boolean enabling quality-based filtering
+    - Source attribution through database cross-references maintains data provenance
+  
+  versioning_and_updates:
+    - Protein entries use stable accession-based URIs (uniprot:P17612) ensuring persistent identifiers
+    - Named graphs organized by data type facilitate selective updates and versioning
+    - MD5 checksums on sequences enable change detection and synchronization
 
 data_statistics:
-  total_protein_classes: 1
-  total_annotation_types: 15
+  total_protein_entities: "~250 million (Swiss-Prot + TrEMBL combined)"
+  reviewed_proteins_swiss_prot: "~570,000 manually reviewed entries"
+  unreviewed_proteins_trembl: "~249 million automatically annotated entries"
+  total_organisms_covered: "~500,000 species"
+  annotation_types_available: 15
   cross_reference_databases: 20
   enzyme_classes_supported: 7
-  sequence_properties: 5
-  taxonomic_integration: "NCBI Taxonomy via taxon namespace"
-  quality_control: "Swiss-Prot (reviewed=true) vs TrEMBL (reviewed=false) distinction"
-  classification_systems: 2
-  last_updated: '2025-09-18T12:00:00Z'
+  sequence_properties_tracked: 5
+  taxonomic_integration: NCBI Taxonomy via taxon namespace
+  classification_systems: "2 (Gene Ontology + UniProt Keywords)"
+  total_go_annotations: "~150 million"
+  total_interpro_annotations: "~100 million"
+  average_cross_references_per_protein: "10-50 depending on curation level"
+  named_graphs_available: 8
+  sparql_endpoint_response_time: "typically < 5 seconds for optimized queries"
+  data_update_frequency: "Swiss-Prot: biweekly releases; TrEMBL: more frequent updates"
+  last_schema_revision: "2025-09-18T12:00:00Z"

@@ -8,117 +8,113 @@ schema_info:
     - "http://id.nlm.nih.gov/mesh/vocab"
     - "http://id.nlm.nih.gov/mesh/void"
 
-prefixes:
-  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
-  owl: "http://www.w3.org/2002/07/owl#"
-  skos: "http://www.w3.org/2004/02/skos/core#"
-  mesh: "http://id.nlm.nih.gov/mesh/"
-  meshv: "http://id.nlm.nih.gov/mesh/vocab#"
-  dcterms: "http://purl.org/dc/terms/"
-
-shape_expressions:
-  # TopicalDescriptor - Main subject headings used for indexing
-  TopicalDescriptor:
-    type: "meshv:TopicalDescriptor"
-    required_properties:
-      - "rdfs:label" # Human-readable descriptor name
-      - "meshv:active" # Active status (1 or 0)
-      - "meshv:identifier" # MeSH identifier (e.g., "D000130")
-    optional_properties:
-      - "meshv:preferredConcept" # Link to preferred concept
-      - "meshv:preferredTerm" # Link to preferred term
-      - "meshv:broaderDescriptor" # Broader hierarchical terms
-      - "meshv:treeNumber" # Position(s) in MeSH tree
-      - "meshv:allowableQualifier" # Allowed qualifiers for this descriptor
-      - "meshv:concept" # Associated concepts
-      - "meshv:dateCreated" # Creation date
-      - "meshv:dateEstablished" # Establishment date
-      - "meshv:dateRevised" # Last revision date
-      - "meshv:seeAlso" # Related descriptors
-      - "meshv:nlmClassificationNumber" # NLM classification
-
+shape_expressions: |
+  # MeSH Shape Expressions in ShExC Format
+  # Reverse-engineered from actual data
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+  PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  
+  # TopicalDescriptor - Main subject headings
+  :TopicalDescriptor {
+    a [ meshv:TopicalDescriptor ] ;
+    rdfs:label xsd:string ;  # Human-readable descriptor name
+    meshv:active xsd:string ;  # Active status (1 or 0)
+    meshv:identifier xsd:string ;  # MeSH identifier (e.g., "D000130")
+    meshv:preferredConcept IRI ? ;  # Link to preferred concept
+    meshv:preferredTerm IRI ? ;  # Link to preferred term
+    meshv:broaderDescriptor IRI * ;  # Broader hierarchical terms
+    meshv:treeNumber IRI * ;  # Position(s) in MeSH tree
+    meshv:allowableQualifier IRI * ;  # Allowed qualifiers
+    meshv:concept IRI * ;  # Associated concepts
+    meshv:dateCreated xsd:string ? ;  # Creation date
+    meshv:dateEstablished xsd:string ? ;  # Establishment date
+    meshv:dateRevised xsd:string ? ;  # Last revision date
+    meshv:seeAlso IRI * ;  # Related descriptors
+    meshv:nlmClassificationNumber xsd:string ? ;  # NLM classification
+  }
+  
   # Term - Specific terms associated with concepts
-  Term:
-    type: "meshv:Term"
-    required_properties:
-      - "meshv:active" # Active status
-      - "meshv:identifier" # Term identifier
-      - "meshv:prefLabel" # Preferred label
-      - "meshv:lexicalTag" # Lexical tag (e.g., "NON", "TRD")
-    optional_properties:
-      - "meshv:altLabel" # Alternative labels
-      - "meshv:dateCreated" # Creation date
-      - "meshv:thesaurusID" # Source thesaurus identifiers
-
+  :Term {
+    a [ meshv:Term ] ;
+    meshv:active xsd:string ;  # Active status
+    meshv:identifier xsd:string ;  # Term identifier
+    meshv:prefLabel xsd:string ;  # Preferred label
+    meshv:lexicalTag xsd:string ;  # Lexical tag (e.g., "NON", "TRD")
+    meshv:altLabel xsd:string * ;  # Alternative labels
+    meshv:dateCreated xsd:string ? ;  # Creation date
+    meshv:thesaurusID xsd:string * ;  # Source thesaurus identifiers
+  }
+  
   # Concept - Semantic concepts linking terms and descriptors
-  Concept:
-    type: "meshv:Concept"
-    required_properties:
-      - "rdfs:label" # Concept label
-      - "meshv:active" # Active status
-      - "meshv:identifier" # Concept identifier
-      - "meshv:preferredTerm" # Link to preferred term
-    optional_properties:
-      - "meshv:relatedConcept" # Related concepts
-      - "meshv:scopeNote" # Detailed definition/scope note
-
+  :Concept {
+    a [ meshv:Concept ] ;
+    rdfs:label xsd:string ;  # Concept label
+    meshv:active xsd:string ;  # Active status
+    meshv:identifier xsd:string ;  # Concept identifier
+    meshv:preferredTerm IRI ;  # Link to preferred term
+    meshv:relatedConcept IRI * ;  # Related concepts
+    meshv:scopeNote xsd:string ? ;  # Detailed definition/scope note
+  }
+  
   # TreeNumber - Hierarchical position in MeSH tree
-  TreeNumber:
-    type: "meshv:TreeNumber"
-    required_properties:
-      - "rdfs:label" # Tree number notation (e.g., "C05.116.099.343.110")
-      - "meshv:active" # Active status
-    optional_properties:
-      - "meshv:parentTreeNumber" # Parent tree number
-
+  :TreeNumber {
+    a [ meshv:TreeNumber ] ;
+    rdfs:label xsd:string ;  # Tree number notation (e.g., "C05.116.099.343.110")
+    meshv:active xsd:string ;  # Active status
+    meshv:parentTreeNumber IRI ? ;  # Parent tree number
+  }
+  
   # Qualifier - Subheadings used with descriptors
-  Qualifier:
-    type: "meshv:Qualifier"
-    required_properties:
-      - "rdfs:label" # Qualifier name (e.g., "etiology")
-      - "meshv:active" # Active status
-      - "meshv:identifier" # Qualifier identifier
-    optional_properties:
-      - "meshv:annotation" # Usage annotation
-      - "meshv:historyNote" # Historical usage notes
-      - "meshv:concept" # Associated concepts
-      - "meshv:dateCreated" # Creation date
-      - "meshv:dateEstablished" # Establishment date
-      - "meshv:dateRevised" # Last revision date
-
+  :Qualifier {
+    a [ meshv:Qualifier ] ;
+    rdfs:label xsd:string ;  # Qualifier name (e.g., "etiology")
+    meshv:active xsd:string ;  # Active status
+    meshv:identifier xsd:string ;  # Qualifier identifier
+    meshv:annotation xsd:string ? ;  # Usage annotation
+    meshv:historyNote xsd:string ? ;  # Historical usage notes
+    meshv:concept IRI * ;  # Associated concepts
+    meshv:dateCreated xsd:string ? ;  # Creation date
+    meshv:dateEstablished xsd:string ? ;  # Establishment date
+    meshv:dateRevised xsd:string ? ;  # Last revision date
+  }
+  
   # SCR_Chemical - Supplementary Chemical Records
-  SCR_Chemical:
-    type: "meshv:SCR_Chemical"
-    required_properties:
-      - "rdfs:label" # Chemical name
-      - "meshv:active" # Active status
-      - "meshv:identifier" # Chemical identifier
-    optional_properties:
-      - "meshv:preferredConcept" # Link to preferred concept
-      - "meshv:preferredTerm" # Link to preferred term
-      - "meshv:preferredMappedTo" # Mapping to main descriptor
-      - "meshv:mappedTo" # Additional mappings
-      - "meshv:registryNumber" # Chemical registry numbers
-      - "meshv:note" # Chemical description note
-      - "meshv:indexerConsiderAlso" # Related indexing suggestions
-      - "meshv:frequency" # Usage frequency
-      - "meshv:dateCreated" # Creation date
-      - "meshv:dateRevised" # Last revision date
-      - "meshv:source" # Source publication
-      - "meshv:previousIndexing" # Previous indexing information
-
+  :SCR_Chemical {
+    a [ meshv:SCR_Chemical ] ;
+    rdfs:label xsd:string ;  # Chemical name
+    meshv:active xsd:string ;  # Active status
+    meshv:identifier xsd:string ;  # Chemical identifier
+    meshv:preferredConcept IRI ? ;  # Link to preferred concept
+    meshv:preferredTerm IRI ? ;  # Link to preferred term
+    meshv:preferredMappedTo IRI * ;  # Mapping to main descriptor
+    meshv:mappedTo IRI * ;  # Additional mappings
+    meshv:registryNumber xsd:string * ;  # Chemical registry numbers
+    meshv:note xsd:string ? ;  # Chemical description note
+    meshv:indexerConsiderAlso IRI * ;  # Related indexing suggestions
+    meshv:frequency xsd:string ? ;  # Usage frequency
+    meshv:dateCreated xsd:string ? ;  # Creation date
+    meshv:dateRevised xsd:string ? ;  # Last revision date
+    meshv:source xsd:string ? ;  # Source publication
+    meshv:previousIndexing xsd:string ? ;  # Previous indexing information
+  }
+  
   # SCR_Disease - Supplementary Disease Records  
-  SCR_Disease:
-    type: "meshv:SCR_Disease"
-    required_properties:
-      - "rdfs:label" # Disease name
-      - "meshv:active" # Active status
-      - "meshv:identifier" # Disease identifier
-    optional_properties:
-      - "meshv:preferredMappedTo" # Mapping to main descriptor
-      - "meshv:dateCreated" # Creation date
-      - "meshv:preferredConcept" # Link to preferred concept
+  :SCR_Disease {
+    a [ meshv:SCR_Disease ] ;
+    rdfs:label xsd:string ;  # Disease name
+    meshv:active xsd:string ;  # Active status
+    meshv:identifier xsd:string ;  # Disease identifier
+    meshv:preferredMappedTo IRI * ;  # Mapping to main descriptor
+    meshv:dateCreated xsd:string ? ;  # Creation date
+    meshv:preferredConcept IRI ? ;  # Link to preferred concept
+  }
 
 sample_rdf_entries:
   - title: "TopicalDescriptor Example - Achondroplasia"
@@ -207,204 +203,199 @@ sample_rdf_entries:
           meshv:source "Can Med Assoc J 110(11):1248;1974" .
 
 sparql_query_examples:
-  medical_terminology:
-    - title: "Find All Main Medical Descriptors"
-      description: "Retrieve all topical descriptors (main subject headings) with their labels and identifiers."
-      question: "What are the main medical subject headings in MeSH?"
-      complexity: "basic"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?descriptor ?label ?identifier
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor rdf:type meshv:TopicalDescriptor ;
-                     rdfs:label ?label ;
-                     meshv:identifier ?identifier .
-        }
-        ORDER BY ?label
-        LIMIT 100
-
-    - title: "Search Descriptors by Keyword"
-      description: "Find MeSH descriptors containing specific keywords in their labels."
-      question: "Which MeSH descriptors are related to diabetes?"
-      complexity: "basic"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?descriptor ?label ?identifier
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor rdf:type meshv:TopicalDescriptor ;
-                     rdfs:label ?label ;
-                     meshv:identifier ?identifier .
-          FILTER(CONTAINS(LCASE(?label), "diabetes"))
-        }
-        ORDER BY ?label
-
-    - title: "Get Hierarchical Relationships"
-      description: "Find broader and narrower relationships between MeSH descriptors."
-      question: "What is the hierarchical structure around a specific medical concept?"
-      complexity: "intermediate"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?concept ?label ?broader ?broaderLabel
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?concept rdf:type meshv:TopicalDescriptor ;
-                  rdfs:label ?label ;
-                  meshv:broaderDescriptor ?broader .
-          ?broader rdfs:label ?broaderLabel .
-          FILTER(CONTAINS(LCASE(?label), "infection"))
-        }
-        ORDER BY ?label
-
-  chemical_information:
-    - title: "Find Chemical Substances"
-      description: "Retrieve supplementary chemical records with their names and registry information."
-      question: "What chemical substances are indexed in MeSH?"
-      complexity: "basic"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?chemical ?label ?identifier ?registryNumber
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?chemical rdf:type meshv:SCR_Chemical ;
+  - title: "Find All Main Medical Descriptors"
+    description: "Retrieve all topical descriptors (main subject headings) with their labels and identifiers."
+    question: "What are the main medical subject headings in MeSH?"
+    complexity: "basic"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?descriptor ?label ?identifier
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor rdf:type meshv:TopicalDescriptor ;
                    rdfs:label ?label ;
                    meshv:identifier ?identifier .
-          OPTIONAL { ?chemical meshv:registryNumber ?registryNumber }
-        }
-        ORDER BY ?label
-        LIMIT 50
+      }
+      ORDER BY ?label
+      LIMIT 100
 
-    - title: "Chemical to Descriptor Mappings"
-      description: "Find how chemical substances map to main MeSH descriptors."
-      question: "How are chemical substances related to main medical concepts?"
-      complexity: "intermediate"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?chemical ?chemLabel ?descriptor ?descLabel
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?chemical rdf:type meshv:SCR_Chemical ;
-                   rdfs:label ?chemLabel ;
-                   meshv:preferredMappedTo ?descriptor .
-          ?descriptor rdfs:label ?descLabel .
-        }
-        ORDER BY ?chemLabel
-        LIMIT 100
+  - title: "Search Descriptors by Keyword"
+    description: "Find MeSH descriptors containing specific keywords in their labels."
+    question: "Which MeSH descriptors are related to diabetes?"
+    complexity: "basic"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?descriptor ?label ?identifier
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor rdf:type meshv:TopicalDescriptor ;
+                   rdfs:label ?label ;
+                   meshv:identifier ?identifier .
+        FILTER(CONTAINS(LCASE(?label), "diabetes"))
+      }
+      ORDER BY ?label
 
-  tree_structure:
-    - title: "Explore MeSH Tree Categories"
-      description: "Get the top-level categories of the MeSH tree structure."
-      question: "What are the main categories in the MeSH classification system?"
-      complexity: "intermediate"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        
-        SELECT DISTINCT ?treeNumber ?label
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor meshv:treeNumber ?treeNum .
-          ?treeNum rdfs:label ?label .
-          FILTER(REGEX(?label, "^[A-Z][0-9]{2}$"))
-        }
-        ORDER BY ?label
+  - title: "Get Hierarchical Relationships"
+    description: "Find broader and narrower relationships between MeSH descriptors."
+    question: "What is the hierarchical structure around a specific medical concept?"
+    complexity: "intermediate"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?concept ?label ?broader ?broaderLabel
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?concept rdf:type meshv:TopicalDescriptor ;
+                rdfs:label ?label ;
+                meshv:broaderDescriptor ?broader .
+        ?broader rdfs:label ?broaderLabel .
+        FILTER(CONTAINS(LCASE(?label), "infection"))
+      }
+      ORDER BY ?label
 
-    - title: "Get Tree Hierarchy for Concept"
-      description: "Find the complete tree path for a specific medical concept."
-      question: "What is the complete hierarchical classification for a specific disease?"
-      complexity: "advanced"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?descriptor ?label ?treeNumber ?treeLabel
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor rdf:type meshv:TopicalDescriptor ;
-                     rdfs:label ?label ;
-                     meshv:treeNumber ?treeNum .
-          ?treeNum rdfs:label ?treeLabel .
-          FILTER(CONTAINS(LCASE(?label), "achond"))
-        }
+  - title: "Find Chemical Substances"
+    description: "Retrieve supplementary chemical records with their names and registry information."
+    question: "What chemical substances are indexed in MeSH?"
+    complexity: "basic"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?chemical ?label ?identifier ?registryNumber
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?chemical rdf:type meshv:SCR_Chemical ;
+                 rdfs:label ?label ;
+                 meshv:identifier ?identifier .
+        OPTIONAL { ?chemical meshv:registryNumber ?registryNumber }
+      }
+      ORDER BY ?label
+      LIMIT 50
 
-  qualifiers_and_indexing:
-    - title: "Find Available Qualifiers"
-      description: "List all qualifiers (subheadings) that can be used with descriptors."
-      question: "What qualifiers can be used to specify aspects of medical concepts?"
-      complexity: "basic"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?qualifier ?label ?identifier ?annotation
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?qualifier rdf:type meshv:Qualifier ;
-                    rdfs:label ?label ;
-                    meshv:identifier ?identifier .
-          OPTIONAL { ?qualifier meshv:annotation ?annotation }
-        }
-        ORDER BY ?label
+  - title: "Chemical to Descriptor Mappings"
+    description: "Find how chemical substances map to main MeSH descriptors."
+    question: "How are chemical substances related to main medical concepts?"
+    complexity: "intermediate"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?chemical ?chemLabel ?descriptor ?descLabel
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?chemical rdf:type meshv:SCR_Chemical ;
+                 rdfs:label ?chemLabel ;
+                 meshv:preferredMappedTo ?descriptor .
+        ?descriptor rdfs:label ?descLabel .
+      }
+      ORDER BY ?chemLabel
+      LIMIT 100
 
-    - title: "Descriptor-Qualifier Combinations"
-      description: "Find which qualifiers are allowed with specific types of descriptors."
-      question: "What qualifiers can be used with a specific medical concept for indexing?"
-      complexity: "intermediate"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?descriptor ?descLabel ?qualifier ?qualLabel
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor rdf:type meshv:TopicalDescriptor ;
-                     rdfs:label ?descLabel ;
-                     meshv:allowableQualifier ?qualifier .
-          ?qualifier rdfs:label ?qualLabel .
-          FILTER(CONTAINS(LCASE(?descLabel), "cancer"))
-        }
-        ORDER BY ?descLabel ?qualLabel
+  - title: "Explore MeSH Tree Categories"
+    description: "Get the top-level categories of the MeSH tree structure."
+    question: "What are the main categories in the MeSH classification system?"
+    complexity: "intermediate"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?treeNumber ?label
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor meshv:treeNumber ?treeNum .
+        ?treeNum rdfs:label ?label .
+        FILTER(REGEX(?label, "^[A-Z][0-9]{2}$"))
+      }
+      ORDER BY ?label
 
-  temporal_information:
-    - title: "Recently Added Descriptors"
-      description: "Find recently added or modified MeSH descriptors."
-      question: "What are the most recently added medical concepts in MeSH?"
-      complexity: "intermediate"
-      sparql: |
-        PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
-        SELECT ?descriptor ?label ?dateCreated ?dateRevised
-        FROM <http://id.nlm.nih.gov/mesh>
-        WHERE {
-          ?descriptor rdf:type meshv:TopicalDescriptor ;
-                     rdfs:label ?label ;
-                     meshv:dateCreated ?dateCreated .
-          OPTIONAL { ?descriptor meshv:dateRevised ?dateRevised }
-          FILTER(?dateCreated >= "2020-01-01")
-        }
-        ORDER BY DESC(?dateCreated)
-        LIMIT 50
+  - title: "Get Tree Hierarchy for Concept"
+    description: "Find the complete tree path for a specific medical concept."
+    question: "What is the complete hierarchical classification for a specific disease?"
+    complexity: "advanced"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?descriptor ?label ?treeNumber ?treeLabel
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor rdf:type meshv:TopicalDescriptor ;
+                   rdfs:label ?label ;
+                   meshv:treeNumber ?treeNum .
+        ?treeNum rdfs:label ?treeLabel .
+        FILTER(CONTAINS(LCASE(?label), "achond"))
+      }
+
+  - title: "Find Available Qualifiers"
+    description: "List all qualifiers (subheadings) that can be used with descriptors."
+    question: "What qualifiers can be used to specify aspects of medical concepts?"
+    complexity: "basic"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?qualifier ?label ?identifier ?annotation
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?qualifier rdf:type meshv:Qualifier ;
+                  rdfs:label ?label ;
+                  meshv:identifier ?identifier .
+        OPTIONAL { ?qualifier meshv:annotation ?annotation }
+      }
+      ORDER BY ?label
+
+  - title: "Descriptor-Qualifier Combinations"
+    description: "Find which qualifiers are allowed with specific types of descriptors."
+    question: "What qualifiers can be used with a specific medical concept for indexing?"
+    complexity: "intermediate"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?descriptor ?descLabel ?qualifier ?qualLabel
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor rdf:type meshv:TopicalDescriptor ;
+                   rdfs:label ?descLabel ;
+                   meshv:allowableQualifier ?qualifier .
+        ?qualifier rdfs:label ?qualLabel .
+        FILTER(CONTAINS(LCASE(?descLabel), "cancer"))
+      }
+      ORDER BY ?descLabel ?qualLabel
+
+  - title: "Recently Added Descriptors"
+    description: "Find recently added or modified MeSH descriptors."
+    question: "What are the most recently added medical concepts in MeSH?"
+    complexity: "intermediate"
+    sparql: |
+      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      
+      SELECT ?descriptor ?label ?dateCreated ?dateRevised
+      FROM <http://id.nlm.nih.gov/mesh>
+      WHERE {
+        ?descriptor rdf:type meshv:TopicalDescriptor ;
+                   rdfs:label ?label ;
+                   meshv:dateCreated ?dateCreated .
+        OPTIONAL { ?descriptor meshv:dateRevised ?dateRevised }
+        FILTER(?dateCreated >= "2020-01-01")
+      }
+      ORDER BY DESC(?dateCreated)
+      LIMIT 50
 
 cross_references:
   - title: "Chemical to Descriptor Mappings"

@@ -10,44 +10,44 @@ schema_info:
   graphs:
     - http://rdfportal.org/dataset/bacdive
 
-prefixes:
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  dc: http://purl.org/dc/elements/1.1/
-  dct: http://purl.org/dc/terms/
-  skos: http://www.w3.org/2004/02/skos/core#
-  obo: http://purl.obolibrary.org/obo/
-  schema: https://purl.dsmz.de/schema/
-  strain: https://purl.dsmz.de/bacdive/strain/
-  reference: https://purl.dsmz.de/bacdive/reference/
-  cell_shape: https://purl.dsmz.de/bacdive/cell_shape/
-  cell_size: https://purl.dsmz.de/bacdive/cell_size/
-  culture_medium: https://purl.dsmz.de/mediadive/culture_medium/
-  cell_motility: https://purl.dsmz.de/bacdive/cell_motility/
-  colony_morphology: https://purl.dsmz.de/bacdive/colony_morphology/
-  culture_collection_number: https://purl.dsmz.de/bacdive/culture_collection_number/
-  culture_ph: https://purl.dsmz.de/bacdive/culture_pH/
-  culture_temp: https://purl.dsmz.de/bacdive/culture_temp/
-  enzyme: https://purl.dsmz.de/bacdive/enzyme/
-  gc_content: https://purl.dsmz.de/bacdive/gc_content/
-  gram_stain: https://purl.dsmz.de/bacdive/gram_stain/
-  halophily: https://purl.dsmz.de/bacdive/halophily/
-  isolation: https://purl.dsmz.de/bacdive/isolation/
-  location: https://purl.dsmz.de/bacdive/location/
-  oxygen_tolerance: https://purl.dsmz.de/bacdive/oxygen_tolerance/
-  risk_assessment: https://purl.dsmz.de/bacdive/risk_assessment/
-  sequence_16s: https://purl.dsmz.de/bacdive/sequence_16S/
-  sequence_genomes: https://purl.dsmz.de/bacdive/sequence_genomes/
-  strain_designation: https://purl.dsmz.de/bacdive/strain_designation/
-  nutrition_type: https://purl.dsmz.de/bacdive/nutrition_type/
-  pathogenicity: https://purl.dsmz.de/bacdive/pathogenicity/
-  pigmentation: https://purl.dsmz.de/bacdive/pigmentation/
-  enrichment: https://purl.dsmz.de/bacdive/enrichment
-  spore_formation: https://purl.dsmz.de/bacdive/spore_formation
-
 shape_expressions: |
   # Complete ShEx schema from BacDive RDF database
+  # PREFIX declarations for all namespaces used in the schema
+  
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
+  PREFIX schema: <https://purl.dsmz.de/schema/>
+  PREFIX strain: <https://purl.dsmz.de/bacdive/strain/>
+  PREFIX reference: <https://purl.dsmz.de/bacdive/reference/>
+  PREFIX cell_shape: <https://purl.dsmz.de/bacdive/cell_shape/>
+  PREFIX cell_size: <https://purl.dsmz.de/bacdive/cell_size/>
+  PREFIX culture_medium: <https://purl.dsmz.de/mediadive/culture_medium/>
+  PREFIX cell_motility: <https://purl.dsmz.de/bacdive/cell_motility/>
+  PREFIX colony_morphology: <https://purl.dsmz.de/bacdive/colony_morphology/>
+  PREFIX culture_collection_number: <https://purl.dsmz.de/bacdive/culture_collection_number/>
+  PREFIX culture_ph: <https://purl.dsmz.de/bacdive/culture_pH/>
+  PREFIX culture_temp: <https://purl.dsmz.de/bacdive/culture_temp/>
+  PREFIX enzyme: <https://purl.dsmz.de/bacdive/enzyme/>
+  PREFIX gc_content: <https://purl.dsmz.de/bacdive/gc_content/>
+  PREFIX gram_stain: <https://purl.dsmz.de/bacdive/gram_stain/>
+  PREFIX halophily: <https://purl.dsmz.de/bacdive/halophily/>
+  PREFIX isolation: <https://purl.dsmz.de/bacdive/isolation/>
+  PREFIX location: <https://purl.dsmz.de/bacdive/location/>
+  PREFIX oxygen_tolerance: <https://purl.dsmz.de/bacdive/oxygen_tolerance/>
+  PREFIX risk_assessment: <https://purl.dsmz.de/bacdive/risk_assessment/>
+  PREFIX sequence_16s: <https://purl.dsmz.de/bacdive/sequence_16S/>
+  PREFIX sequence_genomes: <https://purl.dsmz.de/bacdive/sequence_genomes/>
+  PREFIX strain_designation: <https://purl.dsmz.de/bacdive/strain_designation/>
+  PREFIX nutrition_type: <https://purl.dsmz.de/bacdive/nutrition_type/>
+  PREFIX pathogenicity: <https://purl.dsmz.de/bacdive/pathogenicity/>
+  PREFIX pigmentation: <https://purl.dsmz.de/bacdive/pigmentation/>
+  PREFIX enrichment: <https://purl.dsmz.de/bacdive/enrichment>
+  PREFIX spore_formation: <https://purl.dsmz.de/bacdive/spore_formation>
   
   # Strain entities - central entities representing bacterial strains
   <StrainShape> {

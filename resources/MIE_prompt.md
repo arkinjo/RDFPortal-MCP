@@ -40,6 +40,7 @@ Systematically explore and document the __DBNAME__ RDF schema by following these
 - Create a complete YAML-formatted MIE file with proper structure
 - Include comprehensive metadata, prefixes, and statistics
 - Add architectural notes explaining design patterns and performance considerations
+- Check if the generated MIE file format is fully compliant with the MIE File Structure Template given below.
 - Save the file using `save_MIE_file`
 
 ## Key Requirements
@@ -76,13 +77,10 @@ schema_info:
   graphs: # List of named graphs. Replace with actual graph names.
     - http://example.org/dataset
 
-prefixes:
-  # Standard and database-specific prefixes
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-
 shape_expressions: |
   # Reverse-engineered from actual data. Add descriptions as comments.
   # Adhere to the ShExC (ShEx Compact) syntax.
+  # Include all standard and database-specific PREFIXes.
   
   
 sample_rdf_entries:
