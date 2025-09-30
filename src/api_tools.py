@@ -227,23 +227,6 @@ async def search_pdb_entity(db: str, query: str, limit: int = 20) -> str:
     response_dict = {"total": total_results, "results": result_list}
     return json.dumps(response_dict)
 
-@mcp.tool(enabled=False)
-async def describe_pdb_rdf_schema() -> str:
-    """
-    Describe the PDB RDF schema.
-
-    Returns:
-        str: A description of the PDB RDF schema.
-    """
-    return (
-        "The PDB RDF schema is defined in the PDBx-v50.owl file. "
-        "RDF triples in the PDB database typically follow this structure:\n"
-        """?entry rdf:type PDBo:datablock ;
-        PDBo:has_xxxCategory ?category .
-        ?category PDBo:has_xxx ?xxx .
-        ?xxx PDBo:xxx.property_name ?property_value . """
-    )
-
 # DB: MeSH
 @mcp.tool()
 async def search_mesh_entity(query: str, limit: int = 10) -> str:
