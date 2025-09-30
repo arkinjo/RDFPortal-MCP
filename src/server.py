@@ -1,8 +1,9 @@
 import httpx
 import json
 import os
+import yaml
 from fastmcp import FastMCP
-from typing import Annotated
+from typing import Annotated, List, Dict, Any
 from pydantic import Field
 
 # Initialize the FastMCP server
@@ -212,7 +213,7 @@ WHERE {{
     return results
 
 # Making this a @mcp.tool() becomes an error, so we keep it as a function.
-async def execute_sparql(
+async def execute_sparql_json(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
     dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
 ) -> list:
@@ -240,6 +241,28 @@ async def execute_sparql(
     results = [{key: binding[key]["value"] for key in binding} for binding in bindings]
     return results
 
+async def execute_sparql(
+    sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
+    dbname: Annotated[str, Field(description=f"The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    """ Execute a SPARQL query on RDF Portal. 
+    Args:
+        sparql_query (str): The SPARQL query to execute.
+        dbname (str): The name of the database to query. To find the supported databases, use the `get_sparql_endpoints` tool.
+    Returns:
+        dict: The results of the SPARQL query in CSV.
+    """
+
+    if dbname not in SPARQL_ENDPOINT:
+        raise ValueError(f"Unknown database: {dbname}")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            SPARQL_ENDPOINT[dbname], data={"query": sparql_query}, headers={"Accept": "text/csv"}
+        )
+    response.raise_for_status()
+    return response.text
+
 @mcp.tool(
         enabled=True,
         name="run_sparql",
@@ -248,7 +271,7 @@ async def execute_sparql(
 async def run_sparql(
     sparql_query: Annotated[str, Field(description="The SPARQL query to execute")],
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
-) -> list:
+) -> str:
     """
     Run a SPARQL query on a specific RDF database. Use `describe_rdf_schema()` to understand the RDF graph structure of the database.
 
@@ -257,7 +280,7 @@ async def run_sparql(
         dbname (str): The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT_KEYS)}.
 
     Returns:
-        list: The results of the SPARQL query in JSON format.
+        str: CSV-formatted results of the SPARQL query.
     """
     return await execute_sparql(sparql_query, dbname)
 
@@ -269,7 +292,8 @@ async def run_sparql(
 )
 async def get_class_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
-    uri: Annotated[str, Field(description="The URI to match classes. `http://...`")]) -> list:
+    uri: Annotated[str, Field(description="The URI to match classes. `http://...`")]
+) -> str:
     f"""
     Get a list of classes in the RDF database that match the given URI.
 
@@ -301,7 +325,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 async def get_property_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")],
     uri: Annotated[str, Field(description="The URI to match properties. `http://...`")]
-) -> list:
+) -> str:
     f"""
     Get a list of properties in the RDF database that match the given URI.
 
@@ -333,7 +357,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 )
 async def get_graph_list(
     dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
-    ) -> list:
+    ) -> str:
     f"""
     Get a list of named graphs in a specific RDF database.
 
@@ -341,7 +365,7 @@ async def get_graph_list(
         dbname (str): The name of the database for which to retrieve the named graphs. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
 
     Returns:
-        list: The list of named graphs.
+        str: CSV-formatted list of named graphs.
     """
     sparql_query = '''
 SELECT DISTINCT ?graph WHERE {
@@ -395,6 +419,59 @@ async def get_shex(
     except Exception as e:
         return f"Error reading shex file for '{dbname}': {e}"
 
+@mcp.tool(
+    enabled=True, 
+    name="list_databases",
+    description="List available databases and their descriptions."
+)
+def list_databases() -> List[Dict[str, Any]]:
+    """
+    Reads all YAML files in a given directory and extracts the title and
+    description from the 'schema_info' section.
+
+    Returns:
+        A list of dictionaries, each containing schema info for a file.
+    """
+    resources_dir = MIE_DIR
+    if not os.path.isdir(resources_dir):
+        print(f"Error: Directory '{resources_dir}' not found.")
+        return []
+
+    all_schemas_info = []
+    for db_name in sorted(SPARQL_ENDPOINT.keys()):
+        filename = db_name + ".yaml"
+        file_path = os.path.join(resources_dir, filename)
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+
+                if isinstance(data, dict):
+                    schema_info = data.get("schema_info")
+                    if isinstance(schema_info, dict):
+                        title = schema_info.get("title")
+                        description = schema_info.get("description")
+
+                        if not title:
+                            print(f"Warning: No 'title' in 'schema_info' for {filename}.")
+                            continue
+
+                        all_schemas_info.append(
+                            {
+                                "database": db_name,
+                                "title": title,
+                                "description": description or "No description found.",
+                            }
+                        )
+                    else:
+                        print(f"Warning: No 'schema_info' section in {filename}.")
+                else:
+                    print(f"Warning: YAML file {filename} is empty or not a dictionary.")
+
+        except yaml.YAMLError as e:
+            print(f"Error parsing YAML file {filename}: {e}")
+        except Exception as e:
+            print(f"An error occurred with file {filename}: {e}")
+    return all_schemas_info
 
 if __name__ == "__main__":
     mcp.run()
