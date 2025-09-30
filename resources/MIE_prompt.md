@@ -7,8 +7,9 @@ Systematically explore and document the __DBNAME__ RDF schema by following these
 ## 1. Discovery Phase
 - Use `get_sparql_endpoints` to identify available endpoints
 - Use `get_graph_list` to find relevant named graphs
-- Run exploratory SPARQL queries to understand the data structure
 - Attempt `get_shex` to retrieve existing shape expressions
+- Attempt `get_MIE_file` to retrieve existing MIE files
+- Run exploratory SPARQL queries to understand the data structure
 
 ## 2. Schema Analysis
 - Query for all RDF classes and their labels
