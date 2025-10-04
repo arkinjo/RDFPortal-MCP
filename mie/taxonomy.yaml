@@ -1,76 +1,56 @@
-# Taxonomy RDF Schema - Metadata Interoperability Exchange (MIE) File
-# Comprehensive analysis of NCBI Taxonomy RDF schema with deep exploration of shape expressions and cross-references
-
 schema_info:
   title: NCBI Taxonomy RDF Schema
-  description: A comprehensive resource for biological taxonomic classification, hierarchical relationships, and cross-references to major biological databases
+  description: |
+    Comprehensive biological taxonomic classification covering 3M+ organisms from bacteria to mammals. Provides hierarchical
+    relationships from species through genus, family, order, class, phylum, kingdom to superkingdom. Includes scientific names,
+    common names, taxonomic authorities, and genetic code assignments. Extensive cross-references to OBO NCBITaxon, UniProt,
+    NCBI Gene, and MBGD databases. Essential for biological data integration and comparative genomics.
   endpoint: https://rdfportal.org/primary/sparql
   base_uri: http://identifiers.org/taxonomy/
-  ontology_uri: http://ddbj.nig.ac.jp/ontologies/taxonomy/
   graphs:
     - http://rdfportal.org/ontology/taxonomy
-    - http://rdfportal.org/dataset/togoid/relation/taxonomy-pubmed
-    - http://rdfportal.org/dataset/togoid/relation/mbgd_organism-taxonomy
-    - http://rdfportal.org/dataset/togoid/relation/ncbigene-taxonomy
-    - http://rdfportal.org/dataset/togoid/relation/refseq_rna-taxonomy
-    - http://rdfportal.org/dataset/togoid/relation/uniprot-taxonomy
-    - http://rdfportal.org/dataset/togoid/relation/uniprot_proteome-taxonomy
 
 shape_expressions: |
-  # NCBI Taxonomy RDF Schema - ShExC (ShEx Compact Syntax)
-  # Reverse-engineered from actual data in the taxonomy database
-  # Taxonomic classification with hierarchical relationships and cross-references
-  
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-  PREFIX taxon: <http://identifiers.org/taxonomy/>
-  PREFIX obo: <http://purl.obolibrary.org/obo/>
-  PREFIX uniprot: <http://purl.uniprot.org/taxonomy/>
   PREFIX tio: <http://togoid.dbcls.jp/ontology#>
-  PREFIX ncbi: <http://www.ncbi.nlm.nih.gov/taxonomy/>
-  PREFIX berkeley: <http://www.berkeleybop.org/ontologies/owl/NCBITaxon#>
   
-  # A taxonomic entity representing any biological classification unit from species to superkingdom level
-  tax:Taxon {
-    a [tax:Taxon] ;                                    # Class membership - always tax:Taxon for taxonomic entities
-    rdfs:label xsd:string ;                            # Primary taxonomic name (scientific name) - REQUIRED
-    dcterms:identifier xsd:string ;                    # NCBI Taxonomy ID number as string identifier - REQUIRED
-    tax:rank @tax:Rank ;                               # Taxonomic rank classification (Species, Genus, Family, etc.) - REQUIRED
-    rdfs:subClassOf @tax:Taxon * ;                     # Parent taxon in the taxonomic hierarchy (species->genus->family, etc.)
-    owl:sameAs IRI * ;                                 # Cross-references to equivalent taxonomic concepts in external databases
-                                                       # Examples: NCBITaxon OBO, Berkeley BOP, Direct NCBI, DDBJ taxonomy
-    rdfs:seeAlso IRI * ;                               # Related resources in other biological databases (e.g., UniProt)
-    tax:scientificName xsd:string ? ;                  # Official scientific name according to taxonomic nomenclature
-    tax:authority xsd:string ? ;                       # Taxonomic authority citation indicating who first described the taxon
-    tax:genbankCommonName xsd:string ? ;               # Common name as used in GenBank database
-    tax:commonName xsd:string * ;                      # Generally accepted common name(s) for the organism
-    tax:synonym xsd:string * ;                         # Alternative scientific names or synonyms for the taxon
-    tax:uniqueName xsd:string ? ;                      # Unique identifier name to distinguish from homonyms
-    tax:geneticCode @tax:GeneticCode ? ;               # Genetic code table used by the organism for translation
-    tax:geneticCodeMt @tax:GeneticCode ? ;             # Mitochondrial genetic code table used by the organism
-    tax:geneticCodePt @tax:GeneticCode ? ;             # Plastid/chloroplast genetic code table
-    tio:TIO_000002 IRI * ;                             # Cross-reference to MBGD (Microbial Genome Database) organisms
-    tio:TIO_000065 IRI * ;                             # Cross-reference to NCBI Gene database entries
+  <Taxon> {
+    a [ tax:Taxon ] ;
+    rdfs:label xsd:string ;
+    dcterms:identifier xsd:string ;
+    tax:rank @<Rank> ;
+    rdfs:subClassOf @<Taxon> * ;
+    owl:sameAs IRI * ;
+    rdfs:seeAlso IRI * ;
+    tax:scientificName xsd:string ? ;
+    tax:authority xsd:string ? ;
+    tax:genbankCommonName xsd:string ? ;
+    tax:commonName xsd:string * ;
+    tax:synonym xsd:string * ;
+    tax:uniqueName xsd:string ? ;
+    tax:geneticCode @<GeneticCode> ? ;
+    tax:geneticCodeMt @<GeneticCode> ? ;
+    tio:TIO_000002 IRI * ;                      # MBGD cross-ref
+    tio:TIO_000065 IRI *                        # NCBI Gene cross-ref
   }
   
-  # Hierarchical classification levels in biological taxonomy
-  tax:Rank {
-    a [tax:Rank] ;                                     # Class membership indicating this is a taxonomic rank
-    rdfs:label xsd:string ;                            # Name of the taxonomic rank (e.g., 'species', 'genus', 'family') - REQUIRED
+  <Rank> {
+    a [ tax:Rank ] ;
+    rdfs:label xsd:string
   }
   
-  # Genetic code tables defining codon-amino acid mappings
-  tax:GeneticCode {
-    rdfs:label xsd:string ;                            # Name or identifier of the genetic code - REQUIRED
+  <GeneticCode> {
+    rdfs:label xsd:string
   }
 
 sample_rdf_entries:
-  - title: Human species (Homo sapiens)
-    description: Human species showing complete taxonomic hierarchy and cross-references to multiple external databases
+  - title: Human Species with Complete Metadata
+    description: Homo sapiens showing hierarchy and cross-references
     rdf: |
       taxon:9606 a tax:Taxon ;
         rdfs:label "Homo sapiens" ;
@@ -83,13 +63,10 @@ sample_rdf_entries:
         tax:commonName "human" ;
         tax:geneticCode tax:GeneticCode1 ;
         tax:geneticCodeMt tax:GeneticCode2 ;
-        owl:sameAs obo:NCBITaxon_9606,
-                   ncbi:9606,
-                   berkeley:9606 ;
-        rdfs:seeAlso uniprot:9606 .
+        owl:sameAs obo:NCBITaxon_9606 .
 
-  - title: Bacterial strain (Shigella flexneri)
-    description: Bacterial strain showing detailed taxonomic classification with gene cross-references
+  - title: Bacterial Strain Entry
+    description: Shigella flexneri strain with gene cross-references
     rdf: |
       taxon:1086030 a tax:Taxon ;
         rdfs:label "Shigella flexneri 5a str. M90T" ;
@@ -97,23 +74,20 @@ sample_rdf_entries:
         dcterms:identifier "1086030" ;
         tax:rank tax:Strain ;
         tax:scientificName "Shigella flexneri 5a str. M90T" ;
-        tax:genbankCommonName "Shigella flexneri M90T" ;
-        owl:sameAs obo:NCBITaxon_1086030 ;
         tio:TIO_000065 <http://identifiers.org/ncbigene/40047288> .
 
-  - title: Most species-diverse fungal genus (Cortinarius)
-    description: Cortinarius genus demonstrating biodiversity with 1962+ species
+  - title: Genus Level Classification
+    description: Escherichia genus showing genus rank
     rdf: |
-      taxon:34451 a tax:Taxon ;
-        rdfs:label "Cortinarius" ;
-        rdfs:subClassOf taxon:5338 ;
-        dcterms:identifier "34451" ;
+      taxon:561 a tax:Taxon ;
+        rdfs:label "Escherichia" ;
+        rdfs:subClassOf taxon:543 ;
+        dcterms:identifier "561" ;
         tax:rank tax:Genus ;
-        tax:scientificName "Cortinarius" ;
-        owl:sameAs obo:NCBITaxon_34451 .
+        tax:scientificName "Escherichia" .
 
-  - title: Animal kingdom (Metazoa)
-    description: High-level taxonomic classification showing kingdom-level organization
+  - title: Kingdom Level
+    description: Animal kingdom (Metazoa) high-level classification
     rdf: |
       taxon:33208 a tax:Taxon ;
         rdfs:label "Metazoa" ;
@@ -121,43 +95,44 @@ sample_rdf_entries:
         dcterms:identifier "33208" ;
         tax:rank tax:Kingdom ;
         tax:scientificName "Metazoa" ;
-        tax:commonName "animals" ;
-        owl:sameAs obo:NCBITaxon_33208 .
+        tax:commonName "animals" .
 
-  - title: Root of taxonomic hierarchy
-    description: Root node representing the top of the taxonomic tree
+  - title: Root of Taxonomy Tree
+    description: Top-level root node
     rdf: |
       taxon:1 a tax:Taxon ;
         rdfs:label "root" ;
         dcterms:identifier "1" ;
-        tax:rank tax:NoRank ;
-        owl:sameAs obo:NCBITaxon_1 .
+        tax:rank tax:NoRank .
 
 sparql_query_examples:
-  - title: Get all taxa
-    description: Retrieve taxonomic entities with their labels and identifiers
-    question: What are some taxonomic entities in the database with their names and IDs?
+  - title: Get Basic Taxa Information
+    description: Retrieve taxonomic entities with names and IDs
+    question: What are some organisms in the database?
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?taxon ?label ?id WHERE { 
+      SELECT ?taxon ?label ?id
+      WHERE { 
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                dcterms:identifier ?id .
-      } LIMIT 10
+      }
+      LIMIT 20
 
-  - title: Get complete human lineage
-    description: Retrieve the complete taxonomic lineage for Homo sapiens from species to root
-    question: What is the complete taxonomic lineage of humans from species to the root of life?
+  - title: Get Complete Lineage
+    description: Retrieve full taxonomic lineage for an organism
+    question: What is the complete lineage of humans?
     complexity: intermediate
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX taxon: <http://identifiers.org/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?ancestor ?rank ?label ?id WHERE {
+      SELECT ?ancestor ?rank ?label ?id
+      WHERE {
         taxon:9606 rdfs:subClassOf* ?ancestor .
         ?ancestor a tax:Taxon ;
                   tax:rank ?rank ;
@@ -166,16 +141,16 @@ sparql_query_examples:
       }
       ORDER BY DESC(?id)
 
-  - title: Get species in genus
-    description: Find all species within a specific genus (Escherichia example)
-    question: What are all the species within the Escherichia genus?
+  - title: Find Species in Genus
+    description: Get all species within a specific genus
+    question: What species are in genus Escherichia?
     complexity: intermediate
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX taxon: <http://identifiers.org/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?species ?label ?id WHERE {
+      SELECT ?species ?label ?id
+      WHERE {
         ?species a tax:Taxon ;
                  rdfs:label ?label ;
                  dcterms:identifier ?id ;
@@ -183,16 +158,18 @@ sparql_query_examples:
                  rdfs:subClassOf ?genus .
         ?genus rdfs:label "Escherichia" ;
                tax:rank tax:Genus .
-      } LIMIT 10
+      }
+      LIMIT 20
 
-  - title: Count species per genus (biodiversity analysis)
-    description: Biodiversity analysis - count species in each genus ordered by diversity
-    question: Which genera have the most species diversity?
+  - title: Count Species Per Genus
+    description: Biodiversity analysis counting species in genera
+    question: Which genera have most species?
     complexity: advanced
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?genus ?genus_label (COUNT(?species) AS ?species_count) WHERE {
+      SELECT ?genus ?genus_label (COUNT(?species) AS ?count)
+      WHERE {
         ?species a tax:Taxon ;
                  tax:rank tax:Species ;
                  rdfs:subClassOf ?genus .
@@ -200,186 +177,140 @@ sparql_query_examples:
                rdfs:label ?genus_label .
       }
       GROUP BY ?genus ?genus_label
-      ORDER BY DESC(?species_count)
+      ORDER BY DESC(?count)
       LIMIT 20
 
-  - title: Get all taxonomic ranks
-    description: Retrieve all taxonomic ranks used in the classification system
-    question: What are all the different taxonomic ranks used in the database?
+  - title: Get Taxonomic Ranks
+    description: Retrieve all taxonomic ranks used
+    question: What ranks are in the taxonomy?
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      SELECT DISTINCT ?rank WHERE { 
+      SELECT DISTINCT ?rank
+      WHERE { 
         ?taxon a tax:Taxon ;
                tax:rank ?rank .
-      } ORDER BY ?rank
+      }
+      ORDER BY ?rank
 
-  - title: Get organisms with genetic codes
-    description: Find organisms with their nuclear and mitochondrial genetic codes
-    question: Which organisms have specific genetic codes assigned, including mitochondrial variants?
+  - title: Find Organisms with Genetic Codes
+    description: Get organisms with genetic code assignments
+    question: Which organisms have genetic codes?
     complexity: intermediate
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?taxon ?label ?genetic_code ?mt_genetic_code WHERE {
+      SELECT ?taxon ?label ?genetic_code ?mt_code
+      WHERE {
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                tax:geneticCode ?genetic_code .
-        OPTIONAL { ?taxon tax:geneticCodeMt ?mt_genetic_code }
-      } LIMIT 10
+        OPTIONAL { ?taxon tax:geneticCodeMt ?mt_code }
+      }
+      LIMIT 20
 
-  - title: Get detailed organism information
-    description: Retrieve comprehensive information about specific organisms
-    question: What are all the properties and values for a specific organism like humans?
+  - title: Search by Common Name
+    description: Find organisms by common name
+    question: Find organisms with "mouse" in common name
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX taxon: <http://identifiers.org/taxonomy/>
-      SELECT ?property ?value WHERE {
-        taxon:9606 ?property ?value .
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?taxon ?label ?commonName
+      WHERE {
+        ?taxon a tax:Taxon ;
+               rdfs:label ?label ;
+               tax:commonName ?commonName .
+        FILTER(CONTAINS(LCASE(?commonName), "mouse"))
       }
+      LIMIT 20
 
 cross_references:
-  - title: NCBI Taxonomy OBO cross-references
-    description: Cross-reference to OBO Foundry NCBITaxon ontology for standardized biological taxonomy integration
+  - title: OBO NCBITaxon Links
+    description: Cross-reference to OBO Foundry NCBITaxon ontology
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      SELECT ?taxon ?label ?obo_ref WHERE {
+      SELECT ?taxon ?label ?obo_ref
+      WHERE {
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                owl:sameAs ?obo_ref .
         FILTER(CONTAINS(STR(?obo_ref), "obolibrary.org/obo/NCBITaxon"))
-      } LIMIT 10
+      }
+      LIMIT 20
 
-  - title: UniProt Taxonomy cross-references
-    description: Cross-reference to UniProt Taxonomy database for protein sequence and functional context
+  - title: UniProt Taxonomy Links
+    description: Cross-reference to UniProt Taxonomy database
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?taxon ?label ?uniprot_ref WHERE {
+      SELECT ?taxon ?label ?uniprot_ref
+      WHERE {
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                rdfs:seeAlso ?uniprot_ref .
         FILTER(CONTAINS(STR(?uniprot_ref), "uniprot.org/taxonomy"))
-      } LIMIT 10
+      }
+      LIMIT 20
 
-  - title: NCBI Gene database links
-    description: Cross-references to NCBI Gene database through TogoID systematic mapping for gene-level data
+  - title: NCBI Gene Database Links
+    description: Cross-references to NCBI Gene via TogoID
     complexity: intermediate
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX tio: <http://togoid.dbcls.jp/ontology#>
-      SELECT ?taxon ?label ?gene_id WHERE {
+      SELECT ?taxon ?label ?gene_id
+      WHERE {
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                tio:TIO_000065 ?gene_id .
-        FILTER(CONTAINS(STR(?gene_id), "ncbigene"))
-      } LIMIT 20
-
-  - title: MBGD organism cross-references
-    description: Cross-references to MBGD (Microbial Genome Database) for comparative genomics and ortholog analysis
-    complexity: intermediate
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX tio: <http://togoid.dbcls.jp/ontology#>
-      SELECT ?taxon ?label ?mbgd_organism WHERE {
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label ;
-               tio:TIO_000002 ?mbgd_organism .
-      } LIMIT 10
-
-  - title: Berkeley BOP NCBITaxon ontology links
-    description: Cross-references to Berkeley BOP NCBITaxon ontology for ontology interoperability and reasoning
-    complexity: basic
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      SELECT ?taxon ?label ?berkeley_ref WHERE {
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label ;
-               owl:sameAs ?berkeley_ref .
-        FILTER(CONTAINS(STR(?berkeley_ref), "berkeleybop.org"))
-      } LIMIT 5
-
-  - title: Direct NCBI Taxonomy web interface links
-    description: Direct cross-references to NCBI Taxonomy web interface for browser-accessible taxonomy information
-    complexity: basic
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      SELECT ?taxon ?label ?ncbi_direct WHERE {
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label ;
-               owl:sameAs ?ncbi_direct .
-        FILTER(CONTAINS(STR(?ncbi_direct), "ncbi.nlm.nih.gov/taxonomy"))
-      } LIMIT 5
-
-  - title: PubMed literature connections
-    description: Connections between taxonomic entities and PubMed literature through TogoID relation graphs
-    complexity: advanced
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX tio: <http://togoid.dbcls.jp/ontology#>
-      SELECT ?taxon ?label ?pubmed_id WHERE {
-        GRAPH <http://rdfportal.org/dataset/togoid/relation/taxonomy-pubmed> {
-          ?taxon tio:relatedTo ?pubmed_id .
-        }
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label .
-      } LIMIT 5
+      }
+      LIMIT 20
 
 architectural_notes:
-  design_patterns:
-    - "Hierarchical classification using rdfs:subClassOf for parent-child taxonomic relationships"
-    - "Extensive cross-referencing with owl:sameAs to maintain interoperability across databases"
-    - "Specialized taxonomic properties under tax: namespace for biological-specific metadata"
-    - "Integration with TogoID ontology for systematic cross-database linking"
-    - "Separation of taxonomic concepts (tax:Taxon) from rank definitions (tax:Rank)"
-    - "Support for multiple naming conventions (scientific, common, GenBank names)"
-    - "Genetic code information linked to organisms for translation context"
-    - "Authority citations for taxonomic nomenclature tracking"
-
-  ontology_structure:
-    - "Primary class: tax:Taxon represents all taxonomic entities from species to superkingdom"
-    - "Taxonomic ranks defined as enumerated OWL classes (tax:Species, tax:Genus, tax:Family, etc.)"
-    - "Genetic codes defined as separate OWL classes with standardized identifiers"
-    - "Heavy use of owl:sameAs for cross-database equivalency mapping"
-    - "Dublin Core terms integration for metadata (dcterms:identifier)"
-    - "RDFS properties for basic labeling and hierarchical relationships"
-    - "TogoID integration provides systematic cross-references to genes, genomes, and literature"
-
-  performance_considerations:
-    - "Large dataset with 3M+ taxonomic entries requires query optimization"
-    - "Hierarchical queries using rdfs:subClassOf* can be computationally expensive for deep lineages"
-    - "Cross-reference queries should be limited to avoid SPARQL endpoint timeouts"
-    - "Indexing on taxonomic ranks improves genus/species filtering performance"
-    - "Consider using LIMIT clauses for exploratory queries on large result sets"
-    - "Multiple owl:sameAs relationships per taxon create large cross-reference datasets"
-
-  data_quality_aspects:
-    - "Systematic cross-referencing ensures consistency across biological databases"
-    - "Authority citations provide provenance for taxonomic classifications"
-    - "Multiple naming systems accommodate different biological research contexts"
-    - "Genetic code assignments reflect current understanding of translation systems"
-    - "TogoID relationships enable reproducible cross-database queries"
+  schema_design:
+    - Hierarchical classification via rdfs:subClassOf for parent-child relationships
+    - Extensive cross-referencing with owl:sameAs for database interoperability
+    - Specialized taxonomic properties under tax namespace
+    - TogoID integration for systematic cross-database linking
+  
+  performance:
+    - 3M+ taxa require query optimization and LIMIT clauses
+    - Hierarchical queries with rdfs:subClassOf* can be expensive
+    - Cross-reference queries should be limited
+    - Indexing on ranks improves filtering performance
+  
+  data_integration:
+    - OBO NCBITaxon for ontology interoperability
+    - UniProt for protein context
+    - NCBI Gene for gene-level data
+    - MBGD for comparative genomics
+    - Berkeley BOP for reasoning
+  
+  data_quality:
+    - Systematic cross-referencing ensures consistency
+    - Authority citations provide provenance
+    - Multiple naming systems accommodate contexts
+    - Genetic code assignments reflect translation systems
 
 data_statistics:
   total_taxa: 3046425
-  estimated_species: 1500000
-  estimated_genera: 200000
-  most_diverse_genus: "Cortinarius (1962 species)"
-  second_most_diverse: "Astragalus (1558 species)"
-  third_most_diverse: "Megaselia (1284 species)"
+  estimated_species: ~1500000
+  estimated_genera: ~200000
   taxonomic_ranks: 47
-  cross_reference_types: 6
-  genetic_codes_represented: 25+
-  last_updated: "2023-10-01T12:00:00Z"
+  
+  indexed_properties:
+    - rdfs:label
+    - dcterms:identifier
+    - tax:rank
+    - rdfs:subClassOf
+  
+  most_diverse_genera:
+    - Cortinarius (1962 species)
+    - Astragalus (1558 species)
+    - Megaselia (1284 species)

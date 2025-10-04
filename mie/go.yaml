@@ -1,28 +1,16 @@
 schema_info:
   title: Gene Ontology (GO)
   description: |
-    The Gene Ontology (GO) is a comprehensive structured vocabulary for annotating gene products 
-    across all species. It provides a unified representation of biological knowledge organized 
-    into three independent ontologies: Molecular Function (activities at the molecular level), 
-    Biological Process (larger processes accomplished by multiple molecular activities), and 
-    Cellular Component (locations where gene products are active).
-    
-    GO terms are organized in a directed acyclic graph (DAG) structure where terms can have 
-    multiple parents and children, allowing for rich and flexible biological annotations. 
-    The ontology is widely used for functional genomics, proteomics, and systems biology research.
+    Comprehensive structured vocabulary for annotating gene products across all species with three independent ontologies:
+    Molecular Function (molecular-level activities), Biological Process (multi-step processes), and Cellular Component
+    (subcellular locations). Uses directed acyclic graph structure allowing multiple parents per term for rich biological
+    annotations. Widely used in functional genomics, proteomics, and systems biology for standardized gene product descriptions.
   endpoint: https://rdfportal.org/primary/sparql
   base_uri: http://purl.obolibrary.org/obo/
   graphs:
     - http://rdfportal.org/ontology/go
-  version_info: Dynamic (updated regularly)
-  license: CC BY 4.0
-  homepage: http://geneontology.org/
 
 shape_expressions: |
-  # Gene Ontology Shape Expressions
-  # Reverse-engineered from the GO RDF data structure
-  # All prefixes are defined here as part of the ShEx schema
-  
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -32,194 +20,91 @@ shape_expressions: |
   PREFIX BFO: <http://purl.obolibrary.org/obo/BFO_>
   PREFIX RO: <http://purl.obolibrary.org/obo/RO_>
   PREFIX IAO: <http://purl.obolibrary.org/obo/IAO_>
-  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   
-  # Core GO Term shape - represents any GO term in the ontology
-  :GOTerm {
-    # Core OWL typing
-    rdf:type [ owl:Class ] ;
-    
-    # Required properties for all GO terms
-    rdfs:label xsd:string ;                           # Human-readable label
-    oboInOwl:id xsd:string ;                          # GO identifier (e.g., "GO:0006915")
+  <GOTerm> {
+    a [ owl:Class ] ;
+    rdfs:label xsd:string ;
+    oboInOwl:id xsd:string ;
     oboInOwl:hasOBONamespace [ "biological_process" "molecular_function" "cellular_component" "external" ] ;
-    
-    # Definition (optional but highly recommended)
-    IAO:0000115 xsd:string ? ;                        # Textual definition
-    
-    # Hierarchical relationships
-    rdfs:subClassOf @:GOTerm * ;                      # Parent terms (is_a relationship)
-    rdfs:subClassOf @:Restriction * ;                 # Complex restrictions
-    
-    # Synonyms (multiple types allowed)
-    oboInOwl:hasExactSynonym xsd:string * ;           # Exact synonyms
-    oboInOwl:hasRelatedSynonym xsd:string * ;         # Related synonyms
-    oboInOwl:hasNarrowSynonym xsd:string * ;          # Narrow synonyms
-    oboInOwl:hasBroadSynonym xsd:string * ;           # Broad synonyms
-    
-    # Cross-references to external databases
-    oboInOwl:hasDbXref xsd:string * ;                 # Database cross-references
-    
-    # Subsets/slims - groupings of terms for specific purposes
-    oboInOwl:inSubset IRI * ;                         # GO slim memberships
-    
-    # Alternative IDs (for merged or obsoleted terms)
-    oboInOwl:hasAlternativeId xsd:string * ;          # Alternative GO IDs
-    
-    # Provenance information
-    oboInOwl:created_by xsd:string ? ;                # Creator
-    oboInOwl:creation_date xsd:dateTime ? ;           # Creation date
-    
-    # Comments and additional information
-    rdfs:comment xsd:string * ;                       # General comments
-    IAO:0100001 xsd:string ? ;                        # Replacement term (for obsolete terms)
-    IAO:0000233 xsd:string * ;                        # Term tracker item
-    
-    # Obsolescence marker
-    owl:deprecated xsd:boolean ? ;                    # Obsolete flag
-    
-    # Part-of and other relationships
-    BFO:0000051 @:GOTerm * ;                          # has_part
-    BFO:0000066 @:GOTerm * ;                          # occurs_in
-    BFO:0000050 @:GOTerm * ;                          # part_of
-    
-    # Equivalence and complex class expressions
-    owl:equivalentClass @:Intersection * ;            # Logical definitions
-    
-    # Other properties
-    skos:notation xsd:string ? ;                      # SKOS notation
+    IAO:0000115 xsd:string ? ;                  # Definition
+    rdfs:subClassOf @<GOTerm> * ;               # Parent terms
+    rdfs:subClassOf @<Restriction> * ;
+    oboInOwl:hasExactSynonym xsd:string * ;
+    oboInOwl:hasRelatedSynonym xsd:string * ;
+    oboInOwl:hasNarrowSynonym xsd:string * ;
+    oboInOwl:hasBroadSynonym xsd:string * ;
+    oboInOwl:hasDbXref xsd:string * ;           # External DB links
+    oboInOwl:inSubset IRI * ;                   # GO slims
+    oboInOwl:hasAlternativeId xsd:string * ;
+    oboInOwl:created_by xsd:string ? ;
+    oboInOwl:creation_date xsd:dateTime ? ;
+    rdfs:comment xsd:string * ;
+    owl:deprecated xsd:boolean ? ;
+    BFO:0000051 @<GOTerm> * ;                   # has_part
+    BFO:0000066 @<GOTerm> * ;                   # occurs_in
+    BFO:0000050 @<GOTerm> *                     # part_of
   }
   
-  # Restriction shape - for OWL restrictions in class expressions
-  :Restriction {
-    rdf:type [ owl:Restriction ] ;
-    owl:onProperty @:ObjectProperty ;                 # The property being restricted
-    owl:someValuesFrom @:GOTerm ;                     # Existential restriction target
-  }
-  
-  # Intersection class for logical definitions
-  :Intersection {
-    rdf:type [ owl:Class ] ;
-    owl:intersectionOf rdf:List ;                     # Intersection of classes
-  }
-  
-  # Object Property shape - relationships between GO terms
-  :ObjectProperty {
-    rdf:type [ owl:ObjectProperty owl:TransitiveProperty ? ] ;
-    rdfs:label xsd:string ? ;                         # Property label
-  }
-  
-  # Annotation Property shape
-  :AnnotationProperty {
-    rdf:type [ owl:AnnotationProperty ] ;
-    rdfs:label xsd:string ? ;                         # Property label
+  <Restriction> {
+    a [ owl:Restriction ] ;
+    owl:onProperty IRI ;
+    owl:someValuesFrom @<GOTerm>
   }
 
 sample_rdf_entries:
-  - title: Biological Process - Apoptotic Process
-    description: |
-      A complete example of a biological process term (GO:0006915) showing hierarchical 
-      relationships, synonyms, definition, cross-references, and alternative IDs.
+  - title: Biological Process with Full Annotations
+    description: Apoptotic process with definition, synonyms, cross-references, and alternative IDs
     rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
       obo:GO_0006915 a owl:Class ;
         rdfs:label "apoptotic process" ;
         oboInOwl:id "GO:0006915" ;
         oboInOwl:hasOBONamespace "biological_process" ;
         rdfs:subClassOf obo:GO_0012501 ;
-        obo:IAO_0000115 """A programmed cell death process which begins when a cell 
-          receives an internal (e.g. DNA damage) or external signal (e.g. an extracellular 
-          death ligand), and proceeds through a series of biochemical events (signaling 
-          pathway phase) which trigger an execution phase.""" ;
+        obo:IAO_0000115 "A programmed cell death process which begins when a cell receives an internal or external signal." ;
         oboInOwl:hasExactSynonym "apoptotic cell death" ;
-        oboInOwl:hasExactSynonym "apoptotic programmed cell death" ;
         oboInOwl:hasNarrowSynonym "apoptosis" ;
         oboInOwl:hasBroadSynonym "cell suicide" ;
-        oboInOwl:hasRelatedSynonym "apoptosis activator activity" ;
         oboInOwl:hasDbXref "Reactome:R-HSA-109581" ;
         oboInOwl:hasDbXref "Wikipedia:Apoptosis" ;
         oboInOwl:hasAlternativeId "GO:0006917" ;
-        oboInOwl:hasAlternativeId "GO:0008632" ;
-        obo:BFO_0000051 obo:GO_0097190 ;
-        obo:BFO_0000051 obo:GO_0097194 .
+        obo:BFO_0000051 obo:GO_0097190 .
 
-  - title: Molecular Function - DNA-binding Transcription Factor Activity
-    description: |
-      Example of a molecular function term (GO:0003700) with hierarchical parent 
-      relationship and detailed functional definition.
+  - title: Molecular Function
+    description: DNA-binding transcription factor activity with functional definition
     rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
       obo:GO_0003700 a owl:Class ;
         rdfs:label "DNA-binding transcription factor activity" ;
         oboInOwl:id "GO:0003700" ;
         oboInOwl:hasOBONamespace "molecular_function" ;
         rdfs:subClassOf obo:GO_0140110 ;
-        obo:IAO_0000115 """A transcription regulator activity that modulates 
-          transcription of gene sets via selective and non-covalent binding to a 
-          specific double-stranded genomic DNA sequence within a cis-regulatory region.""" .
+        obo:IAO_0000115 "A transcription regulator activity that modulates transcription via selective binding to DNA." .
 
-  - title: Cellular Component - Nucleus
-    description: |
-      Example of a cellular component term (GO:0005634) representing a membrane-bounded 
-      organelle with cross-references to external resources.
+  - title: Cellular Component
+    description: Nucleus as membrane-bounded organelle with Wikipedia cross-reference
     rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
       obo:GO_0005634 a owl:Class ;
         rdfs:label "nucleus" ;
         oboInOwl:id "GO:0005634" ;
         oboInOwl:hasOBONamespace "cellular_component" ;
-        obo:IAO_0000115 """A membrane-bounded organelle of eukaryotic cells in which 
-          chromosomes are housed and replicated. In most cells, the nucleus contains 
-          all of the cell's chromosomes except the organellar chromosomes.""" ;
-        oboInOwl:hasDbXref "NIF_Subcellular:sao1702920020" ;
+        obo:IAO_0000115 "A membrane-bounded organelle of eukaryotic cells containing chromosomes." ;
         oboInOwl:hasDbXref "Wikipedia:Cell_nucleus" .
 
-  - title: Root Term - Biological Process
-    description: |
-      The root term for all biological processes (GO:0008150), showing subset 
-      memberships (GO slims) and alternative IDs from merged terms.
+  - title: Root Term with GO Slims
+    description: Biological process root showing subset memberships
     rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
       obo:GO_0008150 a owl:Class ;
         rdfs:label "biological_process" ;
         oboInOwl:id "GO:0008150" ;
         oboInOwl:hasOBONamespace "biological_process" ;
-        obo:IAO_0000115 """A biological process is the execution of a genetically-encoded 
-          biological module or program. It consists of all the steps required to achieve 
-          the specific biological objective of the module.""" ;
+        obo:IAO_0000115 "A biological process is the execution of a genetically-encoded biological module." ;
         oboInOwl:inSubset <http://purl.obolibrary.org/obo/go#goslim_yeast> ;
-        oboInOwl:inSubset <http://purl.obolibrary.org/obo/go#goslim_plant> ;
         oboInOwl:hasAlternativeId "GO:0007582" ;
-        oboInOwl:hasAlternativeId "GO:0000004" ;
         oboInOwl:created_by "jl" ;
         oboInOwl:creation_date "2012-09-19T15:05:24Z"^^xsd:dateTime .
 
-  - title: Regulation Relationship Example
-    description: |
-      Term demonstrating OWL restrictions for biological regulation - positive regulation 
-      of DNA-templated transcription (GO:0045893) with its regulatory target.
+  - title: Term with Regulatory Relationship
+    description: Positive regulation with OWL restriction showing regulatory target
     rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
       obo:GO_0045893 a owl:Class ;
         rdfs:label "positive regulation of DNA-templated transcription" ;
         oboInOwl:id "GO:0045893" ;
@@ -230,83 +115,55 @@ sample_rdf_entries:
           owl:someValuesFrom obo:GO_0006351
         ] .
 
-  - title: Catalytic Activity with Cross-references
-    description: |
-      Molecular function term for catalytic activity (GO:0003824) with Wikipedia 
-      cross-reference for enzyme information.
-    rdf: |
-      @prefix obo: <http://purl.obolibrary.org/obo/> .
-      @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix owl: <http://www.w3.org/2002/07/owl#> .
-      
-      obo:GO_0003824 a owl:Class ;
-        rdfs:label "catalytic activity" ;
-        oboInOwl:id "GO:0003824" ;
-        oboInOwl:hasOBONamespace "molecular_function" ;
-        obo:IAO_0000115 """Catalysis of a biochemical reaction at physiological 
-          temperatures. In biologically catalyzed reactions, the reactants are known 
-          as substrates, and the catalysts are naturally occurring macromolecular 
-          substances known as enzymes.""" ;
-        oboInOwl:hasDbXref "Wikipedia:Enzyme" .
-
 sparql_query_examples:
-  - title: Get all GO terms in a specific namespace
-    description: |
-      Retrieve GO terms filtered by their ontology namespace (biological_process, 
-      molecular_function, or cellular_component).
-    question: What are some GO terms in the biological process namespace?
+  - title: Get Terms by Namespace
+    description: Retrieve GO terms filtered by ontology type
+    question: What biological process terms are in GO?
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
       SELECT ?term ?label ?definition
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasOBONamespace "biological_process" .
-        OPTIONAL { ?term <http://purl.obolibrary.org/obo/IAO_0000115> ?definition }
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasOBONamespace "biological_process" .
+        OPTIONAL { ?term obo:IAO_0000115 ?definition }
       }
       LIMIT 20
 
-  - title: Find GO term by label or synonym
-    description: |
-      Search for GO terms using text matching on labels and synonyms. Useful for 
-      finding terms when you know the biological concept but not the GO ID.
-    question: Find GO terms related to "apoptosis"
+  - title: Search by Label or Synonym
+    description: Find GO terms using text matching
+    question: Find terms related to apoptosis
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
       SELECT DISTINCT ?term ?label ?synonym ?namespace
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasOBONamespace ?namespace .
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasOBONamespace ?namespace .
         OPTIONAL { ?term oboInOwl:hasExactSynonym ?synonym }
         FILTER(CONTAINS(LCASE(?label), "apoptosis") || 
                CONTAINS(LCASE(?synonym), "apoptosis"))
       }
       LIMIT 20
 
-  - title: Get parent terms (is_a hierarchy)
-    description: |
-      Retrieve direct parent terms for a specific GO term using the rdfs:subClassOf 
-      relationship. Essential for understanding term hierarchies.
-    question: What are the parent terms of apoptotic process (GO:0006915)?
+  - title: Get Parent Terms
+    description: Retrieve direct parent terms in hierarchy
+    question: What are parents of apoptotic process?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
       SELECT ?parent ?parent_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -315,470 +172,182 @@ sparql_query_examples:
         FILTER(isIRI(?parent))
       }
 
-  - title: Get child terms (descendants)
-    description: |
-      Find all direct child terms of a GO term - terms that are more specific 
-      instances of the queried term.
-    question: What are the child terms of apoptotic process?
+  - title: Get Child Terms
+    description: Find direct child terms (more specific)
+    question: What are children of apoptotic process?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
       SELECT ?child ?child_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?child rdfs:subClassOf obo:GO_0006915 .
-        ?child rdfs:label ?child_label .
+        ?child rdfs:subClassOf obo:GO_0006915 ;
+               rdfs:label ?child_label .
       }
       LIMIT 20
 
-  - title: Find terms with specific synonyms
-    description: |
-      Search for GO terms by their exact, narrow, broad, or related synonyms. 
-      Particularly useful for finding historical or alternative names.
-    question: Find GO terms with the exact synonym "cell suicide"
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?synonym_type ?synonym
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        {
-          ?term oboInOwl:hasExactSynonym ?synonym .
-          BIND("exact" AS ?synonym_type)
-        } UNION {
-          ?term oboInOwl:hasBroadSynonym ?synonym .
-          BIND("broad" AS ?synonym_type)
-        } UNION {
-          ?term oboInOwl:hasNarrowSynonym ?synonym .
-          BIND("narrow" AS ?synonym_type)
-        } UNION {
-          ?term oboInOwl:hasRelatedSynonym ?synonym .
-          BIND("related" AS ?synonym_type)
-        }
-        FILTER(CONTAINS(LCASE(?synonym), "cell suicide"))
-      }
-
-  - title: Get terms in GO slims (subsets)
-    description: |
-      Retrieve terms belonging to specific GO slim subsets, which are curated 
-      sets of high-level terms for various organisms or purposes.
-    question: What GO terms are in the yeast GO slim?
+  - title: Terms in GO Slims
+    description: Retrieve terms from curated high-level subsets
+    question: What terms are in yeast GO slim?
     complexity: intermediate
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
       SELECT ?term ?label ?namespace
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasOBONamespace ?namespace .
-        ?term oboInOwl:inSubset <http://purl.obolibrary.org/obo/go#goslim_yeast> .
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasOBONamespace ?namespace ;
+              oboInOwl:inSubset <http://purl.obolibrary.org/obo/go#goslim_yeast> .
       }
       ORDER BY ?namespace ?label
       LIMIT 50
 
-  - title: Find obsolete terms
-    description: |
-      Identify obsolete GO terms that are no longer recommended for use, along 
-      with their replacement terms if available.
-    question: Which GO terms are obsolete?
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
-      SELECT ?term ?label ?replacement
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term owl:deprecated true .
-        OPTIONAL { ?term obo:IAO_0100001 ?replacement }
-      }
-      LIMIT 20
-
-  - title: Count terms by namespace
-    description: |
-      Get statistics on the number of terms in each of the three GO ontologies 
-      (biological_process, molecular_function, cellular_component).
-    question: How many terms are in each GO namespace?
+  - title: Count Terms by Namespace
+    description: Statistics on term distribution across ontologies
+    question: How many terms in each GO namespace?
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?namespace (COUNT(DISTINCT ?term) AS ?term_count)
+      SELECT ?namespace (COUNT(DISTINCT ?term) AS ?count)
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term oboInOwl:hasOBONamespace ?namespace .
+        ?term a owl:Class ;
+              oboInOwl:hasOBONamespace ?namespace .
       }
       GROUP BY ?namespace
-      ORDER BY DESC(?term_count)
+      ORDER BY DESC(?count)
 
-  - title: Get terms with regulatory relationships
-    description: |
-      Find GO terms that participate in regulatory relationships (regulates, 
-      positively_regulates, negatively_regulates) using OWL restrictions.
-    question: What processes does GO:0045893 positively regulate?
+  - title: Find Regulatory Relationships
+    description: Discover terms with regulation relationships using OWL restrictions
+    question: What does GO:0045893 positively regulate?
     complexity: advanced
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
       SELECT ?term ?label ?relation ?target ?target_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdfs:label ?label .
-        ?term rdfs:subClassOf ?restriction .
-        ?restriction rdf:type owl:Restriction .
-        ?restriction owl:onProperty ?relation .
-        ?restriction owl:someValuesFrom ?target .
+        ?term rdfs:label ?label ;
+              rdfs:subClassOf ?restriction .
+        ?restriction a owl:Restriction ;
+                    owl:onProperty ?relation ;
+                    owl:someValuesFrom ?target .
         ?target rdfs:label ?target_label .
         FILTER(?term = obo:GO_0045893)
         FILTER(?relation IN (obo:RO_0002211, obo:RO_0002212, obo:RO_0002213))
       }
 
-  - title: Find terms with part-of relationships
-    description: |
-      Retrieve GO terms connected by part-of (BFO:0000050) or has-part (BFO:0000051) 
-      relationships, showing compositional hierarchies.
-    question: What are the parts of the apoptotic process?
-    complexity: intermediate
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
-      SELECT ?part ?part_label
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        obo:GO_0006915 obo:BFO_0000051 ?part .
-        ?part rdfs:label ?part_label .
-      }
-
-  - title: Get complete term information
-    description: |
-      Retrieve comprehensive information about a specific GO term including label, 
-      definition, namespace, all synonyms, cross-references, and provenance data.
-    question: What is the complete information for GO:0006915?
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?property ?value
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        obo:GO_0006915 ?property ?value .
-        FILTER(?property IN (
-          rdfs:label, oboInOwl:id, oboInOwl:hasOBONamespace,
-          obo:IAO_0000115, oboInOwl:hasExactSynonym,
-          oboInOwl:hasRelatedSynonym, oboInOwl:hasDbXref,
-          oboInOwl:created_by, oboInOwl:creation_date
-        ))
-      }
-
-  - title: Find root terms of each ontology
-    description: |
-      Identify the three root terms that represent the top-level categories 
-      of GO (biological_process, molecular_function, cellular_component).
-    question: What are the root terms of GO?
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
-      SELECT ?term ?label ?definition
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdfs:label ?label .
-        OPTIONAL { ?term obo:IAO_0000115 ?definition }
-        FILTER(?term IN (obo:GO_0003674, obo:GO_0008150, obo:GO_0005575))
-      }
-
-  - title: Search for enzyme-related terms
-    description: |
-      Find molecular function terms related to enzymatic activities by searching 
-      for terms with Enzyme Commission (EC) cross-references.
-    question: Find GO terms with EC number cross-references
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT DISTINCT ?term ?label ?ec_number
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?ec_number .
-        FILTER(STRSTARTS(?ec_number, "EC:"))
-      }
-      LIMIT 20
-
-  - title: Get alternative IDs for merged terms
-    description: |
-      Find GO terms that have alternative IDs, typically resulting from term 
-      mergers where old IDs are preserved for backward compatibility.
-    question: Which GO terms have alternative IDs?
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?alt_id
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasAlternativeId ?alt_id .
-      }
-      LIMIT 20
-
 cross_references:
-  - title: Reactome pathway cross-references
-    description: |
-      GO terms are cross-referenced to Reactome pathways (biological processes). 
-      Use the hasDbXref property with "Reactome:" prefix to find pathway mappings 
-      that connect GO biological processes to detailed biochemical pathways.
+  - title: Reactome Pathway Links
+    description: Connect GO processes to detailed biochemical pathways
     complexity: intermediate
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
       SELECT ?term ?label ?reactome_id
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?reactome_id .
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasDbXref ?reactome_id .
         FILTER(STRSTARTS(?reactome_id, "Reactome:"))
       }
       LIMIT 20
 
-  - title: Wikipedia cross-references
-    description: |
-      Many GO terms link to Wikipedia articles for additional context and 
-      background information. These cross-references use the "Wikipedia:" prefix.
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?wikipedia_url
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?wikipedia_url .
-        FILTER(STRSTARTS(?wikipedia_url, "Wikipedia:"))
-      }
-      LIMIT 20
-
-  - title: Enzyme Commission (EC) numbers
-    description: |
-      Molecular function terms for enzymatic activities are linked to EC numbers, 
-      which provide a hierarchical classification of enzyme-catalyzed reactions.
+  - title: Enzyme Commission Numbers
+    description: Link molecular functions to EC enzyme classification
     complexity: intermediate
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
       SELECT ?term ?label ?ec_number
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasOBONamespace "molecular_function" .
-        ?term oboInOwl:hasDbXref ?ec_number .
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasOBONamespace "molecular_function" ;
+              oboInOwl:hasDbXref ?ec_number .
         FILTER(STRSTARTS(?ec_number, "EC:"))
       }
       LIMIT 20
 
-  - title: RHEA reaction cross-references
-    description: |
-      GO molecular function terms are linked to RHEA reactions, which describe 
-      biochemical transformations in a structured format compatible with chemical databases.
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?rhea_id
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?rhea_id .
-        FILTER(STRSTARTS(?rhea_id, "RHEA:"))
-      }
-      LIMIT 20
-
-  - title: MetaCyc pathway cross-references
-    description: |
-      GO terms link to MetaCyc database entries, which describe metabolic pathways 
-      and enzymatic reactions across all domains of life.
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?metacyc_id
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?metacyc_id .
-        FILTER(STRSTARTS(?metacyc_id, "MetaCyc:"))
-      }
-      LIMIT 20
-
-  - title: PubMed literature references
-    description: |
-      GO terms are annotated with PubMed IDs (PMIDs) linking to research articles 
-      that provide evidence or context for the term definition and usage.
+  - title: Wikipedia References
+    description: Find Wikipedia articles for additional context
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?term ?label ?pmid
+      SELECT ?term ?label ?wikipedia_url
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
-        ?term rdf:type owl:Class .
-        ?term rdfs:label ?label .
-        ?term oboInOwl:hasDbXref ?pmid .
-        FILTER(STRSTARTS(?pmid, "PMID:"))
+        ?term a owl:Class ;
+              rdfs:label ?label ;
+              oboInOwl:hasDbXref ?wikipedia_url .
+        FILTER(STRSTARTS(?wikipedia_url, "Wikipedia:"))
       }
-      LIMIT 20
-
-  - title: Statistics on cross-reference types
-    description: |
-      Get an overview of the different types and quantities of database 
-      cross-references in GO, showing which external resources are most commonly linked.
-    complexity: intermediate
-    sparql: |
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      SELECT ?db_prefix (COUNT(*) AS ?xref_count)
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term oboInOwl:hasDbXref ?dbxref .
-        BIND(REPLACE(STR(?dbxref), ":.*", "") AS ?db_prefix)
-      }
-      GROUP BY ?db_prefix
-      ORDER BY DESC(?xref_count)
       LIMIT 20
 
 architectural_notes:
-  ontology_structure: |
-    The Gene Ontology uses a directed acyclic graph (DAG) structure where:
-    - Each term can have multiple parents (unlike a tree structure)
-    - Terms can appear in multiple paths to the root
-    - Three separate root terms exist: GO:0003674 (molecular_function), 
-      GO:0008150 (biological_process), GO:0005575 (cellular_component)
-    - Hierarchical relationships are primarily expressed via rdfs:subClassOf
-    
-  owl_restrictions: |
-    Complex relationships in GO are encoded as OWL restrictions:
-    - Regulatory relationships use RO properties (RO_0002211 regulates, 
-      RO_0002212 negatively_regulates, RO_0002213 positively_regulates)
-    - Compositional relationships use BFO properties (BFO_0000050 part_of, 
-      BFO_0000051 has_part, BFO_0000066 occurs_in)
-    - These are expressed as anonymous restriction nodes with owl:onProperty 
-      and owl:someValuesFrom
-    
-  synonym_types: |
-    GO provides four types of synonyms with distinct semantics:
-    - hasExactSynonym: Precise alternative name, interchangeable with primary label
-    - hasNarrowSynonym: More specific term that is sometimes appropriate
-    - hasBroadSynonym: More general term that is sometimes appropriate
-    - hasRelatedSynonym: Related term that may be useful but not synonymous
-    
-  obsolescence_handling: |
-    Obsolete terms are marked with owl:deprecated "true" and may include:
-    - IAO_0100001 property pointing to replacement term(s)
-    - Alternative IDs (hasAlternativeId) from merged terms
-    - Obsolete terms remain in the ontology to preserve annotation history
-    
-  go_slims: |
-    GO slims (subsets) are curated high-level term sets for specific purposes:
-    - Organism-specific (e.g., goslim_yeast, goslim_plant)
-    - Application-specific (e.g., goslim_generic, goslim_chembl)
-    - Expressed via oboInOwl:inSubset property
-    - Used for summarizing large-scale annotation datasets
-    
-  query_optimization: |
-    For efficient SPARQL queries:
-    - Always specify the named graph: FROM <http://rdfportal.org/ontology/go>
+  schema_design:
+    - Directed acyclic graph allowing multiple parents per term
+    - Three separate root terms for molecular_function, biological_process, cellular_component
+    - Hierarchical relationships via rdfs:subClassOf
+    - Complex relationships encoded as OWL restrictions with RO and BFO properties
+  
+  performance:
     - Filter by namespace early to reduce result sets
-    - Use FILTER(isIRI(?parent)) when traversing subClassOf to exclude blank nodes
-    - Index-friendly patterns: exact term lookups by URI are fastest
-    - Text searches benefit from LCASE() and CONTAINS() for case-insensitive matching
-    
-  cross_reference_patterns: |
-    Cross-references follow consistent patterns:
-    - Format: "Database:Identifier" (e.g., "EC:1.1.1.1", "PMID:12345678")
-    - Most common: GOC (internal), EC (enzymes), PMID (literature), 
-      Reactome (pathways), RHEA (reactions)
-    - Extract database prefix with: REPLACE(STR(?dbxref), ":.*", "")
-    - Some cross-references like Wikipedia encode article names after the colon
+    - Use FILTER(isIRI(?parent)) to exclude blank restriction nodes
+    - Exact term lookups by URI are fastest
+    - Text searches benefit from LCASE() and CONTAINS()
+  
+  data_integration:
+    - Reactome for pathway details
+    - EC numbers for enzyme classification
+    - RHEA for biochemical reactions
+    - MetaCyc for metabolic pathways
+    - PubMed for literature
+    - Wikipedia for context
+  
+  data_quality:
+    - Four synonym types with distinct semantics (exact, narrow, broad, related)
+    - Obsolete terms marked with owl:deprecated but preserved for history
+    - Alternative IDs from merged terms
+    - GO slims provide curated high-level subsets
+    - Cross-references follow Database:Identifier format
 
 data_statistics:
   total_classes: 61898
-  biological_process_terms: 30804
-  molecular_function_terms: 12793
-  cellular_component_terms: 4568
-  total_restrictions: 27342
-  total_axioms: 131611
-  object_properties: 9
-  annotation_properties: 62
-  obsolete_terms: "~11,905 (marked with owl:deprecated)"
-  cross_references: "~194,180 total database cross-references"
-  top_xref_databases: "GOC, EC, PMID, Reactome, RHEA, MetaCyc"
-  go_slim_count: "20+ different GO slim subsets"
+  biological_process: 30804
+  molecular_function: 12793
+  cellular_component: 4568
+  obsolete_terms: ~11905
+  cross_references: ~194180
   
-  performance_notes: |
-    - Queries filtering by namespace are optimized for the three main ontologies
-    - Traversing hierarchies via rdfs:subClassOf is efficient but may need recursion
-    - Text searches on labels/synonyms benefit from indexes but can be slow on large result sets
-    - Cross-reference queries filtering by prefix (STRSTARTS) are reasonably fast
-    - Restriction-based relationship queries are more complex and may be slower
+  indexed_properties:
+    - rdfs:label
+    - oboInOwl:id
+    - oboInOwl:hasOBONamespace
+    - rdfs:subClassOf
+    - oboInOwl:hasDbXref
+  
+  top_xref_databases:
+    - GOC (internal)
+    - EC (enzymes)
+    - PMID (literature)
+    - Reactome (pathways)
+    - RHEA (reactions)

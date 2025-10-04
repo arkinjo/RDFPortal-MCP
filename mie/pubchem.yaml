@@ -1,407 +1,407 @@
 schema_info:
-  title: PubChem RDF Schema
-  description: A comprehensive chemical database providing detailed information about chemical compounds, biological assays, substances, and their cross-references to major biomedical ontologies including ChEBI, SNOMED CT, NCI Thesaurus, and BioAssay Ontology
+  title: PubChem RDF
+  description: |
+    PubChem is a comprehensive chemical information database maintained by NCBI containing over 119 million chemical compounds, 329 million substances, 1.7 million bioassays, and related data. It provides detailed chemical structures, physical properties, biological activities, safety information, and patent data. PubChem links chemicals to genes, proteins, pathways, and diseases, making it a central resource for drug discovery, chemical biology, and cheminformatics research. The RDF representation enables semantic integration with external databases including ChEBI, UniProt, KEGG, MeSH, and Wikidata.
   endpoint: https://rdfportal.org/backend/pubchem/sparql
   base_uri: http://rdf.ncbi.nlm.nih.gov/pubchem/
   graphs:
     - http://rdf.ncbi.nlm.nih.gov/pubchem/compound
-    - http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay
     - http://rdf.ncbi.nlm.nih.gov/pubchem/substance
-    - http://rdf.ncbi.nlm.nih.gov/pubchem/patent
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay
     - http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/compound
     - http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/substance
     - http://rdf.ncbi.nlm.nih.gov/pubchem/gene
     - http://rdf.ncbi.nlm.nih.gov/pubchem/protein
-    - http://rdf.ncbi.nlm.nih.gov/pubchem/pathway
-    - http://rdf.ncbi.nlm.nih.gov/pubchem/disease
-    - http://rdf.ncbi.nlm.nih.gov/pubchem/taxonomy
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/inchikey
     - http://rdf.ncbi.nlm.nih.gov/pubchem/synonym
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/patent
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/reference
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/pathway
+    - http://rdf.ncbi.nlm.nih.gov/pubchem/taxonomy
 
 shape_expressions: |
-  # PubChem RDF Shape Expressions (ShExC)
-  # Reverse-engineered from actual database content
-  
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-  PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/>
-  PREFIX bioassay: <http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/>
-  PREFIX substance: <http://rdf.ncbi.nlm.nih.gov/pubchem/substance/>
-  PREFIX patent: <http://rdf.ncbi.nlm.nih.gov/pubchem/patent/>
-  PREFIX chebi: <http://purl.obolibrary.org/obo/>
   PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREFIX cito: <http://purl.org/spar/cito/>
+  PREFIX obo: <http://purl.obolibrary.org/obo/>
   PREFIX bao: <http://www.bioassayontology.org/bao#>
-  PREFIX snomedct: <http://purl.bioontology.org/ontology/SNOMEDCT/>
-  PREFIX nci: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
-  PREFIX ndfrt: <http://purl.bioontology.org/ontology/NDFRT/>
+  PREFIX up: <http://purl.uniprot.org/core/>
+  PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
   
-  # Chemical Compound Shape
-  # Represents a chemical compound with cross-references to biomedical ontologies
   <CompoundShape> {
     a [ vocab:Compound ] ;
-    # ChEBI chemical entity classifications (multiple inheritance allowed)
-    a @<ChEBIType>* ;
-    # SNOMED CT medical terminology classifications
-    a @<SNOMEDType>* ;
-    # NCI Thesaurus cancer and drug development terms
-    a @<NCIType>* ;
-    # National Drug File Reference Terminology
-    a @<NDFRTType>* ;
-    # Semantic Science Integrated Ontology types
-    a @<SIOType>* ;
-    # Patents that discuss this compound
-    cito:isDiscussedBy IRI* ;
+    skos:prefLabel xsd:string ;
+    dcterms:identifier xsd:string ;
+    rdfs:seeAlso IRI * ;
+    sio:SIO_000008 @<DescriptorShape> * ;
+    vocab:is_active_ingredient_of IRI * ;
+    obo:RO_0000087 IRI * ;                    # Has role (e.g., FDA approved drug)
+    sio:CHEMINF_000455 IRI *                   # Has stereoisomer
   }
   
-  # ChEBI Chemical Entity Type
-  # Pattern: CHEBI_ followed by numeric identifier
-  <ChEBIType> {
-    a [ chebi:~ ]
-  } // rdf:type IRI matching chebi namespace
-  
-  # SNOMED CT Clinical Terms Type
-  # Pattern: 8-9 digit numeric identifier for medical concepts
-  <SNOMEDType> {
-    a [ snomedct:~ ]
-  } // rdf:type IRI matching SNOMED CT namespace
-  
-  # NCI Thesaurus Type
-  # Pattern: C followed by numeric identifier for cancer research terms
-  <NCIType> {
-    a [ nci:~ ]
-  } // rdf:type IRI matching NCI Thesaurus namespace
-  
-  # NDFRT Drug Classification Type
-  # Pattern: N followed by numeric identifier for drug categorization
-  <NDFRTType> {
-    a [ ndfrt:~ ]
-  } // rdf:type IRI matching NDFRT namespace
-  
-  # Semantic Science Integrated Ontology Type
-  # Pattern: SIO_ followed by numeric identifier
-  <SIOType> {
-    a [ sio:~ ]
-  } // rdf:type IRI matching SIO namespace
-  
-  # Biological Assay Shape
-  # Represents experimental bioassays with methodology classifications
-  <BioAssayShape> {
-    a [ vocab:BioAssay ] ;
-    # BioAssay Ontology classifications for experimental design
-    a @<BAOType>* ;
-    # Descriptive title of the experimental assay
-    dcterms:title xsd:string ? ;
+  <DescriptorShape> {
+    a [ sio:CHEMINF_000334 OR                  # Molecular weight
+        sio:CHEMINF_000396 OR                  # InChI
+        sio:CHEMINF_000399 OR                  # InChIKey
+        sio:CHEMINF_000018 OR                  # SMILES
+        sio:CHEMINF_000335 ] ;                 # Molecular formula
+    sio:SIO_000300 . ;                         # Has value (mixed types)
+    sio:SIO_000221 IRI ?                       # Has unit
   }
   
-  # BioAssay Ontology Type
-  # Pattern: BAO_ followed by numeric identifier for assay methodology
-  <BAOType> {
-    a [ bao:~ ]
-  } // rdf:type IRI matching BAO namespace
-  
-  # Substance Shape
-  # Represents raw chemical materials from various sources
   <SubstanceShape> {
     a [ vocab:Substance ] ;
-    # Source database or organization providing substance data
-    dcterms:source xsd:string ? ;
+    dcterms:identifier xsd:string ;
+    dcterms:source IRI ;
+    dcterms:modified xsd:date ? ;
+    dcterms:available xsd:date ? ;
+    sio:SIO_000008 IRI *
   }
   
-  # Patent Shape
-  # Represents patent documents discussing chemical compounds
-  <PatentShape> {
-    # Compounds discussed in this patent
-    cito:discusses @<CompoundShape>* ;
+  <BioAssayShape> {
+    a [ vocab:BioAssay bao:BAO_0000015 ] ;
+    dcterms:title xsd:string ;
+    dcterms:identifier xsd:string ;
+    dcterms:source IRI ;
+    bao:BAO_0000209 IRI * ;                    # Has measure group
+    bao:BAO_0000210 IRI *                      # Has assay format
+  }
+  
+  <GeneShape> {
+    a [ vocab:Gene sio:SIO_010035 ] ;
+    cito:isDiscussedBy IRI *                   # Referenced in patents
+  }
+  
+  <ProteinShape> {
+    a [ vocab:Protein sio:SIO_010043 ] ;
+    skos:prefLabel xsd:string ;
+    dcterms:identifier xsd:string ;
+    rdfs:seeAlso IRI ;
+    up:organism IRI ;
+    pdbx:link_to_pdb IRI * ;
+    vocab:hasSimilarProtein IRI * ;
+    obo:RO_0002180 IRI * ;                     # Has conserved domain
+    bao:BAO_0002817 xsd:string ;               # Amino acid sequence
+    cito:isDiscussedBy IRI *
+  }
+  
+  <InChIKeyShape> {
+    a [ vocab:InChIKey sio:CHEMINF_000399 ] ;
+    sio:SIO_000300 xsd:string ;
+    sio:SIO_000011 IRI ;                       # Refers to compound
+    dcterms:subject IRI *                      # MeSH terms
   }
 
 sample_rdf_entries:
-  - title: Compound with Multiple Cross-references
-    description: A compound (CID10000462) with ChEBI chemical entity classification demonstrating multiple inheritance pattern where compounds are typed with ontology classes
+  - title: Core Compound - Aspirin (CID2244)
+    description: FDA-approved NSAID with complete chemical descriptors, stereoisomers, and external database cross-references.
     rdf: |
       @prefix compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/> .
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
-      @prefix chebi: <http://purl.obolibrary.org/obo/> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+      @prefix dcterms: <http://purl.org/dc/terms/> .
+      @prefix obo: <http://purl.obolibrary.org/obo/> .
       
-      compound:CID10000462 a vocab:Compound ;
-        a chebi:CHEBI_226060 .
-        
-  - title: Compound with Medical Classifications
-    description: A compound (CID9939594) classified with both SNOMED CT medical terminology and NCI Thesaurus cancer research terms, showing integration with clinical databases
+      compound:CID2244 a vocab:Compound ;
+        skos:prefLabel "Aspirin" ;
+        dcterms:identifier "2244" ;
+        rdfs:seeAlso <http://www.wikidata.org/entity/Q18216> ;
+        sio:SIO_000008 <http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/CID2244_Molecular_Weight> ,
+                       <http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/CID2244_IUPAC_InChI> ;
+        obo:RO_0000087 vocab:FDAApprovedDrugs ;
+        sio:CHEMINF_000455 compound:CID102100677 .
+  
+  - title: Chemical Descriptor - Molecular Weight
+    description: Molecular weight descriptor with value and unit information for Aspirin.
     rdf: |
-      @prefix compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/> .
-      @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
-      @prefix snomedct: <http://purl.bioontology.org/ontology/SNOMEDCT/> .
-      @prefix nci: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#> .
+      @prefix descriptor: <http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/> .
+      @prefix sio: <http://semanticscience.org/resource/> .
       
-      compound:CID9939594 a vocab:Compound ;
-        a snomedct:34462007 ;
-        a nci:C47634 .
-        
-  - title: Anti-inflammatory Bioassay
-    description: A bioassay (AID1932045) testing TNF-alpha inhibition in mouse cells, demonstrating how experimental methodologies are documented with descriptive titles
+      descriptor:CID2244_Molecular_Weight a sio:CHEMINF_000334 ;
+        sio:SIO_000300 180.16 ;
+        sio:SIO_000221 <http://purl.obolibrary.org/obo/UO_0000055> .
+  
+  - title: BioAssay Data
+    description: NCI human tumor cell line growth inhibition assay with measure groups and assay format.
     rdf: |
       @prefix bioassay: <http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/> .
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
+      @prefix bao: <http://www.bioassayontology.org/bao#> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
       
-      bioassay:AID1932045 a vocab:BioAssay ;
-        dcterms:title "Antiinflammatory activity in mouse RAW264.7 cells assessed as inhibition of LPS-induced TNFalpha expression at 5 ug/ml" .
-        
-  - title: Compound with ChEBI Chemical Classification
-    description: A compound (CID100018) with ChEBI ontology classification (CHEBI_91809), showing standardized chemical nomenclature integration
+      bioassay:AID1 a vocab:BioAssay , bao:BAO_0000015 ;
+        dcterms:title "NCI human tumor cell line growth inhibition assay. Data for the NCI-H23 Non-Small Cell Lung cell line" ;
+        dcterms:identifier "1" ;
+        dcterms:source <http://rdf.ncbi.nlm.nih.gov/pubchem/source/DTP_NCI> ;
+        bao:BAO_0000209 <http://rdf.ncbi.nlm.nih.gov/pubchem/measuregroup/AID1> ;
+        bao:BAO_0000210 bao:BAO_0000030 .
+  
+  - title: Protein Entry with PDB Cross-references
+    description: Glutathione S-transferase protein with taxonomy, PDB links, sequence, and conserved domains.
     rdf: |
-      @prefix compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/> .
+      @prefix protein: <http://rdf.ncbi.nlm.nih.gov/pubchem/protein/> .
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
-      @prefix chebi: <http://purl.obolibrary.org/obo/> .
+      @prefix sio: <http://semanticscience.org/resource/> .
+      @prefix up: <http://purl.uniprot.org/core/> .
+      @prefix pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#> .
+      @prefix obo: <http://purl.obolibrary.org/obo/> .
+      @prefix bao: <http://www.bioassayontology.org/bao#> .
       
-      compound:CID100018 a vocab:Compound ;
-        a chebi:CHEBI_91809 .
-        
-  - title: Complex Bioassay with Detailed Methodology
-    description: A bioassay (AID1932049) for NO production inhibition testing, demonstrating detailed experimental protocol documentation in assay titles
+      protein:ACC10GS_A a vocab:Protein , sio:SIO_010043 ;
+        skos:prefLabel "Chain A, Glutathione S-transferase P1-1" ;
+        dcterms:identifier "10GS_A" ;
+        up:organism <http://rdf.ncbi.nlm.nih.gov/pubchem/taxonomy/TAXID9606> ;
+        pdbx:link_to_pdb <http://rdf.wwpdb.org/pdb/10GS> ;
+        vocab:hasSimilarProtein protein:ACCP09211 ;
+        obo:RO_0002180 <http://rdf.ncbi.nlm.nih.gov/pubchem/conserveddomain/PSSMID198319> ;
+        bao:BAO_0002817 "PPYTVVYFPVRGRCAALRMLLADQGQSWKEEVVTVETWQEGSLKASCLYGQLPKFQDGDLTLYQSNTILRHLGRTLGLYGKDQQEAALVDMVNDGVEDLRCKYISLIYTNYEAGKDDYVKALPGQLKPFETLLSQNQGGKTFIVGDQISFADYNLLDLLLIHEVLAPGCLDAFPLLSAYVGRLSARPKLKAFLASPEYVNLPINGNGKQ" .
+  
+  - title: InChIKey with MeSH Cross-reference
+    description: InChIKey identifier linking to compound and MeSH vocabulary term for semantic integration.
     rdf: |
-      @prefix bioassay: <http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/> .
+      @prefix inchikey: <http://rdf.ncbi.nlm.nih.gov/pubchem/inchikey/> .
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
+      @prefix sio: <http://semanticscience.org/resource/> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
       
-      bioassay:AID1932049 a vocab:BioAssay ;
-        dcterms:title "Antiinflammatory activity in mouse RAW264.7 cells assessed as inhibition of LPS-induced NO production at 25 uM incubated for 24 hrs by Griess reagent based assay" .
+      inchikey:BSYNRYMUTXBXSQ-UHFFFAOYSA-N a vocab:InChIKey , sio:CHEMINF_000399 ;
+        sio:SIO_000300 "BSYNRYMUTXBXSQ-UHFFFAOYSA-N" ;
+        sio:SIO_000011 <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID2244> ;
+        dcterms:subject <http://id.nlm.nih.gov/mesh/M0001864> .
 
 sparql_query_examples:
-  - title: Get Compound Classifications
-    description: Retrieve all RDF types associated with compounds to understand the classification systems used in PubChem
-    question: What ontology classifications are assigned to PubChem compounds?
+  - title: Retrieve Compound by CID
+    description: Basic query to get compound information by PubChem Compound ID (CID) with label.
+    question: What is the name of compound CID2244?
     complexity: basic
     sparql: |
+      PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/>
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT DISTINCT ?compound ?type WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?type .
-        FILTER(?type != vocab:Compound)
-      } LIMIT 20
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       
-  - title: Find Compounds with ChEBI Classifications
-    description: Identify compounds that have Chemical Entities of Biological Interest (ChEBI) classifications for standardized chemical nomenclature
-    question: Which PubChem compounds are mapped to ChEBI chemical entities?
-    complexity: intermediate
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?chebi_type WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?chebi_type .
-        FILTER(REGEX(STR(?chebi_type), "^http://purl\\.obolibrary\\.org/obo/CHEBI_[0-9]+$"))
-      } LIMIT 15
-      
-  - title: Retrieve Bioassay Details
-    description: Get bioassay titles and their experimental descriptions to understand available screening data
-    question: What bioassays are available in PubChem and what do they measure?
-    complexity: basic
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?bioassay ?title WHERE {
-        ?bioassay a vocab:BioAssay .
-        OPTIONAL { ?bioassay dcterms:title ?title }
-        FILTER(STRLEN(STR(?title)) > 0)
-      } LIMIT 10
-      
-  - title: Find Compounds with Medical Terminology
-    description: Retrieve compounds classified with SNOMED CT medical and pharmaceutical terminology for clinical applications
-    question: Which compounds have SNOMED CT medical classifications?
-    complexity: intermediate
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?snomed_type ?snomed_id WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?snomed_type .
-        FILTER(REGEX(STR(?snomed_type), "^http://purl\\.bioontology\\.org/ontology/SNOMEDCT/[0-9]+$"))
-        BIND(STRAFTER(STR(?snomed_type), "http://purl.bioontology.org/ontology/SNOMEDCT/") AS ?snomed_id)
-      } LIMIT 20
-      
-  - title: Count Total Compounds
-    description: Calculate the total number of chemical compounds available in the PubChem RDF database
-    question: How many chemical compounds are in PubChem?
-    complexity: basic
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT (COUNT(?compound) AS ?compound_count) WHERE {
-        ?compound a vocab:Compound .
+      SELECT ?label
+      WHERE {
+        compound:CID2244 a vocab:Compound ;
+                         skos:prefLabel ?label .
       }
+  
+  - title: Retrieve Compound Molecular Properties
+    description: Basic query to get key molecular descriptors (molecular weight, formula) for a specific compound.
+    question: What are the molecular properties of compound CID2244?
+    complexity: basic
+    sparql: |
+      PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/>
+      PREFIX sio: <http://semanticscience.org/resource/>
       
-  - title: Find Cancer Research Related Compounds
-    description: Identify compounds with National Cancer Institute Thesaurus classifications for cancer research and drug development
-    question: Which compounds are classified in the NCI Thesaurus for cancer research?
+      SELECT ?descriptorType ?value
+      WHERE {
+        compound:CID2244 sio:SIO_000008 ?descriptor .
+        ?descriptor a ?descriptorType ;
+                    sio:SIO_000300 ?value .
+        FILTER(?descriptorType IN (
+          sio:CHEMINF_000334,
+          sio:CHEMINF_000335,
+          sio:CHEMINF_000018
+        ))
+      }
+  
+  - title: Count FDA Approved Drugs
+    description: Aggregate query counting compounds with FDA approval status using RO_0000087 role predicate.
+    question: How many FDA-approved drugs are in PubChem?
     complexity: intermediate
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?nci_id ?cid WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?nci_type .
-        FILTER(REGEX(STR(?nci_type), "^http://ncicb\\.nci\\.nih\\.gov/xml/owl/EVS/Thesaurus\\.owl#C[0-9]+$"))
-        BIND(STRAFTER(STR(?nci_type), "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#") AS ?nci_id)
-        BIND(STRAFTER(STR(?compound), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID") AS ?cid)
-        FILTER(STRSTARTS(?nci_id, "C") && STRLEN(?nci_id) > 1)
-      } LIMIT 15
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
       
-  - title: Explore Bioassay Ontology Classifications
-    description: Find bioassays classified with BioAssay Ontology terms to understand experimental methodologies
-    question: What types of experimental methodologies are represented in PubChem bioassays?
+      SELECT (COUNT(DISTINCT ?compound) as ?fdaDrugCount)
+      WHERE {
+        ?compound a vocab:Compound ;
+                  obo:RO_0000087 vocab:FDAApprovedDrugs .
+      }
+      LIMIT 100
+  
+  - title: Find Compounds by Molecular Weight Range
+    description: Filter compounds by molecular weight range using descriptor values and mathematical comparisons.
+    question: Find compounds with molecular weight between 500 and 550 Da
+    complexity: intermediate
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?compound ?mw
+      WHERE {
+        ?compound a vocab:Compound ;
+                  sio:SIO_000008 ?mwDescriptor .
+        ?mwDescriptor a sio:CHEMINF_000334 ;
+                      sio:SIO_000300 ?mw .
+        FILTER(?mw >= 500 && ?mw <= 550)
+      }
+      LIMIT 10
+  
+  - title: Find Compounds with Most Stereoisomers
+    description: Aggregate query grouping compounds by stereoisomer count using sio:CHEMINF_000455 predicate.
+    question: Which compounds have the most stereoisomers in PubChem?
+    complexity: intermediate
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT ?compound (COUNT(?stereoisomer) as ?stereoCount)
+      WHERE {
+        ?compound a vocab:Compound ;
+                  sio:CHEMINF_000455 ?stereoisomer .
+      }
+      GROUP BY ?compound
+      ORDER BY DESC(?stereoCount)
+      LIMIT 10
+  
+  - title: Integrate Protein-Compound with PDB Structures
+    description: Complex query linking proteins to their organisms and PDB structures for human proteins.
+    question: Find human proteins with their PDB structures in PubChem
     complexity: advanced
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+      
+      SELECT ?protein ?proteinLabel ?organism ?pdbId
+      WHERE {
+        ?protein a vocab:Protein ;
+                 skos:prefLabel ?proteinLabel ;
+                 up:organism ?organism ;
+                 pdbx:link_to_pdb ?pdbId .
+        FILTER(REGEX(STR(?organism), "9606"))
+      }
+      LIMIT 10
+  
+  - title: Cross-Database Chemical Identifier Integration
+    description: Advanced query integrating InChIKey identifiers with MeSH terms for semantic web navigation.
+    question: Map PubChem compounds to MeSH vocabulary terms via InChIKey
+    complexity: advanced
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?bioassay ?bao_id ?aid ?title WHERE {
-        ?bioassay a vocab:BioAssay .
-        ?bioassay a ?bao_type .
-        OPTIONAL { ?bioassay dcterms:title ?title }
-        FILTER(REGEX(STR(?bao_type), "^http://www\\.bioassayontology\\.org/bao#BAO_[0-9]+$"))
-        BIND(STRAFTER(STR(?bao_type), "http://www.bioassayontology.org/bao#") AS ?bao_id)
-        BIND(STRAFTER(STR(?bioassay), "http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/AID") AS ?aid)
-      } LIMIT 20
+      
+      SELECT ?compound ?compoundLabel ?inchikey ?meshTerm
+      WHERE {
+        ?compound a vocab:Compound ;
+                  skos:prefLabel ?compoundLabel .
+        ?inchikeyEntity a vocab:InChIKey ;
+                        sio:SIO_000011 ?compound ;
+                        sio:SIO_000300 ?inchikey ;
+                        dcterms:subject ?meshTerm .
+        FILTER(CONTAINS(STR(?meshTerm), "mesh"))
+      }
+      LIMIT 10
 
 cross_references:
-  - title: ChEBI Cross-references
-    description: Map PubChem compounds to Chemical Entities of Biological Interest (ChEBI) database for standardized chemical classification and nomenclature
+  - title: ChEBI Chemical Ontology
+    description: Links PubChem compounds to ChEBI ontology classes for chemical classification and hierarchical navigation.
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
+      SELECT ?compound ?label ?chebiClass
+      WHERE {
+        ?compound a vocab:Compound ;
+                  a ?chebiClass ;
+                  skos:prefLabel ?label .
+        FILTER(STRSTARTS(STR(?chebiClass), "http://purl.obolibrary.org/obo/CHEBI_"))
+      }
+      LIMIT 20
+  
+  - title: Wikidata Entity Mapping
+    description: Cross-references PubChem compounds to Wikidata entities using rdfs:seeAlso for linked open data integration.
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?compound ?label ?wikidataEntity
+      WHERE {
+        ?compound a vocab:Compound ;
+                  skos:prefLabel ?label ;
+                  rdfs:seeAlso ?wikidataEntity .
+        FILTER(CONTAINS(STR(?wikidataEntity), "wikidata"))
+      }
+      LIMIT 20
+  
+  - title: PDB Protein Structure Links
+    description: Maps PubChem proteins to PDB structure database entries via pdbx:link_to_pdb predicate for 3D structure visualization.
     complexity: intermediate
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?chebi_id ?cid WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?chebi_type .
-        FILTER(REGEX(STR(?chebi_type), "^http://purl\\.obolibrary\\.org/obo/CHEBI_[0-9]+$"))
-        BIND(STRAFTER(STR(?chebi_type), "http://purl.obolibrary.org/obo/CHEBI_") AS ?chebi_id)
-        BIND(STRAFTER(STR(?compound), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID") AS ?cid)
-        FILTER(STRLEN(?chebi_id) > 0 && STRLEN(?cid) > 0)
-      } LIMIT 25
-      
-  - title: SNOMED CT Cross-references
-    description: Link PubChem compounds to SNOMED Clinical Terms for medical and pharmaceutical terminology used in healthcare systems
-    complexity: intermediate
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?snomed_id ?cid WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?snomed_type .
-        FILTER(REGEX(STR(?snomed_type), "^http://purl\\.bioontology\\.org/ontology/SNOMEDCT/[0-9]+$"))
-        BIND(STRAFTER(STR(?snomed_type), "http://purl.bioontology.org/ontology/SNOMEDCT/") AS ?snomed_id)
-        BIND(STRAFTER(STR(?compound), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID") AS ?cid)
-        FILTER(STRLEN(?snomed_id) >= 8 && STRLEN(?snomed_id) <= 9)
-      } LIMIT 25
-      
-  - title: NCI Thesaurus Cross-references
-    description: Connect PubChem compounds to National Cancer Institute Thesaurus for cancer research, drug development, and clinical trial terminology
-    complexity: intermediate
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?nci_id ?cid WHERE {
-        ?compound a vocab:Compound .
-        ?compound a ?nci_type .
-        FILTER(REGEX(STR(?nci_type), "^http://ncicb\\.nci\\.nih\\.gov/xml/owl/EVS/Thesaurus\\.owl#C[0-9]+$"))
-        BIND(STRAFTER(STR(?nci_type), "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#") AS ?nci_id)
-        BIND(STRAFTER(STR(?compound), "http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID") AS ?cid)
-        FILTER(STRSTARTS(?nci_id, "C") && STRLEN(?nci_id) > 1)
-      } LIMIT 25
-      
-  - title: BioAssay Ontology Cross-references
-    description: Map PubChem bioassays to BioAssay Ontology (BAO) for standardized experimental design and methodology classification
-    complexity: advanced
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?bioassay ?bao_id ?aid ?title WHERE {
-        ?bioassay a vocab:BioAssay .
-        ?bioassay a ?bao_type .
-        OPTIONAL { ?bioassay dcterms:title ?title }
-        FILTER(REGEX(STR(?bao_type), "^http://www\\.bioassayontology\\.org/bao#BAO_[0-9]+$"))
-        BIND(STRAFTER(STR(?bao_type), "http://www.bioassayontology.org/bao#") AS ?bao_id)
-        BIND(STRAFTER(STR(?bioassay), "http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay/AID") AS ?aid)
-      } LIMIT 20
       
-  - title: Comprehensive Compound Cross-references
-    description: Retrieve all types of cross-references (ChEBI, SNOMED CT, NCI Thesaurus) for compounds in a single query to understand complete ontology coverage
-    complexity: advanced
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      SELECT ?compound ?xref_type ?xref_value WHERE {
-        ?compound a vocab:Compound .
-        {
-          ?compound a ?chebi_type .
-          FILTER(REGEX(STR(?chebi_type), "CHEBI_[0-9]+"))
-          BIND("ChEBI" AS ?xref_type)
-          BIND(STRAFTER(STR(?chebi_type), "CHEBI_") AS ?xref_value)
-        } UNION {
-          ?compound a ?snomed_type .
-          FILTER(REGEX(STR(?snomed_type), "SNOMEDCT/[0-9]+"))
-          BIND("SNOMED_CT" AS ?xref_type)
-          BIND(STRAFTER(STR(?snomed_type), "SNOMEDCT/") AS ?xref_value)
-        } UNION {
-          ?compound a ?nci_type .
-          FILTER(REGEX(STR(?nci_type), "Thesaurus\\.owl#C[0-9]+"))
-          BIND("NCI_Thesaurus" AS ?xref_type)
-          BIND(STRAFTER(STR(?nci_type), "Thesaurus.owl#") AS ?xref_value)
-        }
-      } LIMIT 50
+      SELECT ?protein ?proteinLabel ?proteinId ?pdbId
+      WHERE {
+        ?protein a vocab:Protein ;
+                 skos:prefLabel ?proteinLabel ;
+                 dcterms:identifier ?proteinId ;
+                 pdbx:link_to_pdb ?pdbId .
+      }
+      LIMIT 50
 
 architectural_notes:
-  design_patterns:
-    - Multiple inheritance pattern where compounds have multiple RDF types from different ontologies
-    - Cross-reference through RDF typing (rdf:type) rather than explicit xref properties
-    - Use of CITO (Citation Typing Ontology) for document-compound relationships
-    - Integration with major chemical and biomedical ontologies (ChEBI, SNOMED CT, NCI, BAO)
-    - Named graph organization by entity type (compound, bioassay, substance, patent)
-    - Semantic annotation using multiple ontology frameworks simultaneously
-    
-  performance_considerations:
-    - Queries filtering by ontology namespace URIs should use REGEX for precision
-    - Multiple type queries require optimization; use LIMIT and DISTINCT appropriately
-    - String manipulation with BIND operations for ID extraction is computationally intensive
-    - Large result sets should be paginated using OFFSET and LIMIT
-    - Complex UNION queries for cross-references may require query optimization
-    - Filter operations should be placed after BIND operations for efficiency
-    
-  integration_points:
-    - ChEBI: Chemical classification and molecular entity types for standardized chemical nomenclature
-    - SNOMED CT: Clinical and medical terminology for pharmaceutical and therapeutic applications
-    - NCI Thesaurus: Comprehensive cancer research and drug development terminology
-    - BAO: Standardized bioassay experimental design and methodology classification
-    - Patent systems: Intellectual property tracking and compound development history via CITO
-    - Substance databases: Raw chemical material tracking from multiple sources
-    
-  cross_reference_mechanisms:
-    - RDF type-based cross-referencing using multiple inheritance
-    - URI namespace-based identification of external ontology terms
-    - String pattern matching for ID extraction and validation
-    - Ontology alignment through shared semantic concepts
-    - Citation-based relationships for document linkage (CITO)
-    
-  sparql_optimization_techniques:
-    - Use REGEX filters for precise pattern matching over STRSTARTS when full URI matching is needed
-    - Implement BIND operations for computed fields and ID extraction
-    - Add length and format validation FILTERs for data quality assurance
-    - Use OPTIONAL patterns for properties that may not exist on all entities
-    - Employ UNION patterns for comprehensive cross-reference queries
-    - Apply DISTINCT to prevent duplicate results in multiple inheritance queries
-    - Place most restrictive filters early in the query for better performance
+  schema_design:
+    - Compounds are central hubs linking to descriptors, substances, bioassays, genes, and proteins
+    - Descriptors stored in separate graph for performance with SIO ontology properties
+    - InChIKey entities provide unique chemical identifiers with cross-database mappings
+    - Multiple classification systems (ChEBI, SNOMED, NCI Thesaurus) integrated via rdf:type
+    - Stereoisomer relationships enable isomer navigation via sio:CHEMINF_000455
+  
+  performance:
+    - Compound queries benefit from CID-based filtering before property expansion
+    - Broad FILTER REGEX queries on labels may timeout; use specific CIDs when possible
+    - Descriptor queries should specify graph to avoid cross-graph joins
+    - Large result sets require LIMIT clauses; pagination recommended for >1000 results
+    - Molecular weight range queries optimized when using sio:CHEMINF_000334 type filter
+  
+  data_integration:
+    - ChEBI classes via rdf:type predicates enable ontology-based queries
+    - Wikidata links via rdfs:seeAlso support linked open data federation
+    - MeSH terms via dcterms:subject on InChIKey entities
+    - PDB structures via pdbx:link_to_pdb on protein entities
+    - UniProt organisms via up:organism on protein entries
+    - Patent references via cito:isDiscussedBy on genes and proteins
+  
+  data_quality:
+    - Descriptor values use mixed types (xsd:string, xsd:decimal, xsd:integer)
+    - Not all compounds have complete descriptor sets
+    - Some labels are systematic IUPAC names (very long strings)
+    - Patent and reference data completeness varies by compound
+    - Stereoisomer counts range from 0 to 740+ per compound
+    - Protein sequences in bao:BAO_0002817 as plain strings
 
 data_statistics:
-  total_classes: 4
-  total_properties: 15+
   total_compounds: 119093251
-  total_bioassays: 1000000+
-  total_substances: 250000000+
-  total_patents: 50000+
-  cross_references:
-    chebi_mappings: 15000000+
-    snomedct_mappings: 8000000+
-    nci_mappings: 5000000+
-    bao_mappings: 800000+
-  major_graphs:
-    compound_graph: http://rdf.ncbi.nlm.nih.gov/pubchem/compound
-    bioassay_graph: http://rdf.ncbi.nlm.nih.gov/pubchem/bioassay
-    substance_graph: http://rdf.ncbi.nlm.nih.gov/pubchem/substance
-    patent_graph: http://rdf.ncbi.nlm.nih.gov/pubchem/patent
-  last_updated: 2025-01-01T12:00:00Z
+  total_substances: 329528131
+  total_bioassays: 1768183
+  total_genes: 167172
+  total_proteins: 248623
+  fda_approved_drugs: 17367
+  indexed_properties:
+    - skos:prefLabel
+    - dcterms:identifier
+    - sio:SIO_000008
+    - sio:SIO_000300
+    - rdf:type
+  high_cardinality_entities:
+    - Compound (119M+)
+    - Substance (329M+)
+    - BioAssay (1.7M+)
+    - Protein (248K+)
