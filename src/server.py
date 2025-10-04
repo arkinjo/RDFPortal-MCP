@@ -2,6 +2,7 @@ import httpx
 import json
 import os
 import yaml
+import sys
 from fastmcp import FastMCP
 from typing import Annotated, List, Dict, Any
 from pydantic import Field
@@ -10,8 +11,8 @@ from pydantic import Field
 # This is the entry point for the MCP server, which will handle requests and provide tools.
 mcp = FastMCP("RDF Portal MCP Server")
 
-@mcp.resource("resource://greeting")
-def greeting() -> str:
+@mcp.resource("resource://boilerplate")
+def boilerplate() -> str:
     return "Hello! I don't know why this is here. But, the server doesn't work without it."
 
 # --- Constants and Configuration (Consolidated) ---
@@ -37,31 +38,22 @@ SPARQL_ENDPOINT = {
 
 # The MIE files are used to define the shape expressions for SPARQL queries. 
 MIE_DIR = "mie"
-MIE_TEMPLATE="resources/MIE_template.yaml"
-MIE_PROMPT="resources/MIE_prompt.md"
+MIE_PROMPT="resources/MIE_prompt_compact.md"
+TOGOMCP_PROMPT="resources/rdf_portal_guide.md"
 
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # -- prompts --
 
-@mcp.prompt(name="Hello RDF Portal!")
-def hello() -> str:
+@mcp.prompt(name="RDF Portal Guide")
+def guideline() -> str:
     """
-    Introduction to the RDF Portal MCP Server.
+    A general guideline for using the RDF Portal.
     This prompt provides an overview of the available tools and their usage.
     """
-    return (
-        f"""Welcome to TogoMCP, an MCP server for querying the RDF Portal! 
-This server has access to the following RDF databases: {', '.join(SPARQL_ENDPOINT.keys())}.
-You can use the following tools to interact with RDF data:
-- `get_sparql_endpoints`: Get available SPARQL endpoints.
-- `run_sparql`: Execute a SPARQL query on a specified endpoint.
-- `get_graph_list`: Get named graphs in a specific RDF database.
-- `describe_rdf_schema`: Get the RDF schema of a specific RDF database. Use this before constructing SPARQL queries.
-When constructing SPARQL queries, ensure that you use the correct prefixes and URIs, 
-start simple, use OPTIONAL extensively, build queries step-by-step, and test with known entities.
-Use type conversion such as xsd:decimal() or xsd:dateTime() in your queries when appropriate."""
-    )
+    with open(TOGOMCP_PROMPT, "r", encoding="utf-8") as file:
+        prompt = file.read()
+    return prompt
 
 @mcp.tool(enabled=True, name="Generate_MIE_file", description="Instructions for generating an MIE (Metadata Interoperability Exchange) file")
 def generate_MIE_file(
@@ -375,6 +367,29 @@ SELECT DISTINCT ?graph WHERE {
 }'''
     return await execute_sparql(sparql_query, dbname)
 
+@mcp.tool(enabled=True)
+async def get_shex(
+    dbname: Annotated[str, Field(description=f"database name. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    """
+    Get the ShEx schema for a specific RDF database.
+
+    Args:
+        dbname(str): The name of the database for which to retrieve the ShEx schema. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.
+
+    Returns:
+        str: The ShEx schema in ShEx format.
+    """
+    shex_file = "shex/" + dbname + ".shex"
+    if not os.path.exists(shex_file):
+        return f"Error: The shex file for '{dbname}' was not found."
+    try:
+        with open(shex_file, "r", encoding="utf-8") as file:
+            content = file.read()
+            return content
+    except Exception as e:
+        return f"Error reading shex file for '{dbname}': {e}"
+
 @mcp.tool(
         enabled=True,
         name="get_MIE_file",
@@ -389,35 +404,32 @@ async def get_MIE_file(
     Args:
         dbname (str): The name of the database for which to retrieve the shape expression. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}."
 
-
     Returns:
         str: The MIE file containing the RDF schema information in YAML format.
     """
     mie_file = MIE_DIR + "/" + dbname + ".yaml"
-    if not mie_file or not os.path.exists(mie_file):
-        return f"Error: The schema file for '{dbname}' was not found."
+    drop_keys = [] 
+#    drop_keys += ["data_statistics", "architectural_notes"]
+    if not os.path.exists(mie_file):
+        return f"Error: The MIE file for '{dbname}' was not found."
     try:
         with open(mie_file, "r", encoding="utf-8") as file:
-            content = file.read()
+            content = yaml.safe_load(file)
+            content2 = {}
+            if isinstance(content, dict):
+                for key, value in content.items():
+                    if key not in drop_keys:
+                        content2[key] = value
+                yaml_dump = yaml.dump(content2, sort_keys=False)
+            else:
+                # If not a dictionary, just dump the original content
+                yaml_dump = yaml.dump(content, sort_keys=False)
+            
             response_text = f"""Content-type: application/yaml; charset=utf-8
-{content}"""
+{yaml_dump}"""
             return response_text
     except Exception as e:
-        return f"Error reading schema file for '{dbname}': {e}"
-
-@mcp.tool(enabled=True)
-async def get_shex(
-    dbname: Annotated[str, Field(description=f"database name. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
-) -> str:
-    shex_file = "shex/" + dbname + ".shex"
-    if not os.path.exists(shex_file):
-        return f"Error: The shex file for '{dbname}' was not found."
-    try:
-        with open(shex_file, "r", encoding="utf-8") as file:
-            content = file.read()
-            return content
-    except Exception as e:
-        return f"Error reading shex file for '{dbname}': {e}"
+        return f"Error reading MIE file for '{dbname}': {e}"
 
 @mcp.tool(
     enabled=True, 
@@ -434,43 +446,47 @@ def list_databases() -> List[Dict[str, Any]]:
     """
     resources_dir = MIE_DIR
     if not os.path.isdir(resources_dir):
-        print(f"Error: Directory '{resources_dir}' not found.")
+        print(f"Error: Directory '{resources_dir}' not found.", file=sys.stderr)
         return []
 
     all_schemas_info = []
     for db_name in sorted(SPARQL_ENDPOINT.keys()):
         filename = db_name + ".yaml"
+        print(f"##### Processing file: {filename}", file=sys.stderr)
         file_path = os.path.join(resources_dir, filename)
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
+            if not isinstance(data, dict):
+                raise yaml.YAMLError("YAML file is not a dictionary.")
+            
+            schema_info = data.get("schema_info")
+            if not isinstance(schema_info, dict):
+                raise yaml.YAMLError("'schema_info' section not found or not a dictionary.")
 
-                if isinstance(data, dict):
-                    schema_info = data.get("schema_info")
-                    if isinstance(schema_info, dict):
-                        title = schema_info.get("title")
-                        description = schema_info.get("description")
+            title = schema_info.get("title")
+            description = schema_info.get("description")
 
-                        if not title:
-                            print(f"Warning: No 'title' in 'schema_info' for {filename}.")
-                            continue
-
-                        all_schemas_info.append(
-                            {
-                                "database": db_name,
-                                "title": title,
-                                "description": description or "No description found.",
-                            }
-                        )
-                    else:
-                        print(f"Warning: No 'schema_info' section in {filename}.")
-                else:
-                    print(f"Warning: YAML file {filename} is empty or not a dictionary.")
+            all_schemas_info.append({
+                "database": db_name,
+                "title": title or "No title found.",
+                "description": description or "No description found.",
+            })
 
         except yaml.YAMLError as e:
-            print(f"Error parsing YAML file {filename}: {e}")
-        except Exception as e:
-            print(f"An error occurred with file {filename}: {e}")
+            all_schemas_info.append(
+                {
+                    "database": db_name,
+                    "title": "No title found.",
+                    "description": f"Error processing YAML file: {e}",
+                })
+        except (IOError, OSError) as e:
+            all_schemas_info.append(
+                {
+                    "database": db_name,
+                    "title": "No title found.",
+                    "description": f"Error reading file: {e}",
+                })
     return all_schemas_info
 
 if __name__ == "__main__":
