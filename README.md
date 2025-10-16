@@ -29,6 +29,7 @@ uv sync
 ## Configuration
 ### Claude Desktop Configuration
 Change the file paths as appropriate.
+
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
 **Windows**: `~\AppData\Roaming\Claude\claude_desktop_config.json`
 ```json
