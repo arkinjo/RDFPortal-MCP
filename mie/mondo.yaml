@@ -44,7 +44,7 @@ sample_rdf_entries:
         oboInOwl:hasExactSynonym "achondroplastic dwarfism" ;
         oboInOwl:hasDbXref "OMIM:100800" ;
         oboInOwl:hasDbXref "Orphanet:15" .
-
+  
   - title: Root Disease Class
     description: Top-level disease entity
     rdf: |
@@ -52,7 +52,7 @@ sample_rdf_entries:
         rdfs:label "disease or disorder" ;
         oboInOwl:id "MONDO:0000001" ;
         obo:IAO_0000115 "A disease is a disposition to undergo pathological processes." .
-
+  
   - title: Disease with ICD Mapping
     description: Disease cross-referenced to ICD-10
     rdf: |
@@ -61,7 +61,7 @@ sample_rdf_entries:
         oboInOwl:id "MONDO:0005147" ;
         oboInOwl:hasDbXref "ICD10:E10" ;
         oboInOwl:hasDbXref "MESH:D003922" .
-
+  
   - title: Rare Disease Entry
     description: Rare disease with Orphanet reference
     rdf: |
@@ -70,7 +70,7 @@ sample_rdf_entries:
         oboInOwl:id "MONDO:0007739" ;
         oboInOwl:hasDbXref "Orphanet:399" ;
         oboInOwl:hasDbXref "OMIM:143100" .
-
+  
   - title: Cancer Classification
     description: Neoplasm with hierarchical classification
     rdf: |
@@ -96,7 +96,7 @@ sparql_query_examples:
         FILTER(CONTAINS(LCASE(?label), "diabetes"))
       }
       LIMIT 20
-
+  
   - title: Get Disease Hierarchy
     description: Retrieve parent diseases in classification
     question: What are parent classes of a disease?
@@ -111,7 +111,7 @@ sparql_query_examples:
         ?parent rdfs:label ?parentLabel .
         FILTER(isIRI(?parent))
       }
-
+  
   - title: Find Diseases by OMIM
     description: Search using OMIM database identifiers
     question: Find diseases with OMIM references
@@ -130,7 +130,7 @@ sparql_query_examples:
         FILTER(STRSTARTS(?omim, "OMIM:"))
       }
       LIMIT 30
-
+  
   - title: Rare Diseases from Orphanet
     description: Find rare diseases with Orphanet cross-references
     question: Which rare diseases are in MONDO?
@@ -149,7 +149,7 @@ sparql_query_examples:
         FILTER(STRSTARTS(?orphanet, "Orphanet:"))
       }
       LIMIT 30
-
+  
   - title: Count Diseases by Category
     description: Aggregate disease counts by top-level categories
     question: How many diseases per category?
@@ -165,7 +165,7 @@ sparql_query_examples:
       GROUP BY ?parent ?parentLabel
       ORDER BY DESC(?count)
       LIMIT 20
-
+  
   - title: Find Synonyms for Disease
     description: Retrieve all synonyms for a disease term
     question: What are alternative names for a disease?
@@ -180,7 +180,7 @@ sparql_query_examples:
         obo:MONDO_0000003 rdfs:label ?label .
         OPTIONAL { obo:MONDO_0000003 oboInOwl:hasExactSynonym ?synonym }
       }
-
+  
   - title: Search Genetic Diseases
     description: Find diseases classified as genetic disorders
     question: Which genetic diseases are available?
@@ -200,57 +200,89 @@ sparql_query_examples:
       LIMIT 30
 
 cross_references:
-  - title: OMIM Cross-References
-    description: Link diseases to OMIM genetic disorder database
+  - pattern: oboInOwl:hasDbXref
+    description: |
+      All external database cross-references in MONDO use the oboInOwl:hasDbXref property.
+      Database identifiers are distinguished by their prefix patterns (e.g., "OMIM:", "Orphanet:", "ICD10CM:").
+      Approximately 90% of disease classes have at least one cross-reference.
+      Many diseases have multiple cross-references across different database types for comprehensive mapping.
+    
+    databases:
+      medical_terminologies:
+        - UMLS (UMLS:): ~70% coverage, Unified Medical Language System
+        - MEDGEN (MEDGEN:): ~70% coverage, NCBI Medical Genetics
+        - SCTID (SCTID:): ~31% coverage, SNOMED CT International
+        - MESH (MESH:): ~28% coverage, Medical Subject Headings
+        - NCIT (NCIT:): ~25% coverage, NCI Thesaurus
+      
+      genetic_rare_disease:
+        - GARD (GARD:): ~35% coverage, Genetic and Rare Diseases Information Center
+        - DOID (DOID:): ~39% coverage, Disease Ontology
+        - OMIM (OMIM:): ~33% coverage, Online Mendelian Inheritance in Man
+        - Orphanet (Orphanet:): ~34% coverage, Rare Disease Database
+        - OMIA (OMIA:): ~9% coverage, Online Mendelian Inheritance in Animals
+        - NORD (NORD:): ~3% coverage, National Organization for Rare Disorders
+        - DECIPHER (DECIPHER:): <1% coverage, Database of Chromosomal Imbalance
+        - GTR (GTR:): <1% coverage, Genetic Testing Registry
+      
+      clinical_classification:
+        - ICD9 (ICD9:): ~19% coverage, International Classification of Diseases v9
+        - icd11.foundation (icd11.foundation:): ~14% coverage, ICD-11 Foundation
+        - ICD10CM (ICD10CM:): ~9% coverage, ICD-10 Clinical Modification
+        - ICD10WHO (ICD10WHO:): <1% coverage, ICD-10 WHO version
+        - ICD10EXP (ICD10EXP:): <1% coverage, ICD-10 Experimental
+        - ICD9CM (ICD9CM:): <1% coverage, ICD-9 Clinical Modification
+      
+      oncology:
+        - ICDO (ICDO:): ~3% coverage, International Classification of Diseases for Oncology
+        - ONCOTREE (ONCOTREE:): ~2% coverage, OncoTree Cancer Classification
+      
+      phenotype_ontology:
+        - EFO (EFO:): ~8% coverage, Experimental Factor Ontology
+        - HP (HP:): ~2% coverage, Human Phenotype Ontology
+      
+      japanese_resources:
+        - NANDO (NANDO:): ~8% coverage, Nanbyo Disease Ontology (Japan)
+      
+      clinical_drugs:
+        - MedDRA (MedDRA:): ~5% coverage, Medical Dictionary for Regulatory Activities
+        - OMIMPS (OMIMPS:): ~2% coverage, OMIM Phenotypic Series
+      
+      genetic_resources:
+        - HGNC (HGNC:): <1% coverage, HUGO Gene Nomenclature Committee
+      
+      other_resources:
+        - Wikipedia (Wikipedia:): <1% coverage
+        - CSP (CSP:): <1% coverage, Computer Retrieval of Information on Scientific Projects
+        - PMID (PMID:): <1% coverage, PubMed identifiers
+        - birnlex, nlxdys, MFOMD, OGMS, SCDO, OBI, NDFRT, IDO, MPATH, MTH: <1% coverage each
+    
     complexity: basic
     sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?omim
+      
+      SELECT ?disease ?label ?xref
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
         ?disease a owl:Class ;
                  rdfs:label ?label ;
-                 oboInOwl:hasDbXref ?omim .
-        FILTER(STRSTARTS(?omim, "OMIM:"))
-      }
-      LIMIT 50
-
-  - title: Orphanet Rare Disease Links
-    description: Connect to Orphanet rare disease database
-    complexity: basic
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?orphanet
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease a owl:Class ;
-                 rdfs:label ?label ;
-                 oboInOwl:hasDbXref ?orphanet .
-        FILTER(STRSTARTS(?orphanet, "Orphanet:"))
-      }
-      LIMIT 50
-
-  - title: ICD-10 Clinical Classification
-    description: Map diseases to ICD-10 clinical coding system
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?icd10
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease a owl:Class ;
-                 rdfs:label ?label ;
-                 oboInOwl:hasDbXref ?icd10 .
-        FILTER(STRSTARTS(?icd10, "ICD10:"))
+                 oboInOwl:hasDbXref ?xref .
+        
+        # Filter by database prefix for specific database:
+        # FILTER(STRSTARTS(?xref, "OMIM:"))        # OMIM references
+        # FILTER(STRSTARTS(?xref, "Orphanet:"))    # Orphanet references
+        # FILTER(STRSTARTS(?xref, "DOID:"))        # Disease Ontology
+        # FILTER(STRSTARTS(?xref, "GARD:"))        # GARD references
+        # FILTER(STRSTARTS(?xref, "UMLS:"))        # UMLS references
+        # FILTER(STRSTARTS(?xref, "ICD10CM:"))     # ICD-10 CM
+        # FILTER(STRSTARTS(?xref, "ICD9:"))        # ICD-9
+        # FILTER(STRSTARTS(?xref, "MESH:"))        # MeSH
+        # FILTER(STRSTARTS(?xref, "NCIT:"))        # NCI Thesaurus
+        # FILTER(STRSTARTS(?xref, "EFO:"))         # Experimental Factor Ontology
+        # FILTER(STRSTARTS(?xref, "NANDO:"))       # Nanbyo Disease Ontology
+        # Or any other prefix from the databases list above
       }
       LIMIT 50
 
@@ -258,42 +290,73 @@ architectural_notes:
   schema_design:
     - OBO Foundry compliant with standardized MONDO URI patterns
     - Hierarchical classification via rdfs:subClassOf
-    - Multiple cross-references to disease databases (OMIM, Orphanet, ICD, MESH)
+    - Multiple cross-references to 39+ external databases
     - Exact and related synonyms for alternative disease names
+    - Single cross-reference property (oboInOwl:hasDbXref) for all external links
   
   performance:
     - Text searches benefit from LCASE() and CONTAINS()
     - Use FILTER(isIRI(?parent)) to exclude blank nodes in hierarchy
-    - Cross-reference queries should filter by database prefix
+    - Cross-reference queries should filter by database prefix using STRSTARTS()
     - LIMIT clauses recommended for large result sets
+    - Prefix filtering is efficient for cross-reference queries
   
   data_integration:
-    - OMIM for genetic disorders
-    - Orphanet for rare diseases
-    - ICD-10 for clinical classification
-    - MESH for biomedical literature indexing
-    - DOID for disease ontology integration
+    - Comprehensive mapping to genetic disorder databases (OMIM, Orphanet, GARD)
+    - Clinical classification systems (ICD-9, ICD-10, ICD-11)
+    - Medical terminologies (UMLS, MEDGEN, SNOMED CT, MeSH)
+    - Disease ontologies (DOID, EFO)
+    - Oncology classifications (ICDO, OncoTree)
+    - Japanese rare disease resources (NANDO)
+    - Phenotype ontologies (HP)
   
   data_quality:
     - Exact synonyms are semantically equivalent
     - Related synonyms may have broader/narrower meaning
     - Alternative IDs from merged terms preserved
     - Obsolete terms marked with owl:deprecated
+    - Cross-reference coverage varies by database type (3-70%)
+    - Most diseases have multiple cross-references for comprehensive mapping
 
 data_statistics:
   total_classes: 30304
   active_diseases: ~28500
   obsolete_terms: ~1800
+  diseases_with_xrefs: 27176
   
-  indexed_properties:
-    - rdfs:label
-    - oboInOwl:id
-    - oboInOwl:hasDbXref
-    - rdfs:subClassOf
+  coverage:
+    diseases_with_labels: ">99%"
+    diseases_with_definitions: "~75%"
+    diseases_with_cross_references: "~90%"
+    diseases_with_synonyms: "~85%"
+    diseases_with_parent_classes: "~95%"
+  
+  cardinality:
+    avg_xrefs_per_disease: ~6.5
+    max_xrefs_per_disease: 50+
+    avg_synonyms_per_disease: 2.8
+    avg_parents_per_disease: 1.2
+  
+  performance_characteristics:
+    - "Text searches with CONTAINS() work well with LIMIT constraints"
+    - "Prefix filtering on cross-references (STRSTARTS) is efficient"
+    - "Hierarchical queries with rdfs:subClassOf* can be slow without specific starting points"
+    - "Recommend LIMIT 50 or less for exploratory cross-reference queries"
+    - "Multiple cross-reference filters in single query may reduce result sets significantly"
+  
+  data_quality_notes:
+    - "Cross-reference coverage highly variable by database (3-70%)"
+    - "Medical terminology databases (UMLS, MEDGEN) have highest coverage"
+    - "Specialized databases (GTR, DECIPHER, Wikipedia) have <1% coverage"
+    - "Most diseases have 4-10 cross-references across multiple databases"
   
   top_xref_databases:
-    - OMIM
-    - Orphanet
-    - ICD10
-    - MESH
-    - DOID
+    - UMLS: 21372 references (~70%)
+    - MEDGEN: 21372 references (~70%)
+    - DOID: 11866 references (~39%)
+    - GARD: 10730 references (~35%)
+    - Orphanet: 10344 references (~34%)
+    - OMIM: 10039 references (~33%)
+    - SCTID: 9279 references (~31%)
+    - MESH: 8378 references (~28%)
+    - NCIT: 7549 references (~25%)

@@ -39,19 +39,24 @@ SPARQL_ENDPOINT = {
 # The MIE files are used to define the shape expressions for SPARQL queries. 
 MIE_DIR = "mie"
 MIE_PROMPT="resources/MIE_prompt_compact.md"
-TOGOMCP_PROMPT="resources/rdf_portal_guide.md"
+RDF_PORTAL_GUIDE="resources/rdf_portal_guide.md"
 
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 # -- prompts --
 
-@mcp.prompt(name="RDF Portal Guide")
-def guideline() -> str:
+@mcp.tool(name="RDF_Portal_Guide",
+            description="A general guideline for using the RDF Portal.")
+def rdf_portal_guide() -> str:
     """
     A general guideline for using the RDF Portal.
-    This prompt provides an overview of the available tools and their usage.
+    Always use this before constructing any SPARQL queries for the database,
+    and strictly follow the instructions provided there.
+
+    Returns:
+        str: The content of the RDF Portal Guide.
     """
-    with open(TOGOMCP_PROMPT, "r", encoding="utf-8") as file:
+    with open(RDF_PORTAL_GUIDE, "r", encoding="utf-8") as file:
         prompt = file.read()
     return prompt
 
@@ -410,6 +415,7 @@ async def get_MIE_file(
     mie_file = MIE_DIR + "/" + dbname + ".yaml"
     drop_keys = [] 
 #    drop_keys += ["data_statistics", "architectural_notes"]
+#    drop_keys += ["validation_notes"]
     if not os.path.exists(mie_file):
         return f"Error: The MIE file for '{dbname}' was not found."
     try:

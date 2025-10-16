@@ -92,7 +92,7 @@ sample_rdf_entries:
         meshv:treeNumber mesh:C05.116.099.343.110 ;
         meshv:allowableQualifier mesh:Q000209 ;
         meshv:dateEstablished "1966-01-01" .
-
+  
   - title: Term with Lexical Information
     description: Preferred term showing alternative labels
     rdf: |
@@ -103,7 +103,7 @@ sample_rdf_entries:
         meshv:altLabel "Achondroplasias" ;
         meshv:lexicalTag "NON" ;
         meshv:thesaurusID "NLM (1966)" .
-
+  
   - title: Concept with Scope Note
     description: Semantic concept with detailed medical definition
     rdf: |
@@ -113,7 +113,7 @@ sample_rdf_entries:
         meshv:identifier "M0000205" ;
         meshv:preferredTerm mesh:T000387 ;
         meshv:scopeNote "An autosomal dominant disorder that is the most frequent form of short-limb dwarfism." .
-
+  
   - title: Hierarchical Tree Number
     description: Tree position showing parent-child relationship
     rdf: |
@@ -121,7 +121,7 @@ sample_rdf_entries:
         rdfs:label "C05.116.099.343.110" ;
         meshv:active "1" ;
         meshv:parentTreeNumber mesh:C05.116.099.343 .
-
+  
   - title: Chemical Supplementary Record
     description: Chemical substance with mapping to descriptor
     rdf: |
@@ -148,7 +148,7 @@ sparql_query_examples:
                     meshv:identifier ?identifier .
       }
       LIMIT 50
-
+  
   - title: Search by Keyword
     description: Find descriptors containing specific medical terms
     question: Which descriptors relate to diabetes?
@@ -164,7 +164,7 @@ sparql_query_examples:
         FILTER(CONTAINS(LCASE(?label), "diabetes"))
       }
       LIMIT 30
-
+  
   - title: Get Hierarchical Relationships
     description: Find parent-child relationships between descriptors
     question: What is the hierarchy for a concept?
@@ -181,7 +181,7 @@ sparql_query_examples:
         ?broader rdfs:label ?broaderLabel .
       }
       LIMIT 50
-
+  
   - title: Find Chemical Substances
     description: Retrieve supplementary chemical records
     question: What chemicals are indexed?
@@ -197,7 +197,7 @@ sparql_query_examples:
         OPTIONAL { ?chemical meshv:registryNumber ?registryNum }
       }
       LIMIT 50
-
+  
   - title: Explore Tree Categories
     description: Get top-level MeSH tree categories
     question: What are main classification categories?
@@ -213,7 +213,7 @@ sparql_query_examples:
         FILTER(REGEX(?label, "^[A-Z][0-9]{2}$"))
       }
       ORDER BY ?label
-
+  
   - title: Get Allowable Qualifiers
     description: Find qualifiers that can modify descriptors
     question: What qualifiers are available?
@@ -229,7 +229,7 @@ sparql_query_examples:
         OPTIONAL { ?qualifier meshv:annotation ?annotation }
       }
       ORDER BY ?label
-
+  
   - title: Chemical-Descriptor Mappings
     description: Map chemicals to main descriptors
     question: How do chemicals relate to descriptors?
@@ -248,53 +248,90 @@ sparql_query_examples:
       LIMIT 50
 
 cross_references:
-  - title: Chemical to Descriptor Mappings
-    description: Link chemicals to medical concepts via preferredMappedTo
-    complexity: intermediate
-    sparql: |
-      PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?chemical ?chemName ?descriptor ?descName
-      FROM <http://id.nlm.nih.gov/mesh>
-      WHERE {
-        ?chemical a meshv:SCR_Chemical ;
-                  rdfs:label ?chemName ;
-                  meshv:preferredMappedTo ?descriptor .
-        ?descriptor rdfs:label ?descName .
-      }
-      LIMIT 50
-
-  - title: See Also Relationships
-    description: Find related descriptors through cross-references
+  - pattern: meshv:thesaurusID
+    description: |
+      MeSH terms reference external nomenclature systems and databases via the meshv:thesaurusID property.
+      This provides cross-references to pharmaceutical nomenclatures, genetic databases, and specialized medical thesauri.
+      Total of 916,022 thesaurusID statements across all external sources.
+      Filter by prefix pattern to access specific external databases.
+    databases:
+      pharmaceutical_nomenclatures:
+        - FDA SRS (FDA Substance Registration System): ~22,600 references across multiple years (2012-2018)
+        - INN (International Nonproprietary Names, WHO): 8,822 drug names
+        - USAN (United States Adopted Names): ~3,500 total across multiple years
+        - BAN (British Approved Names): 1,093 UK pharmaceutical names
+        - JAN (Japanese Accepted Names): 110 Japanese drug names
+        - USP (United States Pharmacopeia): 1,138 references
+      national_drug_nomenclatures:
+        - DE (Germany): 2,114 references
+        - US (United States): 1,251 references
+        - ES (Spain): 1,049 references
+        - FR (France): 860 references
+        - CA (Canada): 713 references
+        - UK (United Kingdom): 630 references
+        - AU (Australia): 596 references
+        - NL (Netherlands): 543 references
+        - MX (Mexico): 492 references
+        - IE (Ireland): 429 references
+      genetic_rare_disease:
+        - OMIM (Online Mendelian Inheritance in Man): 12,525 genetic disorder references
+        - GHR (Genetics Home Reference): 3,778 genetic condition references
+        - ORD (Orphan Drug designations): 10,391 rare disease drug references
+      medical_research:
+        - NIMHD (National Institute on Minority Health): 3,876 references
+        - OBSSR (Office of Behavioral and Social Sciences Research): 264+ references
+        - IOM (Institute of Medicine): 150 references
+      specialized_thesauri:
+        - BIOETHICS: 394+ bioethics literature references
+        - POPLINE (Population Information): 612+ population health references
+      other:
+        - UNK (Unknown/uncategorized): 16,918 references
     complexity: basic
     sparql: |
       PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?source ?sourceLabel ?related ?relatedLabel
+      
+      # Example: Find terms with OMIM (genetic disorder) references
+      SELECT ?term ?label ?thesaurusID
       FROM <http://id.nlm.nih.gov/mesh>
       WHERE {
-        ?source a meshv:TopicalDescriptor ;
-                rdfs:label ?sourceLabel ;
-                meshv:seeAlso ?related .
-        ?related rdfs:label ?relatedLabel .
+        ?term a meshv:Term ;
+              meshv:prefLabel ?label ;
+              meshv:thesaurusID ?thesaurusID .
+        # Filter by specific database prefix:
+        FILTER(REGEX(?thesaurusID, "^OMIM"))      # For OMIM genetic disorders
+        # FILTER(REGEX(?thesaurusID, "^FDA SRS"))  # For FDA substances
+        # FILTER(REGEX(?thesaurusID, "^INN"))      # For WHO drug names
+        # FILTER(REGEX(?thesaurusID, "^USAN"))     # For US drug names
+        # FILTER(REGEX(?thesaurusID, "^GHR"))      # For genetic conditions
+        # FILTER(REGEX(?thesaurusID, "^ORD"))      # For orphan drugs
       }
-      LIMIT 50
-
-  - title: Concept Relationships
-    description: Map related concepts showing semantic connections
+      LIMIT 30
+  
+  - pattern: meshv:thesaurusID (multiple per term)
+    description: |
+      Many terms have multiple thesaurusID values referencing different external databases simultaneously.
+      This is common for pharmaceutical substances that appear in multiple nomenclature systems.
+    databases:
+      - Multiple nomenclature systems (e.g., same drug in FDA SRS, INN, and USAN)
     complexity: intermediate
     sparql: |
       PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?concept1 ?label1 ?concept2 ?label2
+      
+      # Find terms with multiple external database references
+      SELECT ?term ?label (GROUP_CONCAT(DISTINCT ?thesaurusID; separator="; ") as ?externalRefs)
       FROM <http://id.nlm.nih.gov/mesh>
       WHERE {
-        ?concept1 a meshv:Concept ;
-                  rdfs:label ?label1 ;
-                  meshv:relatedConcept ?concept2 .
-        ?concept2 rdfs:label ?label2 .
+        ?term a meshv:Term ;
+              meshv:prefLabel ?label ;
+              meshv:thesaurusID ?thesaurusID .
+        # Filter for pharmaceutical nomenclatures
+        FILTER(REGEX(?thesaurusID, "^FDA SRS") || REGEX(?thesaurusID, "^INN") || REGEX(?thesaurusID, "^USAN"))
       }
-      LIMIT 50
+      GROUP BY ?term ?label
+      HAVING(COUNT(DISTINCT ?thesaurusID) > 1)
+      LIMIT 30
 
 architectural_notes:
   schema_design:
@@ -314,6 +351,7 @@ architectural_notes:
     - Tree numbers enable hierarchical browsing
     - Qualifier-descriptor combinations support literature indexing
     - Date properties track vocabulary evolution
+    - External database links via thesaurusID (916K+ references)
   
   data_quality:
     - Annual updates with new descriptors and revisions
@@ -329,6 +367,25 @@ data_statistics:
   chemicals: 250445
   qualifiers: 84
   
+  coverage:
+    terms_with_thesaurusID: "<0.1% (but 916K+ total thesaurusID statements)"
+    terms_with_altLabel: "~30%"
+    descriptors_with_treeNumber: ">95%"
+    chemicals_with_preferredMappedTo: "~90%"
+  
+  cardinality:
+    avg_thesaurusID_per_term: 1.05
+    max_thesaurusID_per_term: 5
+    avg_treeNumbers_per_descriptor: 2.3
+    avg_qualifiers_per_descriptor: 20.8
+  
+  performance_characteristics:
+    - "ThesaurusID queries efficient with REGEX prefix filtering"
+    - "Tree number queries fast with specific pattern matching"
+    - "Recommend LIMIT 30-100 for exploratory queries"
+    - "Chemical mapping queries can be resource-intensive"
+    - "Case-insensitive FILTER searches work well for labels"
+  
   indexed_properties:
     - meshv:identifier
     - rdfs:label
@@ -338,3 +395,4 @@ data_statistics:
   key_relationships:
     preferred_mappings: 428906
     allowable_qualifiers: 628088
+    external_thesaurus_refs: 916022

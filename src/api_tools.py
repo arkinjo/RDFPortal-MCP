@@ -26,18 +26,16 @@ async def search_uniprot_entity(query: str, limit: int = 20) -> str:
     url = "https://rest.uniprot.org/uniprotkb/search"
     params = {
         "query": query,
-        "fields": "accession,protein_name,gene_names,organism_name",
-        "format": "json",
+        "fields": "accession,protein_name,organism_name",
+        "format": "tsv",
         "size": limit 
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(url, params=params)
     response.raise_for_status()
-    data = response.json()
-
-    # Extract just the primary accession ID from each result
-    uniprot_ids = [entry.get("primaryAccession") for entry in data.get("results", []) if "primaryAccession" in entry]
-    return json.dumps(uniprot_ids)
+    data = response.text
+    
+    return data
 
 # DB: ChEMBL
 async def search_chembl_generic(entity_type: str, query: str, limit: int = 20) -> dict:

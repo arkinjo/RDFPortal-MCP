@@ -23,13 +23,14 @@ shape_expressions: |
     rdfs:label xsd:string ;
     schema:belongsToGroup xsd:string ;
     schema:fromSource xsd:string ;
-    schema:hasLinkToSource IRI ;
+    schema:hasLinkToSource IRI ? ;              # Link to DSMZ PDF documentation
     schema:hasFinalPH xsd:string ? ;
     schema:hasMinPH xsd:float ? ;
     schema:hasMaxPH xsd:float ? ;
     schema:hasMainSolution @<SolutionShape> ;
     schema:includesSolution @<SolutionShape> ;
-    schema:isComplex xsd:boolean
+    schema:isComplex xsd:boolean ;
+    dct:description xsd:string ?
   }
   
   <MediumCompositionShape> {
@@ -51,12 +52,15 @@ shape_expressions: |
     schema:hasFormula xsd:string ? ;
     schema:hasMass xsd:float ? ;
     schema:hasDensity xsd:float ? ;
-    schema:hasCAS xsd:string ? ;                 # CAS Registry Number
-    schema:hasChEBI xsd:integer ? ;              # ChEBI ID
-    schema:hasPubChem xsd:integer ? ;            # PubChem CID
-    schema:hasKEGG xsd:string ? ;                # KEGG Compound ID
+    schema:hasCAS xsd:string ? ;
+    schema:hasChEBI xsd:integer ? ;
+    schema:hasPubChem xsd:integer ? ;
+    schema:hasKEGG xsd:string ? ;
     schema:hasMetaCyc xsd:string ? ;
-    schema:hasSynonym xsd:string ;
+    schema:hasGMO IRI ? ;                       # Glycome Metabolome Ontology
+    schema:hasZVG xsd:integer ? ;               # German chemical registry
+    schema:hasSVGImage xsd:string ? ;           # Embedded SVG structure diagram
+    schema:hasSynonym xsd:string * ;
     schema:isComplexCarbonSource xsd:boolean ?
   }
   
@@ -97,10 +101,10 @@ shape_expressions: |
     a [ schema:Strain ] ;
     dct:identifier xsd:integer ;
     schema:hasDSMNumber xsd:integer ;
-    schema:hasBacDiveID xsd:integer ? ;          # Cross-ref to BacDive
+    schema:hasBacDiveID xsd:integer ? ;
     schema:hasSpecies xsd:string ;
     schema:belongsTaxGroup xsd:string ;
-    schema:hasSynonym xsd:string ?
+    schema:hasSynonym xsd:string *
   }
   
   <StepShape> {
@@ -127,6 +131,18 @@ shape_expressions: |
     schema:description xsd:string
   }
   
+  <ModificationDetailShape> {
+    a [ schema:ModificationDetail ] ;
+    schema:actionType xsd:string ;              # e.g., "add", "remove"
+    schema:actionDetails xsd:string ;
+    schema:modifiedAmount xsd:float ? ;
+    schema:modifiedUnit xsd:string ? ;
+    schema:modifiedAttribute xsd:string ? ;
+    schema:partOfModification @<ModificationShape> ;
+    schema:relatedIngredient @<IngredientShape> ? ;
+    schema:relatedSolution @<SolutionShape> ?
+  }
+  
   <GasShape> {
     a [ schema:GasComponent ] ;
     schema:partOfMedium @<MediumShape> ;
@@ -145,7 +161,7 @@ sample_rdf_entries:
         schema:hasFinalPH "7.0-7.2" ;
         schema:fromSource "DSMZ" ;
         schema:isComplex true .
-
+  
   - title: Ingredient with Chemical Cross-References
     description: Ingredient entity with multiple database cross-references for chemical identification
     rdf: |
@@ -157,8 +173,9 @@ sample_rdf_entries:
         schema:hasChEBI 17234 ;
         schema:hasPubChem 5793 ;
         schema:hasKEGG "C00031" ;
+        schema:hasGMO <http://purl.jp/bio/10/gmo/GMO_001067> ;
         schema:belongsToGroup "Carbohydrates" .
-
+  
   - title: Growth Conditions for Strain
     description: Growth parameters linking medium to specific strain cultivation
     rdf: |
@@ -170,7 +187,7 @@ sample_rdf_entries:
         schema:hasOxygenRequirement "aerobic" ;
         schema:incubationPeriod "24-48 hours" ;
         schema:hasGrowthIndicator true .
-
+  
   - title: Solution Recipe with Ingredient Details
     description: Solution recipe component showing ingredient amounts and units
     rdf: |
@@ -183,7 +200,7 @@ sample_rdf_entries:
         schema:gramsPerLiter 10.0 ;
         schema:isIngredientOptional false ;
         schema:positionInRecipe 1 .
-
+  
   - title: Strain with Taxonomic Information
     description: Microbial strain entity with DSM number and BacDive cross-reference
     rdf: |
@@ -213,7 +230,7 @@ sparql_query_examples:
       }
       ORDER BY ?label
       LIMIT 30
-
+  
   - title: Search Media by pH Range
     description: Find culture media within specific pH ranges for cultivating pH-sensitive organisms
     question: Which media have pH between 6.5 and 7.5?
@@ -232,7 +249,7 @@ sparql_query_examples:
       }
       ORDER BY ?minPH
       LIMIT 20
-
+  
   - title: Find Ingredients by Chemical Group
     description: Retrieve ingredients organized by chemical groups for medium formulation
     question: What carbohydrate ingredients are available?
@@ -251,7 +268,7 @@ sparql_query_examples:
       }
       ORDER BY ?label
       LIMIT 30
-
+  
   - title: Growth Conditions by Temperature
     description: Find optimal growth temperatures for different strains across media
     question: What are the growth conditions for thermophilic organisms (>45°C)?
@@ -271,7 +288,7 @@ sparql_query_examples:
       }
       ORDER BY DESC(?temp)
       LIMIT 20
-
+  
   - title: Medium Composition Analysis
     description: Retrieve complete ingredient composition for specific medium
     question: What are the ingredients and their concentrations in a specific medium?
@@ -291,7 +308,7 @@ sparql_query_examples:
         FILTER(?medium = <https://purl.dsmz.de/mediadive/medium/1118>)
       }
       ORDER BY DESC(?gPerL)
-
+  
   - title: Ingredient Cross-Reference Integration
     description: Link ingredients to external chemical databases for detailed chemical information
     question: Which ingredients have ChEBI and KEGG cross-references?
@@ -312,7 +329,7 @@ sparql_query_examples:
       }
       ORDER BY ?label
       LIMIT 30
-
+  
   - title: Strain-Medium Compatibility Matrix
     description: Map strains to their compatible culture media with growth indicators
     question: Which media support growth of specific bacterial strains?
@@ -336,104 +353,166 @@ sparql_query_examples:
       LIMIT 40
 
 cross_references:
-  - title: ChEBI Chemical Entity Links
-    description: Connect medium ingredients to ChEBI for detailed chemical information
+  - pattern: schema:has[Database] properties (Ingredient cross-references)
+    description: |
+      Ingredient entities use dedicated properties for each external chemical database.
+      Each property follows the pattern schema:has[DatabaseName] with database-specific value types.
+      Databases are organized by purpose: chemical identifiers, metabolic/structural databases, and regional registries.
+    databases:
+      chemical_identifiers:
+        - CAS Registry Number (hasCAS): ~39% coverage - string format "XXXXX-XX-X"
+        - GMO/Glycome Metabolome Ontology (hasGMO): ~41% coverage (HIGHEST) - IRI format http://purl.jp/bio/10/gmo/GMO_XXXXXX
+      metabolic_structural:
+        - ChEBI (hasChEBI): ~32% coverage - integer ID
+        - PubChem (hasPubChem): ~18% coverage - integer compound ID (CID)
+        - KEGG Compound (hasKEGG): ~13% coverage - string ID format "CXXXXX"
+        - MetaCyc (hasMetaCyc): ~7% coverage - string ID
+      regional_databases:
+        - ZVG (hasZVG): ~15% coverage - integer ID (German chemical registry)
+      structural_images:
+        - SVG Images (hasSVGImage): ~3% coverage - embedded SVG markup for 2D structure diagrams
     complexity: basic
     sparql: |
       PREFIX schema: <https://purl.dsmz.de/schema/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?ingredient ?label ?chebi ?formula
+      SELECT ?ingredient ?label ?cas ?chebi ?pubchem ?kegg ?gmo ?zvg
       FROM <http://rdfportal.org/dataset/mediadive>
       WHERE {
         ?ingredient a schema:Ingredient ;
-                    rdfs:label ?label ;
-                    schema:hasChEBI ?chebi .
-        OPTIONAL { ?ingredient schema:hasFormula ?formula }
+                    rdfs:label ?label .
+        OPTIONAL { ?ingredient schema:hasCAS ?cas }
+        OPTIONAL { ?ingredient schema:hasChEBI ?chebi }
+        OPTIONAL { ?ingredient schema:hasPubChem ?pubchem }
+        OPTIONAL { ?ingredient schema:hasKEGG ?kegg }
+        OPTIONAL { ?ingredient schema:hasGMO ?gmo }
+        OPTIONAL { ?ingredient schema:hasZVG ?zvg }
+        # Filter for ingredients with any cross-reference
+        FILTER(BOUND(?cas) || BOUND(?chebi) || BOUND(?pubchem) || BOUND(?kegg) || BOUND(?gmo) || BOUND(?zvg))
       }
       ORDER BY ?label
-      LIMIT 30
-
-  - title: BacDive Strain Cross-References
-    description: Link MediaDive strains to BacDive for comprehensive phenotypic data
+      LIMIT 50
+  
+  - pattern: schema:hasBacDiveID (Strain cross-references)
+    description: |
+      Strain entities link to BacDive (Bacterial Diversity Database) for comprehensive phenotypic,
+      taxonomic, and environmental data. BacDive IDs are integer identifiers.
+    databases:
+      microbial_phenotype:
+        - BacDive: ~73% coverage (33,177 out of 45,685 strains) - integer ID
     complexity: basic
     sparql: |
       PREFIX schema: <https://purl.dsmz.de/schema/>
-      SELECT ?strain ?dsmNumber ?bacDiveID ?species
+      SELECT ?strain ?dsmNumber ?bacDiveID ?species ?taxGroup
       FROM <http://rdfportal.org/dataset/mediadive>
       WHERE {
         ?strain a schema:Strain ;
                 schema:hasDSMNumber ?dsmNumber ;
                 schema:hasBacDiveID ?bacDiveID ;
-                schema:hasSpecies ?species .
+                schema:hasSpecies ?species ;
+                schema:belongsTaxGroup ?taxGroup .
       }
       ORDER BY ?dsmNumber
       LIMIT 30
-
-  - title: Multi-Database Chemical Integration
-    description: Comprehensive chemical database cross-referencing for ingredients
-    complexity: intermediate
+  
+  - pattern: schema:hasLinkToSource (External documentation)
+    description: |
+      Culture medium entities link to official DSMZ PDF documentation containing detailed
+      preparation protocols, composition tables, and application notes.
+    databases:
+      documentation:
+        - DSMZ Medium PDFs: ~99% coverage (3,258 out of 3,289 media) - URL format https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium[ID].pdf
+    complexity: basic
     sparql: |
       PREFIX schema: <https://purl.dsmz.de/schema/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?ingredient ?label ?chebi ?kegg ?pubchem ?cas
+      SELECT ?medium ?label ?pdfLink
       FROM <http://rdfportal.org/dataset/mediadive>
       WHERE {
-        ?ingredient a schema:Ingredient ;
-                    rdfs:label ?label .
-        OPTIONAL { ?ingredient schema:hasChEBI ?chebi }
-        OPTIONAL { ?ingredient schema:hasKEGG ?kegg }
-        OPTIONAL { ?ingredient schema:hasPubChem ?pubchem }
-        OPTIONAL { ?ingredient schema:hasCAS ?cas }
-        FILTER(BOUND(?chebi) || BOUND(?kegg) || BOUND(?pubchem) || BOUND(?cas))
+        ?medium a schema:CultureMedium ;
+                rdfs:label ?label ;
+                schema:hasLinkToSource ?pdfLink .
       }
       ORDER BY ?label
-      LIMIT 50
+      LIMIT 30
 
 architectural_notes:
   schema_design:
-    - Medium entities serve as central hub connecting compositions, solutions, and growth conditions
+    - Medium entities serve as central hub connecting compositions, solutions, growth conditions, and operational steps
     - Hierarchical recipe structure from medium → solution → solution_recipe → ingredient
-    - Strain-medium relationships through growth condition entities
-    - Detailed operational steps for medium preparation protocols
+    - Strain-medium relationships through growth condition entities enable cultivation compatibility queries
+    - ModificationDetail entities track granular changes to base medium recipes with specific amounts and actions
+    - Detailed operational steps provide protocol-level guidance for medium preparation
   
   performance:
-    - pH range queries optimized with hasMinPH and hasMaxPH properties
+    - pH range queries optimized with hasMinPH and hasMaxPH numeric properties
     - Temperature-based filtering efficient on growthTemperature integer property
-    - Ingredient searches benefit from belongsToGroup classification
-    - Cross-reference queries should filter by specific database types
+    - Ingredient searches benefit from belongsToGroup categorical classification
+    - Cross-reference queries should filter by specific database property names (hasChEBI, hasPubChem, etc.)
+    - Growth condition queries involving multiple strains can return large result sets - use LIMIT
   
   data_integration:
-    - ChEBI integration for chemical entity identification
-    - PubChem cross-references for compound structures
-    - KEGG links for metabolic pathway context
-    - BacDive cross-references for strain phenotypic data
-    - CAS Registry Numbers for chemical identification
+    - GMO provides highest coverage (41%) for ingredient metabolic context
+    - CAS Registry Numbers offer standardized chemical identification (39% coverage)
+    - ChEBI integration enables ontological reasoning over ingredient classifications
+    - BacDive cross-references connect to comprehensive microbial phenotype data (73% strain coverage)
+    - DSMZ PDF links provide authoritative source documentation for nearly all media
+    - PubChem and KEGG enable integration with metabolic pathway and compound structure databases
   
   data_quality:
-    - Not all ingredients have complete chemical cross-references
-    - pH values may be ranges (strings) or specific min/max values (floats)
-    - Optional ingredients marked with isOptionalIngredient boolean
+    - Not all ingredients have complete chemical cross-references - coverage varies by database
+    - pH values stored as both ranges (strings like "7.0-7.2") and separate min/max float values
+    - Optional ingredients marked with isOptionalIngredient boolean flag
     - Growth indicators may be absent for some strain-medium combinations
-    - Solution volumes stored as strings (may include units)
+    - Solution volumes stored as strings and may include units inline
+    - Some modification amounts show floating-point precision artifacts
 
 data_statistics:
-  total_media: ~1700
-  total_ingredients: ~2500
-  total_strains: ~3000
-  total_solutions: ~4000
-  total_growth_conditions: ~8000
+  total_media: 3289
+  total_ingredients: 1489
+  total_strains: 45685
+  total_solutions: 5613
+  total_growth_conditions: 68001
+  total_medium_compositions: 72184
+  total_solution_recipes: 40471
+  total_operational_steps: 5958
+  total_equipment: 5164
+  total_modifications: 2649
+  total_modification_details: 3101
+  total_gas_components: 1203
   
-  indexed_properties:
-    - rdfs:label
-    - schema:belongsToGroup
-    - schema:hasFinalPH
-    - schema:growthTemperature
-    - schema:hasDSMNumber
-    - schema:hasChEBI
+  coverage:
+    ingredients_with_cas: "~39%"
+    ingredients_with_chebi: "~32%"
+    ingredients_with_pubchem: "~18%"
+    ingredients_with_kegg: "~13%"
+    ingredients_with_metacyc: "~7%"
+    ingredients_with_gmo: "~41%"
+    ingredients_with_zvg: "~15%"
+    ingredients_with_svg_images: "~3%"
+    strains_with_bacdive: "~73%"
+    media_with_dsmz_pdf_links: "~99%"
+    media_with_ph_ranges: ">95%"
+    growth_conditions_with_temperature: ">99%"
   
-  ingredient_groups:
-    - Carbohydrates
-    - Amino Acids
-    - Vitamins
-    - Salts
-    - Trace Elements
+  cardinality:
+    avg_compositions_per_medium: 21.9
+    max_compositions_per_medium: 150
+    avg_growth_conditions_per_strain: 1.5
+    max_growth_conditions_per_strain: 45
+    avg_solution_recipes_per_solution: 7.2
+    max_solution_recipes_per_solution: 85
+  
+  performance_characteristics:
+    - "Temperature filtering on growthTemperature is efficient for up to 10K results"
+    - "pH range queries using hasMinPH/hasMaxPH work well with numeric comparisons"
+    - "Ingredient composition queries can return many rows - use specific medium filters"
+    - "Cross-reference queries benefit from OPTIONAL patterns for partial coverage"
+    - "Strain-medium compatibility queries may return large result sets without FILTER on growthIndicator"
+    - "Label-based searches should use CONTAINS or REGEX for partial matching"
+  
+  data_quality_notes:
+    - "pH stored in dual format: string ranges (hasFinalPH) and numeric min/max values"
+    - "Volume values in solutions are strings and may include unit notation"
+    - "Some floating-point amounts show precision artifacts (e.g., 2.3000000000000003)"
+    - "Not all entities have complete cross-reference coverage across databases"
+    - "Chemical identifiers (CAS, ChEBI) more complete than metabolic databases (KEGG, MetaCyc)"

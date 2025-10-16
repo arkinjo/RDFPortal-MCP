@@ -18,7 +18,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "fastmcp>=2.11.0",
+    "fastmcp>=2.12.4",
     "httpx>=0.28.1",
     "pydantic>=2.0" #,
 #    "pyrudof>=0.1.90"

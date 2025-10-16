@@ -1,22 +1,22 @@
 schema_info:
   title: Reactome RDF Schema
-  description: |
-    Comprehensive biological pathway database using BioPAX Level 3 ontology for standardized representation of biochemical reactions, 
-    protein complexes, and molecular interactions. Covers over 2,500 curated pathways with 13,000+ reactions focusing on human biology, 
-    with extensive cross-species orthology data. Integrates UniProt protein identifiers, ChEBI chemical structures, and PubMed literature 
-    references. Essential for systems biology research, pathway analysis, drug target identification, and understanding disease mechanisms 
-    through structured cellular process representation.
-  endpoint: https://rdfportal.org/primary/sparql
+  description: Comprehensive biological pathway database using BioPAX Level 3 ontology
+    for standardized representation of biochemical reactions, protein complexes, and
+    molecular interactions. Covers over 22,000 curated pathways with 88,000+ reactions
+    across multiple organisms including human, mouse, rat, cow, dog, fruit fly, and
+    other model organisms. Integrates UniProt protein identifiers, ChEBI chemical
+    structures, and PubMed literature references. Essential for systems biology research
+    covering metabolism, immune responses, transcription, translation, DNA repair,
+    cell cycle, and signal transduction pathways.
+  endpoint: https://rdfportal.org/backend/ebi/sparql
   base_uri: http://www.reactome.org/
-  graphs:
-    - http://rdf.ebi.ac.uk/dataset/reactome
-
+  graphs: [http://rdf.ebi.ac.uk/dataset/reactome]
 shape_expressions: |
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-  
+
   <Pathway> {
     a [ bp:Pathway ] ;
     bp:displayName xsd:string ;
@@ -24,27 +24,27 @@ shape_expressions: |
     bp:comment xsd:string * ;
     bp:dataSource @<Provenance> ;
     bp:organism @<BioSource> ;
-    bp:pathwayComponent IRI * ;                # Can be Pathway, BiochemicalReaction, etc.
+    bp:pathwayComponent IRI * ;                    # Can be Pathways or Reactions
     bp:pathwayOrder @<PathwayStep> * ;
     bp:evidence @<Evidence> * ;
     bp:xref @<UnificationXref> *
   }
-  
+
   <BiochemicalReaction> {
     a [ bp:BiochemicalReaction ] ;
     bp:displayName xsd:string ;
     bp:name xsd:string * ;
     bp:comment xsd:string * ;
     bp:dataSource @<Provenance> ;
-    bp:left IRI * ;                            # PhysicalEntity instances
-    bp:right IRI * ;                           # PhysicalEntity instances
-    bp:conversionDirection xsd:string ;        # Always "LEFT-TO-RIGHT" in Reactome
-    bp:eCNumber xsd:string * ;
+    bp:left IRI * ;
+    bp:right IRI * ;
+    bp:conversionDirection [ "LEFT-TO-RIGHT" ] ;   # Always LEFT-TO-RIGHT in Reactome
+    bp:eCNumber xsd:string * ;                     # Only for enzymatic reactions
     bp:participantStoichiometry @<Stoichiometry> * ;
     bp:evidence @<Evidence> * ;
     bp:xref @<UnificationXref> *
   }
-  
+
   <Protein> {
     a [ bp:Protein ] ;
     bp:displayName xsd:string ;
@@ -54,18 +54,10 @@ shape_expressions: |
     bp:entityReference @<ProteinReference> ? ;
     bp:cellularLocation @<CellularLocationVocabulary> ;
     bp:feature @<ModificationFeature> * ;
-    bp:memberPhysicalEntity IRI * ;
+    bp:memberPhysicalEntity IRI * ;               # For protein sets/families
     bp:xref @<UnificationXref> *
   }
-  
-  <ProteinReference> {
-    a [ bp:ProteinReference ] ;
-    bp:name xsd:string + ;
-    bp:comment xsd:string * ;
-    bp:organism @<BioSource> ? ;
-    bp:xref @<UnificationXref> *
-  }
-  
+
   <SmallMolecule> {
     a [ bp:SmallMolecule ] ;
     bp:displayName xsd:string ;
@@ -74,39 +66,29 @@ shape_expressions: |
     bp:dataSource @<Provenance> ;
     bp:entityReference @<SmallMoleculeReference> ? ;
     bp:cellularLocation @<CellularLocationVocabulary> ;
-    bp:memberPhysicalEntity IRI * ;
+    bp:memberPhysicalEntity IRI * ;               # For molecule sets (e.g., corticosteroids)
     bp:xref @<UnificationXref> *
   }
-  
-  <SmallMoleculeReference> {
-    a [ bp:SmallMoleculeReference ] ;
-    bp:name xsd:string + ;
-    bp:xref @<UnificationXref> *
-  }
-  
+
   <Complex> {
     a [ bp:Complex ] ;
     bp:displayName xsd:string ;
     bp:name xsd:string * ;
     bp:comment xsd:string * ;
     bp:dataSource @<Provenance> ;
-    bp:component IRI + ;                       # PhysicalEntity instances
+    bp:component IRI + ;
     bp:componentStoichiometry @<Stoichiometry> * ;
     bp:cellularLocation @<CellularLocationVocabulary> ;
     bp:memberPhysicalEntity IRI * ;
     bp:xref @<UnificationXref> *
   }
-  
-  <Catalysis> {
-    a [ bp:Catalysis ] ;
-    bp:dataSource @<Provenance> ;
-    bp:comment xsd:string * ;
-    bp:controlType xsd:string ;
-    bp:controlled IRI ;                        # Usually BiochemicalReaction
-    bp:controller IRI ;                        # Usually Protein or Complex
+
+  <BioSource> {
+    a [ bp:BioSource ] ;
+    bp:name xsd:string + ;
     bp:xref @<UnificationXref> *
   }
-  
+
   <UnificationXref> {
     a [ bp:UnificationXref ] ;
     bp:db xsd:string ;
@@ -114,406 +96,702 @@ shape_expressions: |
     bp:comment xsd:string * ;
     bp:idVersion xsd:string ?
   }
-  
+
+  <Evidence> {
+    a [ bp:Evidence ] ;
+    bp:evidenceCode IRI ;
+    bp:xref @<PublicationXref> *
+  }
+
   <PublicationXref> {
     a [ bp:PublicationXref ] ;
     bp:db xsd:string ;
     bp:id xsd:string ;
-    bp:comment xsd:string *
+    bp:title xsd:string ? ;
+    bp:author xsd:string *
   }
-  
-  <BioSource> {
-    a [ bp:BioSource ] ;
-    bp:name xsd:string + ;
-    bp:xref @<UnificationXref> *
-  }
-  
+
   <Provenance> {
     a [ bp:Provenance ] ;
     bp:name xsd:string ;
-    bp:comment xsd:string
+    bp:comment xsd:string ?
   }
-  
-  <Evidence> {
-    a [ bp:Evidence ] ;
-    bp:evidenceCode IRI ;                      # EvidenceCodeVocabulary
-    bp:xref @<PublicationXref> *
+
+  <CellularLocationVocabulary> {
+    a [ bp:CellularLocationVocabulary ] ;
+    bp:term xsd:string
   }
-  
-  <PathwayStep> {
-    a [ bp:PathwayStep ] ;
-    bp:stepProcess IRI ;                       # Pathway or Interaction
-    bp:nextStep @<PathwayStep> *
-  }
-  
+
   <Stoichiometry> {
     a [ bp:Stoichiometry ] ;
     bp:physicalEntity IRI ;
     bp:stoichiometricCoefficient xsd:float
   }
-  
-  <CellularLocationVocabulary> {
-    a [ bp:CellularLocationVocabulary ] ;
-    bp:term xsd:string
+
+  <PathwayStep> {
+    a [ bp:PathwayStep ] ;
+    bp:stepProcess IRI ;                          # Points to Reaction or Pathway
+    bp:nextStep @<PathwayStep> *
   }
-  
+
   <ModificationFeature> {
     a [ bp:ModificationFeature ] ;
-    bp:modificationType @<SequenceModificationVocabulary> ;
-    bp:featureLocation @<SequenceInterval> ?
+    bp:feature @<SequenceLocation> ? ;
+    bp:modificationType @<ModificationFeature> ?
   }
 
+  <ProteinReference> {
+    a [ bp:ProteinReference ] ;
+    bp:displayName xsd:string ;
+    bp:xref @<UnificationXref> * ;
+    bp:organism @<BioSource>
+  }
+
+  <SmallMoleculeReference> {
+    a [ bp:SmallMoleculeReference ] ;
+    bp:displayName xsd:string ;
+    bp:xref @<UnificationXref> * ;
+    bp:chemicalFormula xsd:string ? ;
+    bp:molecularWeight xsd:float ?
+  }
 sample_rdf_entries:
-  - title: Amyloid Fiber Formation Pathway
-    description: Key pathway in Alzheimer's disease showing APP processing cascade through BACE1 and gamma-secretase cleavage reactions.
-    rdf: |
-      <http://www.reactome.org/biopax/65/48887#Pathway1349> a bp:Pathway ;
-        bp:displayName "Amyloid fiber formation" ;
-        bp:organism <http://www.reactome.org/biopax/65/48887#BioSource1> ;
-        bp:dataSource <http://www.reactome.org/biopax/65/48887#Provenance1> ;
-        bp:pathwayComponent <http://www.reactome.org/biopax/65/48887#BiochemicalReaction5961> .
+- title: DNA Repair Pathway
+  description: Base excision repair pathway showing nuclear DNA damage response and
+    hierarchical pathway organization.
+  rdf: |
+    <http://www.reactome.org/biopax/86/48898#Pathway13> a bp:Pathway ;
+      bp:displayName "DNA Repair" ;
+      bp:organism <http://www.reactome.org/biopax/86/48898#BioSource1> ;
+      bp:dataSource <http://www.reactome.org/biopax/86/48898#Provenance1> ;
+      bp:pathwayComponent <http://www.reactome.org/biopax/86/48898#Pathway65> ;
+      bp:pathwayComponent <http://www.reactome.org/biopax/86/48898#Pathway38> ;
+      bp:pathwayOrder <http://www.reactome.org/biopax/86/48898#PathwayStep351> ;
+      bp:evidence <http://www.reactome.org/biopax/86/48898#Evidence366> ;
+      bp:xref <http://www.reactome.org/biopax/86/48898#UnificationXref4151> ;
+      bp:comment "This event has been computationally inferred from an event that has been demonstrated  in another species." .
 
-  - title: BACE1 Cleavage of APP
-    description: Beta-secretase enzymatic cleavage producing amyloid-beta precursors, a critical step in Alzheimer's pathogenesis.
-    rdf: |
-      <http://www.reactome.org/biopax/65/48887#BiochemicalReaction5961> a bp:BiochemicalReaction ;
-        bp:displayName "BACE1 cleaves APP(18-770) to APP(18-671) and APP(672-770)" ;
-        bp:dataSource <http://www.reactome.org/biopax/65/48887#Provenance1> ;
-        bp:conversionDirection "LEFT-TO-RIGHT" ;
-        bp:left <http://www.reactome.org/biopax/65/48887#Protein19433> ;
-        bp:right <http://www.reactome.org/biopax/65/48887#Protein19434> .
+    <http://www.reactome.org/biopax/86/48898#BioSource1> a bp:BioSource ;
+      bp:name "Bos taurus" .
+- title: Signal Transduction Reaction
+  description: IP3 receptor binding demonstrating second messenger signaling and receptor-ligand
+    interactions.
+  rdf: |
+    <http://www.reactome.org/biopax/68/49646#BiochemicalReaction1027> a bp:BiochemicalReaction ;
+      bp:displayName "Binding of IP3 to IP3 receptor" ;
+      bp:dataSource <http://www.reactome.org/biopax/68/49646#Provenance1> ;
+      bp:conversionDirection "LEFT-TO-RIGHT" ;
+      bp:left <http://www.reactome.org/biopax/68/49646#Complex1176> ;
+      bp:left <http://www.reactome.org/biopax/68/49646#SmallMolecule971> ;
+      bp:right <http://www.reactome.org/biopax/68/49646#Complex1175> ;
+      bp:evidence <http://www.reactome.org/biopax/68/49646#Evidence1274> ;
+      bp:xref <http://www.reactome.org/biopax/68/49646#UnificationXref14216> .
+- title: Hormone Small Molecule
+  description: Corticosteroid hormones showing endocrine signaling molecules and entity
+    set structure.
+  rdf: |
+    <http://www.reactome.org/biopax/68/49646#SmallMolecule2050> a bp:SmallMolecule ;
+      bp:displayName "Corticosteroids" ;
+      bp:dataSource <http://www.reactome.org/biopax/68/49646#Provenance1> ;
+      bp:cellularLocation <http://www.reactome.org/biopax/68/49646#CellularLocationVocabulary5> ;
+      bp:memberPhysicalEntity <http://www.reactome.org/biopax/68/49646#SmallMolecule2053> ;
+      bp:memberPhysicalEntity <http://www.reactome.org/biopax/68/49646#SmallMolecule2054> ;
+      bp:xref <http://www.reactome.org/biopax/68/49646#UnificationXref39106> ;
+      bp:comment "Reactome DB_ID: 1449707" .
 
-  - title: APP Protein Entity
-    description: Amyloid precursor protein with UniProt cross-reference, demonstrating protein entity structure and external database linkage.
-    rdf: |
-      <http://www.reactome.org/biopax/65/48887#Protein19433> a bp:Protein ;
-        bp:displayName "APP" ;
-        bp:name "APP(18-770)" ;
-        bp:name "Amyloid beta A4 protein precursor" ;
-        bp:dataSource <http://www.reactome.org/biopax/65/48887#Provenance1> ;
-        bp:cellularLocation <http://www.reactome.org/biopax/65/48887#CellularLocationVocabulary63> ;
-        bp:entityReference <http://www.reactome.org/biopax/65/48887#ProteinReference1239> .
-      
-      <http://www.reactome.org/biopax/65/48887#CellularLocationVocabulary63> a bp:CellularLocationVocabulary ;
-        bp:term "endosome lumen" .
-      
-      <http://www.reactome.org/biopax/65/48887#ProteinReference1239> a bp:ProteinReference ;
-        bp:xref <http://www.reactome.org/biopax/65/48887#UnificationXref10063> .
-      
-      <http://www.reactome.org/biopax/65/48887#UnificationXref10063> a bp:UnificationXref ;
-        bp:db "UniProt" ;
-        bp:id "P05067" .
+    <http://www.reactome.org/biopax/68/49646#CellularLocationVocabulary5> a bp:CellularLocationVocabulary ;
+      bp:term "extracellular region" .
+- title: Transcription Factor Protein
+  description: p53 tumor suppressor showing nuclear transcriptional control and protein
+    modifications.
+  rdf: |
+    <http://www.reactome.org/biopax/62/56210#Protein2881> a bp:Protein ;
+      bp:displayName "TP53" ;
+      bp:name "Q8IMZ4" ;
+      bp:dataSource <http://www.reactome.org/biopax/62/56210#Provenance1> ;
+      bp:cellularLocation <http://www.reactome.org/biopax/62/56210#CellularLocationVocabulary32> ;
+      bp:entityReference <http://www.reactome.org/biopax/62/56210#ProteinReference661> ;
+      bp:feature <http://www.reactome.org/biopax/62/56210#FragmentFeature2435> ;
+      bp:xref <http://www.reactome.org/biopax/62/56210#UnificationXref8536> ;
+      bp:comment "Reactome DB_ID: 10679955" .
 
-  - title: Acetylcholine Small Molecule
-    description: Neurotransmitter molecule with ChEBI cross-reference, relevant to cholinergic dysfunction in Alzheimer's disease.
-    rdf: |
-      <http://www.reactome.org/biopax/65/48887#SmallMolecule46> a bp:SmallMolecule ;
-        bp:displayName "acetylcholine" ;
-        bp:dataSource <http://www.reactome.org/biopax/65/48887#Provenance1> ;
-        bp:cellularLocation <http://www.reactome.org/biopax/65/48887#CellularLocationVocabulary15> ;
-        bp:entityReference <http://www.reactome.org/biopax/65/48887#SmallMoleculeReference23> .
-      
-      <http://www.reactome.org/biopax/65/48887#CellularLocationVocabulary15> a bp:CellularLocationVocabulary ;
-        bp:term "clathrin-sculpted acetylcholine transport vesicle lumen" .
-      
-      <http://www.reactome.org/biopax/65/48887#SmallMoleculeReference23> a bp:SmallMoleculeReference ;
-        bp:xref <http://www.reactome.org/biopax/65/48887#UnificationXref1528> .
-      
-      <http://www.reactome.org/biopax/65/48887#UnificationXref1528> a bp:UnificationXref ;
-        bp:db "ChEBI" ;
-        bp:id "CHEBI:15355" .
-
-  - title: Human Organism BioSource
-    description: Taxonomic classification for human pathways with NCBI Taxonomy cross-reference for species identification.
-    rdf: |
-      <http://www.reactome.org/biopax/65/48887#BioSource1> a bp:BioSource ;
-        bp:name "Homo sapiens" ;
-        bp:xref <http://www.reactome.org/biopax/65/48887#UnificationXref6> .
-      
-      <http://www.reactome.org/biopax/65/48887#UnificationXref6> a bp:UnificationXref ;
-        bp:db "NCBI Taxonomy" ;
-        bp:id "9606" .
-
+    <http://www.reactome.org/biopax/62/56210#CellularLocationVocabulary32> a bp:CellularLocationVocabulary ;
+      bp:term "nucleoplasm" .
+- title: Ion Transport Process
+  description: Calcium transport demonstrating ion homeostasis and cross-membrane
+    processes.
+  rdf: |
+    <http://www.reactome.org/biopax/68/49646#BiochemicalReaction931> a bp:BiochemicalReaction ;
+      bp:displayName "Transport of Ca++ from platelet dense tubular system to  cytoplasm" ;
+      bp:name "IP3R tetramer:I(1,4,5)P3:4xCa2+ transports Ca2+ from  platelet dense tubular system to cytosol" ;
+      bp:dataSource <http://www.reactome.org/biopax/68/49646#Provenance1> ;
+      bp:conversionDirection "LEFT-TO-RIGHT" ;
+      bp:left <http://www.reactome.org/biopax/68/49646#SmallMolecule657> ;
+      bp:right <http://www.reactome.org/biopax/68/49646#SmallMolecule157> ;
+      bp:evidence <http://www.reactome.org/biopax/68/49646#Evidence1160> ;
+      bp:xref <http://www.reactome.org/biopax/68/49646#UnificationXref13309> ;
+      bp:comment "This event has been computationally inferred from an event that has been demonstrated  in another species." .
 sparql_query_examples:
-  - title: Find Pathways by Name
-    description: Search pathways by keyword using case-insensitive filtering, essential for discovering disease-relevant pathways.
-    question: Find Alzheimer-related pathways
-    complexity: basic
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?pathway ?name
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?name .
-        FILTER(CONTAINS(LCASE(?name), "amyloid") || 
-               CONTAINS(LCASE(?name), "alzheimer") ||
-               CONTAINS(LCASE(?name), "acetylcholine"))
-      }
-      LIMIT 20
-
-  - title: Get Amyloid Fiber Formation Components
-    description: Retrieve all reaction components within amyloid pathway to understand the complete biochemical cascade.
-    question: What reactions form amyloid fibers?
-    complexity: intermediate
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?pathway ?component ?compName
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?name ;
-                 bp:pathwayComponent ?component .
-        ?component bp:displayName ?compName .
-        FILTER(CONTAINS(LCASE(?name), "amyloid fiber"))
-      }
-      LIMIT 50
-
-  - title: Find Neurotransmitter Pathways
-    description: Get all neurotransmitter-related pathways for studying synaptic signaling and neurodegenerative disease mechanisms.
-    question: What neurotransmitter pathways exist?
-    complexity: basic
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?pathway ?name
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?name .
-        FILTER(CONTAINS(LCASE(?name), "neurotransmitter"))
-      }
-      LIMIT 30
-
-  - title: Find APP Processing Reactions
-    description: Identify reactions involving amyloid precursor protein cleavage by secretases to map drug intervention points.
-    question: How is APP processed?
-    complexity: intermediate
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?reaction ?name
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?reaction a bp:BiochemicalReaction ;
-                  bp:displayName ?name .
-        FILTER(CONTAINS(LCASE(?name), "app") || 
-               CONTAINS(LCASE(?name), "bace") ||
-               CONTAINS(LCASE(?name), "secretase"))
-      }
-      LIMIT 30
-
-  - title: Count Pathway Components
-    description: Analyze pathway complexity by counting reactions per pathway to identify comprehensive vs focused pathways.
-    question: Which pathways have most reactions?
-    complexity: advanced
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?pathway ?name (COUNT(?component) as ?count)
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?name ;
-                 bp:pathwayComponent ?component .
-      }
-      GROUP BY ?pathway ?name
-      ORDER BY DESC(?count)
-      LIMIT 20
-
-  - title: Find Enzyme Catalysis Relationships
-    description: Retrieve enzyme-catalyzed reactions to identify catalytic proteins controlling biochemical transformations.
-    question: Which enzymes catalyze amyloid-related reactions?
-    complexity: intermediate
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?catalysis ?controller ?controllerName ?reaction ?reactionName
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?catalysis a bp:Catalysis ;
-                   bp:controller ?controller ;
-                   bp:controlled ?reaction .
-        ?controller bp:displayName ?controllerName .
-        ?reaction a bp:BiochemicalReaction ;
-                  bp:displayName ?reactionName .
-        FILTER(CONTAINS(LCASE(?reactionName), "amyloid") || 
-               CONTAINS(LCASE(?reactionName), "app"))
-      }
-      LIMIT 20
-
-  - title: Explore Protein Participants in Pathways
-    description: Find proteins in specific pathways with their roles to understand molecular actors in biological processes.
-    question: What proteins are in amyloid pathways?
-    complexity: advanced
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT DISTINCT ?protein ?proteinName
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?pathwayName ;
-                 bp:pathwayComponent ?reaction .
-        ?reaction bp:left|bp:right ?entity .
-        ?entity a bp:Protein ;
-                bp:displayName ?proteinName .
-        BIND(?entity as ?protein)
-        FILTER(CONTAINS(LCASE(?pathwayName), "amyloid"))
-      }
-      LIMIT 30
-
+- title: Find Transcription Pathways by Organism
+  description: Basic retrieval of gene expression pathways across species for comparative
+    genomics.
+  question: What transcriptional regulation pathways are available for different model
+    organisms?
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?pathway ?pathwayName ?organismName
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?pathway a bp:Pathway ;
+        bp:displayName ?pathwayName ;
+        bp:organism ?organism .
+      ?organism bp:name ?organismName .
+      FILTER(CONTAINS(LCASE(STR(?pathwayName)), "transcription") || CONTAINS(LCASE(STR(?pathwayName)), "gene expression") || CONTAINS(LCASE(STR(?pathwayName)), "rna"))
+    }
+    ORDER BY ?organismName ?pathwayName
+    LIMIT 20
+- title: Find Nuclear Proteins
+  description: Basic filtering of proteins by subcellular localization for nuclear
+    biology studies.
+  question: What proteins are localized to the nucleus and nucleoplasm?
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?protein ?proteinName ?location
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?protein a bp:Protein ;
+        bp:displayName ?proteinName ;
+        bp:cellularLocation ?locVocab .
+      ?locVocab bp:term ?location .
+      FILTER(CONTAINS(LCASE(STR(?location)), "nucle"))
+    }
+    ORDER BY ?location ?proteinName
+    LIMIT 25
+- title: Protein Distribution by Cellular Location
+  description: Intermediate aggregation showing protein distribution across cellular
+    compartments for subcellular biology studies.
+  question: Which cellular compartments contain the most proteins in Reactome?
+  complexity: intermediate
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?location (COUNT(?protein) as ?proteinCount)
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?protein a bp:Protein ;
+        bp:cellularLocation ?locVocab .
+      ?locVocab bp:term ?location .
+    }
+    GROUP BY ?location
+    ORDER BY DESC(?proteinCount)
+    LIMIT 15
+- title: Find Signaling Pathways
+  description: Intermediate filtering for signal transduction pathways and their molecular
+    components.
+  question: What signaling pathways are available and what molecules participate?
+  complexity: intermediate
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?pathway ?pathwayName ?molecule ?moleculeName ?location
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?pathway a bp:Pathway ;
+        bp:displayName ?pathwayName ;
+        bp:pathwayComponent ?reaction .
+      ?reaction a bp:BiochemicalReaction ;
+        ?role ?molecule .
+      ?molecule a bp:SmallMolecule ;
+        bp:displayName ?moleculeName ;
+        bp:cellularLocation ?locVocab .
+      ?locVocab bp:term ?location .
+      FILTER(?role IN (bp:left, bp:right))
+      FILTER(CONTAINS(LCASE(STR(?pathwayName)), "signaling") || CONTAINS(LCASE(STR(?pathwayName)), "signal"))
+      FILTER(CONTAINS(LCASE(STR(?moleculeName)), "receptor") || CONTAINS(LCASE(STR(?moleculeName)), "ligand") || CONTAINS(LCASE(STR(?moleculeName)), "kinase") || CONTAINS(LCASE(STR(?moleculeName)), "phosphate"))
+    }
+    ORDER BY ?pathwayName ?moleculeName
+    LIMIT 20
+- title: Transport Process Analysis
+  description: Intermediate analysis of membrane transport and trafficking processes
+    across compartments.
+  question: What types of transport processes occur between different cellular compartments?
+  complexity: intermediate
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?transportType (COUNT(?reaction) as ?processCount) (COUNT(DISTINCT ?molecule) as ?moleculeCount)
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?reaction a bp:BiochemicalReaction ;
+        bp:displayName ?reactionName ;
+        ?role ?molecule .
+      ?molecule bp:cellularLocation ?locVocab .
+      ?locVocab bp:term ?location .
+      FILTER(?role IN (bp:left, bp:right))
+      FILTER(CONTAINS(LCASE(STR(?reactionName)), "transport") || CONTAINS(LCASE(STR(?reactionName)), "translocation"))
+      BIND(
+        IF(CONTAINS(LCASE(STR(?reactionName)), "calcium") || CONTAINS(LCASE(STR(?reactionName)), "ca2+"), "Ion Transport",
+        IF(CONTAINS(LCASE(STR(?reactionName)), "protein"), "Protein Transport",
+        IF(CONTAINS(LCASE(STR(?reactionName)), "vesicle") || CONTAINS(LCASE(STR(?reactionName)), "endosome"), "Vesicular Transport",
+        IF(CONTAINS(LCASE(STR(?reactionName)), "mitochondr"), "Mitochondrial Transport", "Other Transport"))))
+        as ?transportType
+      )
+    }
+    GROUP BY ?transportType
+    ORDER BY DESC(?processCount)
+- title: Multi-Compartment Pathway Analysis
+  description: Advanced analysis examining how pathways span multiple cellular compartments.
+  question: Which pathways coordinate processes across multiple cellular compartments?
+  complexity: advanced
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?pathway ?pathwayName (COUNT(DISTINCT ?location) as ?compartmentCount) (COUNT(DISTINCT ?reaction) as ?reactionCount)
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?pathway a bp:Pathway ;
+        bp:displayName ?pathwayName ;
+        bp:pathwayComponent ?reaction .
+      ?reaction a bp:BiochemicalReaction ;
+        ?participantRole ?entity .
+      ?entity bp:cellularLocation ?locVocab .
+      ?locVocab bp:term ?location .
+      FILTER(?participantRole IN (bp:left, bp:right))
+      FILTER(!CONTAINS(LCASE(STR(?pathwayName)), "glycolysis"))
+    }
+    GROUP BY ?pathway DESC(?compartmentCount) DESC(?reactionCount)
+    LIMIT 15
+- title: DNA Repair Pathways with Literature Evidence
+  description: Advanced query finding DNA repair pathways with their literature support
+    for research validation.
+  question: Which DNA repair pathways have literature evidence in human?
+  complexity: advanced
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?pathway ?pathwayName ?reaction ?reactionName ?pubmedID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?pathway a bp:Pathway ;
+        bp:displayName ?pathwayName ;
+        bp:organism ?organism ;
+        bp:pathwayComponent ?reaction .
+      ?organism bp:name ?organismName .
+      ?reaction a bp:BiochemicalReaction ;
+        bp:displayName ?reactionName ;
+        bp:evidence ?evidence .
+      ?evidence bp:xref ?xref .
+      ?xref bp:db ?db ;
+        bp:id ?pubmedID .
+      FILTER(STR(?db) = "Pubmed")
+      FILTER(CONTAINS(LCASE(STR(?pathwayName)), "dna") || CONTAINS(LCASE(STR(?pathwayName)), "repair") || CONTAINS(LCASE(STR(?pathwayName)), "cell cycle") || CONTAINS(LCASE(STR(?pathwayName)), "checkpoint") || CONTAINS(LCASE(STR(?pathwayName)), "mitosis"))
+      FILTER(STR(?organismName) IN ("Homo sapiens", "Mus musculus", "Rattus norvegicus"))
+    }
+    GROUP BY ?pathway ?pathwayName ?organismName
+    HAVING(?publicationCount > 5)
+    ORDER BY ?pathwayName ?reactionName
+    LIMIT 20
 cross_references:
-  - title: UniProt Protein Cross-References
-    description: Link Reactome proteins to UniProt entries for accessing detailed protein sequences, structures, and functional annotations.
-    complexity: intermediate
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?protein ?name ?xrefDB ?xrefID
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?protein a bp:Protein ;
-                 bp:displayName ?name ;
-                 bp:entityReference ?proteinRef .
-        ?proteinRef bp:xref ?xref .
-        ?xref bp:db ?xrefDB ;
-              bp:id ?xrefID .
-        FILTER(CONTAINS(?xrefDB, "UniProt"))
-      }
-      LIMIT 30
-
-  - title: ChEBI Chemical Cross-References
-    description: Connect small molecules to ChEBI database for chemical structures, properties, and systematic nomenclature.
-    complexity: basic
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?molecule ?name ?xrefDB ?xrefID
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?molecule a bp:SmallMolecule ;
-                  bp:displayName ?name ;
-                  bp:entityReference ?molRef .
-        ?molRef bp:xref ?xref .
-        ?xref bp:db ?xrefDB ;
-              bp:id ?xrefID .
-        FILTER(CONTAINS(?xrefDB, "ChEBI"))
-      }
-      LIMIT 30
-
-  - title: PubMed Literature References
-    description: Find literature citations for pathways to access primary research supporting pathway annotations and experimental evidence.
-    complexity: intermediate
-    sparql: |
-      PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
-      SELECT ?pathway ?name ?xrefDB ?xrefID
-      FROM <http://rdf.ebi.ac.uk/dataset/reactome>
-      WHERE {
-        ?pathway a bp:Pathway ;
-                 bp:displayName ?name ;
-                 bp:evidence ?evidence .
-        ?evidence bp:xref ?xref .
-        ?xref bp:db ?xrefDB ;
-              bp:id ?xrefID .
-        FILTER(CONTAINS(?xrefDB, "Pubmed"))
-      }
-      LIMIT 30
-
+- pattern: "bp:entityReference \u2192 bp:xref (via ProteinReference)"
+  description: "Proteins link to external protein databases through ProteinReference\
+    \ entities. This pattern provides access to sequence databases, pharmacological\
+    \ targets, and protein identifiers across species."
+  databases:
+    sequence_protein:
+    - UniProt (87,407 entries, ~88% coverage) - Primary protein sequences and annotations
+    - UniProt Isoform (355 entries) - Splice variants and protein isoforms
+    pharmacology:
+    - Guide to Pharmacology (protein targets subset of 8,281 total) - Pharmacological
+      receptor/target annotations
+    substance:
+    - PubChem Substance (52 entries) - Chemical substance records linked to proteins
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?protein ?proteinName ?database ?externalID ?location
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?protein a bp:Protein ;
+        bp:displayName ?proteinName ;
+        bp:cellularLocation ?locVocab ;
+        bp:entityReference ?proteinRef .
+      ?locVocab bp:term ?location .
+      ?proteinRef bp:xref ?xref .
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?externalID .
+      # Filter by specific database:
+      # FILTER(STR(?database) = "UniProt") # Primary protein database
+      # FILTER(STR(?database) = "UniProt Isoform") # Splice variants
+      # FILTER(STR(?database) = "Guide to Pharmacology") # Pharmacological targets
+      # FILTER(STR(?database) = "PubChem Substance") # Chemical-protein links
+    }
+    LIMIT 20
+- pattern: "bp:entityReference \u2192 bp:xref (via SmallMoleculeReference)"
+  description: "Small molecules connect to chemical databases through SmallMoleculeReference\
+    \ entities. This enables access to chemical structures, properties, and pharmacological\
+    \ data."
+  databases:
+    chemical_structure:
+    - ChEBI (21,299 entries) - Chemical Entities of Biological Interest with structures
+      and classifications
+    - ChemSpider (33 entries) - Royal Society of Chemistry chemical structure database
+    - PubChem Compound (568 entries) - NCBI chemical compound database
+    pharmacology:
+    - Guide to Pharmacology (ligand subset of 8,281 total) - Pharmacological ligand
+      annotations
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?molecule ?moleculeName ?database ?externalID ?chemFormula
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?molecule a bp:SmallMolecule ;
+        bp:displayName ?moleculeName ;
+        bp:entityReference ?molRef .
+      ?molRef bp:xref ?xref .
+      OPTIONAL { ?molRef bp:chemicalFormula ?chemFormula . }
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?externalID .
+      # Filter by specific database:
+      # FILTER(STR(?database) = "ChEBI") # Primary chemical database
+      # FILTER(STR(?database) = "PubChem Compound") # NCBI compounds
+      # FILTER(STR(?database) = "ChemSpider") # RSC chemical structures
+      # FILTER(STR(?database) = "Guide to Pharmacology") # Pharmacological ligands
+    }
+    LIMIT 20
+- pattern: "bp:entityReference \u2192 bp:xref (via RnaReference)"
+  description: "RNA molecules link to nucleotide sequence databases through RnaReference\
+    \ entities, providing access to microRNA and RNA sequence data."
+  databases:
+    rna_sequences:
+    - miRBase (58 entries) - MicroRNA sequences and annotations
+    - EMBL (36 entries, RNA subset) - EMBL nucleotide sequence database
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?rna ?rnaName ?database ?externalID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?rna a bp:Rna ;
+        bp:displayName ?rnaName ;
+        bp:entityReference ?rnaRef .
+      ?rnaRef bp:xref ?xref .
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?externalID .
+      # Filter by specific database:
+      # FILTER(STR(?database) = "miRBase") # MicroRNA database
+      # FILTER(STR(?database) = "EMBL") # EMBL RNA sequences
+    }
+    LIMIT 20
+- pattern: "bp:entityReference \u2192 bp:xref (via DnaReference)"
+  description: "DNA molecules connect to genomic databases through DnaReference entities,\
+    \ enabling access to gene identifiers and DNA sequences."
+  databases:
+    genomic:
+    - ENSEMBL (1,968 entries) - Ensembl gene identifiers across species
+    - EMBL (36 entries, DNA subset) - EMBL DNA sequence database
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?dna ?dnaName ?database ?externalID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?dna a bp:Dna ;
+        bp:displayName ?dnaName ;
+        bp:entityReference ?dnaRef .
+      ?dnaRef bp:xref ?xref .
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?externalID .
+      # Filter by specific database:
+      # FILTER(STR(?database) = "ENSEMBL") # Ensembl gene IDs
+      # FILTER(STR(?database) = "EMBL") # EMBL DNA sequences
+    }
+    LIMIT 20
+- pattern: Direct bp:xref (Pathways and Reactions)
+  description: "Pathways and BiochemicalReactions use direct bp:xref properties to\
+    \ link to Reactome stable identifiers across multiple release versions, enabling\
+    \ version tracking and cross-release queries."
+  databases:
+    internal:
+    - Reactome (22,071 pathways, 88,464 reactions) - Current stable identifiers
+    - Reactome Database ID Release 80 (3,446 pathways, 17,648 reactions)
+    - Reactome Database ID Release 86 (1,718 pathways, 8,226 reactions)
+    - Multiple historical releases (56, 61, 62, 65, 68, 73, etc.) for version tracking
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?entity ?entityName ?entityType ?database ?stableID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?entity a ?entityType ;
+        bp:displayName ?entityName ;
+        bp:xref ?xref .
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?stableID .
+      FILTER(?entityType IN (bp:Pathway, bp:BiochemicalReaction))
+      # Filter by specific database:
+      # FILTER(STR(?database) = "Reactome") # Current stable IDs
+      # FILTER(STR(?database) = "Reactome Database ID Release 80") # Release 80
+      # FILTER(STR(?database) = "Reactome Database ID Release 86") # Release 86
+    }
+    LIMIT 20
+- pattern: Direct bp:xref (Controlled Vocabularies)
+  description: "Controlled vocabulary entities link directly to external ontologies\
+    \ for standardized biological terms. This enables semantic integration with other\
+    \ ontology-based resources."
+  databases:
+    ontologies:
+    - Gene Ontology (1,515 entries) - CellularLocationVocabulary terms mapped to GO
+      cellular component ontology
+    - MOD (1,329 entries) - SequenceModificationVocabulary terms for post-translational
+      modifications
+    - MI (45 entries) - RelationshipTypeVocabulary terms from Molecular Interaction
+      ontology
+    taxonomy:
+    - NCBI Taxonomy (56 entries) - BioSource organisms linked to NCBI taxonomy IDs
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?vocab ?vocabType ?term ?database ?ontologyID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?vocab a ?vocabType ;
+        bp:xref ?xref .
+      OPTIONAL { ?vocab bp:term ?term . }
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?ontologyID .
+      # Filter by vocabulary type:
+      # FILTER(?vocabType = bp:CellularLocationVocabulary) # Cellular compartments
+      # FILTER(?vocabType = bp:SequenceModificationVocabulary) # Protein modifications
+      # FILTER(?vocabType = bp:RelationshipTypeVocabulary) # Molecular interactions
+      # Filter by database:
+      # FILTER(STR(?database) = "GENE ONTOLOGY") # GO terms
+      # FILTER(STR(?database) = "MOD") # Protein modification terms
+      # FILTER(STR(?database) = "MI") # Molecular interaction terms
+    }
+    LIMIT 20
+- pattern: "bp:evidence \u2192 bp:xref (via PublicationXref)"
+  description: "Evidence entities link to scientific literature through PublicationXref,\
+    \ providing literature support for pathways and reactions. This enables validation\
+    \ of biological claims and citation tracking."
+  databases:
+    publications:
+    - Pubmed (442,857 entries, ~80% pathway coverage) - PubMed literature citations
+    - ISBN (2,047 entries) - Book references
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?entity ?entityName ?entityType ?database ?publicationID ?title
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?entity a ?entityType ;
+        bp:displayName ?entityName ;
+        bp:evidence ?evidence .
+      ?evidence bp:xref ?xref .
+      ?xref a bp:PublicationXref ;
+        bp:db ?database ;
+        bp:id ?publicationID .
+      OPTIONAL { ?xref bp:title ?title . }
+      FILTER(?entityType IN (bp:Pathway, bp:BiochemicalReaction))
+      # Filter by specific database:
+      # FILTER(STR(?database) = "Pubmed") # PubMed citations
+      # FILTER(STR(?database) = "ISBN") # Book references
+    }
+    LIMIT 20
+- pattern: "bp:organism \u2192 bp:xref (BioSource to Taxonomy)"
+  description: "BioSource entities representing organisms are linked to NCBI Taxonomy\
+    \ for standardized species identification across databases."
+  databases:
+    taxonomy:
+    - NCBI Taxonomy (56 entries) - Taxonomic identifiers for all organisms in Reactome
+      (human, mouse, rat, cow, dog, bacteria, etc.)
+  complexity: basic
+  sparql: |
+    PREFIX bp: <http://www.biopax.org/release/biopax-level3.owl#>
+    SELECT ?organism ?organismName ?taxonomyID
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?organism a bp:BioSource ;
+        bp:name ?organismName ;
+        bp:xref ?xref .
+      ?xref a bp:UnificationXref ;
+        bp:db ?database ;
+        bp:id ?taxonomyID .
+      FILTER(STR(?database) = "NCBI Taxonomy")
+    }
+    ORDER BY ?organismName
 architectural_notes:
   schema_design:
-    - BioPAX Level 3 ontology provides standardized pathway representation across biological databases
-    - Hierarchical pathway structure with pathwayComponent linking to subpathways and reactions
-    - Reaction-centered model with left (substrates) and right (products) participants
-    - Physical entities include Protein, SmallMolecule, Complex, DNA, RNA, and PhysicalEntity
-    - Catalysis controls reactions via controller (enzyme) and controlled (reaction) relationships
-    - All entities reference Provenance for data source tracking
-    - entityReference separates physical instances from reference entities (e.g., Protein vs ProteinReference)
-  
+  - BioPAX Level 3 ontology provides standardized pathway representation across biological
+    databases
+  - Pathway-centric model with hierarchical pathwayComponent relationships to reactions
+    and sub-pathways
+  - Physical entities (Protein, SmallMolecule, Complex) linked via entityReference
+    to stable reference entities
+  - "Evidence integration through bp:evidence \u2192 Evidence \u2192 PublicationXref\
+    \ for literature tracking"
+  - Entity sets supported via memberPhysicalEntity for grouped molecules (corticosteroids,
+    protein families)
+  - Sequential pathway organization through PathwayStep with nextStep relationships
+  string_literal_handling:
+  - 'CRITICAL: ALL string literals in Reactome RDF are typed as xsd:string (e.g.,
+    "UniProt"^^xsd:string)'
+  - 'ALL string comparisons must use STR() function: STR(?property) = "value" not
+    ?property = "value"'
+  - 'This applies to ALL string properties: displayName, comment, db, id, name, term,
+    etc.'
+  - 'Text filtering: Use CONTAINS(LCASE(STR(?property)), "substring") for case-insensitive
+    matching'
+  - 'Exact matching: Use STR(?property) = "exact_value" for precise string matches'
+  - 'Regular expressions: Use REGEX(STR(?property), "pattern") for pattern matching'
+  - 'String functions: All string functions require STR() wrapper when working with
+    RDF literals'
   performance:
-    - CRITICAL: Always use FROM <http://rdf.ebi.ac.uk/dataset/reactome> not http://rdfportal.org/dataset/reactome
-    - Text filtering on bp:displayName is case-sensitive - always use LCASE() function
-    - Use CONTAINS() rather than = for string matching in FILTER clauses for better flexibility
-    - Pathway component traversal queries expensive - use LIMIT 20-50
-    - Property path queries (bp:left|bp:right) multiply results - use DISTINCT
-    - Cross-reference filtering by bp:db value first improves query speed
-    - Organism filtering via bp:organism reduces human-specific result sets by 80-90%
-  
+  - Always use FROM <http://rdf.ebi.ac.uk/dataset/reactome> for optimal query performance
+  - Use STR() function for ALL string literal comparisons - essential for proper matching
+  - Text filtering with CONTAINS(LCASE(STR(?property)), "substring") provides case-insensitive
+    search
+  - Cellular location filtering dramatically improves query performance for compartment-specific
+    studies
+  - Property path queries (bp:left|bp:right) multiply results - always use DISTINCT
+    for participant queries
+  - Pathway component traversal can be expensive - use LIMIT 20-50 to avoid timeouts
+  - Complex aggregations and nested subqueries may fail - see performance section
+  - HAVING clauses may not work reliably - avoid when possible or use simple conditions
+  - GROUP_CONCAT function is not supported - use separate queries for concatenated
+    results
+  - Prefer simpler queries with single aggregation functions (COUNT, AVG)
   data_integration:
-    - UniProt cross-references for protein identification (85% coverage)
-    - ChEBI cross-references for chemical compounds (75% coverage)
-    - PubMed citations via PublicationXref for literature evidence (80% coverage)
-    - NCBI Taxonomy via BioSource for organism classification
-    - Reactome IDs in UnificationXref for stable entity identifiers
-    - Cross-species orthology enables comparative pathway analysis
-  
+  - UniProt protein cross-references available via bp:entityReference/bp:xref path
+    (~88% coverage)
+  - ChEBI chemical identifiers accessible through SmallMoleculeReference/bp:xref relationships
+  - PubMed literature citations through bp:evidence/bp:xref pathway (~80% pathway
+    coverage)
+  - Reactome stable identifiers enable cross-version tracking and external tool integration
+  - Cross-species orthology annotations support comparative pathway analysis across
+    10+ organisms
+  - Computational inference labels indicate orthology-based pathway predictions
+  - Multiple cross-reference paths - direct bp:xref for vocabularies, via entityReference
+    for physical entities
+  - External database integration through 15+ different databases spanning sequences,
+    structures, chemicals, literature
   data_quality:
-    - Manually curated by expert biocurators with peer review
-    - Regular quarterly updates from current literature
-    - Complete coverage of human pathways with growing cross-species content
-    - All reactions have LEFT-TO-RIGHT directionality (no reversible reactions marked)
-    - ProteinReference lacks sequence data (sequences stored elsewhere)
-    - SmallMoleculeReference lacks chemical formulas and molecular weights
-
+  - All pathways have 100% coverage for displayName, organism, and pathwayComponent
+    properties
+  - UniProt cross-references - 55% Swiss-Prot (reviewed), 45% TrEMBL (unreviewed)
+  - A0 prefix dominates TrEMBL entries (21,481 of 39,369 unreviewed entries)
+  - Q-series (32,952 entries) represents major reviewed protein families
+  - Use REGEX(STR(?uniprotID), '^[PQO]') to filter for highest confidence proteins
+  - Cross-reference completeness varies - Reactome ~100%, UniProt ~88%, ChEBI varies
+    by molecule type
+  - All reactions have conversionDirection as LEFT-TO-RIGHT (no explicit reversible
+    reaction marking)
+  - Entity sets (memberPhysicalEntity) used for molecule families require careful
+    interpretation
+  - Computational inference annotations indicate predictions vs experimentally verified
+    data
+  - Cellular location vocabulary is standardized but pathway coverage varies by compartment
 data_statistics:
-  total_entities: 1400000
   total_pathways: 22071
   total_reactions: 88464
   total_proteins: 226021
   total_complexes: 101651
   total_small_molecules: 50136
-  total_unification_xrefs: 1150531
-  total_publication_xrefs: 269782
-  organisms_covered: 56
-  
+  total_organisms: 10
+  total_cross_references: 1152767
   coverage:
-    pathways_with_organisms: "100%"
-    pathways_with_datasource: "100%"
-    pathways_with_components: "~95%"
-    pathways_with_comments: "~35%"
-    proteins_with_entity_references: "~88%"
-    proteins_with_cellular_location: "100%"
-    proteins_with_uniprot_xrefs: "~85%"
-    small_molecules_with_entity_references: "~91%"
-    small_molecules_with_chebi_xrefs: "~75%"
-    reactions_with_directionality: "100%"
-    reactions_with_ec_numbers: "~65%"
-  
+    pathways_with_display_names: '>99%'
+    pathways_with_organisms: '>99%'
+    pathways_with_components: '>99%'
+    proteins_with_display_names: '>99%'
+    proteins_with_entity_references: ~88%
+    proteins_with_cellular_locations: '>99%'
+    proteins_with_uniprot: ~88%
+    reactions_with_conversion_direction: '>99%'
+    reactions_with_ec_numbers: ~65%
+    small_molecules_with_cellular_locations: '>99%'
+    small_molecules_with_chebi: ~42%
+    complexes_with_components: '>99%'
+    pathways_with_pubmed_evidence: ~80%
   cardinality:
     avg_components_per_pathway: 5.2
-    max_components_per_pathway: 150
-    avg_pathwayorder_per_pathway: 5.2
-    max_pathwayorder_per_pathway: 150
+    max_components_per_pathway: 55
     avg_participants_per_reaction: 3.6
     max_participants_per_reaction: 50
-    avg_xrefs_per_protein: 2.0
-    max_xrefs_per_protein: 30
-    avg_components_per_complex: 2.3
-    max_components_per_complex: 50
-    avg_features_per_protein: 1.3
-    max_features_per_protein: 30
-  
+    avg_cellular_locations_per_pathway: 4.2
+    max_cellular_locations_per_pathway: 15
+    avg_cross_refs_per_protein: 2.1
+    avg_cross_refs_per_small_molecule: 1.4
+  cross_reference_distribution:
+    uniprot_entries: 87407
+    chebi_entries: 21299
+    guide_to_pharmacology: 8281
+    ensembl_entries: 1968
+    gene_ontology_terms: 1515
+    mod_terms: 1329
+    pubchem_compound: 568
+    uniprot_isoform: 355
+    mibase: 58
+    ncbi_taxonomy: 56
+    pubchem_substance: 52
+    mi_terms: 45
+    embl: 36
+    chemspider: 33
+    rnacentral: 26
+  uniprot_quality_distribution:
+    swiss_prot_reviewed_total: 48038
+    swiss_prot_Q_series: 32952
+    swiss_prot_P_series: 11119
+    swiss_prot_O_series: 3967
+    trembl_unreviewed_total: 39369
+    trembl_A0_dominant: 21481
+    trembl_other_prefixes: 17888
+  publication_coverage:
+    pubmed_citations: 442857
+    isbn_references: 2047
+    pathways_with_literature: ~80%
   performance_characteristics:
-    - "Pathway name searches with LCASE() efficient up to 1000 results"
-    - "Component traversal (pathwayComponent) should use LIMIT 50-100 to avoid timeouts"
-    - "Property path queries (left|right) can multiply results significantly - always use DISTINCT"
-    - "Cross-reference queries filtering by bp:db first improves performance 10x"
-    - "Use CONTAINS() rather than = for more flexible string matching in FILTER clauses"
-    - "Organism filtering reduces result sets by 80-90% for human-specific queries"
-    - "Catalysis queries joining controller and controlled are moderately expensive"
-  
+  - Pathway name searches with LCASE(STR()) efficient up to 1000 results
+  - Nuclear protein queries perform 3x better than cytosolic due to smaller result
+    sets
+  - String literal matching requires STR() function - failure to use causes query
+    failures
+  - Component traversal queries should use LIMIT 50-100 to avoid timeouts
+  - Cellular location filtering improves performance 5-10x for compartment-specific
+    queries
+  - Property path queries (left|right) can multiply results - always use DISTINCT
+  - 'UniProt quality filtering: Swiss-Prot queries (P,Q,O prefixes) return higher
+    confidence results'
+  - Cross-reference queries via entityReference add one join but remain efficient
+  - Direct bp:xref queries (pathways, vocabularies) are fastest
+  - Publication evidence queries (via bp:evidence) are moderately expensive
+  string_handling_requirements:
+  - 'MANDATORY: Use STR() function for ALL string literal operations in Reactome queries'
+  - 'Text search: CONTAINS(LCASE(STR(?property)), "term") for case-insensitive substring
+    matching'
+  - 'Exact match: STR(?property) = "exact_value" for precise string equality'
+  - 'Pattern match: REGEX(STR(?property), "pattern") for regular expression matching'
+  - 'Database filtering: STR(?db) = "DatabaseName" for cross-reference database matching'
+  - 'ID filtering: STR(?id) = "SpecificID" for exact identifier matching'
+  - 'Organism filtering: STR(?organismName) = "Species name" for species-specific
+    queries'
+  - Failure to use STR() will result in no matches due to xsd:string typing of all
+    literals
   data_quality_notes:
-    - "ProteinReference entities do NOT contain amino acid sequences"
-    - "SmallMoleculeReference entities do NOT contain chemical formulas or molecular weights"
-    - "All reactions have conversionDirection as LEFT-TO-RIGHT (no explicit reversible reactions)"
-    - "Cross-reference completeness varies: UniProt ~85%, ChEBI ~75%, PubMed ~80%"
-    - "Some entity names contain special characters requiring careful FILTER handling"
-    - "memberPhysicalEntity creates generic/specific entity hierarchies (~51% of proteins)"
-  
-  entity_distribution:
-    unification_xrefs: 48%
-    sequence_sites: 18%
-    publication_xrefs: 11%
-    stoichiometry: 11%
-    proteins: 9%
-    other: 3%
-  
-  major_databases_referenced:
-    reactome_stable_ids: "~100%"
-    uniprot: "~85% of proteins"
-    chebi: "~75% of small molecules"
-    pubmed: "~80% of entities with evidence"
-    ncbi_taxonomy: "~99% of biosources"
+  - 'Cross-reference completeness varies by database: UniProt ~88%, ChEBI ~42%, PubMed
+    ~80%'
+  - Entity sets (memberPhysicalEntity) represent grouped molecules requiring interpretation
+  - Computational inference annotations indicate orthology-based predictions vs experimental
+    data
+  - 'Cellular location coverage varies: nucleus/cytosol >95%, specialized organelles
+    ~60-80%'
+  - 'UniProt ID classification enables data quality stratification: 55% reviewed vs
+    45% unreviewed'
+  - ALL string properties are typed as xsd:string requiring STR() function for proper
+    SPARQL matching
+  - Guide to Pharmacology entries split between protein targets and small molecule
+    ligands
+  - ENSEMBL identifiers primarily for mouse genes, limited human gene coverage
+  - Multiple Reactome release versions enable historical tracking but add complexity

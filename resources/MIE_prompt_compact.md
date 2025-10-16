@@ -6,6 +6,7 @@ Create documentation that is **compact, clear, and complete** - sufficient for r
 ## 1. Discovery Phase
 - Use `get_sparql_endpoints()` to identify available endpoints
 - Use `get_graph_list(dbname)` to find relevant named graphs
+- Call `rdf_portal_guide()` for the general instructions on SPARQL queries
 - Attempt `get_shex(dbname)` to retrieve existing shape expressions
 - Attempt `get_MIE_file(dbname)` to retrieve existing MIE files
 - Run exploratory SPARQL queries using `run_sparql(dbname, sparql_query)` to understand the data structure
@@ -78,15 +79,18 @@ Create 7 queries with this distribution:
 - Complexity level (basic/intermediate/advanced)
 - **Tested and working** SPARQL query
 
-### Cross-references (Target: Exactly 3 examples)
-Document the 3 most important external database cross-references:
-1. **Primary Biological Database**: Main reference (e.g., UniProt, NCBI, ChEMBL)
-2. **Sequence Database**: If applicable (e.g., ENA, GenBank, PDB)
-3. **Specialized Resource**: Domain-specific database (e.g., culture collections, chemical databases)
+### Cross-references (Target: Comprehensive coverage by pattern)
+Document **all external database cross-references** by organizing them into RDF patterns. Group databases that share the same RDF relationship pattern together. Include:
+- **The RDF pattern** (e.g., rdfs:seeAlso, up:classifiedWith, up:organism)
+- **List of databases** using that pattern, organized by category
+- **Coverage information** for major databases where relevant
+- **One representative SPARQL query** demonstrating the pattern
 
-**For Each Cross-reference:**
-- Show the property/relationship pattern
-- Provide working SPARQL example
+**For Each Pattern Group:**
+- Show the common RDF property/relationship
+- List all databases following this pattern, grouped by purpose
+- Provide one working SPARQL example that can be adapted for any database in the group
+- Include notes on filtering by URL pattern to distinguish databases
 - Keep descriptions concise
 
 ## 6. Architectural Notes (Use Structured YAML Format)
@@ -346,10 +350,11 @@ data_statistics:
 
 ## 8. MIE File Generation
 - Create a complete YAML-formatted MIE file with proper structure
-- Follow the target numbers: 5 RDF examples, 7 SPARQL queries, 3 cross-references
+- Follow the target numbers: 5 RDF examples, 7 SPARQL queries, comprehensive pattern-based cross-references
 - Use structured YAML for architectural_notes (not prose)
 - Verify all SPARQL queries return results before inclusion
 - Gather data_statistics using sampling when needed
+- Organize cross-references by RDF pattern for compactness
 - Check compliance with the MIE File Structure Template below
 - Save the file using `save_MIE_file`
 
@@ -365,7 +370,7 @@ data_statistics:
 - [ ] ShEx has minimal redundant comments (only non-obvious properties commented)
 - [ ] Exactly 5 diverse RDF examples (not 6, not 8)
 - [ ] Exactly 7 SPARQL queries covering different complexity levels
-- [ ] Exactly 3 cross-reference examples for most important external databases
+- [ ] Comprehensive cross-references organized by RDF pattern with all databases listed
 - [ ] Architectural notes in structured YAML format (no prose paragraphs)
 - [ ] Data statistics with coverage, cardinality, and performance notes
 - [ ] Used sampling for expensive statistics (kept under 10 minutes total)
@@ -440,12 +445,58 @@ sparql_query_examples:
       LIMIT 10
 
 cross_references:
-  # Exactly 3 examples: Primary DB, Sequence DB, Specialized resource
-  - title: [Target database name]
-    description: [Cross-reference pattern description]
-    complexity: basic  # or intermediate
-    sparql: | 
-      # SPARQL query demonstrating cross-reference retrieval
+  # Pattern-based organization of cross-references
+  - pattern: rdfs:seeAlso
+    description: |
+      Most external database links use rdfs:seeAlso property.
+      Databases distinguished by URL patterns in the IRI.
+    databases:
+      sequence:
+        - EMBL (embl/): ~95% coverage
+        - RefSeq (refseq/): ~80% coverage
+      structure:
+        - PDB (wwpdb.org): ~25% coverage
+        - AlphaFold (alphafolddb/): >98% coverage
+        - SWISS-MODEL (smr/): ~40% coverage
+      identifiers:
+        - HGNC (hgnc/): 100% human
+        - neXtProt (nextprot.org): 100% human
+        - Gene IDs (geneid/): ~90% coverage
+      # ... list other categories
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?protein ?mnemonic ?externalDB
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 rdfs:seeAlso ?externalDB .
+        # Filter by URL pattern for specific database:
+        # FILTER(CONTAINS(STR(?externalDB), "rdf.wwpdb.org")) # PDB
+        # FILTER(CONTAINS(STR(?externalDB), "alphafolddb")) # AlphaFold
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/hgnc/")) # HGNC
+      }
+      LIMIT 30
+  
+  - pattern: up:classifiedWith
+    description: Ontology classifications via up:classifiedWith property
+    databases:
+      - Gene Ontology (GO_): >85% coverage
+      - Other classification systems
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?classification
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:classifiedWith ?classification .
+        # Filter for specific ontology:
+        # FILTER(STRSTARTS(STR(?classification), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 30
 
 architectural_notes:
   schema_design:
@@ -494,13 +545,13 @@ data_statistics:
 - Shape expressions accurately reflect the actual data structure with minimal redundant comments
 - Sample RDF entries are real instances from the database (exactly 5)
 - SPARQL queries are tested and working (exactly 7, covering different complexity levels)
-- Cross-references documented with working examples (exactly 3 most important)
+- Cross-references comprehensively documented by RDF pattern with all databases listed by category
 - Architectural notes in structured YAML format (not prose)
 - Data statistics include coverage, cardinality, and performance notes
 - Statistics gathered efficiently using sampling (under 10 minutes)
 - File is properly formatted YAML that validates  
 - Documentation is compact yet sufficient for practical use
-- File size is 35-40% smaller than verbose alternatives while maintaining completeness
+- File size is optimized through pattern-based organization while maintaining completeness
 
 ## Example of Good vs Bad Commenting
 

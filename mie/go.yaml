@@ -68,7 +68,7 @@ sample_rdf_entries:
         oboInOwl:hasDbXref "Wikipedia:Apoptosis" ;
         oboInOwl:hasAlternativeId "GO:0006917" ;
         obo:BFO_0000051 obo:GO_0097190 .
-
+  
   - title: Molecular Function
     description: DNA-binding transcription factor activity with functional definition
     rdf: |
@@ -78,7 +78,7 @@ sample_rdf_entries:
         oboInOwl:hasOBONamespace "molecular_function" ;
         rdfs:subClassOf obo:GO_0140110 ;
         obo:IAO_0000115 "A transcription regulator activity that modulates transcription via selective binding to DNA." .
-
+  
   - title: Cellular Component
     description: Nucleus as membrane-bounded organelle with Wikipedia cross-reference
     rdf: |
@@ -88,7 +88,7 @@ sample_rdf_entries:
         oboInOwl:hasOBONamespace "cellular_component" ;
         obo:IAO_0000115 "A membrane-bounded organelle of eukaryotic cells containing chromosomes." ;
         oboInOwl:hasDbXref "Wikipedia:Cell_nucleus" .
-
+  
   - title: Root Term with GO Slims
     description: Biological process root showing subset memberships
     rdf: |
@@ -101,7 +101,7 @@ sample_rdf_entries:
         oboInOwl:hasAlternativeId "GO:0007582" ;
         oboInOwl:created_by "jl" ;
         oboInOwl:creation_date "2012-09-19T15:05:24Z"^^xsd:dateTime .
-
+  
   - title: Term with Regulatory Relationship
     description: Positive regulation with OWL restriction showing regulatory target
     rdf: |
@@ -126,6 +126,7 @@ sparql_query_examples:
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
       SELECT ?term ?label ?definition
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -135,7 +136,7 @@ sparql_query_examples:
         OPTIONAL { ?term obo:IAO_0000115 ?definition }
       }
       LIMIT 20
-
+  
   - title: Search by Label or Synonym
     description: Find GO terms using text matching
     question: Find terms related to apoptosis
@@ -145,6 +146,7 @@ sparql_query_examples:
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
       SELECT DISTINCT ?term ?label ?synonym ?namespace
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -156,7 +158,7 @@ sparql_query_examples:
                CONTAINS(LCASE(?synonym), "apoptosis"))
       }
       LIMIT 20
-
+  
   - title: Get Parent Terms
     description: Retrieve direct parent terms in hierarchy
     question: What are parents of apoptotic process?
@@ -164,6 +166,7 @@ sparql_query_examples:
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
       SELECT ?parent ?parent_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -171,7 +174,7 @@ sparql_query_examples:
         ?parent rdfs:label ?parent_label .
         FILTER(isIRI(?parent))
       }
-
+  
   - title: Get Child Terms
     description: Find direct child terms (more specific)
     question: What are children of apoptotic process?
@@ -179,6 +182,7 @@ sparql_query_examples:
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
       SELECT ?child ?child_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -186,7 +190,7 @@ sparql_query_examples:
                rdfs:label ?child_label .
       }
       LIMIT 20
-
+  
   - title: Terms in GO Slims
     description: Retrieve terms from curated high-level subsets
     question: What terms are in yeast GO slim?
@@ -196,6 +200,7 @@ sparql_query_examples:
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
       SELECT ?term ?label ?namespace
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -206,7 +211,7 @@ sparql_query_examples:
       }
       ORDER BY ?namespace ?label
       LIMIT 50
-
+  
   - title: Count Terms by Namespace
     description: Statistics on term distribution across ontologies
     question: How many terms in each GO namespace?
@@ -215,6 +220,7 @@ sparql_query_examples:
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
       SELECT ?namespace (COUNT(DISTINCT ?term) AS ?count)
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -223,7 +229,7 @@ sparql_query_examples:
       }
       GROUP BY ?namespace
       ORDER BY DESC(?count)
-
+  
   - title: Find Regulatory Relationships
     description: Discover terms with regulation relationships using OWL restrictions
     question: What does GO:0045893 positively regulate?
@@ -233,6 +239,7 @@ sparql_query_examples:
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
       SELECT ?term ?label ?relation ?target ?target_label
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
@@ -247,60 +254,81 @@ sparql_query_examples:
       }
 
 cross_references:
-  - title: Reactome Pathway Links
-    description: Connect GO processes to detailed biochemical pathways
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?term ?label ?reactome_id
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term a owl:Class ;
-              rdfs:label ?label ;
-              oboInOwl:hasDbXref ?reactome_id .
-        FILTER(STRSTARTS(?reactome_id, "Reactome:"))
-      }
-      LIMIT 20
-
-  - title: Enzyme Commission Numbers
-    description: Link molecular functions to EC enzyme classification
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?term ?label ?ec_number
-      FROM <http://rdfportal.org/ontology/go>
-      WHERE {
-        ?term a owl:Class ;
-              rdfs:label ?label ;
-              oboInOwl:hasOBONamespace "molecular_function" ;
-              oboInOwl:hasDbXref ?ec_number .
-        FILTER(STRSTARTS(?ec_number, "EC:"))
-      }
-      LIMIT 20
-
-  - title: Wikipedia References
-    description: Find Wikipedia articles for additional context
+  - pattern: oboInOwl:hasDbXref
+    description: |
+      All external database links use oboInOwl:hasDbXref property with "Database:ID" format.
+      Databases can be distinguished by the prefix before the colon.
+      Coverage varies significantly by database and namespace (MF=molecular_function, BP=biological_process, CC=cellular_component).
+    databases:
+      pathways:
+        - "Reactome: 7,541 xrefs (MF: 1,572, BP: 795) - biochemical pathways"
+        - "MetaCyc: 4,855 xrefs (MF: 4,353, BP: 491, CC: 7) - metabolic pathways"
+        - "KEGG_PATHWAY: 3 xrefs - pathway database"
+        - "UniPathway: 2 xrefs - enzyme pathway resource"
+        - "UM-BBD_pathwayID: 90 xrefs - biodegradation pathways"
+      reactions:
+        - "RHEA: 4,426 xrefs (MF only) - biochemical reactions"
+        - "KEGG_REACTION: 1,726 xrefs (MF only) - reaction database"
+        - "UM-BBD_reactionID: 271 xrefs - biodegradation reactions"
+        - "SABIO-RK: 2 xrefs - kinetic data"
+      enzymes:
+        - "EC: 4,561 xrefs (MF only) - Enzyme Commission numbers"
+        - "UM-BBD_enzymeID: 61 xrefs - biodegradation enzymes"
+      protein_modifications:
+        - "RESID: 248 xrefs - protein modifications"
+      cellular_structures:
+        - "NIF_Subcellular: 228 xrefs - neuroinformatics subcellular structures"
+        - "FMA: 5 xrefs - Foundational Model of Anatomy"
+      anatomy:
+        - "VZ: 150 xrefs - anatomical structures"
+        - "WBbt: 2 xrefs - WormBase anatomy"
+        - "FBbt: 1 xref - FlyBase anatomy"
+        - "PO: 1 xref - Plant Ontology"
+      transport:
+        - "TC: 53 xrefs - Transporter Classification"
+      complexes:
+        - "CORUM: 12 xrefs - protein complexes"
+        - "IntAct: 2 xrefs - molecular interactions"
+      general_reference:
+        - "Wikipedia: 788 xrefs (BP: 433, CC: 263, MF: 73) - encyclopedia articles"
+      other_ontologies:
+        - "SO: 3 xrefs - Sequence Ontology"
+        - "MP: 1 xref - Mammalian Phenotype"
+        - "CHEBI: 1 xref - Chemical Entities of Biological Interest"
+        - "InterPro: 1 xref - protein families and domains"
+        - "UniProtKB-KW: 1 xref - UniProt keywords"
+      literature:
+        - "PMID: 4 xrefs - PubMed citations"
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?term ?label ?wikipedia_url
+      
+      SELECT ?term ?label ?namespace ?xref
       FROM <http://rdfportal.org/ontology/go>
       WHERE {
         ?term a owl:Class ;
               rdfs:label ?label ;
-              oboInOwl:hasDbXref ?wikipedia_url .
-        FILTER(STRSTARTS(?wikipedia_url, "Wikipedia:"))
+              oboInOwl:hasOBONamespace ?namespace ;
+              oboInOwl:hasDbXref ?xref .
+        
+        # Filter by specific database prefix (uncomment one):
+        # FILTER(STRSTARTS(?xref, "Reactome:"))        # Pathways
+        # FILTER(STRSTARTS(?xref, "EC:"))              # Enzyme classification
+        # FILTER(STRSTARTS(?xref, "RHEA:"))            # Reactions
+        # FILTER(STRSTARTS(?xref, "MetaCyc:"))         # Metabolic pathways
+        # FILTER(STRSTARTS(?xref, "Wikipedia:"))       # General reference
+        # FILTER(STRSTARTS(?xref, "KEGG_REACTION:"))   # KEGG reactions
+        # FILTER(STRSTARTS(?xref, "RESID:"))           # Protein modifications
+        # FILTER(STRSTARTS(?xref, "NIF_Subcellular:")) # Subcellular structures
+        # FILTER(STRSTARTS(?xref, "TC:"))              # Transporters
+        
+        # Example: Get all Reactome pathway links
+        FILTER(STRSTARTS(?xref, "Reactome:"))
       }
-      LIMIT 20
+      LIMIT 30
 
 architectural_notes:
   schema_design:
@@ -338,6 +366,14 @@ data_statistics:
   obsolete_terms: ~11905
   cross_references: ~194180
   
+  coverage:
+    terms_with_definitions: ">95%"
+    terms_with_synonyms: "~70%"
+    terms_with_cross_references: "~40%"
+    molecular_functions_with_EC: "~36%"
+    molecular_functions_with_RHEA: "~35%"
+    biological_processes_with_Wikipedia: "~1.4%"
+  
   indexed_properties:
     - rdfs:label
     - oboInOwl:id
@@ -346,8 +382,9 @@ data_statistics:
     - oboInOwl:hasDbXref
   
   top_xref_databases:
-    - GOC (internal)
-    - EC (enzymes)
-    - PMID (literature)
-    - Reactome (pathways)
-    - RHEA (reactions)
+    - Reactome: 7,541 (pathways)
+    - MetaCyc: 4,855 (metabolic pathways)
+    - EC: 4,561 (enzyme classification)
+    - RHEA: 4,426 (reactions)
+    - KEGG_REACTION: 1,726 (reactions)
+    - Wikipedia: 788 (general reference)

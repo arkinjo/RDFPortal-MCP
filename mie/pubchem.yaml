@@ -32,7 +32,7 @@ shape_expressions: |
   PREFIX bao: <http://www.bioassayontology.org/bao#>
   PREFIX up: <http://purl.uniprot.org/core/>
   PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-  
+
   <CompoundShape> {
     a [ vocab:Compound ] ;
     skos:prefLabel xsd:string ;
@@ -43,7 +43,7 @@ shape_expressions: |
     obo:RO_0000087 IRI * ;                    # Has role (e.g., FDA approved drug)
     sio:CHEMINF_000455 IRI *                   # Has stereoisomer
   }
-  
+
   <DescriptorShape> {
     a [ sio:CHEMINF_000334 OR                  # Molecular weight
         sio:CHEMINF_000396 OR                  # InChI
@@ -53,7 +53,7 @@ shape_expressions: |
     sio:SIO_000300 . ;                         # Has value (mixed types)
     sio:SIO_000221 IRI ?                       # Has unit
   }
-  
+
   <SubstanceShape> {
     a [ vocab:Substance ] ;
     dcterms:identifier xsd:string ;
@@ -62,7 +62,7 @@ shape_expressions: |
     dcterms:available xsd:date ? ;
     sio:SIO_000008 IRI *
   }
-  
+
   <BioAssayShape> {
     a [ vocab:BioAssay bao:BAO_0000015 ] ;
     dcterms:title xsd:string ;
@@ -71,12 +71,12 @@ shape_expressions: |
     bao:BAO_0000209 IRI * ;                    # Has measure group
     bao:BAO_0000210 IRI *                      # Has assay format
   }
-  
+
   <GeneShape> {
     a [ vocab:Gene sio:SIO_010035 ] ;
     cito:isDiscussedBy IRI *                   # Referenced in patents
   }
-  
+
   <ProteinShape> {
     a [ vocab:Protein sio:SIO_010043 ] ;
     skos:prefLabel xsd:string ;
@@ -89,7 +89,7 @@ shape_expressions: |
     bao:BAO_0002817 xsd:string ;               # Amino acid sequence
     cito:isDiscussedBy IRI *
   }
-  
+
   <InChIKeyShape> {
     a [ vocab:InChIKey sio:CHEMINF_000399 ] ;
     sio:SIO_000300 xsd:string ;
@@ -107,7 +107,7 @@ sample_rdf_entries:
       @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
       @prefix obo: <http://purl.obolibrary.org/obo/> .
-      
+
       compound:CID2244 a vocab:Compound ;
         skos:prefLabel "Aspirin" ;
         dcterms:identifier "2244" ;
@@ -116,17 +116,17 @@ sample_rdf_entries:
                        <http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/CID2244_IUPAC_InChI> ;
         obo:RO_0000087 vocab:FDAApprovedDrugs ;
         sio:CHEMINF_000455 compound:CID102100677 .
-  
+
   - title: Chemical Descriptor - Molecular Weight
     description: Molecular weight descriptor with value and unit information for Aspirin.
     rdf: |
       @prefix descriptor: <http://rdf.ncbi.nlm.nih.gov/pubchem/descriptor/> .
       @prefix sio: <http://semanticscience.org/resource/> .
-      
+
       descriptor:CID2244_Molecular_Weight a sio:CHEMINF_000334 ;
         sio:SIO_000300 180.16 ;
         sio:SIO_000221 <http://purl.obolibrary.org/obo/UO_0000055> .
-  
+
   - title: BioAssay Data
     description: NCI human tumor cell line growth inhibition assay with measure groups and assay format.
     rdf: |
@@ -134,14 +134,14 @@ sample_rdf_entries:
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
       @prefix bao: <http://www.bioassayontology.org/bao#> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
-      
+
       bioassay:AID1 a vocab:BioAssay , bao:BAO_0000015 ;
         dcterms:title "NCI human tumor cell line growth inhibition assay. Data for the NCI-H23 Non-Small Cell Lung cell line" ;
         dcterms:identifier "1" ;
         dcterms:source <http://rdf.ncbi.nlm.nih.gov/pubchem/source/DTP_NCI> ;
         bao:BAO_0000209 <http://rdf.ncbi.nlm.nih.gov/pubchem/measuregroup/AID1> ;
         bao:BAO_0000210 bao:BAO_0000030 .
-  
+
   - title: Protein Entry with PDB Cross-references
     description: Glutathione S-transferase protein with taxonomy, PDB links, sequence, and conserved domains.
     rdf: |
@@ -152,7 +152,7 @@ sample_rdf_entries:
       @prefix pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#> .
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix bao: <http://www.bioassayontology.org/bao#> .
-      
+
       protein:ACC10GS_A a vocab:Protein , sio:SIO_010043 ;
         skos:prefLabel "Chain A, Glutathione S-transferase P1-1" ;
         dcterms:identifier "10GS_A" ;
@@ -161,7 +161,7 @@ sample_rdf_entries:
         vocab:hasSimilarProtein protein:ACCP09211 ;
         obo:RO_0002180 <http://rdf.ncbi.nlm.nih.gov/pubchem/conserveddomain/PSSMID198319> ;
         bao:BAO_0002817 "PPYTVVYFPVRGRCAALRMLLADQGQSWKEEVVTVETWQEGSLKASCLYGQLPKFQDGDLTLYQSNTILRHLGRTLGLYGKDQQEAALVDMVNDGVEDLRCKYISLIYTNYEAGKDDYVKALPGQLKPFETLLSQNQGGKTFIVGDQISFADYNLLDLLLIHEVLAPGCLDAFPLLSAYVGRLSARPKLKAFLASPEYVNLPINGNGKQ" .
-  
+
   - title: InChIKey with MeSH Cross-reference
     description: InChIKey identifier linking to compound and MeSH vocabulary term for semantic integration.
     rdf: |
@@ -169,7 +169,7 @@ sample_rdf_entries:
       @prefix vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#> .
       @prefix sio: <http://semanticscience.org/resource/> .
       @prefix dcterms: <http://purl.org/dc/terms/> .
-      
+
       inchikey:BSYNRYMUTXBXSQ-UHFFFAOYSA-N a vocab:InChIKey , sio:CHEMINF_000399 ;
         sio:SIO_000300 "BSYNRYMUTXBXSQ-UHFFFAOYSA-N" ;
         sio:SIO_000011 <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID2244> ;
@@ -184,13 +184,13 @@ sparql_query_examples:
       PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/>
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      
+
       SELECT ?label
       WHERE {
         compound:CID2244 a vocab:Compound ;
                          skos:prefLabel ?label .
       }
-  
+
   - title: Retrieve Compound Molecular Properties
     description: Basic query to get key molecular descriptors (molecular weight, formula) for a specific compound.
     question: What are the molecular properties of compound CID2244?
@@ -198,7 +198,7 @@ sparql_query_examples:
     sparql: |
       PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/>
       PREFIX sio: <http://semanticscience.org/resource/>
-      
+
       SELECT ?descriptorType ?value
       WHERE {
         compound:CID2244 sio:SIO_000008 ?descriptor .
@@ -210,7 +210,7 @@ sparql_query_examples:
           sio:CHEMINF_000018
         ))
       }
-  
+
   - title: Count FDA Approved Drugs
     description: Aggregate query counting compounds with FDA approval status using RO_0000087 role predicate.
     question: How many FDA-approved drugs are in PubChem?
@@ -218,14 +218,14 @@ sparql_query_examples:
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
+
       SELECT (COUNT(DISTINCT ?compound) as ?fdaDrugCount)
       WHERE {
         ?compound a vocab:Compound ;
                   obo:RO_0000087 vocab:FDAApprovedDrugs .
       }
       LIMIT 100
-  
+
   - title: Find Compounds by Molecular Weight Range
     description: Filter compounds by molecular weight range using descriptor values and mathematical comparisons.
     question: Find compounds with molecular weight between 500 and 550 Da
@@ -233,7 +233,7 @@ sparql_query_examples:
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       PREFIX sio: <http://semanticscience.org/resource/>
-      
+
       SELECT ?compound ?mw
       WHERE {
         ?compound a vocab:Compound ;
@@ -243,7 +243,7 @@ sparql_query_examples:
         FILTER(?mw >= 500 && ?mw <= 550)
       }
       LIMIT 10
-  
+
   - title: Find Compounds with Most Stereoisomers
     description: Aggregate query grouping compounds by stereoisomer count using sio:CHEMINF_000455 predicate.
     question: Which compounds have the most stereoisomers in PubChem?
@@ -251,7 +251,7 @@ sparql_query_examples:
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       PREFIX sio: <http://semanticscience.org/resource/>
-      
+
       SELECT ?compound (COUNT(?stereoisomer) as ?stereoCount)
       WHERE {
         ?compound a vocab:Compound ;
@@ -260,7 +260,7 @@ sparql_query_examples:
       GROUP BY ?compound
       ORDER BY DESC(?stereoCount)
       LIMIT 10
-  
+
   - title: Integrate Protein-Compound with PDB Structures
     description: Complex query linking proteins to their organisms and PDB structures for human proteins.
     question: Find human proteins with their PDB structures in PubChem
@@ -270,7 +270,7 @@ sparql_query_examples:
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      
+
       SELECT ?protein ?proteinLabel ?organism ?pdbId
       WHERE {
         ?protein a vocab:Protein ;
@@ -280,7 +280,7 @@ sparql_query_examples:
         FILTER(REGEX(STR(?organism), "9606"))
       }
       LIMIT 10
-  
+
   - title: Cross-Database Chemical Identifier Integration
     description: Advanced query integrating InChIKey identifiers with MeSH terms for semantic web navigation.
     question: Map PubChem compounds to MeSH vocabulary terms via InChIKey
@@ -290,7 +290,7 @@ sparql_query_examples:
       PREFIX sio: <http://semanticscience.org/resource/>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      
+
       SELECT ?compound ?compoundLabel ?inchikey ?meshTerm
       WHERE {
         ?compound a vocab:Compound ;
@@ -304,31 +304,21 @@ sparql_query_examples:
       LIMIT 10
 
 cross_references:
-  - title: ChEBI Chemical Ontology
-    description: Links PubChem compounds to ChEBI ontology classes for chemical classification and hierarchical navigation.
+  - pattern: rdfs:seeAlso
+    description: |
+      External database links via rdfs:seeAlso property. Different entity types link to different external resources distinguished by URL patterns.
+    databases:
+      chemical_identifiers:
+        - Wikidata (wikidata.org/entity/Q): Links compounds to Wikidata entities for linked open data integration
+      protein_identifiers:
+        - NCBI Protein (identifiers.org/ncbiprotein): Links protein chains to NCBI Protein database entries
     complexity: basic
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
-      
-      SELECT ?compound ?label ?chebiClass
-      WHERE {
-        ?compound a vocab:Compound ;
-                  a ?chebiClass ;
-                  skos:prefLabel ?label .
-        FILTER(STRSTARTS(STR(?chebiClass), "http://purl.obolibrary.org/obo/CHEBI_"))
-      }
-      LIMIT 20
-  
-  - title: Wikidata Entity Mapping
-    description: Cross-references PubChem compounds to Wikidata entities using rdfs:seeAlso for linked open data integration.
-    complexity: basic
-    sparql: |
-      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+      # For compounds to Wikidata:
       SELECT ?compound ?label ?wikidataEntity
       WHERE {
         ?compound a vocab:Compound ;
@@ -337,24 +327,158 @@ cross_references:
         FILTER(CONTAINS(STR(?wikidataEntity), "wikidata"))
       }
       LIMIT 20
-  
-  - title: PDB Protein Structure Links
-    description: Maps PubChem proteins to PDB structure database entries via pdbx:link_to_pdb predicate for 3D structure visualization.
+
+      # For proteins to NCBI Protein:
+      # SELECT ?protein ?label ?ncbiProtein
+      # WHERE {
+      #   ?protein a vocab:Protein ;
+      #            skos:prefLabel ?label ;
+      #            rdfs:seeAlso ?ncbiProtein .
+      #   FILTER(CONTAINS(STR(?ncbiProtein), "identifiers.org/ncbiprotein"))
+      # }
+      # LIMIT 20
+
+  - pattern: rdf:type (ChEBI Classification)
+    description: |
+      Compounds classified with ChEBI ontology classes via rdf:type predicate. Enables hierarchical chemical classification and ontology-based queries.
+    databases:
+      ontology_classification:
+        - ChEBI (purl.obolibrary.org/obo/CHEBI_): Chemical Entities of Biological Interest ontology classes
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+
+      SELECT ?compound ?label ?chebiClass
+      WHERE {
+        ?compound a vocab:Compound ;
+                  a ?chebiClass ;
+                  skos:prefLabel ?label .
+        FILTER(STRSTARTS(STR(?chebiClass), "http://purl.obolibrary.org/obo/CHEBI_"))
+      }
+      LIMIT 20
+
+  - pattern: dcterms:subject
+    description: |
+      InChIKey entities link to MeSH vocabulary terms via dcterms:subject property. Provides medical subject heading annotations for chemical structures.
+    databases:
+      medical_vocabulary:
+        - MeSH (id.nlm.nih.gov/mesh/M): Medical Subject Headings from National Library of Medicine
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+
+      SELECT ?inchikey ?inchikeyValue ?meshTerm
+      WHERE {
+        ?inchikey a vocab:InChIKey ;
+                  sio:SIO_000300 ?inchikeyValue ;
+                  dcterms:subject ?meshTerm .
+        FILTER(CONTAINS(STR(?meshTerm), "mesh"))
+      }
+      LIMIT 20
+
+  - pattern: pdbx:link_to_pdb
+    description: |
+      Protein entries link to PDB structure database via pdbx:link_to_pdb property. Multiple PDB structures can exist per protein chain.
+    databases:
+      structure:
+        - PDB (rdf.wwpdb.org/pdb/): Protein Data Bank 3D structure entries
     complexity: intermediate
     sparql: |
       PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      
-      SELECT ?protein ?proteinLabel ?proteinId ?pdbId
+
+      SELECT ?protein ?proteinLabel ?pdbId
       WHERE {
         ?protein a vocab:Protein ;
                  skos:prefLabel ?proteinLabel ;
-                 dcterms:identifier ?proteinId ;
                  pdbx:link_to_pdb ?pdbId .
       }
       LIMIT 50
+
+  - pattern: up:organism
+    description: |
+      Protein entries link to NCBI Taxonomy database via up:organism property. Provides taxonomic classification for proteins.
+    databases:
+      taxonomy:
+        - NCBI Taxonomy (pubchem/taxonomy/TAXID): Organism taxonomy identifiers
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX up: <http://purl.uniprot.org/core/>
+
+      SELECT ?protein ?proteinLabel ?organism
+      WHERE {
+        ?protein a vocab:Protein ;
+                 skos:prefLabel ?proteinLabel ;
+                 up:organism ?organism .
+      }
+      LIMIT 20
+
+  - pattern: obo:RO_0002180 (has conserved domain)
+    description: |
+      Protein entries link to conserved domain database via obo:RO_0002180 property. Identifies functional protein domains.
+    databases:
+      domains:
+        - Conserved Domain Database (pubchem/conserveddomain/PSSMID): NCBI CDD protein domain entries
+    complexity: intermediate
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+
+      SELECT ?protein ?proteinLabel ?conservedDomain
+      WHERE {
+        ?protein a vocab:Protein ;
+                 skos:prefLabel ?proteinLabel ;
+                 obo:RO_0002180 ?conservedDomain .
+      }
+      LIMIT 20
+
+  - pattern: cito:isDiscussedBy
+    description: |
+      Proteins and genes link to patent/reference documents via cito:isDiscussedBy property. Tracks intellectual property and literature citations.
+    databases:
+      literature:
+        - PubChem References (pubchem/reference/): Patent and literature reference entries
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX cito: <http://purl.org/spar/cito/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+      SELECT ?protein ?proteinLabel ?reference
+      WHERE {
+        ?protein a vocab:Protein ;
+                 skos:prefLabel ?proteinLabel ;
+                 cito:isDiscussedBy ?reference .
+      }
+      LIMIT 20
+
+  - pattern: obo:RO_0000087 (has role)
+    description: |
+      Compounds link to functional roles via obo:RO_0000087 property. Currently identifies FDA-approved drugs (17,367 compounds).
+    databases:
+      drug_classification:
+        - FDA Approved Drugs (vocab:FDAApprovedDrugs): FDA-approved pharmaceutical compounds
+    complexity: basic
+    sparql: |
+      PREFIX vocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+      SELECT ?compound ?label
+      WHERE {
+        ?compound a vocab:Compound ;
+                  skos:prefLabel ?label ;
+                  obo:RO_0000087 vocab:FDAApprovedDrugs .
+      }
+      LIMIT 20
 
 architectural_notes:
   schema_design:
@@ -378,6 +502,8 @@ architectural_notes:
     - PDB structures via pdbx:link_to_pdb on protein entities
     - UniProt organisms via up:organism on protein entries
     - Patent references via cito:isDiscussedBy on genes and proteins
+    - NCBI Protein via rdfs:seeAlso on protein entities
+    - Conserved domains via obo:RO_0002180 on protein entities
   
   data_quality:
     - Descriptor values use mixed types (xsd:string, xsd:decimal, xsd:integer)
@@ -394,12 +520,14 @@ data_statistics:
   total_genes: 167172
   total_proteins: 248623
   fda_approved_drugs: 17367
+  
   indexed_properties:
     - skos:prefLabel
     - dcterms:identifier
     - sio:SIO_000008
     - sio:SIO_000300
     - rdf:type
+  
   high_cardinality_entities:
     - Compound (119M+)
     - Substance (329M+)

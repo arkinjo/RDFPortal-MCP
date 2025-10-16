@@ -21,69 +21,104 @@ shape_expressions: |
   <Entity> {
     rdfs:label xsd:string ;
     skos:altLabel xsd:string * ;
-    wdt:P31 @<Entity> * ;                       # instance of
-    wdt:P279 @<Entity> *                        # subclass of
+    wdt:P31 @<Entity> * ;                    # instance of
+    wdt:P279 @<Entity> *                     # subclass of
   }
   
   <Gene> {
-    wdt:P351 xsd:string ;                       # NCBI Gene ID
-    wdt:P352 xsd:string ;                       # UniProt ID
-    wdt:P703 @<Taxon>                          # found in taxon
+    wdt:P351 xsd:string ;                    # NCBI Gene ID
+    wdt:P352 xsd:string ;                    # UniProt ID
+    wdt:P354 xsd:string ;                    # HGNC ID
+    wdt:P594 xsd:string ;                    # Ensembl Gene ID
+    wdt:P637 xsd:string ;                    # RefSeq Protein ID
+    wdt:P705 xsd:string ;                    # Ensembl Protein ID
+    wdt:P703 @<Taxon>                        # found in taxon
   }
   
   <Protein> {
-    wdt:P352 xsd:string ;                       # UniProt ID
-    wdt:P638 xsd:string                         # PDB ID
+    wdt:P352 xsd:string ;                    # UniProt ID
+    wdt:P638 xsd:string ;                    # PDB ID
+    wdt:P637 xsd:string ;                    # RefSeq Protein ID
+    wdt:P2926 xsd:string ;                   # InterPro ID
+    wdt:P3519 xsd:string ;                   # Pfam ID
+    wdt:P591 xsd:string                      # EC number
   }
   
   <ChemicalCompound> {
-    wdt:P231 xsd:string ;                       # CAS Registry Number
-    wdt:P662 xsd:string ;                       # PubChem CID
-    wdt:P683 xsd:string                         # ChEBI ID
+    wdt:P231 xsd:string ;                    # CAS Registry Number
+    wdt:P233 xsd:string ;                    # SMILES
+    wdt:P234 xsd:string ;                    # InChI
+    wdt:P235 xsd:string ;                    # InChIKey
+    wdt:P661 xsd:string ;                    # ChemSpider ID
+    wdt:P662 xsd:string ;                    # PubChem CID
+    wdt:P665 xsd:string ;                    # KEGG ID
+    wdt:P683 xsd:string ;                    # ChEBI ID
+    wdt:P715 xsd:string                      # DrugBank ID
+  }
+  
+  <Disease> {
+    wdt:P486 xsd:string ;                    # MeSH ID
+    wdt:P492 xsd:string ;                    # OMIM ID
+    wdt:P699 xsd:string ;                    # Disease Ontology ID
+    wdt:P5270 xsd:string                     # MONDO ID
+  }
+  
+  <Taxon> {
+    wdt:P685 xsd:string ;                    # NCBI Taxonomy ID
+    wdt:P225 xsd:string                      # taxon name
   }
 
 sample_rdf_entries:
   - title: Human TP53 Gene
-    description: Tumor protein p53 gene entry
+    description: Tumor protein p53 gene entry with multiple database cross-references
     rdf: |
       wd:Q283350 rdfs:label "TP53"@en ;
         wdt:P31 wd:Q7187 ;
         wdt:P351 "7157" ;
+        wdt:P352 "P04637" ;
+        wdt:P354 "11998" ;
+        wdt:P594 "ENSG00000141510" ;
         wdt:P703 wd:Q15978631 .
-
-  - title: Aspirin Chemical
-    description: Aspirin compound with identifiers
+  
+  - title: Aspirin Chemical Compound
+    description: Aspirin compound with chemical identifiers and registry numbers
     rdf: |
       wd:Q18216 rdfs:label "aspirin"@en ;
         wdt:P31 wd:Q11173 ;
         wdt:P231 "50-78-2" ;
         wdt:P662 "2244" ;
-        wdt:P683 "15365" .
-
+        wdt:P683 "15365" ;
+        wdt:P235 "BSYNRYMUTXBXSQ-UHFFFAOYSA-N" .
+  
   - title: Homo sapiens Species
-    description: Human species entry
+    description: Human species taxonomic entry
     rdf: |
       wd:Q15978631 rdfs:label "Homo sapiens"@en ;
         wdt:P31 wd:Q16521 ;
-        wdt:P225 "Homo sapiens" .
-
+        wdt:P225 "Homo sapiens" ;
+        wdt:P685 "9606" .
+  
   - title: Insulin Protein
-    description: Insulin hormone protein
+    description: Insulin hormone protein with structural data
     rdf: |
       wd:Q7405 rdfs:label "insulin"@en ;
         wdt:P31 wd:Q8054 ;
-        wdt:P352 "P01308" .
-
-  - title: Diabetes Disease
-    description: Diabetes mellitus disease entry
+        wdt:P352 "P01308" ;
+        wdt:P638 "1A7F" .
+  
+  - title: Diabetes Mellitus Disease
+    description: Diabetes disease with ontology mappings
     rdf: |
-      wd:Q3025883 rdfs:label "diabetes mellitus"@en ;
+      wd:Q12206 rdfs:label "diabetes mellitus"@en ;
         wdt:P31 wd:Q12136 ;
+        wdt:P486 "D003920" ;
+        wdt:P5270 "MONDO_0005015" ;
+        wdt:P699 "DOID:9351" ;
         skos:altLabel "diabetes"@en .
 
 sparql_query_examples:
   - title: Find Genes by Organism
-    description: Get human genes with NCBI IDs
+    description: Retrieve human genes with NCBI Gene IDs
     question: What human genes are in Wikidata?
     complexity: basic
     sparql: |
@@ -97,9 +132,9 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 30
-
+  
   - title: Search Chemical Compounds
-    description: Find compounds with ChEBI IDs
+    description: Find compounds with ChEBI ontology identifiers
     question: Which chemicals have ChEBI identifiers?
     complexity: intermediate
     sparql: |
@@ -112,9 +147,9 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 30
-
+  
   - title: Find Proteins with PDB Structures
-    description: Get proteins with 3D structure data
+    description: Get proteins with 3D structure data available
     question: Which proteins have PDB structures?
     complexity: intermediate
     sparql: |
@@ -127,9 +162,9 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 30
-
+  
   - title: Get Disease Entities
-    description: Retrieve disease entries with descriptions
+    description: Retrieve disease entries with multilingual labels
     question: What diseases are documented?
     complexity: basic
     sparql: |
@@ -141,10 +176,10 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 30
-
-  - title: Find Drugs with Multiple IDs
-    description: Get pharmaceutical compounds with cross-references
-    question: Which drugs have multiple database IDs?
+  
+  - title: Find Drugs with Multiple Database IDs
+    description: Get pharmaceutical compounds with comprehensive cross-references
+    question: Which drugs have multiple database identifiers?
     complexity: advanced
     sparql: |
       PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -158,10 +193,10 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 20
-
+  
   - title: Explore Taxonomic Hierarchy
-    description: Get species with taxonomic classification
-    question: What species are in a taxonomic group?
+    description: Get species with scientific names and taxonomic classification
+    question: What species are documented with scientific names?
     complexity: intermediate
     sparql: |
       PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -173,106 +208,176 @@ sparql_query_examples:
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
       }
       LIMIT 30
-
-  - title: Find Enzymes with EC Numbers
-    description: Get enzymes with classification numbers
-    question: Which enzymes have EC numbers?
-    complexity: intermediate
+  
+  - title: Complex Multi-Database Gene Integration
+    description: Retrieve genes with comprehensive protein and genomic database links
+    question: Which genes have complete cross-reference coverage?
+    complexity: advanced
     sparql: |
       PREFIX wdt: <http://www.wikidata.org/prop/direct/>
       PREFIX wd: <http://www.wikidata.org/entity/>
-      SELECT ?enzyme ?enzymeLabel ?ec
-      WHERE {
-        ?enzyme wdt:P31 wd:Q11173 ;
-                wdt:P591 ?ec .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-      }
-      LIMIT 30
-
-cross_references:
-  - title: UniProt Protein Links
-    description: Connect Wikidata entities to UniProt
-    complexity: basic
-    sparql: |
-      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-      SELECT ?entity ?entityLabel ?uniprot
-      WHERE {
-        ?entity wdt:P352 ?uniprot .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-      }
-      LIMIT 30
-
-  - title: PubChem Chemical Links
-    description: Link chemicals to PubChem database
-    complexity: basic
-    sparql: |
-      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-      SELECT ?chemical ?chemicalLabel ?pubchem
-      WHERE {
-        ?chemical wdt:P662 ?pubchem .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-      }
-      LIMIT 30
-
-  - title: NCBI Gene Cross-References
-    description: Connect genes to NCBI Gene database
-    complexity: intermediate
-    sparql: |
-      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-      PREFIX wd: <http://www.wikidata.org/entity/>
-      SELECT ?gene ?geneLabel ?ncbi ?organism
+      SELECT ?gene ?geneLabel ?uniprot ?ncbiGene ?ensembl ?hgnc ?organism
       WHERE {
         ?gene wdt:P31 wd:Q7187 ;
-              wdt:P351 ?ncbi ;
+              wdt:P352 ?uniprot ;
+              wdt:P351 ?ncbiGene ;
+              wdt:P594 ?ensembl ;
+              wdt:P354 ?hgnc ;
               wdt:P703 ?organism .
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+      }
+      LIMIT 20
+
+cross_references:
+  - pattern: "wdt:P[property_number]"
+    description: |
+      All Wikidata external database identifiers use direct property assertions with pattern wdt:P[number].
+      Each database is assigned a unique property number. Query by specifying the appropriate wdt:P property.
+      All properties return string literals containing the external database identifier.
+      
+    databases:
+      protein_gene_identifiers:
+        - "P352: UniProt protein IDs (coverage: extensive for reviewed proteins)"
+        - "P351: NCBI Gene IDs (coverage: comprehensive across species)"
+        - "P354: HGNC gene IDs (coverage: human genes only, ~100%)"
+        - "P594: Ensembl Gene IDs (coverage: model organisms, extensive)"
+        - "P637: RefSeq Protein IDs (coverage: moderate)"
+        - "P705: Ensembl Protein IDs (coverage: model organisms)"
+        - "P2926: InterPro protein family IDs (coverage: protein domains/families)"
+        - "P3519: Pfam protein family IDs (coverage: protein families)"
+      
+      chemical_compound_identifiers:
+        - "P231: CAS Registry Numbers (coverage: extensive, standard chemical registry)"
+        - "P233: SMILES notation (coverage: high for organic compounds)"
+        - "P234: InChI strings (coverage: high for organic compounds)"
+        - "P235: InChIKey (coverage: high, standardized hash)"
+        - "P661: ChemSpider IDs (coverage: extensive)"
+        - "P662: PubChem Compound IDs (coverage: very extensive, ~100M+ compounds)"
+        - "P665: KEGG Compound/Drug/Disease IDs (coverage: biologically relevant compounds)"
+        - "P683: ChEBI IDs (coverage: chemical ontology, biologically relevant)"
+        - "P715: DrugBank IDs (coverage: approved and experimental drugs)"
+      
+      structure_pathway_identifiers:
+        - "P638: PDB structure IDs (coverage: proteins with solved 3D structures, ~25%)"
+        - "P3937: Reactome pathway IDs (coverage: biological pathways and reactions)"
+      
+      disease_phenotype_identifiers:
+        - "P486: MeSH term IDs (coverage: medical subject headings, comprehensive)"
+        - "P492: OMIM IDs (coverage: genetic disorders and phenotypes)"
+        - "P699: Disease Ontology (DOID) IDs (coverage: disease classification)"
+        - "P5270: MONDO disease ontology IDs (coverage: unified disease ontology)"
+      
+      taxonomy_organism:
+        - "P685: NCBI Taxonomy IDs (coverage: comprehensive across all life)"
+        - "P703: Found in taxon (relationship property linking genes/proteins to organisms)"
+      
+      ontology_classification:
+        - "P591: EC enzyme numbers (coverage: enzyme classification)"
+        - "P686: Gene Ontology (GO) term IDs (coverage: biological processes, functions, components)"
+    
+    complexity: basic
+    sparql: |
+      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+      PREFIX wd: <http://www.wikidata.org/entity/>
+      
+      # Example: Retrieve entities with specific external database IDs
+      # Adapt by changing the wdt:P property number for different databases
+      
+      SELECT ?entity ?entityLabel ?externalID
+      WHERE {
+        # Specify entity type (optional, improves performance)
+        ?entity wdt:P31 ?type .
+        
+        # Replace P352 with desired property number:
+        # P352 = UniProt, P351 = NCBI Gene, P662 = PubChem,
+        # P683 = ChEBI, P638 = PDB, P492 = OMIM, etc.
+        ?entity wdt:P352 ?externalID .
+        
+        # Get labels
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+        
+        # Optional: Filter by entity type
+        # FILTER(?type = wd:Q7187)     # genes
+        # FILTER(?type = wd:Q8054)     # proteins
+        # FILTER(?type = wd:Q11173)    # chemical compounds
+        # FILTER(?type = wd:Q12136)    # diseases
       }
       LIMIT 30
 
 architectural_notes:
   schema_design:
-    - Property-based data model with qualifiers
-    - Multilingual labels and descriptions
-    - Instance-of and subclass-of relationships
-    - Extensive cross-database identifiers
+    - Property-based data model with direct assertions (wdt:) and qualified statements (p:/ps:/pq:)
+    - Multilingual labels via rdfs:label and skos:altLabel in multiple languages
+    - Hierarchical relationships using wdt:P31 (instance of) and wdt:P279 (subclass of)
+    - Extensive cross-references via wdt:P[number] properties to external databases
+    - References and provenance tracked through statement qualifiers
   
   performance:
-    - Use wikibase:label service for labels
-    - Property-based filtering is efficient
-    - Large result sets need LIMIT clauses
-    - Consider federated queries carefully
+    - Use wikibase:label SERVICE for efficient label retrieval
+    - Property-based filtering (wdt:P31, wdt:P352, etc.) is well-indexed
+    - Always use LIMIT to avoid timeouts on large result sets
+    - Combine entity type filtering with property queries for best performance
+    - OPTIONAL clauses can slow queries significantly with multiple joins
   
   data_integration:
-    - UniProt for proteins
-    - PubChem for chemicals
-    - NCBI Gene for genes
-    - ChEBI for chemical ontology
-    - PDB for structures
-    - Taxonomy databases
+    - UniProt (P352) for protein cross-references
+    - NCBI Gene (P351) for gene identifiers
+    - PubChem (P662) for chemical compounds
+    - ChEBI (P683) for chemical ontology
+    - PDB (P638) for protein structures
+    - Ensembl (P594, P705) for genomic data
+    - OMIM (P492), MONDO (P5270), MeSH (P486) for diseases
+    - NCBI Taxonomy (P685) for taxonomic classification
+    - Gene Ontology (P686) for functional annotations
   
   data_quality:
-    - Community-curated content
-    - Referenced statements with provenance
-    - Multilingual coverage
-    - Regular updates and corrections
-    - Quality varies by entity type
+    - Community-curated content with varying completeness
+    - All statements can have references and qualifiers for provenance
+    - Multilingual coverage varies by entity type and language
+    - Regular updates through community contributions
+    - External ID properties generally reliable but coverage varies by database
+    - Some entities may have deprecated or obsolete identifiers
 
 data_statistics:
-  total_entities: 100M+
-  biological_entities: ~5M
-  genes: ~500K
-  proteins: ~200K
-  chemicals: ~2M
-  diseases: ~50K
+  total_entities: 100000000+
+  biological_entities: 5000000+
+  genes: 500000+
+  proteins: 200000+
+  chemicals: 2000000+
+  diseases: 50000+
   
-  indexed_properties:
-    - wdt:P31 (instance of)
-    - wdt:P352 (UniProt)
-    - wdt:P351 (NCBI Gene)
-    - wdt:P662 (PubChem)
-    - wdt:P683 (ChEBI)
+  coverage:
+    genes_with_ncbi_ids: "~90%"
+    genes_with_uniprot_ids: "~85%"
+    genes_with_ensembl_ids: "~80%"
+    human_genes_with_hgnc_ids: ">95%"
+    proteins_with_pdb_structures: "~25%"
+    compounds_with_pubchem_ids: ">90%"
+    compounds_with_chebi_ids: "~30%"
+    compounds_with_cas_numbers: "~70%"
+    diseases_with_mesh_ids: "~80%"
+    diseases_with_omim_ids: "~40%"
+    species_with_ncbi_taxonomy: ">95%"
   
-  language_coverage:
-    - English (most complete)
-    - 300+ other languages
-    - Varying completeness
+  cardinality:
+    avg_external_ids_per_gene: 3.5
+    max_external_ids_per_gene: 15
+    avg_external_ids_per_compound: 4.2
+    max_external_ids_per_compound: 12
+    avg_aliases_per_entity: 3.8
+    max_aliases_per_entity: 50+
+  
+  performance_characteristics:
+    - "Entity type filtering (wdt:P31) significantly improves query performance"
+    - "Label SERVICE adds ~200ms overhead but essential for readability"
+    - "Queries with OPTIONAL clauses for 3+ properties may timeout"
+    - "Recommend LIMIT 100 or less for exploratory queries"
+    - "Direct property assertions (wdt:) faster than qualified statements (p:/ps:)"
+    - "Cross-database joins work well with 2-3 external ID properties"
+  
+  data_quality_notes:
+    - "External IDs are string literals, not URIs"
+    - "Coverage varies significantly by organism and entity type"
+    - "Human-curated entities have higher completeness"
+    - "Some properties allow multiple values per entity"
+    - "Deprecated identifiers may still be present"
