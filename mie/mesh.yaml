@@ -165,22 +165,39 @@ sparql_query_examples:
       }
       LIMIT 30
   
-  - title: Get Hierarchical Relationships
-    description: Find parent-child relationships between descriptors
-    question: What is the hierarchy for a concept?
+  - title: Get Biological Annotations
+    description: Retrieve comprehensive annotations for specific descriptor IDs including classifications and hierarchical relationships
+    question: What are the biological annotations for given descriptors?
     complexity: intermediate
     sparql: |
       PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?concept ?label ?broader ?broaderLabel
+      PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+      
+      SELECT ?descriptor ?label ?treeNumber ?treeLabel ?broader ?broaderLabel ?concept ?scopeNote
       FROM <http://id.nlm.nih.gov/mesh>
       WHERE {
-        ?concept a meshv:TopicalDescriptor ;
-                 rdfs:label ?label ;
-                 meshv:broaderDescriptor ?broader .
-        ?broader rdfs:label ?broaderLabel .
+        VALUES ?descriptor { mesh:D000130 mesh:D003920 mesh:D006973 }
+        
+        ?descriptor a meshv:TopicalDescriptor ;
+                    rdfs:label ?label .
+        
+        OPTIONAL { 
+          ?descriptor meshv:treeNumber ?treeNumber .
+          ?treeNumber rdfs:label ?treeLabel .
+        }
+        
+        OPTIONAL {
+          ?descriptor meshv:broaderDescriptor ?broader .
+          ?broader rdfs:label ?broaderLabel .
+        }
+        
+        OPTIONAL {
+          ?descriptor meshv:concept ?concept .
+          ?concept meshv:scopeNote ?scopeNote .
+        }
       }
-      LIMIT 50
+      LIMIT 30
   
   - title: Find Chemical Substances
     description: Retrieve supplementary chemical records
@@ -214,21 +231,29 @@ sparql_query_examples:
       }
       ORDER BY ?label
   
-  - title: Get Allowable Qualifiers
-    description: Find qualifiers that can modify descriptors
-    question: What qualifiers are available?
-    complexity: basic
+  - title: Descriptor-Qualifier Usage Patterns
+    description: Find descriptors with their allowable qualifiers using aggregation and filtering
+    question: What qualifiers can be used with diabetes-related descriptors?
+    complexity: advanced
     sparql: |
       PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?qualifier ?label ?annotation
+      
+      SELECT ?descriptor ?descLabel ?qualifier ?qualLabel (COUNT(*) as ?usageCount)
       FROM <http://id.nlm.nih.gov/mesh>
       WHERE {
+        ?descriptor a meshv:TopicalDescriptor ;
+                    rdfs:label ?descLabel ;
+                    meshv:allowableQualifier ?qualifier .
+        
         ?qualifier a meshv:Qualifier ;
-                   rdfs:label ?label .
-        OPTIONAL { ?qualifier meshv:annotation ?annotation }
+                   rdfs:label ?qualLabel .
+        
+        FILTER(CONTAINS(LCASE(?descLabel), "diabetes"))
       }
-      ORDER BY ?label
+      GROUP BY ?descriptor ?descLabel ?qualifier ?qualLabel
+      ORDER BY DESC(?usageCount)
+      LIMIT 30
   
   - title: Chemical-Descriptor Mappings
     description: Map chemicals to main descriptors

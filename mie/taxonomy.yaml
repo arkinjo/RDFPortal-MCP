@@ -108,21 +108,45 @@ sample_rdf_entries:
         tax:rank tax:NoRank .
 
 sparql_query_examples:
-  - title: Get Basic Taxa Information
-    description: Retrieve taxonomic entities with names and IDs
-    question: What are some organisms in the database?
+  - title: Search Taxa by Name
+    description: Find taxonomy IDs by filtering with scientific or common names
+    question: Which taxonomy IDs match organisms with "mouse" in their names?
     complexity: basic
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX dcterms: <http://purl.org/dc/terms/>
-      SELECT ?taxon ?label ?id
-      WHERE { 
+      SELECT ?taxon ?id ?label ?commonName
+      WHERE {
         ?taxon a tax:Taxon ;
                rdfs:label ?label ;
                dcterms:identifier ?id .
+        OPTIONAL { ?taxon tax:commonName ?commonName }
+        FILTER(CONTAINS(LCASE(?label), "mouse") || CONTAINS(LCASE(?commonName), "mouse"))
       }
       LIMIT 20
+  
+  - title: Get Biological Annotations for Taxonomy IDs
+    description: Retrieve complete biological annotations for specific taxonomy IDs
+    question: What are the biological annotations for taxonomy IDs 9606 and 10090?
+    complexity: basic
+    sparql: |
+      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      PREFIX taxon: <http://identifiers.org/taxonomy/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      SELECT ?taxon ?label ?id ?rank ?scientificName ?authority ?commonName ?geneticCode
+      WHERE {
+        VALUES ?taxon { taxon:9606 taxon:10090 }
+        ?taxon a tax:Taxon ;
+               rdfs:label ?label ;
+               dcterms:identifier ?id ;
+               tax:rank ?rank .
+        OPTIONAL { ?taxon tax:scientificName ?scientificName }
+        OPTIONAL { ?taxon tax:authority ?authority }
+        OPTIONAL { ?taxon tax:commonName ?commonName }
+        OPTIONAL { ?taxon tax:geneticCode ?geneticCode }
+      }
   
   - title: Get Complete Lineage
     description: Retrieve full taxonomic lineage for an organism
@@ -163,6 +187,22 @@ sparql_query_examples:
       }
       LIMIT 20
   
+  - title: Find Organisms with Genetic Codes
+    description: Get organisms with genetic code assignments
+    question: Which organisms have genetic codes?
+    complexity: intermediate
+    sparql: |
+      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?taxon ?label ?genetic_code ?mt_code
+      WHERE {
+        ?taxon a tax:Taxon ;
+               rdfs:label ?label ;
+               tax:geneticCode ?genetic_code .
+        OPTIONAL { ?taxon tax:geneticCodeMt ?mt_code }
+      }
+      LIMIT 20
+  
   - title: Count Species Per Genus
     description: Biodiversity analysis counting species in genera
     question: Which genera have most species?
@@ -182,49 +222,25 @@ sparql_query_examples:
       ORDER BY DESC(?count)
       LIMIT 20
   
-  - title: Get Taxonomic Ranks
-    description: Retrieve all taxonomic ranks used
-    question: What ranks are in the taxonomy?
-    complexity: basic
+  - title: Explore Taxonomic Hierarchy Depth
+    description: Analyze hierarchy depth and rank distribution across lineages
+    question: What is the hierarchy depth from species to superkingdom?
+    complexity: advanced
     sparql: |
       PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      SELECT DISTINCT ?rank
-      WHERE { 
-        ?taxon a tax:Taxon ;
-               tax:rank ?rank .
-      }
-      ORDER BY ?rank
-  
-  - title: Find Organisms with Genetic Codes
-    description: Get organisms with genetic code assignments
-    question: Which organisms have genetic codes?
-    complexity: intermediate
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
+      PREFIX taxon: <http://identifiers.org/taxonomy/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?taxon ?label ?genetic_code ?mt_code
+      SELECT ?species ?species_label (COUNT(?ancestor) as ?depth)
       WHERE {
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label ;
-               tax:geneticCode ?genetic_code .
-        OPTIONAL { ?taxon tax:geneticCodeMt ?mt_code }
+        ?species a tax:Taxon ;
+                 tax:rank tax:Species ;
+                 rdfs:label ?species_label ;
+                 rdfs:subClassOf+ ?ancestor .
+        ?ancestor tax:rank ?rank .
+        FILTER(?rank IN (tax:Genus, tax:Family, tax:Order, tax:Class, tax:Phylum, tax:Kingdom, tax:Superkingdom))
       }
-      LIMIT 20
-  
-  - title: Search by Common Name
-    description: Find organisms by common name
-    question: Find organisms with "mouse" in common name
-    complexity: basic
-    sparql: |
-      PREFIX tax: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?taxon ?label ?commonName
-      WHERE {
-        ?taxon a tax:Taxon ;
-               rdfs:label ?label ;
-               tax:commonName ?commonName .
-        FILTER(CONTAINS(LCASE(?commonName), "mouse"))
-      }
+      GROUP BY ?species ?species_label
+      ORDER BY DESC(?depth)
       LIMIT 20
 
 cross_references:
@@ -379,14 +395,14 @@ data_statistics:
   taxonomic_ranks: 47
   
   coverage:
-    taxa_with_owl_sameAs: "~100%"
-    taxa_with_rdfs_seeAlso: "~100%"
+    taxa_with_owl_sameAs: ~100%
+    taxa_with_rdfs_seeAlso: ~100%
     taxa_with_scientific_names: ">99%"
-    taxa_with_common_names: "~30%"
-    taxa_with_genetic_codes: "~40%"
-    taxa_with_mbgd_links: "<1%"
-    taxa_with_ncbi_gene_links: "~5%"
-    taxa_with_pubmed_links: "<1%"
+    taxa_with_common_names: ~30%
+    taxa_with_genetic_codes: ~40%
+    taxa_with_mbgd_links: <1%
+    taxa_with_ncbi_gene_links: ~5%
+    taxa_with_pubmed_links: <1%
   
   cardinality:
     avg_owl_sameAs_per_taxon: 5.0
@@ -395,17 +411,17 @@ data_statistics:
     avg_common_names_per_taxon: 1-3
   
   performance_characteristics:
-    - "Core identity queries (owl:sameAs, rdfs:seeAlso) are well-optimized"
-    - "Lineage traversal with rdfs:subClassOf* can be slow for deep hierarchies"
-    - "Recommend LIMIT 100 for exploratory queries"
-    - "Tax:rank filtering significantly improves query performance"
-    - "TogoID gene queries may return many results per organism"
+    - Core identity queries (owl:sameAs, rdfs:seeAlso) are well-optimized
+    - Lineage traversal with rdfs:subClassOf* can be slow for deep hierarchies
+    - Recommend LIMIT 100 for exploratory queries
+    - Tax:rank filtering significantly improves query performance
+    - TogoID gene queries may return many results per organism
   
   data_quality_notes:
-    - "All taxa have complete identity cross-references (owl:sameAs, rdfs:seeAlso)"
-    - "TogoID links vary in completeness based on organism research status"
-    - "MBGD links limited to organisms with complete genome sequences"
-    - "Common names more complete for vertebrates and model organisms"
+    - All taxa have complete identity cross-references (owl:sameAs, rdfs:seeAlso)
+    - TogoID links vary in completeness based on organism research status
+    - MBGD links limited to organisms with complete genome sequences
+    - Common names more complete for vertebrates and model organisms
   
   indexed_properties:
     - rdfs:label

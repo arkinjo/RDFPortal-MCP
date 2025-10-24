@@ -1,37 +1,30 @@
 schema_info:
   title: UniProt RDF Schema
-  description: 'Comprehensive protein sequence and functional information catalog
-    integrating Swiss-Prot (manually curated) and TrEMBL (automatically annotated).
-
-    Contains protein sequences, functions, domains, structures, variants, interactions,
-    and cross-references to 200+ databases. Includes Gene Ontology annotations, enzymatic
-
-    classifications, taxonomic organization, and subcellular localization. Critical
-    quality distinction: reviewed=1 (Swiss-Prot, expert-curated) vs reviewed=0 (TrEMBL,
-
-    automated). Essential for proteomics, functional genomics, drug discovery, and
-    understanding protein biology across all organisms.
-
-    '
+  description: |
+    Comprehensive protein sequence and functional information catalog integrating Swiss-Prot (manually curated) and TrEMBL (automatically annotated).
+    Contains protein sequences, functions, domains, structures, variants, interactions, and cross-references to 200+ databases. Includes Gene Ontology annotations, enzymatic
+    classifications, taxonomic organization, and subcellular localization. Critical quality distinction: reviewed=1 (Swiss-Prot, expert-curated) vs reviewed=0 (TrEMBL,
+    automated). Essential for proteomics, functional genomics, drug discovery, and understanding protein biology across all organisms.
   endpoint: https://rdfportal.org/backend/sib/sparql
   base_uri: http://purl.uniprot.org/
   graphs:
-  - http://sparql.uniprot.org/uniprot
-  - http://sparql.uniprot.org/core
-  - http://sparql.uniprot.org/taxonomy
-  - http://sparql.uniprot.org/go
-  - http://sparql.uniprot.org/citations
-  - http://sparql.uniprot.org/citationmapping
-  - http://sparql.uniprot.org/databases
-  - http://sparql.uniprot.org/diseases
-  - http://sparql.uniprot.org/enzyme
-  - http://sparql.uniprot.org/journal
-  - http://sparql.uniprot.org/keywords
-  - http://sparql.uniprot.org/locations
-  - http://sparql.uniprot.org/pathways
-  - http://sparql.uniprot.org/proteomes
-  - http://sparql.uniprot.org/tissues
-  - http://sparql.uniprot.org/obsolete
+    - http://sparql.uniprot.org/uniprot
+    - http://sparql.uniprot.org/core
+    - http://sparql.uniprot.org/taxonomy
+    - http://sparql.uniprot.org/go
+    - http://sparql.uniprot.org/citations
+    - http://sparql.uniprot.org/citationmapping
+    - http://sparql.uniprot.org/databases
+    - http://sparql.uniprot.org/diseases
+    - http://sparql.uniprot.org/enzyme
+    - http://sparql.uniprot.org/journal
+    - http://sparql.uniprot.org/keywords
+    - http://sparql.uniprot.org/locations
+    - http://sparql.uniprot.org/pathways
+    - http://sparql.uniprot.org/proteomes
+    - http://sparql.uniprot.org/tissues
+    - http://sparql.uniprot.org/obsolete
+
 shape_expressions: |
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -39,7 +32,7 @@ shape_expressions: |
   PREFIX up: <http://purl.uniprot.org/core/>
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
+  
   <ProteinShape> {
     a [ up:Protein ] ;
     dcterms:identifier xsd:string ;
@@ -60,7 +53,7 @@ shape_expressions: |
     up:enzyme IRI * ;                              # Enzymatic classification
     rdfs:seeAlso IRI *                             # Cross-references to external databases
   }
-
+  
   <IsoformShape> {
     a [ up:Simple_Sequence ] ;
     rdf:value xsd:string ;                         # Amino acid sequence
@@ -70,466 +63,455 @@ shape_expressions: |
     up:version xsd:integer ;
     up:name xsd:string *                           # Isoform names
   }
-
+  
   <NameShape> {
     a [ up:Structured_Name ] ;
     up:fullName xsd:string ;
     up:shortName xsd:string ? ;
     up:ecName xsd:string ?                         # EC classification for enzymes
   }
-
+  
   <TaxonShape> {
     a [ up:Taxon ] ;
     up:scientificName xsd:string ;
     up:rank IRI ? ;
     rdfs:subClassOf IRI *                          # Taxonomic hierarchy
   }
-
+  
   <AnnotationShape> {
     a [ up:Annotation ] ;                          # Various subtypes: Function, Domain, Region, etc.
     rdfs:comment xsd:string ? ;
     up:substitution xsd:string ? ;                 # For mutagenesis annotations
     up:range IRI ?                                 # Position/region information
   }
-
+  
   <GeneShape> {
     a [ up:Gene ] ;
     skos:prefLabel xsd:string ? ;
     up:locusName xsd:string ? ;
     up:orfName xsd:string *
   }
+
 sample_rdf_entries:
-- title: Reviewed Human Tumor Suppressor Protein
-  description: P53 protein showing Swiss-Prot curation quality with comprehensive
-    metadata and PDB cross-references
-  rdf: |
-    uniprot:P04637 a up:Protein ;
-      dcterms:identifier "P04637" ;
-      up:mnemonic "P53_HUMAN" ;
-      up:organism taxon:9606 ;
-      up:reviewed 1 ;
-      up:version 307 ;
-      up:created "1987-08-13" ;
-      up:modified "2024-07-24" ;
-      rdfs:seeAlso <http://rdf.wwpdb.org/pdb/1H26> ,
-                   <http://rdf.wwpdb.org/pdb/2MWY> .
-- title: Protein Isoform with Validated Sequence
-  description: Canonical isoform from reviewed entry showing expert-validated amino
-    acid sequence data
-  rdf: |
-    uniprot:P04637 up:sequence isoforms:P04637-1 .
-    isoforms:P04637-1 a up:Simple_Sequence ;
-      rdf:value "MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWF..." ;
-      up:mass 43653 ;
-      up:md5Checksum "c133dfce69f606f20865e9008199f852" ;
-      up:modified "2009-11-24" ;
-      up:version 4 ;
-      up:name "p53" ;
-      up:name "1" ;
-      up:name "p53alpha" .
-- title: Expert-Curated Functional Annotation
-  description: Manually validated function annotation demonstrating Swiss-Prot quality
-    standards
-  rdf: |
-    uniprot:P04637 up:annotation annotation:12345 .
-    annotation:12345 a up:Function_Annotation ;
-      rdfs:comment "Acts as a tumor suppressor in many tumor types; induces growth arrest or apoptosis..." .
-- title: Reviewed Mitochondrial Enzyme
-  description: RNA-editing ligase showing reviewed status ensures localization and
-    function accuracy
-  rdf: |
-    uniprot:P86925 a up:Protein ;
-      up:mnemonic "RLGM2_TRYB2" ;
-      up:organism taxon:185431 ;
-      up:reviewed 1 ;
-      up:recommendedName name:rlgm2_name .
-    name:rlgm2_name a up:Structured_Name ;
-      up:fullName "RNA-editing ligase 2, mitochondrial" .
-- title: Reviewed Kinase with Extensive Structural Data
-  description: Swiss-Prot kinase entry with multiple validated PDB structures for
-    structure-function studies
-  rdf: |
-    uniprot:P17612 a up:Protein ;
-      up:mnemonic "KAPCA_HUMAN" ;
-      up:reviewed 1 ;
-      up:organism taxon:9606 ;
-      rdfs:seeAlso <http://rdf.wwpdb.org/pdb/6BYR> ,
-                   <http://rdf.wwpdb.org/pdb/6BYS> ;
-      up:recommendedName name:kapca_name .
-    name:kapca_name a up:Structured_Name ;
-      up:fullName "cAMP-dependent protein kinase catalytic subunit alpha" .
+  - title: Reviewed Human Tumor Suppressor Protein
+    description: P53 protein showing Swiss-Prot curation quality with comprehensive metadata and PDB cross-references
+    rdf: |
+      uniprot:P04637 a up:Protein ;
+        dcterms:identifier "P04637" ;
+        up:mnemonic "P53_HUMAN" ;
+        up:organism taxon:9606 ;
+        up:reviewed 1 ;
+        up:version 307 ;
+        up:created "1987-08-13" ;
+        up:modified "2024-07-24" ;
+        rdfs:seeAlso <http://rdf.wwpdb.org/pdb/1H26> ,
+                     <http://rdf.wwpdb.org/pdb/2MWY> .
+
+  - title: Protein Isoform with Validated Sequence
+    description: Canonical isoform from reviewed entry showing expert-validated amino acid sequence data
+    rdf: |
+      uniprot:P04637 up:sequence isoforms:P04637-1 .
+      isoforms:P04637-1 a up:Simple_Sequence ;
+        rdf:value "MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWF..." ;
+        up:mass 43653 ;
+        up:md5Checksum "c133dfce69f606f20865e9008199f852" ;
+        up:modified "2009-11-24" ;
+        up:version 4 ;
+        up:name "p53" ;
+        up:name "1" ;
+        up:name "p53alpha" .
+
+  - title: Expert-Curated Functional Annotation
+    description: Manually validated function annotation demonstrating Swiss-Prot quality standards
+    rdf: |
+      uniprot:P04637 up:annotation annotation:12345 .
+      annotation:12345 a up:Function_Annotation ;
+        rdfs:comment "Acts as a tumor suppressor in many tumor types; induces growth arrest or apoptosis..." .
+
+  - title: Reviewed Mitochondrial Enzyme
+    description: RNA-editing ligase showing reviewed status ensures localization and function accuracy
+    rdf: |
+      uniprot:P86925 a up:Protein ;
+        up:mnemonic "RLGM2_TRYB2" ;
+        up:organism taxon:185431 ;
+        up:reviewed 1 ;
+        up:recommendedName name:rlgm2_name .
+      name:rlgm2_name a up:Structured_Name ;
+        up:fullName "RNA-editing ligase 2, mitochondrial" .
+
+  - title: Reviewed Kinase with Extensive Structural Data
+    description: Swiss-Prot kinase entry with multiple validated PDB structures for structure-function studies
+    rdf: |
+      uniprot:P17612 a up:Protein ;
+        up:mnemonic "KAPCA_HUMAN" ;
+        up:reviewed 1 ;
+        up:organism taxon:9606 ;
+        rdfs:seeAlso <http://rdf.wwpdb.org/pdb/6BYR> ,
+                     <http://rdf.wwpdb.org/pdb/6BYS> ;
+        up:recommendedName name:kapca_name .
+      name:kapca_name a up:Structured_Name ;
+        up:fullName "cAMP-dependent protein kinase catalytic subunit alpha" .
+
 sparql_query_examples:
-- title: Find Reviewed Proteins by Organism
-  description: Retrieve expert-curated human proteins with quality assurance from
-    Swiss-Prot
-  question: What high-quality human proteins are available?
-  complexity: basic
-  note: 'BEST PRACTICE: Filter by organism URI, never by mnemonic suffix. Mnemonics
-    are for display only.'
-  sparql: "PREFIX up: <http://purl.uniprot.org/core/>\nSELECT ?protein ?mnemonic ?reviewed\n\
-    WHERE {\n  ?protein a up:Protein ;\n           up:mnemonic ?mnemonic ;\n     \
-    \      up:reviewed 1 ;\n           up:organism <http://purl.uniprot.org/taxonomy/9606> .  # Correct: Use organism URI\n  BIND(\"Swiss-Prot\" AS ?reviewed)\n}\nLIMIT 30\n"
-- title: Search Reviewed Proteins by Function
-  description: Find expert-curated proteins by their validated functional descriptions
-  question: Which reviewed proteins have specific biological functions?
-  complexity: basic
-  note: 'BEST PRACTICE: Filter on up:fullName, never on up:mnemonic. Mnemonics are
-    unreliable for content filtering.'
-  sparql: "PREFIX up: <http://purl.uniprot.org/core/>\nSELECT DISTINCT ?protein ?mnemonic\
-    \ ?fullName\nWHERE {\n  ?protein a up:Protein ;\n           up:mnemonic ?mnemonic ;\n           up:reviewed 1 ;\n           up:recommendedName ?name .\n  ?name up:fullName ?fullName .\n  # Correct: Filter on fullName, not mnemonic\n  FILTER(CONTAINS(LCASE(?fullName), \"kinase\") || CONTAINS(LCASE(?fullName), \"dna repair\"))\n}\nLIMIT 15\n"
-- title: Count Reviewed DNA Repair Proteins
-  description: Aggregate expert-curated proteins involved in DNA repair across all
-    organisms
-  question: How many high-quality DNA repair proteins are documented?
-  complexity: intermediate
-  sparql: "PREFIX up: <http://purl.uniprot.org/core/>\nSELECT (COUNT(*) as ?count)\n\
-    WHERE {\n  ?protein a up:Protein ;\n           up:reviewed 1 ;\n           up:recommendedName\
-    \ ?name .\n  ?name up:fullName ?fullName .\n  FILTER(CONTAINS(LCASE(?fullName), \"dna repair\"))\n}\n"
-- title: Get Reviewed Protein Sequences with Metadata
-  description: Retrieve expert-validated amino acid sequences with molecular properties
-  question: What are the verified protein sequences and their characteristics?
-  complexity: intermediate
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    SELECT DISTINCT ?protein ?mnemonic ?sequence ?mass ?checksum
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               up:sequence ?iso .
-      ?iso rdf:value ?sequence ;
-           up:mass ?mass ;
-           up:md5Checksum ?checksum .
-    }
-    LIMIT 10
-- title: Count Human Tumor Suppressors in Swiss-Prot
-  description: Quantify expert-curated human proteins with validated tumor suppressor
-    functions
-  question: How many human tumor suppressors are documented in Swiss-Prot?
-  complexity: intermediate
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT (COUNT(*) as ?count)
-    WHERE {
-      ?protein a up:Protein ;
-               up:reviewed 1 ;
-               up:organism <http://purl.uniprot.org/taxonomy/9606> ;
-               up:annotation ?annot .
-      ?annot a up:Function_Annotation ;
-             rdfs:comment ?function .
-      FILTER(CONTAINS(LCASE(?function), "tumor suppressor"))
-    }
-- title: Reviewed Human Kinases with PDB Structures
-  description: Find expert-curated human kinases with experimentally determined 3D
-    structures
-  question: Which validated human kinases have structural data available?
-  complexity: advanced
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT DISTINCT ?protein ?mnemonic ?fullName ?pdb
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               up:organism <http://purl.uniprot.org/taxonomy/9606> ;
-               up:recommendedName ?name ;
-               rdfs:seeAlso ?pdb .
-      ?name up:fullName ?fullName .
-      FILTER(CONTAINS(STR(?pdb), "rdf.wwpdb.org"))
-      FILTER(CONTAINS(LCASE(?fullName), "kinase"))
-    }
-    LIMIT 15
-- title: Multi-Database Integration for Reviewed Proteins
-  description: Complex query linking Swiss-Prot proteins with structures, functions,
-    and organisms
-  question: What are the comprehensive annotations for high-quality proteins with
-    structural data?
-  complexity: advanced
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT DISTINCT ?protein ?mnemonic ?fullName ?organism ?scientificName ?pdb
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               up:recommendedName ?name ;
-               up:organism ?organism ;
-               rdfs:seeAlso ?pdb .
-      ?name up:fullName ?fullName .
-      ?organism up:scientificName ?scientificName .
-      FILTER(CONTAINS(STR(?pdb), "rdf.wwpdb.org"))
-      FILTER(CONTAINS(LCASE(?fullName), "mitochondrial"))
-    }
-    LIMIT 15
+  - title: Find Reviewed Proteins by Organism
+    description: Retrieve expert-curated human proteins with quality assurance from Swiss-Prot
+    question: What high-quality human proteins are available?
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic ?reviewed
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> .
+        BIND("Swiss-Prot" AS ?reviewed)
+      }
+      LIMIT 30
+
+  - title: Search Reviewed Proteins by Function
+    description: Find expert-curated proteins by their validated functional descriptions using keyword filtering
+    question: Which reviewed proteins have specific biological functions like kinase or DNA repair?
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT DISTINCT ?protein ?mnemonic ?fullName
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:recommendedName ?name .
+        ?name up:fullName ?fullName .
+        FILTER(CONTAINS(LCASE(?fullName), "kinase") || CONTAINS(LCASE(?fullName), "dna repair"))
+      }
+      LIMIT 15
+
+  - title: Get Biological Annotations for Given Proteins
+    description: Retrieve comprehensive functional annotations and GO classifications for specific protein IDs
+    question: What are the biological functions and Gene Ontology terms for proteins P04637, P17612, and P86925?
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
+      
+      SELECT ?protein ?mnemonic ?functionComment ?goTerm ?goLabel
+      WHERE {
+        VALUES ?protein { uniprot:P04637 uniprot:P17612 uniprot:P86925 }
+        
+        ?protein up:mnemonic ?mnemonic .
+        
+        OPTIONAL {
+          ?protein up:annotation ?annot .
+          ?annot a up:Function_Annotation ;
+                 rdfs:comment ?functionComment .
+        }
+        
+        OPTIONAL {
+          ?protein up:classifiedWith ?goTerm .
+          ?goTerm rdfs:label ?goLabel .
+          FILTER(STRSTARTS(STR(?goTerm), "http://purl.obolibrary.org/obo/GO_"))
+        }
+      }
+      LIMIT 20
+
+  - title: Get Reviewed Protein Sequences with Metadata
+    description: Retrieve expert-validated amino acid sequences with molecular properties
+    question: What are the verified protein sequences and their characteristics?
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      SELECT DISTINCT ?protein ?mnemonic ?sequence ?mass ?checksum
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:sequence ?iso .
+        ?iso rdf:value ?sequence ;
+             up:mass ?mass ;
+             up:md5Checksum ?checksum .
+      }
+      LIMIT 10
+
+  - title: Count Human Tumor Suppressors in Swiss-Prot
+    description: Quantify expert-curated human proteins with validated tumor suppressor functions
+    question: How many human tumor suppressors are documented in Swiss-Prot?
+    complexity: intermediate
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT (COUNT(*) as ?count)
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+                 up:annotation ?annot .
+        ?annot a up:Function_Annotation ;
+               rdfs:comment ?function .
+        FILTER(CONTAINS(LCASE(?function), "tumor suppressor"))
+      }
+
+  - title: Enzyme Classification with GO Integration
+    description: Complex query linking enzymatic classifications with Gene Ontology cellular component terms
+    question: Which enzymes are annotated with specific GO cellular localizations?
+    complexity: advanced
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?protein ?mnemonic ?fullName ?enzyme ?goLabel
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:enzyme ?enzyme ;
+                 up:recommendedName ?name ;
+                 up:classifiedWith ?goTerm .
+        
+        ?name up:fullName ?fullName .
+        ?goTerm rdfs:label ?goLabel .
+        
+        FILTER(STRSTARTS(STR(?goTerm), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 20
+
+  - title: Taxonomic Hierarchy Exploration
+    description: Navigate protein taxonomic relationships showing organism lineage and classification
+    question: What is the taxonomic classification hierarchy for human proteins?
+    complexity: advanced
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?protein ?mnemonic ?organism ?scientificName ?parentTaxon ?parentName
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:organism ?organism .
+        
+        ?organism up:scientificName ?scientificName ;
+                  rdfs:subClassOf ?parentTaxon .
+        
+        ?parentTaxon up:scientificName ?parentName .
+        
+        FILTER(?organism = <http://purl.uniprot.org/taxonomy/9606>)
+      }
+      LIMIT 10
+
 cross_references:
-- pattern: rdfs:seeAlso
-  description: 'Primary pattern for external database links. UniProt links to 200+
-    databases via rdfs:seeAlso.
+  - pattern: rdfs:seeAlso
+    description: |
+      Primary pattern for external database links. UniProt links to 200+ databases via rdfs:seeAlso.
+      Databases are distinguished by URL patterns. Coverage varies by database and organism.
+      Filter by URL substring to access specific databases (see examples in SPARQL).
+    databases:
+      sequence_genomics:
+        - "EMBL (purl.uniprot.org/embl/): Nucleotide sequences, ~95% coverage"
+        - "EMBL-CDS (purl.uniprot.org/embl-cds/): Coding sequences, ~90% coverage"
+        - "RefSeq (purl.uniprot.org/refseq/): NCBI reference sequences, ~80% coverage"
+        - "Ensembl (rdf.ebi.ac.uk/resource/ensembl.transcript/): Transcript annotations, very high frequency"
+      structure:
+        - "PDB (rdf.wwpdb.org): Experimental 3D structures, ~14-25% coverage"
+        - "AlphaFold (alphafolddb): AI-predicted structures, >98% coverage"
+        - "SWISS-MODEL (smr/): Homology models, ~40% coverage"
+      gene_protein_identifiers:
+        - "HGNC (purl.uniprot.org/hgnc/): Human gene nomenclature, 100% for human"
+        - "neXtProt (nextprot.org): Human protein knowledge, 100% for human"
+        - "Gene IDs (purl.uniprot.org/geneid/): NCBI Entrez Gene, ~90% coverage"
+        - "GeneCards (purl.uniprot.org/genecards/): Human gene information, 100% for human"
+        - "PRO (obolibrary.org/obo/PR_): Protein Ontology, ~70% coverage"
+        - "AGR (purl.uniprot.org/agr/): Alliance of Genome Resources, varies by organism"
+      families_domains:
+        - "InterPro (purl.uniprot.org/interpro/): Integrated protein families, >98% coverage"
+        - "Pfam (purl.uniprot.org/pfam/): Protein family HMMs, ~85% coverage"
+        - "PANTHER (purl.uniprot.org/panther/): Phylogenetic trees, ~80% coverage"
+        - "GENE3D (purl.uniprot.org/gene3d/): CATH structural domains, ~75% coverage"
+        - "SUPERFAMILY (purl.uniprot.org/supfam/): Structural superfamilies, ~80% coverage"
+        - "PROSITE (purl.uniprot.org/prosite/): Patterns and profiles, ~70% coverage"
+        - "SMART (purl.uniprot.org/smart/): Modular architecture, ~60% coverage"
+        - "PIRSF (purl.uniprot.org/pirsf/): PIR SuperFamily, ~55% coverage"
+        - "CDD (purl.uniprot.org/cdd/): Conserved Domain Database, significant coverage"
+        - "PRINTS (purl.uniprot.org/prints/): Protein motif fingerprints, moderate coverage"
+        - "NCBI FAM (purl.uniprot.org/ncbifam/): TIGRFAMs protein families, moderate coverage"
+      interactions_networks:
+        - "IntAct (purl.uniprot.org/intact/): Curated interactions, ~16-30% coverage"
+        - "STRING (purl.uniprot.org/string/): Protein networks, ~85% coverage"
+        - "BioGRID (purl.uniprot.org/biogrid/): Biological interactions, ~25% coverage"
+        - "BioGRID-ORCS (purl.uniprot.org/biogrid-orcs/): Open repository, ~20% coverage"
+        - "PathwayCommons (purl.uniprot.org/pathwaycommons/): Integrated pathways, ~40% coverage"
+        - "SignaLink (purl.uniprot.org/signalink/): Signaling pathways, ~15% coverage"
+      post_translational_modifications:
+        - "PhosphoSitePlus (purl.uniprot.org/phosphositeplus/): PTM data, ~20% coverage"
+        - "iPTMnet (purl.uniprot.org/iptmnet/): PTM networks, ~15% coverage"
+        - "GlyGen (purl.uniprot.org/glygen/): Glycosylation data, ~5% coverage"
+      proteomics:
+        - "PeptideAtlas (purl.uniprot.org/peptideatlas/): Peptide evidence, ~30% coverage"
+        - "MassIVE (purl.uniprot.org/massive/): MS-based proteomics, ~20% coverage"
+        - "ProteomicsDB (purl.uniprot.org/proteomicsdb/): Quantitative data, ~25% coverage"
+      phylogenetics_evolution:
+        - "PhylomeDB (purl.uniprot.org/phylomedb/): Phylogenetic trees, ~60% coverage"
+        - "InParanoid (purl.uniprot.org/inparanoid/): Ortholog groups, ~70% coverage"
+        - "OrthoDB (orthodb.org): Hierarchical orthologs, ~75% coverage"
+        - "TreeFam (purl.uniprot.org/treefam/): Gene family trees, ~65% coverage"
+        - "eggNOG (purl.uniprot.org/eggnog/): Functional orthology, ~80% coverage"
+        - "HOGENOM (purl.uniprot.org/hogenom/): Homologous genes, ~60% coverage"
+        - "GeneTree (purl.uniprot.org/genetree/): Ensembl gene trees, varies"
+      pathways:
+        - "KEGG (purl.uniprot.org/kegg/): Pathway annotations, ~95% coverage"
+        - "Reactome (identifiers.org/reactome/): Curated pathways, ~30% coverage"
+      disease_drug:
+        - "Pharos (purl.uniprot.org/pharos/): Drug targets, ~30% coverage"
+        - "PharmGKB (purl.uniprot.org/pharmgkb/): Pharmacogenomics, ~10% coverage"
+        - "DrugCentral (purl.uniprot.org/drugcentral/): Drug information, ~5% coverage"
+        - "CTD (purl.uniprot.org/ctd/): Toxicogenomics, ~40% coverage"
+        - "BioMuta (purl.uniprot.org/biomuta/): Cancer mutations, ~15% coverage"
+      rna_transcripts:
+        - "CHITARS (purl.uniprot.org/chitars/): Chimeric transcripts, ~10% coverage"
+        - "RNAct (purl.uniprot.org/rnact/): RNA-protein interactions, ~20% coverage"
+      expression:
+        - "PaxDB (purl.uniprot.org/paxdb/): Protein abundance, ~50% coverage"
+      model_organisms:
+        - "RGD (purl.uniprot.org/rgd/): Rat Genome Database, 100% for rat"
+        - "MGI (model organism-specific): Mouse Genome Informatics"
+      genome_browsers:
+        - "UCSC (purl.uniprot.org/ucsc/): Genome Browser, varies by organism"
+      functional_genomics:
+        - "GenomeRNAi (purl.uniprot.org/genomernai/): RNAi screens, ~20% coverage"
+      transporters:
+        - "ABCD (purl.uniprot.org/abcd/): ABC transporter classification, ~2% coverage"
+      plant_specific:
+        - "PPR Database (ppr.plantenergy.uwa.edu.au): Pentatricopeptide repeat proteins"
+        - "NIBLRRS (niblrrs.ucdavis.edu): Plant resistance genes"
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?protein ?mnemonic ?externalDB
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 rdfs:seeAlso ?externalDB .
+        
+        # Filter by URL pattern for specific database (uncomment one):
+        # FILTER(CONTAINS(STR(?externalDB), "rdf.wwpdb.org"))             # PDB structures
+        # FILTER(CONTAINS(STR(?externalDB), "alphafolddb"))                # AlphaFold
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/hgnc/"))     # HGNC
+        # FILTER(CONTAINS(STR(?externalDB), "nextprot.org"))               # neXtProt
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/interpro/")) # InterPro
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/pfam/"))     # Pfam
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/intact/"))   # IntAct
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/string/"))   # STRING
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/kegg/"))     # KEGG
+        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/reactome/"))  # Reactome
+        # FILTER(CONTAINS(STR(?externalDB), "rdf.ebi.ac.uk/resource/ensembl")) # Ensembl
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/cdd/"))      # CDD
+        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/ncbifam/"))  # NCBI FAM
+      }
+      LIMIT 30
 
-    Databases are distinguished by URL patterns. Coverage varies by database and organism.
+  - pattern: up:organism
+    description: |
+      Links proteins to their taxonomic classification via up:organism property.
+      All proteins have exactly one organism link. Taxonomy follows NCBI Taxonomy.
+    databases:
+      - "NCBI Taxonomy: Complete taxonomic classification, 100% coverage"
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic ?taxon ?scientificName ?rank
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:organism ?taxon .
+        ?taxon up:scientificName ?scientificName ;
+               up:rank ?rank .
+      }
+      LIMIT 30
 
-    Filter by URL substring to access specific databases (see examples in SPARQL).
+  - pattern: up:classifiedWith
+    description: |
+      Ontology-based classifications using up:classifiedWith property.
+      Primarily used for Gene Ontology (GO) terms but also other classification systems.
+    databases:
+      - "Gene Ontology (obolibrary.org/obo/GO_): Functional annotations, >85% coverage for reviewed"
+      - "Other classification ontologies: Various specialized classifications"
+    complexity: basic
+    sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT ?protein ?mnemonic ?classification ?label
+      WHERE {
+        ?protein a up:Protein ;
+                 up:mnemonic ?mnemonic ;
+                 up:reviewed 1 ;
+                 up:classifiedWith ?classification .
+        ?classification rdfs:label ?label .
+        
+        # Filter for Gene Ontology terms (uncomment if needed):
+        # FILTER(STRSTARTS(STR(?classification), "http://purl.obolibrary.org/obo/GO_"))
+      }
+      LIMIT 30
 
-    '
-  databases:
-    sequence_genomics:
-    - 'EMBL (purl.uniprot.org/embl/): Nucleotide sequences, ~95% coverage'
-    - 'EMBL-CDS (purl.uniprot.org/embl-cds/): Coding sequences, ~90% coverage'
-    - 'RefSeq (purl.uniprot.org/refseq/): NCBI reference sequences, ~80% coverage'
-    - 'Ensembl (rdf.ebi.ac.uk/resource/ensembl.transcript/): Transcript annotations,
-      very high frequency'
-    structure:
-    - 'PDB (rdf.wwpdb.org): Experimental 3D structures, ~14-25% coverage'
-    - 'AlphaFold (alphafolddb): AI-predicted structures, >98% coverage'
-    - 'SWISS-MODEL (smr/): Homology models, ~40% coverage'
-    gene_protein_identifiers:
-    - 'HGNC (purl.uniprot.org/hgnc/): Human gene nomenclature, 100% for human'
-    - 'neXtProt (nextprot.org): Human protein knowledge, 100% for human'
-    - 'Gene IDs (purl.uniprot.org/geneid/): NCBI Entrez Gene, ~90% coverage'
-    - 'GeneCards (purl.uniprot.org/genecards/): Human gene information, 100% for human'
-    - 'PRO (obolibrary.org/obo/PR_): Protein Ontology, ~70% coverage'
-    - 'AGR (purl.uniprot.org/agr/): Alliance of Genome Resources, varies by organism'
-    families_domains:
-    - 'InterPro (purl.uniprot.org/interpro/): Integrated protein families, >98% coverage'
-    - 'Pfam (purl.uniprot.org/pfam/): Protein family HMMs, ~85% coverage'
-    - 'PANTHER (purl.uniprot.org/panther/): Phylogenetic trees, ~80% coverage'
-    - 'GENE3D (purl.uniprot.org/gene3d/): CATH structural domains, ~75% coverage'
-    - 'SUPERFAMILY (purl.uniprot.org/supfam/): Structural superfamilies, ~80% coverage'
-    - 'PROSITE (purl.uniprot.org/prosite/): Patterns and profiles, ~70% coverage'
-    - 'SMART (purl.uniprot.org/smart/): Modular architecture, ~60% coverage'
-    - 'PIRSF (purl.uniprot.org/pirsf/): PIR SuperFamily, ~55% coverage'
-    - 'CDD (purl.uniprot.org/cdd/): Conserved Domain Database, significant coverage'
-    - 'PRINTS (purl.uniprot.org/prints/): Protein motif fingerprints, moderate coverage'
-    - 'NCBI FAM (purl.uniprot.org/ncbifam/): TIGRFAMs protein families, moderate coverage'
-    interactions_networks:
-    - 'IntAct (purl.uniprot.org/intact/): Curated interactions, ~16-30% coverage'
-    - 'STRING (purl.uniprot.org/string/): Protein networks, ~85% coverage'
-    - 'BioGRID (purl.uniprot.org/biogrid/): Biological interactions, ~25% coverage'
-    - 'BioGRID-ORCS (purl.uniprot.org/biogrid-orcs/): Open repository, ~20% coverage'
-    - 'PathwayCommons (purl.uniprot.org/pathwaycommons/): Integrated pathways, ~40%
-      coverage'
-    - 'SignaLink (purl.uniprot.org/signalink/): Signaling pathways, ~15% coverage'
-    post_translational_modifications:
-    - 'PhosphoSitePlus (purl.uniprot.org/phosphositeplus/): PTM data, ~20% coverage'
-    - 'iPTMnet (purl.uniprot.org/iptmnet/): PTM networks, ~15% coverage'
-    - 'GlyGen (purl.uniprot.org/glygen/): Glycosylation data, ~5% coverage'
-    proteomics:
-    - 'PeptideAtlas (purl.uniprot.org/peptideatlas/): Peptide evidence, ~30% coverage'
-    - 'MassIVE (purl.uniprot.org/massive/): MS-based proteomics, ~20% coverage'
-    - 'ProteomicsDB (purl.uniprot.org/proteomicsdb/): Quantitative data, ~25% coverage'
-    phylogenetics_evolution:
-    - 'PhylomeDB (purl.uniprot.org/phylomedb/): Phylogenetic trees, ~60% coverage'
-    - 'InParanoid (purl.uniprot.org/inparanoid/): Ortholog groups, ~70% coverage'
-    - 'OrthoDB (orthodb.org): Hierarchical orthologs, ~75% coverage'
-    - 'TreeFam (purl.uniprot.org/treefam/): Gene family trees, ~65% coverage'
-    - 'eggNOG (purl.uniprot.org/eggnog/): Functional orthology, ~80% coverage'
-    - 'HOGENOM (purl.uniprot.org/hogenom/): Homologous genes, ~60% coverage'
-    - 'GeneTree (purl.uniprot.org/genetree/): Ensembl gene trees, varies'
-    pathways:
-    - 'KEGG (purl.uniprot.org/kegg/): Pathway annotations, ~95% coverage'
-    - 'Reactome (identifiers.org/reactome/): Curated pathways, ~30% coverage'
-    disease_drug:
-    - 'Pharos (purl.uniprot.org/pharos/): Drug targets, ~30% coverage'
-    - 'PharmGKB (purl.uniprot.org/pharmgkb/): Pharmacogenomics, ~10% coverage'
-    - 'DrugCentral (purl.uniprot.org/drugcentral/): Drug information, ~5% coverage'
-    - 'CTD (purl.uniprot.org/ctd/): Toxicogenomics, ~40% coverage'
-    - 'BioMuta (purl.uniprot.org/biomuta/): Cancer mutations, ~15% coverage'
-    rna_transcripts:
-    - 'CHITARS (purl.uniprot.org/chitars/): Chimeric transcripts, ~10% coverage'
-    - 'RNAct (purl.uniprot.org/rnact/): RNA-protein interactions, ~20% coverage'
-    expression:
-    - 'PaxDB (purl.uniprot.org/paxdb/): Protein abundance, ~50% coverage'
-    model_organisms:
-    - 'RGD (purl.uniprot.org/rgd/): Rat Genome Database, 100% for rat'
-    - 'MGI (model organism-specific): Mouse Genome Informatics'
-    genome_browsers:
-    - 'UCSC (purl.uniprot.org/ucsc/): Genome Browser, varies by organism'
-    functional_genomics:
-    - 'GenomeRNAi (purl.uniprot.org/genomernai/): RNAi screens, ~20% coverage'
-    transporters:
-    - 'ABCD (purl.uniprot.org/abcd/): ABC transporter classification, ~2% coverage'
-    plant_specific:
-    - 'PPR Database (ppr.plantenergy.uwa.edu.au): Pentatricopeptide repeat proteins'
-    - 'NIBLRRS (niblrrs.ucdavis.edu): Plant resistance genes'
-  complexity: basic
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?protein ?mnemonic ?externalDB
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               rdfs:seeAlso ?externalDB .
-      
-      # Filter by URL pattern for specific database (uncomment one):
-      # FILTER(CONTAINS(STR(?externalDB), "rdf.wwpdb.org"))              # PDB structures
-      # FILTER(CONTAINS(STR(?externalDB), "alphafolddb"))                # AlphaFold
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/hgnc/"))     # HGNC
-      # FILTER(CONTAINS(STR(?externalDB), "nextprot.org"))               # neXtProt
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/interpro/")) # InterPro
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/pfam/"))     # Pfam
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/intact/"))   # IntAct
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/string/"))   # STRING
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/kegg/"))     # KEGG
-      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/reactome/"))  # Reactome
-      # FILTER(CONTAINS(STR(?externalDB), "rdf.ebi.ac.uk/resource/ensembl")) # Ensembl
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/cdd/"))      # CDD
-      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/ncbifam/"))  # NCBI FAM
-    }
-    LIMIT 30
-- pattern: up:organism
-  description: 'Links proteins to their taxonomic classification via up:organism property.
-
-    All proteins have exactly one organism link. Taxonomy follows NCBI Taxonomy.
-
-    '
-  databases:
-  - 'NCBI Taxonomy: Complete taxonomic classification, 100% coverage'
-  complexity: basic
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    SELECT ?protein ?mnemonic ?taxon ?scientificName ?rank
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               up:organism ?taxon .
-      ?taxon up:scientificName ?scientificName ;
-             up:rank ?rank .
-    }
-    LIMIT 30
-- pattern: up:classifiedWith
-  description: 'Ontology-based classifications using up:classifiedWith property.
-
-    Primarily used for Gene Ontology (GO) terms but also other classification systems.
-
-    '
-  databases:
-  - 'Gene Ontology (obolibrary.org/obo/GO_): Functional annotations, >85% coverage
-    for reviewed'
-  - 'Other classification ontologies: Various specialized classifications'
-  complexity: basic
-  sparql: |
-    PREFIX up: <http://purl.uniprot.org/core/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?protein ?mnemonic ?classification ?label
-    WHERE {
-      ?protein a up:Protein ;
-               up:mnemonic ?mnemonic ;
-               up:reviewed 1 ;
-               up:classifiedWith ?classification .
-      ?classification rdfs:label ?label .
-      
-      # Filter for Gene Ontology terms (uncomment if needed):
-      # FILTER(STRSTARTS(STR(?classification), "http://purl.obolibrary.org/obo/GO_"))
-    }
-    LIMIT 30
-best_practices:
-  mnemonic_usage:
-    DO_NOT:
-    - 'NEVER use up:mnemonic for filtering or pattern matching (e.g., FILTER(CONTAINS(?mnemonic,
-      "_HUMAN")))'
-    - 'NEVER use REGEX on mnemonics for content-based searches'
-    - 'NEVER rely on mnemonic naming conventions for query logic'
-    - 'Mnemonics are human-readable abbreviations that may change, have inconsistent
-      formats, or be unreliable'
-    DO:
-    - 'Retrieve mnemonics with SELECT for display purposes only'
-    - 'Use up:organism with exact taxonomy URIs for organism filtering'
-    - 'Use up:fullName or up:recommendedName for protein name/function filtering'
-    - 'Use up:scientificName on taxon objects for organism name searches'
-    - 'Use up:Function_Annotation with rdfs:comment for functional text searches'
-  rationale: 'Mnemonics (e.g., P53_HUMAN, KAPCA_HUMAN) are designed for human readability,
-    not semantic queries.
-
-    They lack standardization guarantees, may change over time, and do not represent
-    the structured
-
-    biological properties of proteins. Always use proper semantic properties (organism
-    URIs, full names,
-
-    scientific names, annotation comments) which are stable, structured, and semantically
-    meaningful.
-
-    '
-  correct_filtering_patterns:
-    organism: 'up:organism <http://purl.uniprot.org/taxonomy/9606>  # Not mnemonic
-      suffix'
-    protein_name: 'FILTER(CONTAINS(LCASE(?fullName), "kinase"))  # Not mnemonic content'
-    function_annotation: |
-      ?protein up:annotation ?annot .
-      ?annot a up:Function_Annotation ;
-             rdfs:comment ?function .
-      FILTER(CONTAINS(LCASE(?function), "tumor suppressor"))  # Not mnemonic content
-    location: 'FILTER(CONTAINS(LCASE(?fullName), "mitochondrial"))  # Not mnemonic
-      parsing'
-    species_name: 'FILTER(CONTAINS(LCASE(?scientificName), "human"))  # Not mnemonic
-      suffix'
 architectural_notes:
   schema_design:
-  - Central hub entity up:Protein with reviewed property as critical quality indicator
-    (0=TrEMBL, 1=Swiss-Prot)
-  - Hierarchical taxonomy organization through rdfs:subClassOf relationships
-  - Annotation system uses specialized subtypes with quality varying by reviewed status
-  - Structured naming system ensures consistency in expert-curated entries
-  - Cross-references via rdfs:seeAlso link to 200+ external databases distinguished
-    by URL patterns
-  - Mnemonics (up:mnemonic) are for human-readable display only, never for filtering
-    or query logic
+    - Central hub entity up:Protein with reviewed property as critical quality indicator (0=TrEMBL, 1=Swiss-Prot)
+    - Hierarchical taxonomy organization through rdfs:subClassOf relationships
+    - Annotation system uses specialized subtypes with quality varying by reviewed status
+    - Structured naming system ensures consistency in expert-curated entries
+    - Cross-references via rdfs:seeAlso link to 200+ external databases distinguished by URL patterns
+    - Mnemonics (up:mnemonic) are for human-readable display only, never for filtering or query logic
+    
   performance:
-  - CRITICAL - Always filter by up:reviewed 1 for computational feasibility and quality
-    assurance
-  - COUNT queries work efficiently with reviewed=1 filter (923K vs 444M entries -
-    99.8% reduction)
-  - Organism filtering highly optimized when combined with reviewed status
-  - Text searches on full names perform well with reviewed constraint, timeout without
-    it
-  - Cross-reference joins most reliable and efficient for reviewed proteins
+    - CRITICAL - Always filter by up:reviewed 1 for computational feasibility and quality assurance
+    - COUNT queries work efficiently with reviewed=1 filter (923K vs 444M entries - 99.8% reduction)
+    - Organism filtering highly optimized when combined with reviewed status
+    - Text searches on full names perform well with reviewed constraint, timeout without it
+    - Cross-reference joins most reliable and efficient for reviewed proteins
+    
   data_integration:
-  - Swiss-Prot entries have vastly superior cross-reference coverage to external databases
-  - Gene Ontology integration most reliable for reviewed proteins (>85% vs ~30% for
-    TrEMBL)
-  - PDB structure links predominantly available for reviewed entries (~14-25% vs <1%)
-  - Functional annotations significantly more complete in reviewed proteins (>90%
-    vs 20-30%)
-  - Pattern-based cross-reference organization enables efficient filtering to specific
-    databases
-  - Ensembl transcript annotations highly prevalent across reviewed proteins
+    - Swiss-Prot entries have vastly superior cross-reference coverage to external databases
+    - Gene Ontology integration most reliable for reviewed proteins (>85% vs ~30% for TrEMBL)
+    - PDB structure links predominantly available for reviewed entries (~14-25% vs <1%)
+    - Functional annotations significantly more complete in reviewed proteins (>90% vs 20-30%)
+    - Pattern-based cross-reference organization enables efficient filtering to specific databases
+    - Ensembl transcript annotations highly prevalent across reviewed proteins
+    
   data_quality:
-  - Fundamental distinction - reviewed=1 (Swiss-Prot expert curation) vs reviewed=0
-    (TrEMBL automation)
-  - Functional annotation completeness varies dramatically by review status
-  - Cross-reference accuracy highest for reviewed entries across all databases
-  - Sequence validation and modification tracking most reliable for Swiss-Prot
-  - Computational tractability requires reviewed filtering for complex queries and
-    aggregations
+    - Fundamental distinction - reviewed=1 (Swiss-Prot expert curation) vs reviewed=0 (TrEMBL automation)
+    - Functional annotation completeness varies dramatically by review status
+    - Cross-reference accuracy highest for reviewed entries across all databases
+    - Sequence validation and modification tracking most reliable for Swiss-Prot
+    - Computational tractability requires reviewed filtering for complex queries and aggregations
+    - Use up:organism URIs for organism filtering, never mnemonic suffixes
+    - Use up:fullName or rdfs:comment for text searches, never mnemonic content
+
 data_statistics:
   total_proteins: 444565015
   reviewed_proteins: 923147
   human_reviewed_proteins: 40209
   reviewed_dna_repair_proteins: 1549
   human_reviewed_tumor_suppressors: 417
-  human_reviewed_kinases_with_structures: 464
+  
   coverage:
-    reviewed_proteins_with_sequences: '>99%'
-    reviewed_proteins_with_organism_info: '>99%'
-    reviewed_proteins_with_recommended_names: '>98%'
-    reviewed_proteins_with_function_annotations: '>90%'
-    reviewed_proteins_with_go_classifications: '>85%'
-    reviewed_proteins_with_pdb_structures: ~14-25%
-    reviewed_proteins_with_alphafold_models: '>98%'
-    reviewed_proteins_with_interpro_domains: '>98%'
-    reviewed_proteins_with_pfam_domains: ~85%
-    reviewed_proteins_with_kegg_pathways: ~95%
-    reviewed_proteins_with_reactome_pathways: ~30%
-    reviewed_proteins_with_string_networks: ~85%
-    reviewed_proteins_with_intact_interactions: ~16%
-    review_rate_overall: ~0.2%
+    reviewed_proteins_with_sequences: ">99%"
+    reviewed_proteins_with_organism_info: ">99%"
+    reviewed_proteins_with_recommended_names: ">98%"
+    reviewed_proteins_with_function_annotations: ">90%"
+    reviewed_proteins_with_go_classifications: ">85%"
+    reviewed_proteins_with_pdb_structures: "~14-25%"
+    reviewed_proteins_with_alphafold_models: ">98%"
+    reviewed_proteins_with_interpro_domains: ">98%"
+    reviewed_proteins_with_pfam_domains: "~85%"
+    reviewed_proteins_with_kegg_pathways: "~95%"
+    reviewed_proteins_with_reactome_pathways: "~30%"
+    reviewed_proteins_with_string_networks: "~85%"
+    reviewed_proteins_with_intact_interactions: "~16%"
+    review_rate_overall: "~0.2%"
+    
   cardinality:
     avg_isoforms_per_reviewed_protein: 1.1
     max_isoforms_per_reviewed_protein: 12
@@ -539,22 +521,24 @@ data_statistics:
     max_go_terms_per_reviewed_protein: 200
     avg_external_refs_per_reviewed_protein: 45
     max_external_refs_per_reviewed_protein: 300
+    
   performance_characteristics:
-  - ESSENTIAL - Use up:reviewed 1 filter for all queries to enable COUNT operations
-    and prevent timeouts
-  - COUNT queries fail on full dataset but work perfectly with reviewed=1 constraint
-  - Reviewed filtering reduces dataset 99.8% (444M to 923K) while preserving highest
-    quality data
-  - Organism + reviewed filtering optimized for taxonomic studies
-  - Full name text searches efficient with reviewed constraint, timeout without it
-  - Cross-reference joins most reliable and performant for reviewed proteins
-  - Use URL pattern FILTER to access specific external databases efficiently
-  - Recommend LIMIT 30-50 for exploratory queries to balance comprehensiveness with
-    performance
-  - Complex multi-property queries should always include reviewed=1 filter first
+    - "ESSENTIAL - Use up:reviewed 1 filter for all queries to enable COUNT operations and prevent timeouts"
+    - "COUNT queries fail on full dataset but work perfectly with reviewed=1 constraint"
+    - "Reviewed filtering reduces dataset 99.8% (444M to 923K) while preserving highest quality data"
+    - "Organism + reviewed filtering optimized for taxonomic studies"
+    - "Full name text searches efficient with reviewed constraint, timeout without it"
+    - "Cross-reference joins most reliable and performant for reviewed proteins"
+    - "Use URL pattern FILTER to access specific external databases efficiently"
+    - "Recommend LIMIT 30-50 for exploratory queries to balance comprehensiveness with performance"
+    - "Complex multi-property queries should always include reviewed=1 filter first"
+    - "Use up:organism with exact taxonomy URIs for organism filtering, not mnemonic suffixes"
+    - "Use up:fullName for protein name searches, not mnemonic content"
+    
   data_quality_notes:
-  - Reviewed=1 entries undergo expert manual curation vs automated TrEMBL processing
-  - Functional annotations 90%+ complete for Swiss-Prot vs 20-30% for TrEMBL
-  - Cross-reference accuracy and completeness dramatically higher for reviewed entries
-  - Swiss-Prot provides gold standard for protein function, localization, and interactions
-  - Computational tractability requires reviewed filtering for complex queries
+    - "Reviewed=1 entries undergo expert manual curation vs automated TrEMBL processing"
+    - "Functional annotations 90%+ complete for Swiss-Prot vs 20-30% for TrEMBL"
+    - "Cross-reference accuracy and completeness dramatically higher for reviewed entries"
+    - "Swiss-Prot provides gold standard for protein function, localization, and interactions"
+    - "Computational tractability requires reviewed filtering for complex queries"
+    - "Mnemonics are display-only identifiers, unreliable for filtering or semantic queries"

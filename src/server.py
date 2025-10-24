@@ -38,7 +38,7 @@ SPARQL_ENDPOINT = {
 
 # The MIE files are used to define the shape expressions for SPARQL queries. 
 MIE_DIR = "mie"
-MIE_PROMPT="resources/MIE_prompt_compact.md"
+MIE_PROMPT="resources/MIE_prompt.md"
 RDF_PORTAL_GUIDE="resources/rdf_portal_guide.md"
 
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"

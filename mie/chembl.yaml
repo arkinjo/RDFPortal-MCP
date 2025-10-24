@@ -11,8 +11,7 @@ schema_info:
   base_uri: http://rdf.ebi.ac.uk/resource/chembl/
   version: ChEMBL 34 (as of January 2025)
   graphs:
-    - http://rdf.ebi.ac.uk/dataset/chembl
-
+  - http://rdf.ebi.ac.uk/dataset/chembl
 shape_expressions: |
   # ChEMBL Shape Expressions (ShExC format)
   # Comprehensive bioactivity and drug discovery data model
@@ -42,7 +41,7 @@ shape_expressions: |
     cco:atcClassification xsd:string* ;
     cco:highestDevelopmentPhase xsd:double? ;        # Clinical phase (0-4)
     cco:substanceType xsd:string ;
-    cco:moleculeXref IRI* ;                          # External database links
+    cco:moleculeXref IRI* ;                         # External database links
     skos:altLabel xsd:string* ;
     skos:exactMatch IRI* ;
     sio:SIO_000008 IRI* ;                            # Molecular descriptors
@@ -140,561 +139,558 @@ shape_expressions: |
     cco:highestDevelopmentPhase xsd:string? ;
     cco:indicationType xsd:string? ;
   }
-
 sample_rdf_entries:
-  - title: Small Molecule - Imatinib (Cancer Drug)
-    description: FDA-approved tyrosine kinase inhibitor for chronic myeloid leukemia, demonstrating comprehensive drug annotation with mechanisms and cross-references.
-    rdf: |
-      @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-      
-      <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> a cco:SmallMolecule ;
-        rdfs:label "IMATINIB" ;
-        skos:prefLabel "IMATINIB" ;
-        cco:chemblId "CHEMBL941" ;
-        cco:substanceType "Small molecule" ;
-        cco:highestDevelopmentPhase "4.0"^^xsd:double ;
-        cco:atcClassification "L01EA01" ;
-        cco:hasDrugIndication <http://rdf.ebi.ac.uk/resource/chembl/drug_indication/CHEMBL_IND_20145> ;
-        cco:hasMechanism <http://rdf.ebi.ac.uk/resource/chembl/drug_mechanism/CHEMBL_MEC_529> ;
-        cco:moleculeXref <http://www.drugbank.ca/drugs/DB00619> ;
-        skos:altLabel "Gleevec", "STI571" .
-
-  - title: Target - Beta-2 Adrenergic Receptor (GPCR)
-    description: G-protein coupled receptor target showing protein classification and organism annotation for cardiovascular and respiratory research.
-    rdf: |
-      @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix dcterms: <http://purl.org/dc/terms/> .
-      
-      <http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL210> a cco:SingleProtein ;
-        rdfs:label "Beta-2 adrenergic receptor" ;
-        dcterms:title "Beta-2 adrenergic receptor" ;
-        cco:chemblId "CHEMBL210" ;
-        cco:targetType "SINGLE PROTEIN" ;
-        cco:organismName "Homo sapiens" ;
-        cco:hasTargetComponent <http://rdf.ebi.ac.uk/resource/chembl/targetcomponent/CHEMBL_TC_347> ;
-        cco:hasProteinClassification <http://rdf.ebi.ac.uk/resource/chembl/protclass/CHEMBL_PC_15> ;
-        cco:taxonomy <http://identifiers.org/taxonomy/9606> .
-
-  - title: Bioactivity Measurement - Kinase Inhibition
-    description: IC50 activity measurement demonstrating standardized bioactivity annotation with units and quality metadata.
-    rdf: |
-      @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix qudt: <http://qudt.org/vocab/unit#> .
-      
-      <http://rdf.ebi.ac.uk/resource/chembl/activity/CHEMBL_ACT_1642837> a cco:Activity ;
-        rdfs:label "CHEMBL_ACT_1642837" ;
-        cco:chemblId "CHEMBL_ACT_1642837" ;
-        cco:hasMolecule <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> ;
-        cco:hasAssay <http://rdf.ebi.ac.uk/resource/chembl/assay/CHEMBL858065> ;
-        cco:hasDocument <http://rdf.ebi.ac.uk/resource/chembl/document/CHEMBL1135154> ;
-        cco:standardType "IC50" ;
-        cco:standardValue "25.0"^^xsd:double ;
-        cco:standardUnits "nM" ;
-        cco:standardRelation "=" ;
-        cco:hasQUDT qudt:Nanomolar .
-
-  - title: Target Component with UniProt Cross-Reference
-    description: Target component linking to UniProt P07550 (beta-2 adrenergic receptor) enabling sequence and structural analysis integration.
-    rdf: |
-      @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      @prefix dcterms: <http://purl.org/dc/terms/> .
-      
-      <http://rdf.ebi.ac.uk/resource/chembl/targetcomponent/CHEMBL_TC_347> a cco:TargetComponent ;
-        rdfs:label "CHEMBL_TC_347" ;
-        dcterms:description "Beta-2 adrenergic receptor" ;
-        cco:chemblId "CHEMBL_TC_347" ;
-        cco:componentType "PROTEIN" ;
-        cco:organismName "Homo sapiens" ;
-        cco:hasTarget <http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL210> ;
-        cco:targetCmptXref <http://purl.uniprot.org/uniprot/P07550> ,
-                           <http://identifiers.org/ec-code/4.6.1.1> .
-
-  - title: Drug Indication - Cancer Therapy
-    description: Drug indication for chronic myeloid leukemia with EFO and MeSH ontology mappings for systematic disease classification.
-    rdf: |
-      @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
-      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-      
-      <http://rdf.ebi.ac.uk/resource/chembl/drug_indication/CHEMBL_IND_20145> a cco:DrugIndication ;
-        rdfs:label "CHEMBL_IND_20145" ;
-        cco:chemblId "CHEMBL_IND_20145" ;
-        cco:hasMolecule <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> ;
-        cco:hasEFO <http://www.ebi.ac.uk/efo/EFO_0000339> ;
-        cco:hasEFOName "chronic myeloid leukemia" ;
-        cco:hasMesh <http://identifiers.org/mesh/D015464> ;
-        cco:hasMeshHeading "Leukemia, Myelogenous, Chronic, BCR-ABL Positive" ;
-        cco:highestDevelopmentPhase "4" .
-
+- title: Small Molecule - Imatinib (Cancer Drug)
+  description: FDA-approved tyrosine kinase inhibitor for chronic myeloid leukemia,
+    demonstrating comprehensive drug annotation with mechanisms and cross-references.
+  rdf: |
+    @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    
+    <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> a cco:SmallMolecule ;
+      rdfs:label "IMATINIB" ;
+      skos:prefLabel "IMATINIB" ;
+      cco:chemblId "CHEMBL941" ;
+      cco:substanceType "Small molecule" ;
+      cco:highestDevelopmentPhase "4.0"^^xsd:double ;
+      cco:atcClassification "L01EA01" ;
+      cco:hasDrugIndication <http://rdf.ebi.ac.uk/resource/chembl/drug_indication/CHEMBL_IND_20145> ;
+      cco:hasMechanism <http://rdf.ebi.ac.uk/resource/chembl/drug_mechanism/CHEMBL_MEC_529> ;
+      cco:moleculeXref <http://www.drugbank.ca/drugs/DB00619> ;
+      skos:altLabel "Gleevec", "STI571" .
+- title: Target - Beta-2 Adrenergic Receptor (GPCR)
+  description: G-protein coupled receptor target showing protein classification and
+    organism annotation for cardiovascular and respiratory research.
+  rdf: |
+    @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcterms: <http://purl.org/dc/terms/> .
+    
+    <http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL210> a cco:SingleProtein ;
+      rdfs:label "Beta-2 adrenergic receptor" ;
+      dcterms:title "Beta-2 adrenergic receptor" ;
+      cco:chemblId "CHEMBL210" ;
+      cco:targetType "SINGLE PROTEIN" ;
+      cco:organismName "Homo sapiens" ;
+      cco:hasTargetComponent <http://rdf.ebi.ac.uk/resource/chembl/targetcomponent/CHEMBL_TC_347> ;
+      cco:hasProteinClassification <http://rdf.ebi.ac.uk/resource/chembl/protclass/CHEMBL_PC_15> ;
+      cco:taxonomy <http://identifiers.org/taxonomy/9606> .
+- title: Bioactivity Measurement - Kinase Inhibition
+  description: IC50 activity measurement demonstrating standardized bioactivity annotation
+    with units and quality metadata.
+  rdf: |
+    @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix qudt: <http://qudt.org/vocab/unit#> .
+    
+    <http://rdf.ebi.ac.uk/resource/chembl/activity/CHEMBL_ACT_1642837> a cco:Activity ;
+      rdfs:label "CHEMBL_ACT_1642837" ;
+      cco:chemblId "CHEMBL_ACT_1642837" ;
+      cco:hasMolecule <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> ;
+      cco:hasAssay <http://rdf.ebi.ac.uk/resource/chembl/assay/CHEMBL858065> ;
+      cco:hasDocument <http://rdf.ebi.ac.uk/resource/chembl/document/CHEMBL1135154> ;
+      cco:standardType "IC50" ;
+      cco:standardValue "25.0"^^xsd:double ;
+      cco:standardUnits "nM" ;
+      cco:standardRelation "=" ;
+      cco:hasQUDT qudt:Nanomolar .
+- title: Target Component with UniProt Cross-Reference
+  description: Target component linking to UniProt P07550 (beta-2 adrenergic receptor)
+    enabling sequence and structural analysis integration.
+  rdf: |
+    @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix dcterms: <http://purl.org/dc/terms/> .
+    
+    <http://rdf.ebi.ac.uk/resource/chembl/targetcomponent/CHEMBL_TC_347> a cco:TargetComponent ;
+      rdfs:label "CHEMBL_TC_347" ;
+      dcterms:description "Beta-2 adrenergic receptor" ;
+      cco:chemblId "CHEMBL_TC_347" ;
+      cco:componentType "PROTEIN" ;
+      cco:organismName "Homo sapiens" ;
+      cco:hasTarget <http://rdf.ebi.ac.uk/resource/chembl/target/CHEMBL210> ;
+      cco:targetCmptXref <http://purl.uniprot.org/uniprot/P07550> ,
+                         <http://identifiers.org/ec-code/4.6.1.1> .
+- title: Drug Indication - Cancer Therapy
+  description: Drug indication for chronic myeloid leukemia with EFO and MeSH ontology
+    mappings for systematic disease classification.
+  rdf: |
+    @prefix cco: <http://rdf.ebi.ac.uk/terms/chembl#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    
+    <http://rdf.ebi.ac.uk/resource/chembl/drug_indication/CHEMBL_IND_20145> a cco:DrugIndication ;
+      rdfs:label "CHEMBL_IND_20145" ;
+      cco:chemblId "CHEMBL_IND_20145" ;
+      cco:hasMolecule <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941> ;
+      cco:hasEFO <http://www.ebi.ac.uk/efo/EFO_0000339> ;
+      cco:hasEFOName "chronic myeloid leukemia" ;
+      cco:hasMesh <http://identifiers.org/mesh/D015464> ;
+      cco:hasMeshHeading "Leukemia, Myelogenous, Chronic, BCR-ABL Positive" ;
+      cco:highestDevelopmentPhase "4" .
 sparql_query_examples:
-  - title: Find FDA-Approved Drugs by Therapeutic Area
-    description: Retrieves approved drugs filtered by ATC classification codes for different therapeutic areas including cardiovascular, oncology, and CNS drugs.
-    question: What FDA-approved drugs are available for cardiovascular diseases?
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+- title: Find Molecules by Keyword Search (Entry ID Retrieval)
+  description: Retrieves molecule identifiers and labels by filtering with specific
+    ChEMBL IDs, enabling targeted compound lookup for further analysis.
+  question: How can I find molecules by their ChEMBL identifiers?
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?label ?chemblId
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                rdfs:label ?label ;
+                cco:chemblId ?chemblId .
       
-      SELECT DISTINCT ?molecule ?moleculeLabel ?atcCode ?phase
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  rdfs:label ?moleculeLabel ;
-                  cco:atcClassification ?atcCode ;
-                  cco:highestDevelopmentPhase ?phase .
-        
-        FILTER(CONTAINS(?atcCode, "C01") ||  # Cardiac therapy
-               CONTAINS(?atcCode, "C02") ||  # Antihypertensives  
-               CONTAINS(?atcCode, "C03") ||  # Diuretics
-               CONTAINS(?atcCode, "C07") ||  # Beta blockers
-               CONTAINS(?atcCode, "C09"))    # ACE inhibitors/ARBs
-        FILTER(?phase = 4.0)
+      # Filter by specific ChEMBL IDs (can be expanded with more IDs)
+      FILTER(?chemblId = "CHEMBL941" || ?chemblId = "CHEMBL25" || ?chemblId = "CHEMBL428647")
+    }
+    LIMIT 50
+- title: Get Biological Annotations for Given Molecules
+  description: Retrieves comprehensive biological information including mechanism
+    of action, protein targets, and disease indications for specified molecule IDs.
+  question: What are the mechanisms of action, targets, and indications for specific
+    drug molecules?
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?mechanismType ?targetLabel ?indication
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      # Specify molecules of interest by URI
+      VALUES ?molecule { 
+        <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL941>
+        <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL1642>
+        <http://rdf.ebi.ac.uk/resource/chembl/molecule/CHEMBL428647>
       }
-      ORDER BY ?atcCode ?moleculeLabel
-      LIMIT 50
-
-  - title: High-Potency Compound Discovery
-    description: Identifies compounds with nanomolar potency against any target, useful for lead compound identification across therapeutic areas.
-    question: Which compounds show high potency (IC50 < 10 nM) against protein targets?
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      ?molecule rdfs:label ?moleculeLabel .
       
-      SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?ic50
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?activity cco:hasMolecule ?molecule ;
-                  cco:hasAssay ?assay ;
-                  cco:standardType "IC50" ;
-                  cco:standardValue ?ic50 ;
-                  cco:standardUnits "nM" .
-        ?molecule rdfs:label ?moleculeLabel .
-        ?assay cco:hasTarget ?target .
+      OPTIONAL {
+        ?molecule cco:hasMechanism ?mechanism .
+        ?mechanism cco:mechanismActionType ?mechanismType ;
+                   cco:hasTarget ?target .
         ?target rdfs:label ?targetLabel .
-        
-        FILTER(?ic50 < 10 && ?ic50 > 0)
       }
-      ORDER BY ?ic50
-      LIMIT 50
-
-  - title: Target Class Distribution Analysis
-    description: Analyzes drug development pipeline by target protein class, showing clinical development phases across different target families.
-    question: What is the distribution of drug development phases across different protein target classes?
-    complexity: intermediate
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      OPTIONAL {
+        ?molecule cco:hasDrugIndication ?ind .
+        ?ind cco:hasMeshHeading ?indication .
+      }
+    }
+    LIMIT 100
+- title: High-Potency Compound Discovery
+  description: Identifies compounds with nanomolar potency against any target, useful
+    for lead compound identification across therapeutic areas.
+  question: Which compounds show high potency (IC50 < 10 nM) against protein targets?
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?ic50
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?activity cco:hasMolecule ?molecule ;
+                cco:hasAssay ?assay ;
+                cco:standardType "IC50" ;
+                cco:standardValue ?ic50 ;
+                cco:standardUnits "nM" .
+      ?molecule rdfs:label ?moleculeLabel .
+      ?assay cco:hasTarget ?target .
+      ?target rdfs:label ?targetLabel .
       
-      SELECT ?targetClass ?phase (COUNT(?molecule) as ?moleculeCount)
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  cco:highestDevelopmentPhase ?phase ;
-                  cco:hasActivity ?activity .
-        ?activity cco:hasAssay ?assay .
-        ?assay cco:hasTarget ?target .
-        ?target cco:hasProteinClassification ?protClass .
-        ?protClass rdfs:label ?targetClass .
-        
-        FILTER(?phase > 0)
-        FILTER(CONTAINS(LCASE(?targetClass), "kinase") ||
-               CONTAINS(LCASE(?targetClass), "gpcr") ||
-               CONTAINS(LCASE(?targetClass), "protease") ||
-               CONTAINS(LCASE(?targetClass), "transporter"))
-      }
-      GROUP BY ?targetClass ?phase
-      ORDER BY ?targetClass DESC(?phase)
-
-  - title: GPCR Ligand Profiling
-    description: Finds G-protein coupled receptor modulators with their mechanisms of action, essential for neuroscience and cardiovascular research.
-    question: What compounds modulate GPCRs and what are their mechanisms of action?
-    complexity: intermediate
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      FILTER(?ic50 < 10 && ?ic50 > 0)
+    }
+    ORDER BY ?ic50
+    LIMIT 50
+- title: Target Class Distribution Analysis
+  description: Analyzes drug development pipeline by target protein class, showing
+    clinical development phases across different target families.
+  question: What is the distribution of drug development phases across different protein
+    target classes?
+  complexity: intermediate
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?targetClass ?phase (COUNT(?molecule) as ?moleculeCount)
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                cco:highestDevelopmentPhase ?phase ;
+                cco:hasActivity ?activity .
+      ?activity cco:hasAssay ?assay .
+      ?assay cco:hasTarget ?target .
+      ?target cco:hasProteinClassification ?protClass .
+      ?protClass rdfs:label ?targetClass .
       
-      SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?ki ?mechanism
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?activity cco:hasMolecule ?molecule ;
-                  cco:hasAssay ?assay ;
-                  cco:standardType "Ki" ;
-                  cco:standardValue ?ki ;
-                  cco:standardUnits "nM" .
-        ?molecule rdfs:label ?moleculeLabel .
-        ?assay cco:hasTarget ?target .
-        ?target rdfs:label ?targetLabel ;
-                cco:hasProteinClassification ?protClass .
-        ?protClass rdfs:label ?targetClass .
-        
-        OPTIONAL {
-          ?molecule cco:hasMechanism ?mechanismObj .
-          ?mechanismObj cco:mechanismActionType ?mechanism
-        }
-        
-        FILTER(CONTAINS(LCASE(?targetClass), "gpcr") ||
-               CONTAINS(LCASE(?targetClass), "g protein"))
-        FILTER(?ki < 100)
-      }
-      ORDER BY ?ki
-      LIMIT 50
-
-  - title: Cancer Drug Mechanism Analysis
-    description: Comprehensive analysis linking cancer drugs to their targets, mechanisms, and disease indications for oncology research.
-    question: What are the complete drug profiles for approved cancer medications?
-    complexity: intermediate
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      FILTER(?phase > 0)
+      FILTER(CONTAINS(LCASE(?targetClass), "kinase") ||
+             CONTAINS(LCASE(?targetClass), "gpcr") ||
+             CONTAINS(LCASE(?targetClass), "protease") ||
+             CONTAINS(LCASE(?targetClass), "transporter"))
+    }
+    GROUP BY ?targetClass ?phase
+    ORDER BY ?targetClass DESC(?phase)
+- title: GPCR Ligand Profiling
+  description: Finds G-protein coupled receptor modulators with their mechanisms of
+    action, essential for neuroscience and cardiovascular research.
+  question: What compounds modulate GPCRs and what are their mechanisms of action?
+  complexity: intermediate
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?ki ?mechanism
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?activity cco:hasMolecule ?molecule ;
+                cco:hasAssay ?assay ;
+                cco:standardType "Ki" ;
+                cco:standardValue ?ki ;
+                cco:standardUnits "nM" .
+      ?molecule rdfs:label ?moleculeLabel .
+      ?assay cco:hasTarget ?target .
+      ?target rdfs:label ?targetLabel ;
+              cco:hasProteinClassification ?protClass .
+      ?protClass rdfs:label ?targetClass .
       
-      SELECT DISTINCT ?molecule ?moleculeLabel ?target ?targetLabel ?mechanismType ?indication
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  cco:highestDevelopmentPhase "4.0"^^xsd:double ;
-                  rdfs:label ?moleculeLabel ;
-                  cco:hasMechanism ?mechanism .
-        ?mechanism cco:hasTarget ?target ;
-                   cco:mechanismActionType ?mechanismType .
-        ?target rdfs:label ?targetLabel .
-        
-        OPTIONAL {
-          ?molecule cco:hasDrugIndication ?indicationObj .
-          ?indicationObj cco:hasMeshHeading ?indication .
-          FILTER(CONTAINS(LCASE(?indication), "carcinoma") ||
-                 CONTAINS(LCASE(?indication), "lymphoma") ||
-                 CONTAINS(LCASE(?indication), "leukemia") ||
-                 CONTAINS(LCASE(?indication), "cancer"))
-        }
-        
-        FILTER(?mechanismType = "INHIBITOR")
-        FILTER(CONTAINS(LCASE(?targetLabel), "kinase") ||
-               CONTAINS(LCASE(?targetLabel), "protease") ||
-               CONTAINS(LCASE(?targetLabel), "transferase"))
+      OPTIONAL {
+        ?molecule cco:hasMechanism ?mechanismObj .
+        ?mechanismObj cco:mechanismActionType ?mechanism
       }
-      ORDER BY ?moleculeLabel ?targetLabel
-      LIMIT 100
-
-  - title: Cross-Database Drug Discovery Integration
-    description: Advanced query linking approved drugs across multiple databases (ChEMBL, PubChem, DrugBank, UniProt) for comprehensive pharmaceutical informatics.
-    question: How can I integrate drug information across ChEMBL, PubChem, DrugBank, and UniProt databases?
-    complexity: advanced
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       
-      SELECT ?molecule ?moleculeLabel ?pubchemId ?drugbankId ?uniprotId ?atcCode ?bestIC50
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  rdfs:label ?moleculeLabel ;
-                  cco:highestDevelopmentPhase "4.0"^^xsd:double ;
-                  cco:hasActivity ?activity .
-        ?activity cco:hasAssay ?assay .
-        ?assay cco:hasTarget ?target .
-        ?target cco:hasTargetComponent ?component .
-        
-        OPTIONAL { 
-          ?molecule cco:moleculeXref ?pubchemId . 
-          FILTER(CONTAINS(STR(?pubchemId), "pubchem")) 
-        }
-        OPTIONAL { 
-          ?molecule cco:moleculeXref ?drugbankId . 
-          FILTER(CONTAINS(STR(?drugbankId), "drugbank")) 
-        }
-        OPTIONAL { 
-          ?component cco:targetCmptXref ?uniprotId . 
-          FILTER(CONTAINS(STR(?uniprotId), "uniprot")) 
-        }
-        OPTIONAL { ?molecule cco:atcClassification ?atcCode }
-        OPTIONAL {
-          ?activity cco:standardType "IC50" ;
-                    cco:standardValue ?bestIC50 ;
-                    cco:standardUnits "nM" .
-        }
-      }
-      ORDER BY ?moleculeLabel
-      LIMIT 100
-
-  - title: Multi-Target Drug Selectivity Analysis
-    description: Complex analysis identifying compounds with activity against multiple related targets to assess selectivity profiles and polypharmacology.
-    question: Which compounds show activity against multiple protein targets and what are their selectivity profiles?
-    complexity: advanced
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      FILTER(CONTAINS(LCASE(?targetClass), "gpcr") ||
+             CONTAINS(LCASE(?targetClass), "g protein"))
+      FILTER(?ki < 100)
+    }
+    ORDER BY ?ki
+    LIMIT 50
+- title: Cancer Drug Mechanism Analysis
+  description: Comprehensive analysis linking cancer drugs to their targets, mechanisms,
+    and disease indications for oncology research.
+  question: What are the complete drug profiles for approved cancer medications?
+  complexity: intermediate
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT DISTINCT ?molecule ?moleculeLabel ?target ?targetLabel ?mechanismType ?indication
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                cco:highestDevelopmentPhase "4.0"^^xsd:double ;
+                rdfs:label ?moleculeLabel ;
+                cco:hasMechanism ?mechanism .
+      ?mechanism cco:hasTarget ?target ;
+                 cco:mechanismActionType ?mechanismType .
+      ?target rdfs:label ?targetLabel .
       
-      SELECT ?molecule ?moleculeLabel (COUNT(DISTINCT ?target) as ?targetCount) (MIN(?ic50) as ?bestIC50)
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?activity a cco:Activity ;
-                  cco:hasMolecule ?molecule ;
-                  cco:standardType "IC50" ;
-                  cco:standardValue ?ic50 ;
-                  cco:standardUnits "nM" ;
-                  cco:hasAssay ?assay .
-        ?molecule rdfs:label ?moleculeLabel .
-        ?assay cco:hasTarget ?target .
-        ?target rdfs:label ?targetLabel ;
-                cco:hasProteinClassification ?protClass .
-        ?protClass rdfs:label ?targetClass .
-        
-        FILTER(?ic50 < 1000 && ?ic50 > 0)
-        FILTER(CONTAINS(LCASE(?targetClass), "kinase") ||
-               CONTAINS(LCASE(?targetClass), "protease"))
+      OPTIONAL {
+        ?molecule cco:hasDrugIndication ?indicationObj .
+        ?indicationObj cco:hasMeshHeading ?indication .
+        FILTER(CONTAINS(LCASE(?indication), "carcinoma") ||
+               CONTAINS(LCASE(?indication), "lymphoma") ||
+               CONTAINS(LCASE(?indication), "leukemia") ||
+               CONTAINS(LCASE(?indication), "cancer"))
       }
-      GROUP BY ?molecule ?moleculeLabel
-      HAVING (?targetCount >= 3)
-      ORDER BY DESC(?targetCount) ?bestIC50
-      LIMIT 20
-
+      
+      FILTER(?mechanismType = "INHIBITOR")
+      FILTER(CONTAINS(LCASE(?targetLabel), "kinase") ||
+             CONTAINS(LCASE(?targetLabel), "protease") ||
+             CONTAINS(LCASE(?targetLabel), "transferase"))
+    }
+    ORDER BY ?moleculeLabel ?targetLabel
+    LIMIT 100
+- title: Kinase Inhibitor Selectivity Profiling for Approved Drugs
+  description: Advanced analysis identifying approved kinase inhibitors with activity
+    profiles across multiple kinase targets to assess selectivity and polypharmacology.
+  question: Which approved drugs show kinase inhibition activity and what are their
+    target selectivity profiles?
+  complexity: advanced
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?ic50 ?phase
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                rdfs:label ?moleculeLabel ;
+                cco:highestDevelopmentPhase ?phase ;
+                cco:hasActivity ?activity .
+      ?activity cco:standardType "IC50" ;
+                cco:standardValue ?ic50 ;
+                cco:standardUnits "nM" ;
+                cco:hasAssay ?assay .
+      ?assay cco:hasTarget ?target .
+      ?target rdfs:label ?targetLabel ;
+              cco:hasProteinClassification ?protClass .
+      ?protClass rdfs:label ?targetClass .
+      
+      FILTER(?ic50 < 50 && ?ic50 > 0)
+      FILTER(?phase = 4.0)
+      FILTER(CONTAINS(LCASE(?targetClass), "kinase"))
+    }
+    ORDER BY ?moleculeLabel ?ic50
+    LIMIT 50
 cross_references:
-  - pattern: cco:moleculeXref
-    description: |
-      Small molecule cross-references to external chemical and pharmaceutical databases.
-      All databases use the cco:moleculeXref property. Distinguished by URL patterns in the IRI.
-      Coverage varies significantly by database type and compound development phase.
-    databases:
-      chemical_structure:
-        - 'PubChem (pubchem.ncbi.nlm.nih.gov/compound/): ~80% coverage for approved drugs, primary chemical structure database'
-        - 'ZINC (zinc15.docking.org/substances/): ~25% coverage, docking and virtual screening'
-        - 'SureChemBL (surechembl.org/chemical/): ~40% coverage, patent chemistry'
-        - 'HMDB (hmdb.ca/metabolites/): ~15% coverage for metabolites'
-        - 'NMR ShiftDB (nmrshiftdb.org): <5% coverage, spectroscopic data'
-      pharmaceutical:
-        - 'DrugBank (drugbank.ca/drugs/): ~25% approved drugs, comprehensive drug information'
-        - 'Guide to Pharmacology (guidetopharmacology.org): ~15% approved drugs'
-        - 'PharmGKB (pharmgkb.org): ~10% coverage, pharmacogenomics'
-      regulatory:
-        - 'FDA UNII (precision.fda.gov/uniisearch/): ~40% approved drugs, substance registration'
-        - 'EPA ACTOR (actor.epa.gov/actor/): ~35% coverage, toxicity and exposure data'
-      ontology_classification:
-        - 'ChEBI (identifiers.org/chebi/): via identifiers.org, chemical ontology'
-        - 'KEGG (genome.jp/entry/): ~10% coverage, pathway and metabolism'
-      suppliers:
-        - 'MolPort (molport.com/shop/molecule-link/): ~30% coverage, commercial availability'
-        - 'eMolecules (emolecules.com/cgi-bin/more): ~30% coverage'
-        - 'Mcule (mcule.com/): ~15% coverage'
-        - 'Selleck Chemicals (selleckchem.com/): ~8% coverage'
-      information:
-        - 'Wikipedia (en.wikipedia.org/wiki/): ~15% approved drugs, general information'
-        - 'J-GLOBAL (jglobal.jst.go.jp): ~25% coverage, Japanese scientific database'
-      metabolomics:
-        - 'VMH (vmh.uni.lu): <1% coverage, metabolic modeling'
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+- pattern: cco:moleculeXref
+  description: |
+    Small molecule cross-references to external chemical and pharmaceutical databases.
+    All databases use the cco:moleculeXref property. Distinguished by URL patterns in the IRI.
+    Coverage varies significantly by database type and compound development phase.
+  databases:
+    chemical_structure:
+    - 'PubChem (pubchem.ncbi.nlm.nih.gov/compound/): ~80% coverage for approved drugs,
+      primary chemical structure database'
+    - 'ZINC (zinc15.docking.org/substances/): ~25% coverage, docking and virtual screening'
+    - 'SureChemBL (surechembl.org/chemical/): ~40% coverage, patent chemistry'
+    - 'HMDB (hmdb.ca/metabolites/): ~15% coverage for metabolites'
+    - 'NMR ShiftDB (nmrshiftdb.org): <5% coverage, spectroscopic data'
+    pharmaceutical:
+    - 'DrugBank (drugbank.ca/drugs/): ~25% approved drugs, comprehensive drug information'
+    - 'Guide to Pharmacology (guidetopharmacology.org): ~15% approved drugs'
+    - 'PharmGKB (pharmgkb.org): ~10% coverage, pharmacogenomics'
+    regulatory:
+    - 'FDA UNII (precision.fda.gov/uniisearch/): ~40% approved drugs, substance registration'
+    - 'EPA ACTOR (actor.epa.gov/actor/): ~35% coverage, toxicity and exposure data'
+    ontology_classification:
+    - 'ChEBI (identifiers.org/chebi/): via identifiers.org, chemical ontology'
+    - 'KEGG (genome.jp/entry/): ~10% coverage, pathway and metabolism'
+    suppliers:
+    - 'MolPort (molport.com/shop/molecule-link/): ~30% coverage, commercial availability'
+    - 'eMolecules (emolecules.com/cgi-bin/more): ~30% coverage'
+    - 'Mcule (mcule.com/): ~15% coverage'
+    - 'Selleck Chemicals (selleckchem.com/): ~8% coverage'
+    information:
+    - 'Wikipedia (en.wikipedia.org/wiki/): ~15% approved drugs, general information'
+    - 'J-GLOBAL (jglobal.jst.go.jp): ~25% coverage, Japanese scientific database'
+    metabolomics:
+    - 'VMH (vmh.uni.lu): <1% coverage, metabolic modeling'
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?externalDB ?phase
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                rdfs:label ?moleculeLabel ;
+                cco:highestDevelopmentPhase ?phase ;
+                cco:moleculeXref ?externalDB .
       
-      SELECT ?molecule ?moleculeLabel ?externalDB ?phase
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  rdfs:label ?moleculeLabel ;
-                  cco:highestDevelopmentPhase ?phase ;
-                  cco:moleculeXref ?externalDB .
-        
-        # Filter by URL pattern for specific database:
-        # FILTER(CONTAINS(STR(?externalDB), "pubchem.ncbi.nlm.nih.gov"))        # PubChem
-        # FILTER(CONTAINS(STR(?externalDB), "drugbank.ca"))                     # DrugBank
-        # FILTER(CONTAINS(STR(?externalDB), "zinc15.docking.org"))              # ZINC
-        # FILTER(CONTAINS(STR(?externalDB), "precision.fda.gov"))               # FDA UNII
-        # FILTER(CONTAINS(STR(?externalDB), "hmdb.ca"))                         # HMDB
-        # FILTER(CONTAINS(STR(?externalDB), "guidetopharmacology.org"))         # Guide to Pharmacology
-        # FILTER(CONTAINS(STR(?externalDB), "surechembl.org"))                  # SureChemBL
-        # FILTER(CONTAINS(STR(?externalDB), "actor.epa.gov"))                   # EPA ACTOR
-        
-        FILTER(?phase >= 3.0)  # Clinical phase 3+ and approved drugs
-      }
-      ORDER BY DESC(?phase) ?moleculeLabel
-      LIMIT 100
-
-  - pattern: cco:targetCmptXref
-    description: |
-      Target component cross-references to protein, ontology, and pathway databases.
-      All protein target cross-references use cco:targetCmptXref property.
-      Essential for integrating sequence, structure, function, and pathway information.
-    databases:
-      protein_sequence:
-        - 'UniProt (purl.uniprot.org/uniprot/): ~85% coverage, primary protein database'
-      protein_structure:
-        - 'PDB (identifiers.org/pdb/): ~60% coverage, experimental 3D structures'
-      protein_families:
-        - 'InterPro (identifiers.org/interpro/): ~75% coverage, protein families and domains'
-        - 'Pfam (identifiers.org/pfam/): ~65% coverage, protein domain families'
-      ontologies:
-        - 'Gene Ontology (identifiers.org/obo.go/): >85% coverage, GO annotations for biological processes, molecular functions, cellular components'
-      enzymes:
-        - "EC codes (identifiers.org/ec-code/): ~55% coverage for enzymes, enzyme classification"
-      pathways:
-        - 'Reactome (identifiers.org/reactome/): ~40% coverage, biological pathways'
-      protein_interactions:
-        - 'IntAct (identifiers.org/intact/): ~35% coverage, molecular interactions'
-      pharmacogenomics:
-        - 'PharmGKB (pharmgkb.org/gene/): ~25% coverage, pharmacogenetic information'
-      clinical:
-        - 'CGD (research.nhgri.nih.gov/CGD/): ~8% coverage, clinical genomics'
-      toxicology:
-        - 'TIMBAL (mordred.bioc.cam.ac.uk/timbal/): ~1% coverage, target-based toxicity'
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX dcterms: <http://purl.org/dc/terms/>
+      # Filter by URL pattern for specific database:
+      # FILTER(CONTAINS(STR(?externalDB), "pubchem.ncbi.nlm.nih.gov"))        # PubChem
+      # FILTER(CONTAINS(STR(?externalDB), "drugbank.ca"))                     # DrugBank
+      # FILTER(CONTAINS(STR(?externalDB), "zinc15.docking.org"))              # ZINC
+      # FILTER(CONTAINS(STR(?externalDB), "precision.fda.gov"))               # FDA UNII
+      # FILTER(CONTAINS(STR(?externalDB), "hmdb.ca"))                         # HMDB
+      # FILTER(CONTAINS(STR(?externalDB), "guidetopharmacology.org"))         # Guide to Pharmacology
+      # FILTER(CONTAINS(STR(?externalDB), "surechembl.org"))                  # SureChemBL
+      # FILTER(CONTAINS(STR(?externalDB), "actor.epa.gov"))                   # EPA ACTOR
       
-      SELECT ?target ?targetLabel ?component ?description ?externalDB
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?target a cco:SingleProtein ;
-                rdfs:label ?targetLabel ;
-                cco:hasTargetComponent ?component .
-        ?component dcterms:description ?description ;
-                   cco:targetCmptXref ?externalDB .
-        
-        # Filter by URL pattern for specific database:
-        # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/uniprot/"))       # UniProt
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/pdb/"))            # PDB
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/obo.go/"))         # Gene Ontology
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/interpro/"))       # InterPro
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/pfam/"))           # Pfam
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/ec-code/"))        # EC codes
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/reactome/"))       # Reactome
-        # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/intact/"))         # IntAct
-        # FILTER(CONTAINS(STR(?externalDB), "pharmgkb.org/gene/"))              # PharmGKB
-        
-        FILTER(CONTAINS(LCASE(?targetLabel), "kinase") ||
-               CONTAINS(LCASE(?targetLabel), "receptor") ||
-               CONTAINS(LCASE(?targetLabel), "protease"))
-      }
-      LIMIT 50
-
-  - pattern: cco:hasEFO / cco:hasMesh
-    description: |
-      Disease and indication cross-references via drug indication entities.
-      Uses two distinct properties: cco:hasEFO for Experimental Factor Ontology
-      and cco:hasMesh for Medical Subject Headings. Enables systematic disease-focused
-      drug discovery and therapeutic area analysis.
-    databases:
-      disease_ontologies:
-        - "EFO (ebi.ac.uk/efo/): ~60% of indications, experimental factor ontology for diseases"
-        - "MeSH (identifiers.org/mesh/): ~80% of indications, medical subject headings"
-    complexity: intermediate
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      FILTER(?phase >= 3.0)  # Clinical phase 3+ and approved drugs
+    }
+    ORDER BY DESC(?phase) ?moleculeLabel
+    LIMIT 100
+- pattern: cco:targetCmptXref
+  description: |
+    Target component cross-references to protein, ontology, and pathway databases.
+    All protein target cross-references use cco:targetCmptXref property.
+    Essential for integrating sequence, structure, function, and pathway information.
+  databases:
+    protein_sequence:
+    - 'UniProt (purl.uniprot.org/uniprot/): ~85% coverage, primary protein database'
+    protein_structure:
+    - 'PDB (identifiers.org/pdb/): ~60% coverage, experimental 3D structures'
+    protein_families:
+    - 'InterPro (identifiers.org/interpro/): ~75% coverage, protein families and domains'
+    - 'Pfam (identifiers.org/pfam/): ~65% coverage, protein domain families'
+    ontologies:
+    - 'Gene Ontology (identifiers.org/obo.go/): >85% coverage, GO annotations for
+      biological processes, molecular functions, cellular components'
+    enzymes:
+    - 'EC codes (identifiers.org/ec-code/): ~55% coverage for enzymes, enzyme classification'
+    pathways:
+    - 'Reactome (identifiers.org/reactome/): ~40% coverage, biological pathways'
+    protein_interactions:
+    - 'IntAct (identifiers.org/intact/): ~35% coverage, molecular interactions'
+    pharmacogenomics:
+    - 'PharmGKB (pharmgkb.org/gene/): ~25% coverage, pharmacogenetic information'
+    clinical:
+    - 'CGD (research.nhgri.nih.gov/CGD/): ~8% coverage, clinical genomics'
+    toxicology:
+    - 'TIMBAL (mordred.bioc.cam.ac.uk/timbal/): ~1% coverage, target-based toxicity'
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    
+    SELECT ?target ?targetLabel ?component ?description ?externalDB
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?target a cco:SingleProtein ;
+              rdfs:label ?targetLabel ;
+              cco:hasTargetComponent ?component .
+      ?component dcterms:description ?description ;
+                 cco:targetCmptXref ?externalDB .
       
-      SELECT ?molecule ?moleculeLabel ?efo ?efoName ?mesh ?meshHeading ?phase
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  rdfs:label ?moleculeLabel ;
-                  cco:highestDevelopmentPhase ?phase ;
-                  cco:hasDrugIndication ?indication .
-        
-        OPTIONAL {
-          ?indication cco:hasEFO ?efo ;
-                      cco:hasEFOName ?efoName .
-        }
-        OPTIONAL {
-          ?indication cco:hasMesh ?mesh ;
-                      cco:hasMeshHeading ?meshHeading .
-        }
-        
-        # Filter for specific disease areas:
-        # FILTER(CONTAINS(LCASE(?meshHeading), "carcinoma") ||
-        #        CONTAINS(LCASE(?meshHeading), "cancer") ||
-        #        CONTAINS(LCASE(?efoName), "cancer"))
-        
-        FILTER(?phase >= 3.0)
-      }
-      ORDER BY DESC(?phase) ?moleculeLabel
-      LIMIT 100
-
-  - pattern: skos:exactMatch
-    description: |
-      SKOS-based exact match relationships for molecules, primarily linking to ontologies.
-      Uses standard SKOS vocabulary for semantic equivalence assertions.
-    databases:
-      ontologies:
-        - ChEBI: Chemical ontology classifications
-        - Other chemical ontologies as available
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+      # Filter by URL pattern for specific database:
+      # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/uniprot/"))       # UniProt
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/pdb/"))            # PDB
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/obo.go/"))         # Gene Ontology
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/interpro/"))       # InterPro
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/pfam/"))           # Pfam
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/ec-code/"))        # EC codes
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/reactome/"))       # Reactome
+      # FILTER(CONTAINS(STR(?externalDB), "identifiers.org/intact/"))         # IntAct
+      # FILTER(CONTAINS(STR(?externalDB), "pharmgkb.org/gene/"))              # PharmGKB
       
-      SELECT ?molecule ?moleculeLabel ?exactMatch
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?molecule a cco:SmallMolecule ;
-                  rdfs:label ?moleculeLabel ;
-                  skos:exactMatch ?exactMatch .
-      }
-      LIMIT 50
-
-  - pattern: cco:taxonomy
-    description: |
-      Taxonomic cross-references linking targets to NCBI Taxonomy for organism information.
-      Essential for species-specific target analysis and comparative pharmacology.
-    databases:
-      taxonomy:
-        - "NCBI Taxonomy (identifiers.org/taxonomy/): >95% coverage for all targets"
-    complexity: basic
-    sparql: |
-      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      FILTER(CONTAINS(LCASE(?targetLabel), "kinase") ||
+             CONTAINS(LCASE(?targetLabel), "receptor") ||
+             CONTAINS(LCASE(?targetLabel), "protease"))
+    }
+    LIMIT 50
+- pattern: cco:hasEFO / cco:hasMesh
+  description: |
+    Disease and indication cross-references via drug indication entities.
+    Uses two distinct properties: cco:hasEFO for Experimental Factor Ontology
+    and cco:hasMesh for Medical Subject Headings. Enables systematic disease-focused
+    drug discovery and therapeutic area analysis.
+  databases:
+    disease_ontologies:
+    - 'EFO (ebi.ac.uk/efo/): ~60% of indications, experimental factor ontology for
+      diseases'
+    - 'MeSH (identifiers.org/mesh/): ~80% of indications, medical subject headings'
+  complexity: intermediate
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?molecule ?moleculeLabel ?efo ?efoName ?mesh ?meshHeading ?phase
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                rdfs:label ?moleculeLabel ;
+                cco:highestDevelopmentPhase ?phase ;
+                cco:hasDrugIndication ?indication .
       
-      SELECT ?target ?targetLabel ?organism ?taxonomy
-      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
-      WHERE {
-        ?target a cco:SingleProtein ;
-                rdfs:label ?targetLabel ;
-                cco:organismName ?organism ;
-                cco:taxonomy ?taxonomy .
-        
-        # Filter for specific organisms:
-        # FILTER(?organism = "Homo sapiens")                    # Human
-        # FILTER(?organism = "Mus musculus")                    # Mouse
-        # FILTER(?organism = "Rattus norvegicus")               # Rat
-        # FILTER(CONTAINS(STR(?taxonomy), "taxonomy/9606"))     # Human NCBI Taxonomy ID
+      OPTIONAL {
+        ?indication cco:hasEFO ?efo ;
+                    cco:hasEFOName ?efoName .
       }
-      LIMIT 50
-
+      OPTIONAL {
+        ?indication cco:hasMesh ?mesh ;
+                    cco:hasMeshHeading ?meshHeading .
+      }
+      
+      # Filter for specific disease areas:
+      # FILTER(CONTAINS(LCASE(?meshHeading), "carcinoma") ||
+      #        CONTAINS(LCASE(?meshHeading), "cancer") ||
+      #        CONTAINS(LCASE(?efoName), "cancer"))
+      
+      FILTER(?phase >= 3.0)
+    }
+    ORDER BY DESC(?phase) ?moleculeLabel
+    LIMIT 100
+- pattern: skos:exactMatch
+  description: |
+    SKOS-based exact match relationships for molecules, primarily linking to ontologies.
+    Uses standard SKOS vocabulary for semantic equivalence assertions.
+  databases:
+    ontologies:
+    - 'ChEBI: Chemical ontology classifications'
+    - Other chemical ontologies as available
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT ?molecule ?moleculeLabel ?exactMatch
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                rdfs:label ?moleculeLabel ;
+                skos:exactMatch ?exactMatch .
+    }
+    LIMIT 50
+- pattern: cco:taxonomy
+  description: |
+    Taxonomic cross-references linking targets to NCBI Taxonomy for organism information.
+    Essential for species-specific target analysis and comparative pharmacology.
+  databases:
+    taxonomy:
+    - 'NCBI Taxonomy (identifiers.org/taxonomy/): >95% coverage for all targets'
+  complexity: basic
+  sparql: |
+    PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT ?target ?targetLabel ?organism ?taxonomy
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?target a cco:SingleProtein ;
+              rdfs:label ?targetLabel ;
+              cco:organismName ?organism ;
+              cco:taxonomy ?taxonomy .
+      
+      # Filter for specific organisms:
+      # FILTER(?organism = "Homo sapiens")                    # Human
+      # FILTER(?organism = "Mus musculus")                    # Mouse
+      # FILTER(?organism = "Rattus norvegicus")               # Rat
+      # FILTER(CONTAINS(STR(?taxonomy), "taxonomy/9606"))     # Human NCBI Taxonomy ID
+    }
+    LIMIT 50
 architectural_notes:
   schema_design:
-    - Activity records serve as central integration hubs linking molecules, assays, targets, and literature
-    - Hierarchical target classification enables systematic exploration of protein families across therapeutic areas
-    - Dual raw/standardized activity values preserve original data while enabling cross-study comparisons
-    - Extensive cross-reference network supports federated queries and multi-database integration
-    - Mechanism-of-action entities explicitly model drug-target interactions with pharmacological action types
-  
+  - Activity records serve as central integration hubs linking molecules, assays,
+    targets, and literature
+  - Hierarchical target classification enables systematic exploration of protein families
+    across therapeutic areas
+  - Dual raw/standardized activity values preserve original data while enabling cross-study
+    comparisons
+  - Extensive cross-reference network supports federated queries and multi-database
+    integration
+  - Mechanism-of-action entities explicitly model drug-target interactions with pharmacological
+    action types
   performance:
-    - Always filter activities by standardType to avoid 20M+ result timeouts in bioactivity queries
-    - Use specific molecule/target URIs when known rather than broad text searches across large datasets
-    - Development phase filtering dramatically improves query performance for approved drug discovery
-    - UniProt cross-reference queries scale well up to 1000 results when combined with target specificity
-    - ATC classification filtering provides efficient access to therapeutic area subsets
-  
+  - Always filter activities by standardType to avoid 20M+ result timeouts in bioactivity
+    queries
+  - Use specific molecule/target URIs when known rather than broad text searches across
+    large datasets
+  - Development phase filtering dramatically improves query performance for approved
+    drug discovery
+  - UniProt cross-reference queries scale well up to 1000 results when combined with
+    target specificity
+  - ATC classification filtering provides efficient access to therapeutic area subsets
   data_integration:
-    - targetCmptXref enables systematic linking to UniProt, GO, EC, and PDB databases for protein analysis
-    - moleculeXref supports PubChem, DrugBank, and ChEBI integration for comprehensive chemical informatics
-    - Drug indication mappings to EFO and MeSH enable systematic disease-focused drug discovery
-    - Mechanism-of-action data supports both target-based and phenotypic screening approaches
-    - ATC classification codes enable systematic pharmaceutical class analysis across therapeutic areas
-  
+  - targetCmptXref enables systematic linking to UniProt, GO, EC, and PDB databases
+    for protein analysis
+  - moleculeXref supports PubChem, DrugBank, and ChEBI integration for comprehensive
+    chemical informatics
+  - Drug indication mappings to EFO and MeSH enable systematic disease-focused drug
+    discovery
+  - Mechanism-of-action data supports both target-based and phenotypic screening approaches
+  - ATC classification codes enable systematic pharmaceutical class analysis across
+    therapeutic areas
   data_quality:
-    - Manual literature curation ensures high-quality bioactivity measurements across all research areas
-    - Standardized activity types and units enable cross-assay comparisons for meta-analysis
-    - Development phase data coverage varies by therapeutic area with oncology having highest completeness
-    - Cross-reference completeness varies by database - UniProt ~85%, PubChem ~80%, DrugBank ~25%
-    - Activity data validation includes confidence scores and data validity comments for quality assessment
-
+  - Manual literature curation ensures high-quality bioactivity measurements across
+    all research areas
+  - Standardized activity types and units enable cross-assay comparisons for meta-analysis
+  - Development phase data coverage varies by therapeutic area with oncology having
+    highest completeness
+  - Cross-reference completeness varies by database - UniProt ~85%, PubChem ~80%,
+    DrugBank ~25%
+  - Activity data validation includes confidence scores and data validity comments
+    for quality assessment
 data_statistics:
   total_molecules: 1920643
   total_activities: 20334684
@@ -705,7 +701,6 @@ data_statistics:
   clinical_compounds: 8543
   kinase_targets: 1247
   gpcr_targets: 892
-  
   coverage:
     molecules_with_labels: '>99%'
     molecules_with_chembl_ids: '>99%'
@@ -718,7 +713,6 @@ data_statistics:
     targets_with_protein_sequences: ~88%
     approved_drugs_with_drugbank_xrefs: ~25%
     molecules_with_pubchem_xrefs: ~80%
-  
   cardinality:
     avg_activities_per_molecule: 10.6
     max_activities_per_molecule: 25000
@@ -730,19 +724,24 @@ data_statistics:
     max_xrefs_per_molecule: 45
     avg_assays_per_target: 165
     max_assays_per_target: 15000
-  
   performance_characteristics:
-    - Activity queries timeout without standardType filtering - always include activity type filters
-    - Target-based drug discovery queries scale efficiently up to 1000 results with proper filtering
-    - UniProt cross-reference integration performs well when combined with target specificity
-    - Development phase filtering dramatically improves query performance for drug discovery applications
-    - ATC classification filtering provides efficient access to therapeutic area subsets
-    - Multi-target selectivity analysis requires careful optimization for large result sets
-    - Complex mechanism-target-indication joins work well with LIMIT 100-200
-  
+  - Activity queries timeout without standardType filtering - always include activity
+    type filters
+  - Target-based drug discovery queries scale efficiently up to 1000 results with
+    proper filtering
+  - UniProt cross-reference integration performs well when combined with target specificity
+  - Development phase filtering dramatically improves query performance for drug discovery
+    applications
+  - ATC classification filtering provides efficient access to therapeutic area subsets
+  - Kinase selectivity profiling queries work well with LIMIT 50-100 for approved
+    drugs
+  - Complex mechanism-target-indication joins work well with LIMIT 100-200
   data_quality_notes:
-    - IC50 values use mixed integer/double types - use flexible numeric filtering with FILTER(?ic50 > 0)
-    - Development phase data most complete for recent compounds and approved drugs
-    - Cross-reference density higher for approved drugs versus experimental compounds
-    - Target-component relationships essential for accurate protein identification and UniProt mapping
-    - Mechanism data completeness correlates with development phase advancement across therapeutic areas
+  - IC50 values use mixed integer/double types - use flexible numeric filtering with
+    FILTER(?ic50 > 0)
+  - Development phase data most complete for recent compounds and approved drugs
+  - Cross-reference density higher for approved drugs versus experimental compounds
+  - Target-component relationships essential for accurate protein identification and
+    UniProt mapping
+  - Mechanism data completeness correlates with development phase advancement across
+    therapeutic areas

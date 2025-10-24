@@ -138,9 +138,9 @@ sparql_query_examples:
       LIMIT 20
   
   - title: Search by Label or Synonym
-    description: Find GO terms using text matching
+    description: Find GO terms using text matching across labels and synonyms
     question: Find terms related to apoptosis
-    complexity: basic
+    complexity: advanced
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -342,6 +342,7 @@ architectural_notes:
     - Use FILTER(isIRI(?parent)) to exclude blank restriction nodes
     - Exact term lookups by URI are fastest
     - Text searches benefit from LCASE() and CONTAINS()
+    - Hierarchical queries with multiple levels may timeout without proper filtering
   
   data_integration:
     - Reactome for pathway details
@@ -374,6 +375,22 @@ data_statistics:
     molecular_functions_with_RHEA: "~35%"
     biological_processes_with_Wikipedia: "~1.4%"
   
+  cardinality:
+    avg_synonyms_per_term: 4.0
+    max_synonyms_per_term: 114
+    avg_xrefs_per_term: 3.2
+    max_xrefs_per_term: 192
+    avg_parents_per_term: 1.8
+    max_parents_per_term: 9
+  
+  performance_characteristics:
+    - "Namespace filtering is efficient for all query sizes"
+    - "Text searches with LCASE() and CONTAINS() work well up to 1000 results"
+    - "Hierarchical traversal queries should use LIMIT to avoid timeouts"
+    - "OWL restriction queries are moderately expensive but complete within seconds"
+    - "Exact GO ID lookups by URI are instantaneous"
+    - "Cross-reference queries filtered by database prefix are optimized"
+  
   indexed_properties:
     - rdfs:label
     - oboInOwl:id
@@ -382,9 +399,9 @@ data_statistics:
     - oboInOwl:hasDbXref
   
   top_xref_databases:
-    - Reactome: 7,541 (pathways)
-    - MetaCyc: 4,855 (metabolic pathways)
-    - EC: 4,561 (enzyme classification)
-    - RHEA: 4,426 (reactions)
-    - KEGG_REACTION: 1,726 (reactions)
-    - Wikipedia: 788 (general reference)
+    - "Reactome: 7,541 (pathways)"
+    - "MetaCyc: 4,855 (metabolic pathways)"
+    - "EC: 4,561 (enzyme classification)"
+    - "RHEA: 4,426 (reactions)"
+    - "KEGG_REACTION: 1,726 (reactions)"
+    - "Wikipedia: 788 (general reference)"

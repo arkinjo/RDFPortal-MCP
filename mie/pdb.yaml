@@ -15,7 +15,7 @@ shape_expressions: |
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX pdbx: <http://rdf.wwpdb.org/schema/pdbx-v50.owl#>
-  
+
   <Datablock> {
     a [ pdbx:datablock ] ;
     pdbx:has_entityCategory @<EntityCategory> * ;
@@ -27,44 +27,44 @@ shape_expressions: |
     pdbx:has_citationCategory @<CitationCategory> * ;
     pdbx:has_audit_authorCategory @<AuditAuthorCategory> *
   }
-  
+
   <Entity> {
     pdbx:entity.id xsd:string ;
     pdbx:entity.type [ "polymer" "non-polymer" "water" ] ;
     pdbx:entity.pdbx_description xsd:string ? ;
     pdbx:entity.formula_weight xsd:decimal ?
   }
-  
+
   <EntityPoly> {
     pdbx:entity_poly.entity_id xsd:string ;
     pdbx:entity_poly.type xsd:string ;
     pdbx:entity_poly.pdbx_seq_one_letter_code xsd:string ?
   }
-  
+
   <Refine> {
     pdbx:refine.entry_id xsd:string ;
     pdbx:refine.ls_d_res_high xsd:decimal ? ;
     pdbx:refine.ls_R_factor_R_work xsd:decimal ? ;
     pdbx:refine.ls_R_factor_R_free xsd:decimal ?
   }
-  
+
   <Exptl> {
     pdbx:exptl.entry_id xsd:string ;
     pdbx:exptl.method xsd:string
   }
-  
+
   <StructRef> {
     pdbx:struct_ref.entity_id xsd:string ;
     pdbx:struct_ref.db_name xsd:string ;
     pdbx:struct_ref.db_code xsd:string ? ;
     pdbx:struct_ref.pdbx_db_accession xsd:string ?
   }
-  
+
   <Database2> {
     pdbx:database_2.database_id xsd:string ;
     pdbx:database_2.database_code xsd:string
   }
-  
+
   <Citation> {
     pdbx:citation.id xsd:string ;
     pdbx:citation.title xsd:string ? ;
@@ -76,7 +76,7 @@ shape_expressions: |
 
 sample_rdf_entries:
   - title: High Resolution Protein Structure
-    description: "Crambin at 0.48 Å - ultra-high resolution"
+    description: Crambin at 0.48 Å - ultra-high resolution
     rdf: |
       pdb:3NIR a pdbx:datablock ;
         pdbx:has_refineCategory pdb:3NIR/refineCategory .
@@ -84,7 +84,7 @@ sample_rdf_entries:
         pdbx:refine.entry_id "3NIR" ;
         pdbx:refine.ls_d_res_high "0.48"^^xsd:decimal ;
         pdbx:refine.ls_R_factor_R_work "0.127"^^xsd:decimal .
-  
+
   - title: DNA Structure Entry
     description: Dickerson DNA dodecamer with sequence
     rdf: |
@@ -93,7 +93,7 @@ sample_rdf_entries:
         pdbx:entity.type "polymer" ;
         pdbx:entity.pdbx_description "DNA/RNA (5'-R(*CP*)-D(*CP*GP*GP*CP*GP*CP*CP*GP*)-R(*G)-3')" ;
         pdbx:entity.formula_weight "3078.980"^^xsd:decimal .
-  
+
   - title: Protein with UniProt Reference
     description: Trypanosoma protein with UniProt cross-reference
     rdf: |
@@ -102,7 +102,7 @@ sample_rdf_entries:
         pdbx:struct_ref.db_name "UNP" ;
         pdbx:struct_ref.db_code "PGKC_TRYBB" ;
         pdbx:struct_ref.pdbx_db_accession "P07378" .
-  
+
   - title: Cryo-EM Structure
     description: EM structure with EMDB reference
     rdf: |
@@ -112,7 +112,7 @@ sample_rdf_entries:
       pdb:8A2Z/exptl/1 a pdbx:exptl ;
         pdbx:exptl.entry_id "8A2Z" ;
         pdbx:exptl.method "ELECTRON MICROSCOPY" .
-  
+
   - title: RNA Structure
     description: RNA hammerhead ribozyme with sequence
     rdf: |
@@ -141,7 +141,7 @@ sparql_query_examples:
       }
       ORDER BY xsd:decimal(?resolution)
       LIMIT 20
-  
+
   - title: Search Proteins by Name
     description: Find structures by protein description
     question: Find kinase structures
@@ -158,7 +158,7 @@ sparql_query_examples:
         FILTER(CONTAINS(LCASE(?description), "kinase"))
       }
       LIMIT 30
-  
+
   - title: Get Experimental Methods
     description: Count structures by experimental method
     question: What methods are used most?
@@ -173,7 +173,7 @@ sparql_query_examples:
       }
       GROUP BY ?method
       ORDER BY DESC(?count)
-  
+
   - title: Find Structures with UniProt
     description: Get protein structures with UniProt links
     question: Which structures have UniProt references?
@@ -190,7 +190,7 @@ sparql_query_examples:
              pdbx:struct_ref.pdbx_db_accession ?uniprot_acc .
       }
       LIMIT 50
-  
+
   - title: Analyze Resolution Distribution
     description: Statistical analysis of resolution by method
     question: What is typical resolution per method?
@@ -210,7 +210,7 @@ sparql_query_examples:
         FILTER(xsd:decimal(?resolution) > 0 && xsd:decimal(?resolution) < 100)
       }
       GROUP BY ?method
-  
+
   - title: Find Cryo-EM Structures
     description: Get EM structures with EMDB references
     question: Which cryo-EM structures have EMDB links?
@@ -229,7 +229,7 @@ sparql_query_examples:
         ?exptl pdbx:exptl.method "ELECTRON MICROSCOPY" .
       }
       LIMIT 20
-  
+
   - title: Find Nucleic Acid Structures
     description: Get DNA/RNA structures with sequences
     question: What nucleic acid structures are available?
@@ -427,14 +427,14 @@ data_statistics:
     typical_medium: "2.0-3.0 Å"
   
   performance_characteristics:
-    - "Resolution queries efficient with numeric filters"
-    - "Cross-reference queries by db_name/db_id work well"
-    - "Multi-category joins benefit from filtering on entry_id first"
-    - "Text search on descriptions should use CONTAINS/LCASE"
-    - "Recommend LIMIT 30-100 for exploratory queries"
+    - Resolution queries efficient with numeric filters
+    - Cross-reference queries by db_name/db_id work well
+    - Multi-category joins benefit from filtering on entry_id first
+    - Text search on descriptions should use CONTAINS/LCASE
+    - Recommend LIMIT 30-100 for exploratory queries
   
   data_quality_notes:
-    - "UniProt references may have multiple entries per structure entity"
-    - "Not all entries have resolution data (NMR structures lack this)"
-    - "Cross-reference coverage varies significantly by database"
-    - "Some older entries may have incomplete external links"
+    - UniProt references may have multiple entries per structure entity
+    - Not all entries have resolution data (NMR structures lack this)
+    - Cross-reference coverage varies significantly by database
+    - Some older entries may have incomplete external links

@@ -44,7 +44,7 @@ sample_rdf_entries:
         oboInOwl:hasExactSynonym "achondroplastic dwarfism" ;
         oboInOwl:hasDbXref "OMIM:100800" ;
         oboInOwl:hasDbXref "Orphanet:15" .
-  
+
   - title: Root Disease Class
     description: Top-level disease entity
     rdf: |
@@ -52,7 +52,7 @@ sample_rdf_entries:
         rdfs:label "disease or disorder" ;
         oboInOwl:id "MONDO:0000001" ;
         obo:IAO_0000115 "A disease is a disposition to undergo pathological processes." .
-  
+
   - title: Disease with ICD Mapping
     description: Disease cross-referenced to ICD-10
     rdf: |
@@ -61,7 +61,7 @@ sample_rdf_entries:
         oboInOwl:id "MONDO:0005147" ;
         oboInOwl:hasDbXref "ICD10:E10" ;
         oboInOwl:hasDbXref "MESH:D003922" .
-  
+
   - title: Rare Disease Entry
     description: Rare disease with Orphanet reference
     rdf: |
@@ -70,7 +70,7 @@ sample_rdf_entries:
         oboInOwl:id "MONDO:0007739" ;
         oboInOwl:hasDbXref "Orphanet:399" ;
         oboInOwl:hasDbXref "OMIM:143100" .
-  
+
   - title: Cancer Classification
     description: Neoplasm with hierarchical classification
     rdf: |
@@ -80,124 +80,167 @@ sample_rdf_entries:
         rdfs:subClassOf obo:MONDO_0005070 .
 
 sparql_query_examples:
-  - title: Find Diseases by Name
-    description: Search for diseases using text matching
-    question: Find diseases related to diabetes
+  - title: Find Diseases by Keyword
+    description: Search for disease IDs by filtering with keywords in labels
+    question: Find disease IDs matching keyword "diabetes"
     complexity: basic
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      SELECT ?disease ?label
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?disease ?mondoId ?label
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
         ?disease a owl:Class ;
-                 rdfs:label ?label .
+                 rdfs:label ?label ;
+                 oboInOwl:id ?mondoId .
         FILTER(CONTAINS(LCASE(?label), "diabetes"))
       }
       LIMIT 20
-  
-  - title: Get Disease Hierarchy
-    description: Retrieve parent diseases in classification
-    question: What are parent classes of a disease?
+
+  - title: Get Disease Annotations
+    description: Retrieve biological/functional annotations for a given disease ID
+    question: What are the definition, synonyms, and classification for a disease?
+    complexity: basic
+    sparql: |
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      PREFIX IAO: <http://purl.obolibrary.org/obo/IAO_>
+      
+      SELECT ?label ?definition ?synonym ?parent ?parentLabel
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        obo:MONDO_0005147 rdfs:label ?label .
+        OPTIONAL { obo:MONDO_0005147 IAO:0000115 ?definition }
+        OPTIONAL { obo:MONDO_0005147 oboInOwl:hasExactSynonym ?synonym }
+        OPTIONAL { 
+          obo:MONDO_0005147 rdfs:subClassOf ?parent .
+          ?parent rdfs:label ?parentLabel .
+          FILTER(isIRI(?parent))
+        }
+      }
+
+  - title: Get Disease Hierarchy Path
+    description: Retrieve parent-child relationships in disease classification tree
+    question: What are all parent classes of a specific disease?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      SELECT ?parent ?parentLabel
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?parent ?parentId ?parentLabel
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
-        obo:MONDO_0000003 rdfs:subClassOf ?parent .
-        ?parent rdfs:label ?parentLabel .
+        obo:MONDO_0005147 rdfs:subClassOf+ ?parent .
+        ?parent rdfs:label ?parentLabel ;
+                oboInOwl:id ?parentId .
         FILTER(isIRI(?parent))
       }
-  
-  - title: Find Diseases by OMIM
-    description: Search using OMIM database identifiers
-    question: Find diseases with OMIM references
+
+  - title: Count Diseases by Top-Level Category
+    description: Aggregate disease counts grouped by their immediate parent classes
+    question: How many diseases are in each major disease category?
     complexity: intermediate
     sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?omim
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease a owl:Class ;
-                 rdfs:label ?label ;
-                 oboInOwl:hasDbXref ?omim .
-        FILTER(STRSTARTS(?omim, "OMIM:"))
-      }
-      LIMIT 30
-  
-  - title: Rare Diseases from Orphanet
-    description: Find rare diseases with Orphanet cross-references
-    question: Which rare diseases are in MONDO?
-    complexity: intermediate
-    sparql: |
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?disease ?label ?orphanet
-      FROM <http://rdfportal.org/ontology/mondo>
-      WHERE {
-        ?disease a owl:Class ;
-                 rdfs:label ?label ;
-                 oboInOwl:hasDbXref ?orphanet .
-        FILTER(STRSTARTS(?orphanet, "Orphanet:"))
-      }
-      LIMIT 30
-  
-  - title: Count Diseases by Category
-    description: Aggregate disease counts by top-level categories
-    question: How many diseases per category?
-    complexity: basic
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
       SELECT ?parent ?parentLabel (COUNT(?disease) as ?count)
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
-        ?disease rdfs:subClassOf ?parent .
+        ?disease a owl:Class ;
+                 rdfs:subClassOf ?parent .
         ?parent rdfs:label ?parentLabel .
+        FILTER(isIRI(?parent))
       }
       GROUP BY ?parent ?parentLabel
       ORDER BY DESC(?count)
       LIMIT 20
-  
-  - title: Find Synonyms for Disease
-    description: Retrieve all synonyms for a disease term
-    question: What are alternative names for a disease?
-    complexity: basic
+
+  - title: Find Diseases with Multiple Inheritance
+    description: Identify diseases that have more than one parent class
+    question: Which diseases belong to multiple disease categories?
+    complexity: intermediate
     sparql: |
-      PREFIX obo: <http://purl.obolibrary.org/obo/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      SELECT ?label ?synonym
+      
+      SELECT ?disease ?mondoId ?label (COUNT(?parent) as ?parentCount)
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
-        obo:MONDO_0000003 rdfs:label ?label .
-        OPTIONAL { obo:MONDO_0000003 oboInOwl:hasExactSynonym ?synonym }
+        ?disease a owl:Class ;
+                 rdfs:label ?label ;
+                 oboInOwl:id ?mondoId ;
+                 rdfs:subClassOf ?parent .
+        FILTER(isIRI(?parent))
       }
-  
-  - title: Search Genetic Diseases
-    description: Find diseases classified as genetic disorders
-    question: Which genetic diseases are available?
+      GROUP BY ?disease ?mondoId ?label
+      HAVING (COUNT(?parent) > 1)
+      ORDER BY DESC(?parentCount)
+      LIMIT 20
+
+  - title: Find All Genetic Diseases
+    description: Retrieve diseases classified as genetic disorders using transitive subclass relationships
+    question: Which diseases are genetic disorders or subtypes of genetic disorders?
     complexity: advanced
     sparql: |
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX obo: <http://purl.obolibrary.org/obo/>
-      SELECT ?disease ?label
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?disease ?mondoId ?label
       FROM <http://rdfportal.org/ontology/mondo>
       WHERE {
         ?disease a owl:Class ;
                  rdfs:label ?label ;
+                 oboInOwl:id ?mondoId ;
                  rdfs:subClassOf* obo:MONDO_0003847 .
       }
-      LIMIT 30
+      LIMIT 50
+
+  - title: Complex Disease Integration Query
+    description: Comprehensive query combining hierarchy, synonyms, cross-references, and definitions
+    question: For diseases matching criteria, get complete annotation profile
+    complexity: advanced
+    sparql: |
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      PREFIX IAO: <http://purl.obolibrary.org/obo/IAO_>
+      PREFIX obo: <http://purl.obolibrary.org/obo/>
+      
+      SELECT ?disease ?mondoId ?label ?definition 
+             (GROUP_CONCAT(DISTINCT ?synonym; separator="|") as ?synonyms)
+             (GROUP_CONCAT(DISTINCT ?xref; separator="|") as ?crossRefs)
+             (GROUP_CONCAT(DISTINCT ?parentLabel; separator="|") as ?parents)
+      FROM <http://rdfportal.org/ontology/mondo>
+      WHERE {
+        ?disease a owl:Class ;
+                 rdfs:label ?label ;
+                 oboInOwl:id ?mondoId .
+        
+        OPTIONAL { ?disease IAO:0000115 ?definition }
+        OPTIONAL { ?disease oboInOwl:hasExactSynonym ?synonym }
+        OPTIONAL { ?disease oboInOwl:hasDbXref ?xref }
+        OPTIONAL { 
+          ?disease rdfs:subClassOf ?parent .
+          ?parent rdfs:label ?parentLabel .
+          FILTER(isIRI(?parent))
+        }
+        
+        FILTER(CONTAINS(LCASE(?label), "cancer") || 
+               CONTAINS(LCASE(?label), "carcinoma"))
+      }
+      GROUP BY ?disease ?mondoId ?label ?definition
+      LIMIT 10
 
 cross_references:
   - pattern: oboInOwl:hasDbXref
@@ -206,7 +249,6 @@ cross_references:
       Database identifiers are distinguished by their prefix patterns (e.g., "OMIM:", "Orphanet:", "ICD10CM:").
       Approximately 90% of disease classes have at least one cross-reference.
       Many diseases have multiple cross-references across different database types for comprehensive mapping.
-    
     databases:
       medical_terminologies:
         - UMLS (UMLS:): ~70% coverage, Unified Medical Language System
@@ -214,7 +256,6 @@ cross_references:
         - SCTID (SCTID:): ~31% coverage, SNOMED CT International
         - MESH (MESH:): ~28% coverage, Medical Subject Headings
         - NCIT (NCIT:): ~25% coverage, NCI Thesaurus
-      
       genetic_rare_disease:
         - GARD (GARD:): ~35% coverage, Genetic and Rare Diseases Information Center
         - DOID (DOID:): ~39% coverage, Disease Ontology
@@ -224,7 +265,6 @@ cross_references:
         - NORD (NORD:): ~3% coverage, National Organization for Rare Disorders
         - DECIPHER (DECIPHER:): <1% coverage, Database of Chromosomal Imbalance
         - GTR (GTR:): <1% coverage, Genetic Testing Registry
-      
       clinical_classification:
         - ICD9 (ICD9:): ~19% coverage, International Classification of Diseases v9
         - icd11.foundation (icd11.foundation:): ~14% coverage, ICD-11 Foundation
@@ -232,31 +272,24 @@ cross_references:
         - ICD10WHO (ICD10WHO:): <1% coverage, ICD-10 WHO version
         - ICD10EXP (ICD10EXP:): <1% coverage, ICD-10 Experimental
         - ICD9CM (ICD9CM:): <1% coverage, ICD-9 Clinical Modification
-      
       oncology:
         - ICDO (ICDO:): ~3% coverage, International Classification of Diseases for Oncology
         - ONCOTREE (ONCOTREE:): ~2% coverage, OncoTree Cancer Classification
-      
       phenotype_ontology:
         - EFO (EFO:): ~8% coverage, Experimental Factor Ontology
         - HP (HP:): ~2% coverage, Human Phenotype Ontology
-      
       japanese_resources:
         - NANDO (NANDO:): ~8% coverage, Nanbyo Disease Ontology (Japan)
-      
       clinical_drugs:
         - MedDRA (MedDRA:): ~5% coverage, Medical Dictionary for Regulatory Activities
         - OMIMPS (OMIMPS:): ~2% coverage, OMIM Phenotypic Series
-      
       genetic_resources:
         - HGNC (HGNC:): <1% coverage, HUGO Gene Nomenclature Committee
-      
       other_resources:
         - Wikipedia (Wikipedia:): <1% coverage
         - CSP (CSP:): <1% coverage, Computer Retrieval of Information on Scientific Projects
         - PMID (PMID:): <1% coverage, PubMed identifiers
         - birnlex, nlxdys, MFOMD, OGMS, SCDO, OBI, NDFRT, IDO, MPATH, MTH: <1% coverage each
-    
     complexity: basic
     sparql: |
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -332,7 +365,7 @@ data_statistics:
     diseases_with_parent_classes: "~95%"
   
   cardinality:
-    avg_xrefs_per_disease: ~6.5
+    avg_xrefs_per_disease: 6.5
     max_xrefs_per_disease: 50+
     avg_synonyms_per_disease: 2.8
     avg_parents_per_disease: 1.2
@@ -351,12 +384,12 @@ data_statistics:
     - "Most diseases have 4-10 cross-references across multiple databases"
   
   top_xref_databases:
-    - UMLS: 21372 references (~70%)
-    - MEDGEN: 21372 references (~70%)
-    - DOID: 11866 references (~39%)
-    - GARD: 10730 references (~35%)
-    - Orphanet: 10344 references (~34%)
-    - OMIM: 10039 references (~33%)
-    - SCTID: 9279 references (~31%)
-    - MESH: 8378 references (~28%)
-    - NCIT: 7549 references (~25%)
+    - "UMLS: 21372 references (~70%)"
+    - "MEDGEN: 21372 references (~70%)"
+    - "DOID: 11866 references (~39%)"
+    - "GARD: 10730 references (~35%)"
+    - "Orphanet: 10344 references (~34%)"
+    - "OMIM: 10039 references (~33%)"
+    - "SCTID: 9279 references (~31%)"
+    - "MESH: 8378 references (~28%)"
+    - "NCIT: 7549 references (~25%)"

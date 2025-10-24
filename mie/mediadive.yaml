@@ -23,7 +23,7 @@ shape_expressions: |
     rdfs:label xsd:string ;
     schema:belongsToGroup xsd:string ;
     schema:fromSource xsd:string ;
-    schema:hasLinkToSource IRI ? ;              # Link to DSMZ PDF documentation
+    schema:hasLinkToSource IRI ? ;
     schema:hasFinalPH xsd:string ? ;
     schema:hasMinPH xsd:float ? ;
     schema:hasMaxPH xsd:float ? ;
@@ -57,9 +57,9 @@ shape_expressions: |
     schema:hasPubChem xsd:integer ? ;
     schema:hasKEGG xsd:string ? ;
     schema:hasMetaCyc xsd:string ? ;
-    schema:hasGMO IRI ? ;                       # Glycome Metabolome Ontology
-    schema:hasZVG xsd:integer ? ;               # German chemical registry
-    schema:hasSVGImage xsd:string ? ;           # Embedded SVG structure diagram
+    schema:hasGMO IRI ? ;
+    schema:hasZVG xsd:integer ? ;
+    schema:hasSVGImage xsd:string ? ;
     schema:hasSynonym xsd:string * ;
     schema:isComplexCarbonSource xsd:boolean ?
   }
@@ -133,7 +133,7 @@ shape_expressions: |
   
   <ModificationDetailShape> {
     a [ schema:ModificationDetail ] ;
-    schema:actionType xsd:string ;              # e.g., "add", "remove"
+    schema:actionType xsd:string ;
     schema:actionDetails xsd:string ;
     schema:modifiedAmount xsd:float ? ;
     schema:modifiedUnit xsd:string ? ;
@@ -161,7 +161,7 @@ sample_rdf_entries:
         schema:hasFinalPH "7.0-7.2" ;
         schema:fromSource "DSMZ" ;
         schema:isComplex true .
-  
+
   - title: Ingredient with Chemical Cross-References
     description: Ingredient entity with multiple database cross-references for chemical identification
     rdf: |
@@ -175,7 +175,7 @@ sample_rdf_entries:
         schema:hasKEGG "C00031" ;
         schema:hasGMO <http://purl.jp/bio/10/gmo/GMO_001067> ;
         schema:belongsToGroup "Carbohydrates" .
-  
+
   - title: Growth Conditions for Strain
     description: Growth parameters linking medium to specific strain cultivation
     rdf: |
@@ -187,7 +187,7 @@ sample_rdf_entries:
         schema:hasOxygenRequirement "aerobic" ;
         schema:incubationPeriod "24-48 hours" ;
         schema:hasGrowthIndicator true .
-  
+
   - title: Solution Recipe with Ingredient Details
     description: Solution recipe component showing ingredient amounts and units
     rdf: |
@@ -200,7 +200,7 @@ sample_rdf_entries:
         schema:gramsPerLiter 10.0 ;
         schema:isIngredientOptional false ;
         schema:positionInRecipe 1 .
-  
+
   - title: Strain with Taxonomic Information
     description: Microbial strain entity with DSM number and BacDive cross-reference
     rdf: |
@@ -213,24 +213,48 @@ sample_rdf_entries:
         schema:hasSynonym "IAM 64" .
 
 sparql_query_examples:
-  - title: List Available Culture Media
-    description: Retrieve culture media with basic properties including pH and group classification
-    question: What culture media are available in MediaDive?
+  - title: Search Media by Keyword
+    description: Find culture media by filtering labels or descriptions with keywords
+    question: Which media contain "Desulfotomaculum" or "anaerobic" in their names?
     complexity: basic
     sparql: |
       PREFIX schema: <https://purl.dsmz.de/schema/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?medium ?label ?group ?ph
+      SELECT ?medium ?label ?group
       FROM <http://rdfportal.org/dataset/mediadive>
       WHERE {
         ?medium a schema:CultureMedium ;
                 rdfs:label ?label ;
                 schema:belongsToGroup ?group .
-        OPTIONAL { ?medium schema:hasFinalPH ?ph }
+        FILTER(CONTAINS(LCASE(?label), "marine") || CONTAINS(LCASE(?group), "marine"))
       }
       ORDER BY ?label
       LIMIT 30
-  
+
+  - title: Retrieve Functional Annotations for Media
+    description: Obtain biological/functional information including pH, complexity, and growth conditions for given medium IDs
+    question: What are the functional properties and growth characteristics of specific media?
+    complexity: basic
+    sparql: |
+      PREFIX schema: <https://purl.dsmz.de/schema/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      SELECT ?medium ?label ?group ?ph ?isComplex ?description ?docLink
+      FROM <http://rdfportal.org/dataset/mediadive>
+      WHERE {
+        VALUES ?medium { 
+          <https://purl.dsmz.de/mediadive/medium/1118>
+          <https://purl.dsmz.de/mediadive/medium/141>
+        }
+        ?medium a schema:CultureMedium ;
+                rdfs:label ?label ;
+                schema:belongsToGroup ?group ;
+                schema:isComplex ?isComplex .
+        OPTIONAL { ?medium schema:hasFinalPH ?ph }
+        OPTIONAL { ?medium dct:description ?description }
+        OPTIONAL { ?medium schema:hasLinkToSource ?docLink }
+      }
+
   - title: Search Media by pH Range
     description: Find culture media within specific pH ranges for cultivating pH-sensitive organisms
     question: Which media have pH between 6.5 and 7.5?
@@ -249,26 +273,7 @@ sparql_query_examples:
       }
       ORDER BY ?minPH
       LIMIT 20
-  
-  - title: Find Ingredients by Chemical Group
-    description: Retrieve ingredients organized by chemical groups for medium formulation
-    question: What carbohydrate ingredients are available?
-    complexity: basic
-    sparql: |
-      PREFIX schema: <https://purl.dsmz.de/schema/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      SELECT ?ingredient ?label ?formula ?mass
-      FROM <http://rdfportal.org/dataset/mediadive>
-      WHERE {
-        ?ingredient a schema:Ingredient ;
-                    rdfs:label ?label ;
-                    schema:belongsToGroup "Carbohydrates" .
-        OPTIONAL { ?ingredient schema:hasFormula ?formula }
-        OPTIONAL { ?ingredient schema:hasMass ?mass }
-      }
-      ORDER BY ?label
-      LIMIT 30
-  
+
   - title: Growth Conditions by Temperature
     description: Find optimal growth temperatures for different strains across media
     question: What are the growth conditions for thermophilic organisms (>45°C)?
@@ -288,7 +293,7 @@ sparql_query_examples:
       }
       ORDER BY DESC(?temp)
       LIMIT 20
-  
+
   - title: Medium Composition Analysis
     description: Retrieve complete ingredient composition for specific medium
     question: What are the ingredients and their concentrations in a specific medium?
@@ -308,7 +313,7 @@ sparql_query_examples:
         FILTER(?medium = <https://purl.dsmz.de/mediadive/medium/1118>)
       }
       ORDER BY DESC(?gPerL)
-  
+
   - title: Ingredient Cross-Reference Integration
     description: Link ingredients to external chemical databases for detailed chemical information
     question: Which ingredients have ChEBI and KEGG cross-references?
@@ -329,7 +334,7 @@ sparql_query_examples:
       }
       ORDER BY ?label
       LIMIT 30
-  
+
   - title: Strain-Medium Compatibility Matrix
     description: Map strains to their compatible culture media with growth indicators
     question: Which media support growth of specific bacterial strains?
@@ -391,7 +396,7 @@ cross_references:
       }
       ORDER BY ?label
       LIMIT 50
-  
+
   - pattern: schema:hasBacDiveID (Strain cross-references)
     description: |
       Strain entities link to BacDive (Bacterial Diversity Database) for comprehensive phenotypic,
@@ -413,7 +418,7 @@ cross_references:
       }
       ORDER BY ?dsmNumber
       LIMIT 30
-  
+
   - pattern: schema:hasLinkToSource (External documentation)
     description: |
       Culture medium entities link to official DSMZ PDF documentation containing detailed
