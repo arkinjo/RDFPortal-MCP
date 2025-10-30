@@ -1,14 +1,25 @@
 schema_info:
   title: ChEBI (Chemical Entities of Biological Interest)
   description: |
-    ChEBI is a comprehensive chemical ontology containing over 217,000 chemical entities of biological relevance. 
-    It provides structured chemical information including molecular formulas, structures (SMILES, InChI), 
-    hierarchical classifications, extensive synonyms, and cross-references to major chemical and biological databases.
-    ChEBI is particularly valuable for biological and medicinal chemistry research, drug discovery, and metabolic pathway studies.
+    ChEBI is a comprehensive freely available dictionary of molecular entities focused on small chemical compounds of biological relevance.
+    The database contains over 217,000 chemical entities including metabolites, drugs, natural products, and synthetic compounds.
+    Each entity includes structural information (SMILES, InChI), molecular properties (formula, mass, charge), hierarchical classification via ontology relationships, extensive synonyms, textual definitions, and cross-references to 30+ external databases including KEGG, DrugBank, PubChem, HMDB, and major chemical registries.
+    ChEBI serves as an authoritative reference for biochemical and medicinal chemistry research, metabolomics, drug discovery, and systems biology.
   endpoint: https://rdfportal.org/backend/ebi/sparql
   base_uri: http://purl.obolibrary.org/obo/
   graphs:
     - http://rdf.ebi.ac.uk/dataset/chebi
+  version:
+    mie_version: "1.0"
+    mie_created: "2025-10-27"
+    data_version: "Release 242 (October 2024)"
+    update_frequency: "Monthly"
+  license:
+    data_license: "CC BY 4.0"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
+  access:
+    rate_limiting: "No explicit rate limit (shared EBI SPARQL endpoint)"
+    max_query_timeout: "60 seconds (recommend smaller LIMITs for exploratory queries)"
 
 shape_expressions: |
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -28,32 +39,21 @@ shape_expressions: |
     chebi:smiles xsd:string ? ;
     chebi:inchi xsd:string ? ;
     chebi:inchikey xsd:string ? ;
-    chebi:mass xsd:string ? ;                        # Mixed type (string/decimal)
-    chebi:monoisotopicmass xsd:string ? ;            # Mixed type (string/decimal)
-    chebi:charge xsd:string ? ;                      # Mixed type (string/integer)
+    chebi:mass xsd:string ? ;                      # Stored as string, convert with xsd:float()
+    chebi:monoisotopicmass xsd:string ? ;          # Stored as string, convert with xsd:float()
+    chebi:charge xsd:string ? ;                    # Stored as string, convert with xsd:integer()
     oboInOwl:hasExactSynonym xsd:string * ;
     oboInOwl:hasRelatedSynonym xsd:string * ;
-    oboInOwl:hasDbXref xsd:string * ;
-    oboInOwl:hasAlternativeId xsd:string * ;
-    oboInOwl:hasOBONamespace xsd:string ? ;
-    oboInOwl:id xsd:string ? ;
-    oboInOwl:inSubset IRI * ;
-  }
-  
-  <RoleShape> {
-    a [ owl:Class ] ;
-    rdfs:label xsd:string ;
-    rdfs:subClassOf @<RoleShape> * ;
-    obo:IAO_0000115 xsd:string ? ;
-    oboInOwl:hasRelatedSynonym xsd:string * ;
+    oboInOwl:hasDbXref xsd:string * ;              # Format: "DATABASE:ID"
+    oboInOwl:hasAlternativeId xsd:string * ;       # Deprecated/merged IDs
     oboInOwl:hasOBONamespace xsd:string ? ;
     oboInOwl:id xsd:string ? ;
     oboInOwl:inSubset IRI * ;
   }
 
 sample_rdf_entries:
-  - title: L-Proline (Amino Acid)
-    description: An amino acid with complete structural information, synonyms, and database cross-references.
+  - title: L-Proline (Proteinogenic Amino Acid)
+    description: A standard amino acid with complete structural data, extensive synonyms, and cross-references to metabolic and pharmaceutical databases.
     rdf: |
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -64,7 +64,7 @@ sample_rdf_entries:
       obo:CHEBI_17203 a owl:Class ;
         rdfs:label "L-proline" ;
         rdfs:subClassOf obo:CHEBI_26271, obo:CHEBI_83813, obo:CHEBI_15705 ;
-        obo:IAO_0000115 "Pyrrolidine in which the pro-S hydrogen at position 2 is substituted by a carboxylic acid group. L-Proline is the only one of the twenty DNA-encoded amino acids which has a secondary amino group alpha to the carboxyl group." ;
+        obo:IAO_0000115 "Pyrrolidine in which the pro-S hydrogen at position 2 is substituted by a carboxylic acid group." ;
         chebi:formula "C5H9NO2" ;
         chebi:smiles "OC(=O)[C@@H]1CCCN1" ;
         chebi:inchi "InChI=1S/C5H9NO2/c7-5(8)4-2-1-3-6-4/h4,6H,1-3H2,(H,7,8)/t4-/m0/s1" ;
@@ -73,12 +73,12 @@ sample_rdf_entries:
         chebi:monoisotopicmass "115.06333" ;
         chebi:charge "0" ;
         oboInOwl:hasRelatedSynonym "(-)-(S)-proline", "L-Prolin", "proline" ;
-        oboInOwl:hasDbXref "KEGG:C00148", "KEGG:D00035" ;
+        oboInOwl:hasDbXref "KEGG:C00148", "DrugBank:DB00172", "CAS:147-85-3", "HMDB:HMDB0000162" ;
         oboInOwl:hasAlternativeId "CHEBI:13154", "CHEBI:21373" ;
         oboInOwl:id "CHEBI:17203" .
-
-  - title: Caffeine (Alkaloid Drug)
-    description: A purine alkaloid with extensive synonyms, literature references (PMIDs), and multiple database cross-references.
+  
+  - title: Acetylsalicylic Acid (Drug)
+    description: Common pharmaceutical (aspirin) with trade name as synonym and multiple database links.
     rdf: |
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -86,25 +86,23 @@ sample_rdf_entries:
       @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#> .
       @prefix chebi: <http://purl.obolibrary.org/obo/chebi/> .
       
-      obo:CHEBI_27732 a owl:Class ;
-        rdfs:label "caffeine" ;
-        rdfs:subClassOf obo:CHEBI_26385, obo:CHEBI_27134 ;
-        obo:IAO_0000115 "A trimethylxanthine in which the three methyl groups are located at positions 1, 3, and 7. A purine alkaloid that occurs naturally in tea and coffee." ;
-        chebi:formula "C8H10N4O2" ;
-        chebi:smiles "Cn1cnc2n(C)c(=O)n(C)c(=O)c12" ;
-        chebi:inchi "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3" ;
-        chebi:inchikey "RYYVLZVUVIJVGH-UHFFFAOYSA-N" ;
-        chebi:mass "194.19076" ;
-        chebi:monoisotopicmass "194.08038" ;
+      obo:CHEBI_15365 a owl:Class ;
+        rdfs:label "acetylsalicylic acid" ;
+        rdfs:subClassOf obo:CHEBI_35507, obo:CHEBI_35488 ;
+        obo:IAO_0000115 "A member of the class of benzoic acids that is salicylic acid in which the hydrogen that is attached to the phenolic hydroxy group has been replaced by an acetoxy group." ;
+        chebi:formula "C9H8O4" ;
+        chebi:smiles "CC(=O)Oc1ccccc1C(O)=O" ;
+        chebi:inchi "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)" ;
+        chebi:inchikey "BSYNRYMUTXBXSQ-UHFFFAOYSA-N" ;
+        chebi:mass "180.15742" ;
         chebi:charge "0" ;
-        oboInOwl:hasRelatedSynonym "1,3,7-Trimethylxanthine", "Coffein", "guaranine", "theine" ;
-        oboInOwl:hasExactSynonym "caffeine" ;
-        oboInOwl:hasDbXref "DrugBank:DB00201", "KEGG:C07481", "KEGG:D00528", "Wikipedia:Caffeine", "PMID:22770225", "PMID:7689104" ;
-        oboInOwl:id "CHEBI:27732" ;
-        oboInOwl:inSubset obo:chebi#3_STAR .
-
+        oboInOwl:hasRelatedSynonym "Aspirin", "2-acetoxybenzoic acid" ;
+        oboInOwl:hasExactSynonym "acetylsalicylic acid" ;
+        oboInOwl:hasDbXref "KEGG:C01405", "DrugBank:DB00945", "CAS:50-78-2", "PMID:25905537" ;
+        oboInOwl:id "CHEBI:15365" .
+  
   - title: Water (Simple Molecule)
-    description: A fundamental chemical with minimal structural complexity but extensive synonyms and references.
+    description: Fundamental chemical with minimal complexity but extensive multilingual synonyms.
     rdf: |
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -114,23 +112,21 @@ sample_rdf_entries:
       
       obo:CHEBI_15377 a owl:Class ;
         rdfs:label "water" ;
-        rdfs:subClassOf obo:CHEBI_33693, obo:CHEBI_37176, obo:CHEBI_52625 ;
+        rdfs:subClassOf obo:CHEBI_33693, obo:CHEBI_37176 ;
         obo:IAO_0000115 "An oxygen hydride consisting of an oxygen atom that is covalently bonded to two hydrogen atoms" ;
         chebi:formula "H2O" ;
         chebi:smiles "[H]O[H]" ;
         chebi:inchi "InChI=1S/H2O/h1H2" ;
         chebi:inchikey "XLYOFNOQVPJJNP-UHFFFAOYSA-N" ;
         chebi:mass "18.01530" ;
-        chebi:monoisotopicmass "18.01056" ;
         chebi:charge "0" ;
-        oboInOwl:hasRelatedSynonym "H2O", "HOH", "Wasser", "acqua", "agua", "eau", "dihydrogen oxide" ;
+        oboInOwl:hasRelatedSynonym "H2O", "agua", "eau", "Wasser", "acqua" ;
         oboInOwl:hasExactSynonym "water", "oxidane" ;
-        oboInOwl:hasDbXref "KEGG:C00001", "KEGG:D00001", "Wikipedia:Water", "PDBeChem:HOH" ;
-        oboInOwl:id "CHEBI:15377" ;
-        oboInOwl:inSubset obo:chebi#3_STAR .
-
+        oboInOwl:hasDbXref "KEGG:C00001", "Wikipedia:Water", "PDBeChem:HOH" ;
+        oboInOwl:id "CHEBI:15377" .
+  
   - title: Drug (Chemical Role)
-    description: A role classification showing how ChEBI represents biological/pharmacological functions.
+    description: Abstract role classification without molecular structure properties.
     rdf: |
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -140,46 +136,53 @@ sample_rdf_entries:
       obo:CHEBI_23888 a owl:Class ;
         rdfs:label "drug" ;
         rdfs:subClassOf obo:CHEBI_52217 ;
-        obo:IAO_0000115 "Any substance which when absorbed into a living organism may modify one or more of its functions. The term is generally accepted for a substance taken for a therapeutic purpose, but is also commonly used for abused substances." ;
-        oboInOwl:hasRelatedSynonym "drugs", "medicine" ;
+        obo:IAO_0000115 "Any substance which when absorbed into a living organism may modify one or more of its functions." ;
+        oboInOwl:hasRelatedSynonym "drugs", "medicine", "pharmaceutical" ;
         oboInOwl:id "CHEBI:23888" ;
         oboInOwl:inSubset obo:chebi#3_STAR .
-
-  - title: Hierarchical Relationship Example
-    description: Shows multiple parent-child relationships in the chemical ontology hierarchy.
+  
+  - title: Hierarchical Classification Chain
+    description: Example of multiple parent-child relationships forming chemical taxonomy.
     rdf: |
       @prefix obo: <http://purl.obolibrary.org/obo/> .
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix owl: <http://www.w3.org/2002/07/owl#> .
       
       obo:CHEBI_28659 a owl:Class ;
         rdfs:label "phosphorus atom" ;
         rdfs:subClassOf obo:CHEBI_25585, obo:CHEBI_33300 .
       
-      obo:CHEBI_25585 rdfs:label "nonmetal atom" .
-      obo:CHEBI_33300 rdfs:label "pnictogen" .
+      obo:CHEBI_25585 a owl:Class ;
+        rdfs:label "nonmetal atom" ;
+        rdfs:subClassOf obo:CHEBI_33250 .
+      
+      obo:CHEBI_33300 a owl:Class ;
+        rdfs:label "pnictogen" ;
+        rdfs:subClassOf obo:CHEBI_33560 .
 
 sparql_query_examples:
-  - title: Basic Chemical Information Retrieval
-    description: Retrieve basic chemical information including labels and molecular formulas.
-    question: What are some chemicals with their names and molecular formulas?
+  - title: Basic Entity Retrieval with Structural Properties
+    description: Retrieve fundamental chemical information including labels and molecular formulas.
+    question: What are the names and molecular formulas of chemical entities in ChEBI?
     complexity: basic
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      PREFIX chebi: <http://purl.obolibrary.org/obo/chebi/>
       
       SELECT ?entity ?label ?formula
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?entity a owl:Class ;
                 rdfs:label ?label ;
-                <http://purl.obolibrary.org/obo/chebi/formula> ?formula .
+                chebi:formula ?formula .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
       }
       LIMIT 20
-
-  - title: Search Chemicals by Synonym
-    description: Find chemical entities by searching through exact and related synonyms.
-    question: Which chemical entities have synonyms containing 'aspirin' or 'vitamin c'?
+  
+  - title: Keyword Search in Synonyms
+    description: Find chemicals by searching through exact and related synonyms (case-insensitive).
+    question: Which chemical entities have synonyms containing 'glucose' or 'insulin'?
     complexity: basic
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -197,17 +200,18 @@ sparql_query_examples:
           ?entity oboInOwl:hasRelatedSynonym ?synonym .
         }
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-        FILTER(CONTAINS(LCASE(?synonym), "aspirin") || CONTAINS(LCASE(?synonym), "vitamin c"))
+        FILTER(CONTAINS(LCASE(?synonym), "glucose") || CONTAINS(LCASE(?synonym), "insulin"))
       }
-      LIMIT 20
-
-  - title: Chemicals by Molecular Weight Range
-    description: Filter chemicals based on their molecular weight within a specific range.
-    question: Which chemicals have molecular weights between 500 and 600 Da?
+      LIMIT 30
+  
+  - title: Filter by Molecular Weight Range
+    description: Find chemicals within specific molecular weight boundaries using numeric conversion.
+    question: Which chemicals have molecular weights between 400 and 500 Da?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      PREFIX chebi: <http://purl.obolibrary.org/obo/chebi/>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       
       SELECT ?entity ?label ?mass
@@ -215,41 +219,41 @@ sparql_query_examples:
       WHERE {
         ?entity a owl:Class ;
                 rdfs:label ?label ;
-                <http://purl.obolibrary.org/obo/chebi/mass> ?mass .
+                chebi:mass ?mass .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-        FILTER(xsd:float(?mass) > 500 && xsd:float(?mass) < 600)
+        FILTER(xsd:float(?mass) >= 400 && xsd:float(?mass) <= 500)
       }
-      LIMIT 20
-
-  - title: Chemical Hierarchy Navigation
-    description: Explore parent-child relationships in the chemical ontology hierarchy.
-    question: What are the direct parent classes (superclasses) for specific chemical entities?
+      LIMIT 30
+  
+  - title: Navigate Chemical Classification Hierarchy
+    description: Explore parent-child relationships in the chemical ontology structure.
+    question: What are the immediate parent classes (superclasses) for specific chemical compounds?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       
-      SELECT ?compound ?label ?superclass ?superlabel
+      SELECT ?compound ?compoundLabel ?superclass ?superclassLabel
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?compound a owl:Class ;
-                  rdfs:label ?label ;
+                  rdfs:label ?compoundLabel ;
                   rdfs:subClassOf ?superclass .
-        ?superclass rdfs:label ?superlabel .
+        ?superclass rdfs:label ?superclassLabel .
         FILTER(STRSTARTS(STR(?compound), "http://purl.obolibrary.org/obo/CHEBI_"))
         FILTER(STRSTARTS(STR(?superclass), "http://purl.obolibrary.org/obo/CHEBI_"))
       }
-      LIMIT 20
-
-  - title: Count Chemicals by Classification
-    description: Aggregate chemicals by their parent class to understand distribution across categories.
-    question: Which chemical classes have the most child entities?
+      LIMIT 50
+  
+  - title: Aggregate Chemicals by Parent Classification
+    description: Count chemical entities grouped by their parent class to understand distribution.
+    question: Which chemical classes contain the most child entities?
     complexity: intermediate
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       
-      SELECT ?superclass ?label (COUNT(?compound) as ?count)
+      SELECT ?superclass ?label (COUNT(DISTINCT ?compound) as ?count)
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?compound a owl:Class ;
@@ -260,41 +264,46 @@ sparql_query_examples:
       }
       GROUP BY ?superclass ?label
       ORDER BY DESC(?count)
-      LIMIT 20
-
+      LIMIT 30
+  
   - title: Multi-Property Integration Query
-    description: Complex integration combining structural information, hierarchy, synonyms, and external references.
-    question: For chemicals with specific structural features, retrieve their classification, synonyms, and database links.
+    description: Complex query combining structure, hierarchy, synonyms, and external database references.
+    question: For chemicals in a specific mass range, retrieve their classification, synonyms, and KEGG identifiers.
     complexity: advanced
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      PREFIX chebi: <http://purl.obolibrary.org/obo/chebi/>
       PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       
-      SELECT ?entity ?label ?formula ?mass ?superclass ?superlabel ?synonym ?kegg
+      SELECT ?entity ?label ?formula ?mass ?superclassLabel 
+             (GROUP_CONCAT(DISTINCT ?synonym; separator="; ") as ?synonyms)
+             (GROUP_CONCAT(DISTINCT ?kegg; separator=", ") as ?kegg_refs)
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?entity a owl:Class ;
                 rdfs:label ?label ;
-                <http://purl.obolibrary.org/obo/chebi/formula> ?formula ;
-                <http://purl.obolibrary.org/obo/chebi/mass> ?mass ;
+                chebi:formula ?formula ;
+                chebi:mass ?mass ;
                 rdfs:subClassOf ?superclass .
-        ?superclass rdfs:label ?superlabel .
+        ?superclass rdfs:label ?superclassLabel .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
         FILTER(STRSTARTS(STR(?superclass), "http://purl.obolibrary.org/obo/CHEBI_"))
-        FILTER(xsd:float(?mass) > 100 && xsd:float(?mass) < 200)
+        FILTER(xsd:float(?mass) > 150 && xsd:float(?mass) < 200)
+        
         OPTIONAL { ?entity oboInOwl:hasExactSynonym ?synonym . }
         OPTIONAL { 
           ?entity oboInOwl:hasDbXref ?kegg .
           FILTER(CONTAINS(?kegg, "KEGG:"))
         }
       }
-      LIMIT 15
-
-  - title: Functional Annotation Retrieval
-    description: Retrieve biological descriptions and functional annotations for chemical entities.
-    question: What are the biological roles and functions of specific chemical entities?
+      GROUP BY ?entity ?label ?formula ?mass ?superclassLabel
+      LIMIT 20
+  
+  - title: Biological Function and Role Annotation Retrieval
+    description: Find chemical entities with biological/therapeutic annotations in definitions and roles.
+    question: What chemicals have biological, therapeutic, or metabolic functions described in their definitions?
     complexity: advanced
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -302,139 +311,98 @@ sparql_query_examples:
       PREFIX obo: <http://purl.obolibrary.org/obo/>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
       
-      SELECT ?entity ?label ?definition ?role ?roleLabel ?synonym ?pmid
+      SELECT ?entity ?label ?definition 
+             (GROUP_CONCAT(DISTINCT ?roleLabel; separator=", ") as ?roles)
+             (GROUP_CONCAT(DISTINCT ?pmid; separator=", ") as ?literature)
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?entity a owl:Class ;
                 rdfs:label ?label ;
                 obo:IAO_0000115 ?definition .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-        FILTER(CONTAINS(LCASE(?definition), "biological") || CONTAINS(LCASE(?definition), "therapeutic") || CONTAINS(LCASE(?definition), "metabolic"))
+        FILTER(CONTAINS(LCASE(?definition), "biological") || 
+               CONTAINS(LCASE(?definition), "therapeutic") || 
+               CONTAINS(LCASE(?definition), "metabolic"))
         
         OPTIONAL {
           ?entity rdfs:subClassOf ?role .
           ?role rdfs:label ?roleLabel .
           FILTER(STRSTARTS(STR(?role), "http://purl.obolibrary.org/obo/CHEBI_"))
-          FILTER(CONTAINS(LCASE(?roleLabel), "role") || CONTAINS(LCASE(?roleLabel), "drug") || CONTAINS(LCASE(?roleLabel), "metabolite"))
+          FILTER(CONTAINS(LCASE(?roleLabel), "role") || 
+                 CONTAINS(LCASE(?roleLabel), "drug") || 
+                 CONTAINS(LCASE(?roleLabel), "metabolite"))
         }
         
-        OPTIONAL { ?entity oboInOwl:hasExactSynonym ?synonym . }
         OPTIONAL { 
           ?entity oboInOwl:hasDbXref ?pmid .
           FILTER(CONTAINS(?pmid, "PMID:"))
         }
       }
-      LIMIT 15
+      GROUP BY ?entity ?label ?definition
+      LIMIT 20
 
 cross_references:
   - pattern: oboInOwl:hasDbXref
     description: |
       ChEBI provides comprehensive cross-references to external databases via the oboInOwl:hasDbXref property.
-      Each cross-reference is stored as a string in the format "DATABASE:ID". 
-      Databases are distinguished by their prefix (e.g., "KEGG:", "DrugBank:", "CAS:").
-      Coverage varies significantly across databases (2-95% of entities).
+      Each reference is stored as a string in "DATABASE:ID" format (e.g., "KEGG:C00148", "DrugBank:DB00172").
+      Coverage varies significantly: CAS and chemical registries have >40% coverage, while specialized databases like PPDB have <1%.
+      To filter by database, use FILTER(CONTAINS(?xref, "DATABASE_PREFIX:")) in queries.
     databases:
       chemical_registries:
-        - 'CAS (Chemical Abstracts Service): >90% coverage - authoritative chemical registry numbers'
-        - 'Gmelin: ~30% coverage - inorganic and organometallic compounds'
-        - 'Beilstein: ~40% coverage - organic compounds registry'
-        - 'Reaxys: ~40% coverage - chemistry database with synthesis and property data'
-        - 'WebElements: <1% coverage - element-specific data'
+        - "Chemspider: ~24% coverage - chemical structure database with unique identifiers"
+        - "CAS: ~13% coverage - Chemical Abstracts Service registry numbers (authoritative)"
+        - "Reaxys: ~8% coverage - chemistry database with synthesis/property data"
+        - "Beilstein: ~4% coverage - organic compounds registry"
+        - "Gmelin: ~1.5% coverage - inorganic and organometallic compounds"
+        - "WebElements: <0.1% coverage - element-specific data"
       bioactivity_and_drugs:
-        - 'DrugBank: ~5% coverage - pharmaceutical and drug information'
-        - 'Drug_Central: ~3% coverage - drug information and pharmacology'
-        - 'KEGG (KEGG:C and KEGG:D): ~40% coverage - metabolic compounds and drugs'
-        - 'PPDB (Pesticide Properties Database): <1% coverage - pesticide data'
+        - "DrugBank: ~1.6% coverage - pharmaceutical and drug information"
+        - "Drug_Central: ~1.7% coverage - drug information and pharmacology"
+        - "KEGG (C/D): ~9% coverage - metabolic compounds and drugs"
+        - "PPDB: ~0.5% coverage - pesticide properties database"
       metabolomics_and_pathways:
-        - 'HMDB (Human Metabolome Database): ~8% coverage - human metabolites'
-        - 'LIPID_MAPS_instance: ~2% coverage - lipid structures and annotations'
-        - 'MetaCyc: ~15% coverage - metabolic pathways'
-        - 'KNApSAcK: ~2% coverage - natural products from species metabolism'
+        - "HMDB: ~8.7% coverage - Human Metabolome Database"
+        - "LIPID_MAPS_instance: ~5.6% coverage - lipid structures and annotations"
+        - "MetaCyc: ~3.2% coverage - metabolic pathways"
+        - "KNApSAcK: ~2.2% coverage - natural products from species metabolism"
       structural_databases:
-        - 'PDBeChem: ~3% coverage - small molecule components in PDB structures'
-        - 'AGR (Alliance of Genome Resources): <1% coverage - genomic model organism data'
+        - "PDBeChem: ~1.7% coverage - small molecule components in PDB structures"
+        - "GlyTouCan: ~4.9% coverage - glycan structure repository"
+        - "GlyGen: ~4.9% coverage - glycoscience data"
       literature_and_knowledge:
-        - 'PMID (PubMed): ~35% coverage - scientific literature references'
-        - 'Wikipedia: ~20% coverage - links to Wikipedia articles'
-      other:
-        - Various specialized databases with limited coverage
-    complexity: intermediate
+        - "PMID: ~14.3% coverage - PubMed literature references"
+        - "Wikipedia: ~3.0% coverage - links to Wikipedia articles"
+      other_resources:
+        - "LINCS: ~19% coverage - Library of Integrated Network-based Cellular Signatures"
+        - "AGR: ~0.3% coverage - Alliance of Genome Resources"
+        - "Various specialized databases with <1% coverage each"
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
       PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
       
-      SELECT ?entity ?label ?xref
+      SELECT ?entity ?label (GROUP_CONCAT(DISTINCT ?xref; separator=", ") as ?references)
       FROM <http://rdf.ebi.ac.uk/dataset/chebi>
       WHERE {
         ?entity a owl:Class ;
                 rdfs:label ?label ;
                 oboInOwl:hasDbXref ?xref .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-        # Filter by database prefix to get specific cross-references:
-        # FILTER(CONTAINS(?xref, "KEGG:"))        # KEGG metabolites/drugs
-        # FILTER(CONTAINS(?xref, "DrugBank:"))    # DrugBank pharmaceuticals
-        # FILTER(CONTAINS(?xref, "CAS:"))         # CAS registry numbers
-        # FILTER(CONTAINS(?xref, "HMDB:"))        # Human Metabolome Database
-        # FILTER(CONTAINS(?xref, "PMID:"))        # PubMed literature
-        # FILTER(CONTAINS(?xref, "Wikipedia:"))   # Wikipedia articles
-        # FILTER(CONTAINS(?xref, "PDBeChem:"))    # PDB chemical components
-        # FILTER(CONTAINS(?xref, "LIPID_MAPS_instance:")) # LIPID MAPS
-        # FILTER(CONTAINS(?xref, "MetaCyc:"))     # MetaCyc pathways
-        # FILTER(CONTAINS(?xref, "Reaxys:"))      # Reaxys chemistry database
-        # FILTER(CONTAINS(?xref, "Beilstein:"))   # Beilstein organic chemistry
-        # FILTER(CONTAINS(?xref, "Gmelin:"))      # Gmelin inorganic chemistry
-        # FILTER(CONTAINS(?xref, "Drug_Central:")) # Drug Central
-        # FILTER(CONTAINS(?xref, "KNApSAcK:"))    # KNApSAcK natural products
-        # FILTER(CONTAINS(?xref, "PPDB:"))        # Pesticide Properties DB
-      }
-      LIMIT 30
-
-  - pattern: Multiple cross-references per entity
-    description: |
-      Entities often have multiple cross-references to different databases.
-      To retrieve all references for specific entities efficiently, query each database type separately.
-      IMPORTANT: Combining multiple OPTIONAL patterns with GROUP_CONCAT causes Cartesian product explosion.
-      Instead, use single GROUP_CONCAT combining all reference types, or run separate queries per database.
-    complexity: intermediate
-    sparql: |
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
-      
-      # Method 1: Combine all references (recommended for broad retrieval)
-      SELECT ?entity ?label 
-             (GROUP_CONCAT(DISTINCT ?xref; separator=", ") as ?all_refs)
-      FROM <http://rdf.ebi.ac.uk/dataset/chebi>
-      WHERE {
-        ?entity a owl:Class ;
-                rdfs:label ?label ;
-                oboInOwl:hasDbXref ?xref .
-        FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-        # Optionally filter by database types of interest:
-        FILTER(CONTAINS(?xref, "KEGG:") || CONTAINS(?xref, "PMID:") || CONTAINS(?xref, "DrugBank:"))
+        # Filter by specific database prefix:
+        # FILTER(CONTAINS(?xref, "KEGG:"))
+        # FILTER(CONTAINS(?xref, "DrugBank:"))
+        # FILTER(CONTAINS(?xref, "CAS:"))
+        # FILTER(CONTAINS(?xref, "HMDB:"))
       }
       GROUP BY ?entity ?label
-      LIMIT 20
-      
-      # Method 2: Query each database separately (recommended for specific data)
-      # SELECT ?entity ?label (GROUP_CONCAT(DISTINCT ?kegg; separator=", ") as ?kegg_refs)
-      # FROM <http://rdf.ebi.ac.uk/dataset/chebi>
-      # WHERE {
-      #   ?entity a owl:Class ;
-      #           rdfs:label ?label ;
-      #           oboInOwl:hasDbXref ?kegg .
-      #   FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
-      #   FILTER(CONTAINS(?kegg, "KEGG:"))
-      # }
-      # GROUP BY ?entity ?label
-      # LIMIT 20
+      LIMIT 30
 
-  - pattern: Cross-reference statistics
+  - pattern: Cross-reference Statistics
     description: |
-      Analyze the distribution and coverage of cross-references across ChEBI entities.
-      Count how many entities link to each external database.
-    complexity: basic
+      Analyze distribution and coverage of external database links across ChEBI entities.
+      Useful for understanding which databases have the best coverage for specific use cases.
+    databases: []
     sparql: |
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -447,83 +415,259 @@ cross_references:
                 oboInOwl:hasDbXref ?xref .
         FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
         
-        # Extract database name from "DATABASE:ID" format
         BIND(STRBEFORE(?xref, ":") as ?database)
         FILTER(BOUND(?database))
       }
       GROUP BY ?database
       ORDER BY DESC(?entity_count)
-      LIMIT 30
+      LIMIT 40
 
 architectural_notes:
   schema_design:
-    - ChEBI entities use OWL Class structure with CHEBI_ prefixed identifiers
-    - Multiple inheritance through rdfs:subClassOf enables rich chemical classification
-    - Roles and applications modeled as separate entity types linked via subclass relationships
-    - Blank nodes represent complex OWL restrictions for advanced logical axioms
-
+    - All chemical entities are modeled as owl:Class instances with CHEBI_ prefixed URIs
+    - Multiple inheritance via rdfs:subClassOf enables rich hierarchical classification
+    - Role entities (e.g., "drug", "metabolite") lack molecular structure properties
+    - Blank nodes represent complex OWL restrictions for logical axioms (can be ignored for most queries)
+    - Alternative IDs track merged or deprecated ChEBI entries
+  
   performance:
-    - Queries filtering by CHEBI_ prefix perform efficiently on entity retrieval
-    - Molecular weight range queries with xsd:float conversion work well under 10K results
-    - Synonym searches benefit from LCASE() filtering for case-insensitive matching
-    - Recommend LIMIT 20-100 for exploratory queries to avoid timeouts
-    - Cross-reference queries with specific prefix filters (e.g., "KEGG:") perform well
-    - "CRITICAL: Multiple OPTIONAL clauses with GROUP_CONCAT cause Cartesian explosion - query databases separately"
-
+    - Queries filtering by CHEBI_ prefix using STRSTARTS() perform efficiently
+    - Molecular weight range queries with xsd:float() conversion work well for <10K results
+    - Synonym searches benefit from LCASE() for case-insensitive matching
+    - Use LIMIT 20-100 for exploratory queries to avoid timeouts on large result sets
+    - Cross-reference queries with specific database prefix filters perform well
+    - CRITICAL - Multiple OPTIONAL clauses combined with GROUP_CONCAT cause Cartesian product explosion - query databases separately
+    - When retrieving multiple properties, start with restrictive filters before adding OPTIONAL patterns
+  
   data_integration:
-    - hasDbXref provides mappings to 20+ external databases (KEGG, DrugBank, PubChem, HMDB, etc.)
-    - Wikipedia links available for major chemical entities (~20% coverage)
-    - PubMed references (PMIDs) connect to scientific literature (~35% coverage)
-    - Alternative IDs track merged/deprecated entries
-    - Cross-references stored as strings in "DATABASE:ID" format
-
+    - hasDbXref provides mappings to 30+ external databases with varying coverage
+    - Cross-references stored as "DATABASE:ID" strings requiring CONTAINS() filtering
+    - Alternative IDs (hasAlternativeId) preserve historical ChEBI identifiers
+    - Wikipedia and PMID links connect to external knowledge sources
+    - CAS registry numbers provide authoritative chemical identification
+  
   data_quality:
-    - Mass and charge properties stored as strings but contain numeric data
-    - Coverage of structural properties (SMILES, InChI) is ~98% for concrete chemicals
-    - Role/classification entities lack structural properties (formula, mass, etc.)
-    - Database cross-reference completeness varies by external resource (2-95% coverage)
-    - CAS and KEGG have highest cross-reference coverage (>40%)
+    - Mass, monoisotopicmass, and charge stored as strings but contain numeric data
+    - Structural properties (SMILES, InChI, formula) present in ~86% of entities
+    - Role/classification entities lack concrete molecular structures
+    - Synonym coverage varies - common chemicals have 15+ synonyms, rare ones may have 1-2
+    - Database cross-reference completeness varies from <1% to 90% depending on resource
 
 data_statistics:
   total_chemical_entities: 217368
   
   coverage:
-    entities_with_labels: '>99%'
-    entities_with_formulas: '>99%'
-    entities_with_smiles: '~98%'
-    entities_with_inchi: '~98%'
-    entities_with_mass: '>99%'
-    entities_with_db_xrefs: '~60%'
-    entities_with_kegg_links: '~40%'
-    entities_with_drugbank_links: '~5%'
-    entities_with_cas_links: '>90%'
-    entities_with_pmid_links: '~35%'
-    entities_with_wikipedia_links: '~20%'
-    entities_with_hmdb_links: '~8%'
+    entities_with_labels: ">99.9%"
+    entities_with_formulas: "~86.0%"
+    entities_with_smiles: "~85.8%"
+    entities_with_inchi: "~85.8%"
+    entities_with_mass: "~85.7%"
+    entities_with_definitions: "~98.5%"
+    entities_with_db_xrefs: "~60.0%"
+    entities_with_synonyms: "~95.0%"
   
   cardinality:
-    avg_synonyms_per_entity: 7.8
+    avg_synonyms_per_entity: 8.2
     max_synonyms_per_entity: 55
-    avg_db_xrefs_per_entity: 12.2
+    avg_db_xrefs_per_entity: 12.8
     max_db_xrefs_per_entity: 106
-    avg_superclasses_per_entity: 2.0
-    max_superclasses_per_entity: 9
-    avg_pmids_per_entity: 8.5
-    max_pmids_per_entity: 64
+    avg_superclasses_per_entity: 2.3
+    max_superclasses_per_entity: 15
+    avg_pmids_per_entity: 8.7
+  
+  top_external_databases:
+    - "Chemspider: 52,042 entities (24%)"
+    - "LINCS: 41,336 entities (19%)"
+    - "PMID: 31,055 entities (14.3%)"
+    - "CAS: 28,585 entities (13%)"
+    - "KEGG: 20,214 entities (9%)"
+    - "HMDB: 18,814 entities (8.7%)"
+    - "Reaxys: 17,501 entities (8%)"
+    - "LIPID_MAPS: 12,224 entities (5.6%)"
   
   performance_characteristics:
-    - "STRSTARTS filter on CHEBI_ prefix efficient for entity retrieval"
-    - "Molecular weight range queries (xsd:float conversion) work well up to 10K results"
-    - "Synonym REGEX/CONTAINS searches efficient with additional ID filtering"
-    - "Database cross-reference queries perform well with specific prefix filters (KEGG:, DrugBank:, CAS:)"
-    - "Hierarchical queries (subClassOf) work best with LIMIT and specific starting points"
-    - "GROUP BY aggregations efficient for counting up to 20K entities per group"
-    - "AVOID: Multiple OPTIONAL patterns with GROUP_CONCAT cause Cartesian product explosion"
-    - "Use separate queries per database type when retrieving multiple cross-reference types"
+    - STRSTARTS() filter on CHEBI_ prefix highly efficient for entity retrieval
+    - Molecular weight range queries with xsd:float() conversion handle up to 10K results smoothly
+    - Synonym REGEX/CONTAINS searches efficient when combined with entity type filtering
+    - Database cross-reference queries perform best with specific prefix filters
+    - Hierarchical queries (rdfs:subClassOf) work efficiently with LIMIT and specific starting points
+    - GROUP BY aggregations efficient for counting up to 20K entities per group
+    - Avoid combining multiple OPTIONAL patterns with GROUP_CONCAT - causes exponential result explosion
   
   data_quality_notes:
-    - "Mass and charge stored as strings but contain numeric values (use xsd:float/xsd:integer for filtering)"
-    - "Not all entities have complete structural information (roles/classifications vs concrete chemicals)"
-    - "Database cross-reference coverage varies significantly (2-95%) by external resource"
-    - "Some entities have extensive PMID references while others have none"
-    - "Cross-references stored as strings in DATABASE:ID format, requiring CONTAINS filtering"
+    - Mass, monoisotopicmass, charge stored as strings - use xsd:float()/xsd:integer() for numeric operations
+    - Not all entities have complete structural information - roles and abstract classes lack formulas/masses
+    - Database cross-reference coverage varies dramatically (0.5% to 24%) by external resource
+    - CAS and Chemspider have highest cross-reference coverage for chemical identification
+    - PMID references highly variable - some entities have 60+ publications, others have none
+
+anti_patterns:
+  - title: "Multiple OPTIONAL with GROUP_CONCAT causes Cartesian product explosion"
+    problem: "When querying multiple database cross-references using separate OPTIONAL clauses with GROUP_CONCAT, results explode exponentially"
+    wrong_sparql: |
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?entity ?label 
+             (GROUP_CONCAT(DISTINCT ?kegg; separator=", ") as ?kegg_refs)
+             (GROUP_CONCAT(DISTINCT ?drugbank; separator=", ") as ?drugbank_refs)
+             (GROUP_CONCAT(DISTINCT ?cas; separator=", ") as ?cas_refs)
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label .
+        OPTIONAL {
+          ?entity oboInOwl:hasDbXref ?kegg .
+          FILTER(CONTAINS(?kegg, "KEGG:"))
+        }
+        OPTIONAL {
+          ?entity oboInOwl:hasDbXref ?drugbank .
+          FILTER(CONTAINS(?drugbank, "DrugBank:"))
+        }
+        OPTIONAL {
+          ?entity oboInOwl:hasDbXref ?cas .
+          FILTER(CONTAINS(?cas, "CAS:"))
+        }
+      }
+      GROUP BY ?entity ?label
+      LIMIT 10
+    correct_sparql: |
+      # Method 1: Combine all references in a single GROUP_CONCAT
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?entity ?label 
+             (GROUP_CONCAT(DISTINCT ?xref; separator=", ") as ?all_refs)
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label ;
+                oboInOwl:hasDbXref ?xref .
+        FILTER(CONTAINS(?xref, "KEGG:") || CONTAINS(?xref, "DrugBank:") || CONTAINS(?xref, "CAS:"))
+      }
+      GROUP BY ?entity ?label
+      LIMIT 10
+      
+      # Method 2: Query each database separately (recommended)
+      SELECT ?entity ?label (GROUP_CONCAT(DISTINCT ?kegg; separator=", ") as ?kegg_refs)
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label ;
+                oboInOwl:hasDbXref ?kegg .
+        FILTER(CONTAINS(?kegg, "KEGG:"))
+      }
+      GROUP BY ?entity ?label
+      LIMIT 10
+    explanation: "Multiple OPTIONAL patterns create Cartesian products when entities have multiple values. Either combine all references in one GROUP_CONCAT, or run separate queries per database type."
+  
+  - title: "Case-sensitive label/synonym searches miss results"
+    problem: "Searching for 'aspirin' with exact match or case-sensitive REGEX fails to find 'Aspirin' in synonyms"
+    wrong_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?entity ?label ?synonym
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label .
+        {
+          ?entity oboInOwl:hasExactSynonym ?synonym .
+        } UNION {
+          ?entity oboInOwl:hasRelatedSynonym ?synonym .
+        }
+        FILTER(?synonym = "aspirin")  # Case-sensitive exact match
+      }
+      LIMIT 20
+    correct_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+      
+      SELECT ?entity ?label ?synonym
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label .
+        {
+          ?entity oboInOwl:hasExactSynonym ?synonym .
+        } UNION {
+          ?entity oboInOwl:hasRelatedSynonym ?synonym .
+        }
+        FILTER(CONTAINS(LCASE(?synonym), "aspirin"))  # Case-insensitive substring match
+      }
+      LIMIT 20
+    explanation: "Use LCASE() for case-insensitive matching and CONTAINS() for substring searches to catch all variations of chemical names and trade names."
+  
+  - title: "Querying without CHEBI_ prefix filter causes timeout"
+    problem: "Broad queries without entity URI filtering attempt to scan all ontology terms including non-chemical classes"
+    wrong_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      
+      SELECT ?entity ?label ?formula
+      WHERE {
+        ?entity a owl:Class ;
+                rdfs:label ?label ;
+                <http://purl.obolibrary.org/obo/chebi/formula> ?formula .
+      }
+      LIMIT 100
+    correct_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX owl: <http://www.w3.org/2002/07/owl#>
+      
+      SELECT ?entity ?label ?formula
+      WHERE {
+        ?entity a owl:Class ;
+                rdfs:label ?label ;
+                <http://purl.obolibrary.org/obo/chebi/formula> ?formula .
+        FILTER(STRSTARTS(STR(?entity), "http://purl.obolibrary.org/obo/CHEBI_"))
+      }
+      LIMIT 100
+    explanation: "Always filter entities by CHEBI_ prefix using STRSTARTS() to restrict queries to actual chemical entities and avoid scanning ontology infrastructure classes."
+
+common_errors:
+  - error: "Query timeout on molecular weight range queries"
+    causes:
+      - "Attempting to filter >50K entities without LIMIT"
+      - "Not using STRSTARTS() filter on entity URIs"
+      - "Using REGEX instead of numeric comparison for mass values"
+    solutions:
+      - "Add FILTER(STRSTARTS(STR(?entity), 'http://purl.obolibrary.org/obo/CHEBI_')) early in WHERE clause"
+      - "Use xsd:float() conversion with numeric comparison: xsd:float(?mass) > 100"
+      - "Include reasonable LIMIT values (20-100) for exploratory queries"
+    example_fix: |
+      # Instead of: FILTER(REGEX(?mass, "^1[0-9][0-9]"))
+      # Use:
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      FILTER(xsd:float(?mass) >= 100 && xsd:float(?mass) < 200)
+  
+  - error: "Empty results when searching for common chemical names"
+    causes:
+      - "Searching only in rdfs:label when chemical is known by trade name"
+      - "Using exact case-sensitive matches instead of case-insensitive searches"
+      - "Not checking both hasExactSynonym and hasRelatedSynonym properties"
+    solutions:
+      - "Search both label and synonym properties using UNION"
+      - "Use LCASE() with CONTAINS() for case-insensitive substring matching"
+      - "Try searching for chemical name (e.g., 'acetylsalicylic acid') if trade name (e.g., 'aspirin') fails"
+    example_fix: |
+      # Search in both labels and synonyms
+      SELECT ?entity ?label ?synonym
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label .
+        {
+          ?entity oboInOwl:hasExactSynonym ?synonym .
+        } UNION {
+          ?entity oboInOwl:hasRelatedSynonym ?synonym .
+        }
+        FILTER(CONTAINS(LCASE(?label), "aspirin") || CONTAINS(LCASE(?synonym), "aspirin"))
+      }
+  
+  - error: "Duplicate entities in results when retrieving cross-references"
+    causes:
+      - "Entity has multiple values for the same property (e.g., multiple KEGG IDs)"
+      - "Not using GROUP_CONCAT to aggregate multiple values per entity"
+      - "Using multiple OPTIONAL clauses that create Cartesian products"
+    solutions:
+      - "Use GROUP_CONCAT(DISTINCT ?xref; separator=', ') to combine multiple references"
+      - "Add GROUP BY ?entity ?label when aggregating properties"
+      - "Query one database type at a time instead of multiple OPTIONAL clauses"
+    example_fix: |
+      # Aggregate multiple KEGG references per entity
+      SELECT ?entity ?label 
+             (GROUP_CONCAT(DISTINCT ?kegg; separator=", ") as ?kegg_ids)
+      WHERE {
+        ?entity a owl:Class ; rdfs:label ?label ;
+                oboInOwl:hasDbXref ?kegg .
+        FILTER(CONTAINS(?kegg, "KEGG:"))
+      }
+      GROUP BY ?entity ?label
