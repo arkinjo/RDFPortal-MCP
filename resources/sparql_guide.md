@@ -1,4 +1,4 @@
-# SPARQL Query Guide - Simplified
+# SPARQL Query Guide
 
 ## The Golden Rule
 **Before writing any query:** Can you draw a connected graph of all variables using predicates from the schema? If no → the query will fail or produce false results.
@@ -11,112 +11,166 @@
 ```
 Run: list_databases()
 ```
-Identify which database(s) contain your target data.
 
-### 2. Read the Schema (MANDATORY)
+### 2. Read the Schema & Statistics (MANDATORY)
 ```
 Run: get_MIE_file(database_name)
 ```
-**Find:**
-- What predicates connect your entities
-- Example queries showing connection patterns
-- Performance tips
 
-**Never skip this step.** No schema = broken queries.
+**Extract from the MIE file:**
+
+| Section | What to Find | How to Use It |
+|---------|--------------|---------------|
+| **Shape expressions** | Connecting predicates | Build graph connections |
+| **Total counts** | Dataset sizes | Decide if filtering is mandatory |
+| **Coverage (%)** | Property availability | Use direct vs OPTIONAL |
+| **Cardinality** | avg/max relationships | Expect result multiplication, use DISTINCT |
+| **Performance** | Required filters | Apply FIRST - prevents timeouts |
+| **Examples** | Query patterns | Follow proven templates |
+
+**Key statistics example (UniProt):**
+```yaml
+total_proteins: "444M → reviewed_proteins: 923K (0.2%)"
+# Performance note: "ESSENTIAL - Use up:reviewed 1 for all queries"
+# Coverage: function_annotations >90%, pdb_structures ~15%
+# Cardinality: avg 12.5 GO terms per protein
+```
 
 ### 3. Build Connected Queries
 
-**Core principle:** Every variable must connect to others via actual predicates.
-
-**Good query structure:**
 ```sparql
 SELECT ?var1 ?var2
 WHERE {
-  ?var1 predicate1 ?var2 .          # ← Direct connection
-  ?var1 property "value" .          # ← Properties
-  FILTER(...)                       # ← Filters last
+  # 1. Required filters FIRST (from performance section)
+  ?var1 required_filter "value" .
+  
+  # 2. Connections (from shape expressions)
+  ?var1 connects_to ?var2 .
+  
+  # 3. Properties based on coverage
+  ?var1 high_coverage_prop ?value .              # >85%: direct
+  OPTIONAL { ?var1 low_coverage_prop ?opt }      # <50%: optional
+  
+  # 4. Filters last
+  FILTER(...)
 }
+LIMIT 50  # Adjust for expected cardinality
 ```
 
 ---
 
-## Common Mistakes to Avoid
+## Common Mistakes
 
 ### ❌ Disconnected Variables
 ```sparql
-SELECT ?gene ?protein
 WHERE {
   ?gene a Gene .
-  ?protein a Protein .  # No connection between them!
+  ?protein a Protein .  # No connection!
 }
-# Result: Every gene × every protein = wrong
+# Result: gene × protein = Cartesian product
 ```
 
-### ✅ Connected Variables
+### ❌ Missing Required Filters
 ```sparql
-SELECT ?gene ?protein
-WHERE {
-  ?gene encodesProtein ?protein .  # ← Explicit link
-}
+# Will timeout on UniProt
+SELECT (COUNT(*) as ?count)
+WHERE { ?protein a up:Protein . }
 ```
 
-### ❌ Filter-Only Connection
+### ✅ Correct Pattern
 ```sparql
 WHERE {
-  ?x rdfs:label ?name .
-  ?y rdfs:label ?name .  # Sharing a literal ≠ connection
-}
-```
-
-### ✅ Predicate Connection
-```sparql
-WHERE {
-  ?x relatedTo ?y .      # ← Real relationship from schema
+  ?protein up:reviewed 1 ;          # Required filter first
+           encodesBy ?gene .        # Connection from schema
 }
 ```
 
 ---
 
-## Red Flags - Stop and Revise If:
-- Two SELECT variables have no connecting triple patterns
-- Variables only share literal values (not predicates)
-- You haven't read the schema yet
-- Results seem implausibly large
+## Query Development
 
----
-
-## Query Development Tips
-
-**Start simple, build gradually:**
-1. Query one entity type first
-2. Add one connection at a time
-3. Test before adding complexity
+**Process:**
+1. Check statistics → identify required filters & coverage
+2. Apply required filters first
+3. Start simple, add one connection at a time
+4. Set LIMIT based on cardinality (avg × expected matches)
 
 **When presenting queries:**
-- Show which predicates connect variables
-- Explain the connection path: `?a → (predicate) → ?b`
-- Note any validation concerns
+- Show connection path: `?a → (predicate) → ?b`
+- Note required filters and their source (performance section)
+- Estimate result size using statistics
+
+**Example using statistics:**
+```sparql
+# Scenario: Human DNA repair proteins
+# Statistics: 40K human reviewed, 1.5K DNA repair total, >90% have functions
+
+PREFIX up: <http://purl.uniprot.org/core/>
+SELECT ?protein ?function
+WHERE {
+  ?protein up:reviewed 1 ;                                    # Required
+           up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+           up:annotation ?annot .
+  ?annot a up:Function_Annotation ;
+         rdfs:comment ?function .
+  FILTER(CONTAINS(LCASE(?function), "dna repair"))
+}
+LIMIT 30  # Expect ~200-500 matches, 30 is reasonable sample
+```
+
+---
+
+## Red Flags - Stop If:
+
+- Variables have no connecting predicates
+- Variables only share literal values
+- You haven't read the MIE file
+- You skipped required filters from performance section
+- Result count >> expected from cardinality
+- Using direct properties for low-coverage data (<50%)
 
 ---
 
 ## If Results Look Wrong
 
-Ask yourself:
-1. Do all results share the same unexpected value?
-2. Is the result count suspiciously high?
-3. Did I verify connections in the schema?
+**Check:**
+1. Are connections from schema correct?
+2. Did I apply required performance filters?
+3. Is result count consistent with coverage × cardinality?
+4. Should low-coverage properties be OPTIONAL?
 
-**Fix:** Go back to schema, find the correct connecting predicates.
+**Example diagnostic:**
+```
+Query returns 0 results for PDB structures:
+→ Check statistics: coverage ~15% for reviewed proteins
+→ Fix: Make PDB property OPTIONAL or accept sparse results
+```
+
+---
+
+## Statistics Checklist
+
+Before querying, extract from MIE's `data_statistics` section:
+
+- [ ] Required filters (performance_characteristics)
+- [ ] Total counts (scale of dataset)
+- [ ] Coverage % (direct vs OPTIONAL)
+- [ ] Cardinality avg/max (result multiplication)
 
 ---
 
 ## Quick Reference
 
-| Do This | Not This |
-|---------|----------|
-| Read schema first | Guess predicates |
+| Do | Don't |
+|----|-------|
+| Read MIE file first | Guess predicates |
+| Apply required filters first | Skip performance filters |
+| Use statistics for LIMIT | Use arbitrary numbers |
+| OPTIONAL for <50% coverage | OPTIONAL for >85% coverage |
 | Connect via predicates | Connect via shared literals |
-| Explain connections | Assume semantic relationships |
-| Start simple | Write complex queries first |
 
-**Remember:** Schema documentation is authoritative. Empty results are better than false positives.
+**Remember:** 
+- Required filters are non-negotiable
+- Coverage % determines direct vs OPTIONAL
+- Cardinality predicts result sizes
+- Empty results > false positives

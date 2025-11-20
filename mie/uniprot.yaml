@@ -24,6 +24,18 @@ schema_info:
     - http://sparql.uniprot.org/proteomes
     - http://sparql.uniprot.org/tissues
     - http://sparql.uniprot.org/obsolete
+  version:
+    mie_version: "2.0"
+    mie_created: "2025-01-25"
+    data_version: "Release 2024_06"
+    update_frequency: "Monthly"
+  license:
+    data_license: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+    license_url: "https://www.uniprot.org/help/license"
+  access:
+    rate_limiting: "No explicit rate limit, but please be respectful"
+    max_query_timeout: "60 seconds"
+    backend: "Virtuoso (use bif:contains for keyword filtering)"
 
 shape_expressions: |
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -32,7 +44,7 @@ shape_expressions: |
   PREFIX up: <http://purl.uniprot.org/core/>
   PREFIX dcterms: <http://purl.org/dc/terms/>
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-  
+
   <ProteinShape> {
     a [ up:Protein ] ;
     dcterms:identifier xsd:string ;
@@ -53,7 +65,7 @@ shape_expressions: |
     up:enzyme IRI * ;                              # Enzymatic classification
     rdfs:seeAlso IRI *                             # Cross-references to external databases
   }
-  
+
   <IsoformShape> {
     a [ up:Simple_Sequence ] ;
     rdf:value xsd:string ;                         # Amino acid sequence
@@ -63,28 +75,28 @@ shape_expressions: |
     up:version xsd:integer ;
     up:name xsd:string *                           # Isoform names
   }
-  
+
   <NameShape> {
     a [ up:Structured_Name ] ;
     up:fullName xsd:string ;
     up:shortName xsd:string ? ;
     up:ecName xsd:string ?                         # EC classification for enzymes
   }
-  
+
   <TaxonShape> {
     a [ up:Taxon ] ;
     up:scientificName xsd:string ;
     up:rank IRI ? ;
     rdfs:subClassOf IRI *                          # Taxonomic hierarchy
   }
-  
+
   <AnnotationShape> {
     a [ up:Annotation ] ;                          # Various subtypes: Function, Domain, Region, etc.
     rdfs:comment xsd:string ? ;
     up:substitution xsd:string ? ;                 # For mutagenesis annotations
     up:range IRI ?                                 # Position/region information
   }
-  
+
   <GeneShape> {
     a [ up:Gene ] ;
     skos:prefLabel xsd:string ? ;
@@ -169,8 +181,8 @@ sparql_query_examples:
       }
       LIMIT 30
 
-  - title: Search Reviewed Proteins by Function
-    description: Find expert-curated proteins by their validated functional descriptions using keyword filtering
+  - title: Search Reviewed Proteins by Function Using Full-Text Search
+    description: Find expert-curated proteins by their validated functional descriptions using Virtuoso bif:contains for efficient keyword filtering
     question: Which reviewed proteins have specific biological functions like kinase or DNA repair?
     complexity: basic
     sparql: |
@@ -182,7 +194,7 @@ sparql_query_examples:
                  up:reviewed 1 ;
                  up:recommendedName ?name .
         ?name up:fullName ?fullName .
-        FILTER(CONTAINS(LCASE(?fullName), "kinase") || CONTAINS(LCASE(?fullName), "dna repair"))
+        ?fullName bif:contains "'kinase' OR 'dna repair'"
       }
       LIMIT 15
 
@@ -194,7 +206,7 @@ sparql_query_examples:
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
-      
+
       SELECT ?protein ?mnemonic ?functionComment ?goTerm ?goLabel
       WHERE {
         VALUES ?protein { uniprot:P04637 uniprot:P17612 uniprot:P86925 }
@@ -235,7 +247,7 @@ sparql_query_examples:
       LIMIT 10
 
   - title: Count Human Tumor Suppressors in Swiss-Prot
-    description: Quantify expert-curated human proteins with validated tumor suppressor functions
+    description: Quantify expert-curated human proteins with validated tumor suppressor functions using full-text search
     question: How many human tumor suppressors are documented in Swiss-Prot?
     complexity: intermediate
     sparql: |
@@ -249,7 +261,7 @@ sparql_query_examples:
                  up:annotation ?annot .
         ?annot a up:Function_Annotation ;
                rdfs:comment ?function .
-        FILTER(CONTAINS(LCASE(?function), "tumor suppressor"))
+        ?function bif:contains "'tumor suppressor'"
       }
 
   - title: Enzyme Classification with GO Integration
@@ -259,7 +271,7 @@ sparql_query_examples:
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      
+
       SELECT DISTINCT ?protein ?mnemonic ?fullName ?enzyme ?goLabel
       WHERE {
         ?protein a up:Protein ;
@@ -283,7 +295,7 @@ sparql_query_examples:
     sparql: |
       PREFIX up: <http://purl.uniprot.org/core/>
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      
+
       SELECT DISTINCT ?protein ?mnemonic ?organism ?scientificName ?parentTaxon ?parentName
       WHERE {
         ?protein a up:Protein ;
@@ -396,7 +408,7 @@ cross_references:
                  rdfs:seeAlso ?externalDB .
         
         # Filter by URL pattern for specific database (uncomment one):
-        # FILTER(CONTAINS(STR(?externalDB), "rdf.wwpdb.org"))             # PDB structures
+        # FILTER(CONTAINS(STR(?externalDB), "rdf.wwpdb.org"))              # PDB structures
         # FILTER(CONTAINS(STR(?externalDB), "alphafolddb"))                # AlphaFold
         # FILTER(CONTAINS(STR(?externalDB), "purl.uniprot.org/hgnc/"))     # HGNC
         # FILTER(CONTAINS(STR(?externalDB), "nextprot.org"))               # neXtProt
@@ -464,14 +476,12 @@ architectural_notes:
     - Structured naming system ensures consistency in expert-curated entries
     - Cross-references via rdfs:seeAlso link to 200+ external databases distinguished by URL patterns
     - Mnemonics (up:mnemonic) are for human-readable display only, never for filtering or query logic
-    
   performance:
     - CRITICAL - Always filter by up:reviewed 1 for computational feasibility and quality assurance
     - COUNT queries work efficiently with reviewed=1 filter (923K vs 444M entries - 99.8% reduction)
     - Organism filtering highly optimized when combined with reviewed status
-    - Text searches on full names perform well with reviewed constraint, timeout without it
+    - Use bif:contains for keyword searches on text fields (Virtuoso full-text search optimization)
     - Cross-reference joins most reliable and efficient for reviewed proteins
-    
   data_integration:
     - Swiss-Prot entries have vastly superior cross-reference coverage to external databases
     - Gene Ontology integration most reliable for reviewed proteins (>85% vs ~30% for TrEMBL)
@@ -479,7 +489,6 @@ architectural_notes:
     - Functional annotations significantly more complete in reviewed proteins (>90% vs 20-30%)
     - Pattern-based cross-reference organization enables efficient filtering to specific databases
     - Ensembl transcript annotations highly prevalent across reviewed proteins
-    
   data_quality:
     - Fundamental distinction - reviewed=1 (Swiss-Prot expert curation) vs reviewed=0 (TrEMBL automation)
     - Functional annotation completeness varies dramatically by review status
@@ -487,15 +496,14 @@ architectural_notes:
     - Sequence validation and modification tracking most reliable for Swiss-Prot
     - Computational tractability requires reviewed filtering for complex queries and aggregations
     - Use up:organism URIs for organism filtering, never mnemonic suffixes
-    - Use up:fullName or rdfs:comment for text searches, never mnemonic content
+    - Use up:fullName with bif:contains for text searches, never mnemonic content
 
 data_statistics:
   total_proteins: 444565015
   reviewed_proteins: 923147
   human_reviewed_proteins: 40209
   reviewed_dna_repair_proteins: 1549
-  human_reviewed_tumor_suppressors: 417
-  
+  human_reviewed_tumor_suppressors: 421
   coverage:
     reviewed_proteins_with_sequences: ">99%"
     reviewed_proteins_with_organism_info: ">99%"
@@ -511,7 +519,6 @@ data_statistics:
     reviewed_proteins_with_string_networks: "~85%"
     reviewed_proteins_with_intact_interactions: "~16%"
     review_rate_overall: "~0.2%"
-    
   cardinality:
     avg_isoforms_per_reviewed_protein: 1.1
     max_isoforms_per_reviewed_protein: 12
@@ -521,24 +528,154 @@ data_statistics:
     max_go_terms_per_reviewed_protein: 200
     avg_external_refs_per_reviewed_protein: 45
     max_external_refs_per_reviewed_protein: 300
-    
   performance_characteristics:
-    - "ESSENTIAL - Use up:reviewed 1 filter for all queries to enable COUNT operations and prevent timeouts"
-    - "COUNT queries fail on full dataset but work perfectly with reviewed=1 constraint"
-    - "Reviewed filtering reduces dataset 99.8% (444M to 923K) while preserving highest quality data"
-    - "Organism + reviewed filtering optimized for taxonomic studies"
-    - "Full name text searches efficient with reviewed constraint, timeout without it"
-    - "Cross-reference joins most reliable and performant for reviewed proteins"
-    - "Use URL pattern FILTER to access specific external databases efficiently"
-    - "Recommend LIMIT 30-50 for exploratory queries to balance comprehensiveness with performance"
-    - "Complex multi-property queries should always include reviewed=1 filter first"
-    - "Use up:organism with exact taxonomy URIs for organism filtering, not mnemonic suffixes"
-    - "Use up:fullName for protein name searches, not mnemonic content"
-    
+    - ESSENTIAL - Use up:reviewed 1 filter for all queries to enable COUNT operations and prevent timeouts
+    - COUNT queries fail on full dataset but work perfectly with reviewed=1 constraint
+    - Reviewed filtering reduces dataset 99.8% (444M to 923K) while preserving highest quality data
+    - Organism + reviewed filtering optimized for taxonomic studies
+    - Use bif:contains for keyword searches on text fields for Virtuoso full-text search optimization
+    - Cross-reference joins most reliable and performant for reviewed proteins
+    - Use URL pattern FILTER to access specific external databases efficiently
+    - Recommend LIMIT 30-50 for exploratory queries to balance comprehensiveness with performance
+    - Complex multi-property queries should always include reviewed=1 filter first
+    - Use up:organism with exact taxonomy URIs for organism filtering, not mnemonic suffixes
   data_quality_notes:
-    - "Reviewed=1 entries undergo expert manual curation vs automated TrEMBL processing"
-    - "Functional annotations 90%+ complete for Swiss-Prot vs 20-30% for TrEMBL"
-    - "Cross-reference accuracy and completeness dramatically higher for reviewed entries"
-    - "Swiss-Prot provides gold standard for protein function, localization, and interactions"
-    - "Computational tractability requires reviewed filtering for complex queries"
-    - "Mnemonics are display-only identifiers, unreliable for filtering or semantic queries"
+    - Reviewed=1 entries undergo expert manual curation vs automated TrEMBL processing
+    - Functional annotations 90%+ complete for Swiss-Prot vs 20-30% for TrEMBL
+    - Cross-reference accuracy and completeness dramatically higher for reviewed entries
+    - Swiss-Prot provides gold standard for protein function, localization, and interactions
+    - Computational tractability requires reviewed filtering for complex queries
+    - Mnemonics are display-only identifiers, unreliable for filtering or semantic queries
+
+anti_patterns:
+  - title: "Querying Without Reviewed Filter"
+    problem: "Attempting to query or count proteins without up:reviewed 1 filter causes timeouts and returns unreliable automated annotations"
+    wrong_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT (COUNT(*) as ?count)
+      WHERE {
+        ?protein a up:Protein ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> .
+      }
+    correct_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT (COUNT(*) as ?count)
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> .
+      }
+    explanation: "Adding up:reviewed 1 reduces dataset from 444M to 923K entries (99.8% reduction), enabling COUNT operations and ensuring expert-curated data quality. Without this filter, queries timeout and return predominantly automated TrEMBL annotations."
+
+  - title: "Using CONTAINS() Instead of bif:contains for Keyword Search"
+    problem: "Using standard SPARQL CONTAINS() function for text searching is inefficient on Virtuoso backend and doesn't leverage full-text indexing"
+    wrong_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic ?fullName
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:mnemonic ?mnemonic ;
+                 up:recommendedName ?name .
+        ?name up:fullName ?fullName .
+        FILTER(CONTAINS(LCASE(?fullName), "kinase"))
+      }
+      LIMIT 30
+    correct_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic ?fullName
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:mnemonic ?mnemonic ;
+                 up:recommendedName ?name .
+        ?name up:fullName ?fullName .
+        ?fullName bif:contains "'kinase'"
+      }
+      LIMIT 30
+    explanation: "UniProt runs on Virtuoso, which has optimized full-text search via bif:contains. Use bif:contains with single-quoted keywords for efficient text matching. You can combine keywords with OR, AND, NOT operators: bif:contains \"'kinase' OR 'phosphatase'\"."
+
+  - title: "Using Mnemonic for Organism Filtering"
+    problem: "Attempting to filter organisms using string matching on mnemonic suffixes is unreliable and misses proteins"
+    wrong_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:mnemonic ?mnemonic .
+        FILTER(CONTAINS(?mnemonic, "_HUMAN"))
+      }
+      LIMIT 30
+    correct_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT ?protein ?mnemonic
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+                 up:mnemonic ?mnemonic .
+      }
+      LIMIT 30
+    explanation: "Use up:organism with exact taxonomy URIs for reliable organism filtering. Mnemonic suffixes are display conventions only and don't represent all human proteins. The correct approach uses the semantic relationship up:organism to ensure complete and accurate results."
+
+common_errors:
+  - error: "Query Timeout"
+    causes:
+      - "Forgot to include up:reviewed 1 filter in query"
+      - "Attempting COUNT or aggregation operations on full 444M entry dataset"
+      - "Complex joins without reviewed constraint"
+      - "Using CONTAINS() instead of bif:contains for text searches"
+    solutions:
+      - "Always add 'up:reviewed 1' to every protein query as first filter"
+      - "Use bif:contains for keyword filtering on Virtuoso backend"
+      - "Combine reviewed filter with organism filtering for best performance"
+      - "Use LIMIT clause for exploratory queries (30-50 recommended)"
+    example_fix: |
+      # Before (times out):
+      SELECT (COUNT(*) as ?count) WHERE { ?protein a up:Protein . }
+      
+      # After (works perfectly):
+      SELECT (COUNT(*) as ?count) WHERE { ?protein a up:Protein ; up:reviewed 1 . }
+      
+      # Before (slow text search):
+      FILTER(CONTAINS(LCASE(?fullName), "kinase"))
+      
+      # After (fast full-text search):
+      ?fullName bif:contains "'kinase'"
+
+  - error: "Empty Results for Organism Queries"
+    causes:
+      - "Using mnemonic suffix pattern matching instead of up:organism property"
+      - "Incorrect taxonomy URI format"
+      - "Missing reviewed filter causes timeout before results returned"
+    solutions:
+      - "Always use up:organism with full taxonomy URI: <http://purl.uniprot.org/taxonomy/TAXID>"
+      - "Never filter organisms by mnemonic text patterns"
+      - "Combine with up:reviewed 1 for reliable results"
+    example_fix: |
+      # Wrong (incomplete results):
+      FILTER(CONTAINS(?mnemonic, "_HUMAN"))
+      
+      # Correct (complete results):
+      up:organism <http://purl.uniprot.org/taxonomy/9606>
+
+  - error: "Missing GO Terms in Results"
+    causes:
+      - "Incorrect FILTER syntax preventing GO term URI matching"
+      - "Not using OPTIONAL clause for GO terms (not all proteins have them)"
+      - "Filtering out reviewed proteins, which have much higher GO coverage"
+    solutions:
+      - "Use STRSTARTS(STR(?goTerm), 'http://purl.obolibrary.org/obo/GO_') for GO filtering"
+      - "Wrap GO term patterns in OPTIONAL block if they're not required"
+      - "Ensure up:reviewed 1 is included for best GO annotation coverage (>85%)"
+    example_fix: |
+      # Wrong (misses many GO terms):
+      ?protein up:classifiedWith ?goTerm .
+      FILTER(CONTAINS(?goTerm, "GO_"))
+      
+      # Correct (captures all GO terms):
+      OPTIONAL {
+        ?protein up:classifiedWith ?goTerm .
+        FILTER(STRSTARTS(STR(?goTerm), "http://purl.obolibrary.org/obo/GO_"))
+      }

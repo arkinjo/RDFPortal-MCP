@@ -33,17 +33,17 @@ SPARQL_ENDPOINT = {
     "ddbj": "https://rdfportal.org/ddbj/sparql",
     "glycosmos": "https://ts.glycosmos.org/sparql",
     "bacdive": "https://rdfportal.org/primary/sparql",
-    "mediadive": "https://rdfportal.org/primary/sparql"
+    "mediadive": "https://rdfportal.org/primary/sparql",
+    "clinvar": "https://rdfportal.org/ncbi/sparql"
 }
 
 # The MIE files are used to define the shape expressions for SPARQL queries. 
 MIE_DIR = "mie"
 MIE_PROMPT="resources/MIE_prompt.md"
 RDF_PORTAL_GUIDE="resources/rdf_portal_guide.md"
+SPARQL_EXAMPLES="sparql-examples"
 
 RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
-
-# -- prompts --
 
 @mcp.tool(name="RDF_Portal_Guide",
             description="A general guideline for using the RDF Portal.")
@@ -494,6 +494,32 @@ def list_databases() -> List[Dict[str, Any]]:
                     "description": f"Error reading file: {e}",
                 })
     return all_schemas_info
+
+@mcp.tool(
+        enabled=True,
+        description="Get an example SPARQL query for a specific RDF database.",
+        name="get_sparql_example"
+)
+def get_sparql_example(
+    dbname: Annotated[str, Field(description=f"The name of the database to query. Supported values are {', '.join(SPARQL_ENDPOINT.keys())}.")]
+) -> str:
+    """
+    Read the file in SPARQL_EXAMPLES/{dbname}.rq and return the content.
+
+    Args:
+        dbname (str): The name of the database for which to retrieve the SPARQL example.
+
+    Returns:
+        str: The content of the SPARQL example file, or an error message if not found.
+    """
+    example_file = os.path.join(SPARQL_EXAMPLES, f"{dbname}.rq")
+    if not os.path.exists(example_file):
+        return f"Error: The SPARQL example file for '{dbname}' was not found at '{example_file}'."
+    try:
+        with open(example_file, "r", encoding="utf-8") as file:
+            return file.read()
+    except Exception as e:
+        return f"Error reading SPARQL example file for '{dbname}': {e}"
 
 if __name__ == "__main__":
     mcp.run()

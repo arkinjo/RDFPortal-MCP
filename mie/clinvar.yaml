@@ -1,0 +1,554 @@
+schema_info:
+  title: ClinVar RDF
+  description: |
+    ClinVar aggregates information about genomic variation and its relationship to human health. The database contains over 3.5 million variant records with clinical interpretations, gene associations, disease conditions, and external cross-references. Main entity types include VariationArchiveType (genetic variations), Gene (associated genes), ClinAsserTraitType (disease/phenotype associations), and ClassifiedRecord (clinical assertions and classifications). ClinVar supports researchers in understanding variant pathogenicity, genetic testing, and precision medicine applications. The RDF representation provides structured access to variant nomenclature, clinical significance, submission metadata, and cross-references to MedGen, OMIM, MeSH, and HGNC.
+  endpoint: https://rdfportal.org/ncbi/sparql
+  base_uri: http://ncbi.nlm.nih.gov/clinvar/
+  graphs:
+    - http://rdfportal.org/dataset/clinvar
+  version:
+    mie_version: "1.0"
+    mie_created: "2025-01-17"
+    data_version: "Release 2025.01"
+    update_frequency: "Monthly"
+  license:
+    data_license: "Public Domain (CC0)"
+    license_url: "https://www.ncbi.nlm.nih.gov/clinvar/docs/maintenance_use/"
+  access:
+    rate_limiting: "Standard SPARQL endpoint limits"
+    max_query_timeout: "60 seconds"
+
+shape_expressions: |
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX med2rdf: <http://med2rdf.org/ontology/med2rdf#>
+  PREFIX sio: <http://semanticscience.org/resource/>
+  PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  
+  <VariationArchiveShape> {
+    a [ cvo:VariationArchiveType ] ;
+    rdfs:label xsd:string ;
+    cvo:accession xsd:string ;
+    cvo:variation_id xsd:integer ;
+    cvo:variation_name xsd:string ;
+    cvo:variation_type xsd:string ;
+    cvo:species xsd:string ;
+    cvo:record_status xsd:string ;
+    cvo:record_type xsd:string ;
+    cvo:version xsd:integer ;
+    cvo:date_created xsd:date ;
+    cvo:date_last_updated xsd:date ;
+    cvo:number_of_submissions xsd:integer ;
+    cvo:number_of_submitters xsd:integer ;
+    cvo:most_recent_submission xsd:date ? ;
+    cvo:classified_record BNode ? ;
+    med2rdf:disease BNode * ;
+    dct:created xsd:string ;
+    dct:modified xsd:string ;
+    rdfs:seeAlso IRI
+  }
+  
+  <GeneShape> {
+    a [ cvo:Gene med2rdf:Gene ] ;
+    cvo:gene_id xsd:integer ? ;
+    cvo:symbol xsd:string * ;
+    cvo:full_name xsd:string * ;
+    cvo:hgnc_id xsd:string ? ;
+    cvo:omim xsd:integer ? ;
+    cvo:cytogenetic_location xsd:string * ;
+    cvo:relationship_type xsd:string * ;
+    cvo:source xsd:string * ;
+    faldo:location BNode * ;
+    rdfs:seeAlso IRI ?
+  }
+  
+  <ClinAsserTraitShape> {
+    a [ cvo:ClinAsserTraitType med2rdf:Disease ] ;
+    cvo:type xsd:string ;
+    cvo:id xsd:integer ? ;
+    cvo:name BNode * ;
+    cvo:attribute_set BNode ? ;
+    dct:references IRI +
+  }
+  
+  <ClassifiedRecordShape> {
+    a [ cvo:ClassifiedRecord sio:SIO_001122 ] ;
+    cvo:classifications BNode ;
+    cvo:clinical_assertion BNode * ;
+    cvo:rcv_list BNode ? ;
+    sio:SIO_000628 IRI *
+  }
+  
+  <GermlineClassificationShape> {
+    cvo:description xsd:string ;
+    cvo:review_status xsd:string ?
+  }
+
+sample_rdf_entries:
+  - title: Pathogenic BRCA1 Variant
+    description: A frameshift duplication in BRCA1 gene associated with hereditary breast and ovarian cancer syndrome.
+    rdf: |
+      <http://ncbi.nlm.nih.gov/clinvar/variation/856461>
+        a cvo:VariationArchiveType ;
+        rdfs:label "NM_007294.4(BRCA1):c.2244dup (p.Asp749fs)" ;
+        cvo:accession "VCV000856461" ;
+        cvo:variation_id 856461 ;
+        cvo:variation_name "NM_007294.4(BRCA1):c.2244dup (p.Asp749fs)" ;
+        cvo:variation_type "Duplication" ;
+        cvo:species "Homo sapiens" ;
+        cvo:record_status "current" ;
+        cvo:record_type "classified" ;
+        cvo:version 4 ;
+        cvo:date_created "2022-05-16"^^xsd:date ;
+        cvo:date_last_updated "2024-09-29"^^xsd:date ;
+        cvo:number_of_submissions 1 ;
+        cvo:number_of_submitters 1 ;
+        med2rdf:disease _:disease1 ;
+        rdfs:seeAlso <http://ncbi.nlm.nih.gov/clinvar/variation/856461> .
+
+  - title: Gene Entity with Genomic Location
+    description: SLCO1B1 gene on chromosome 12p12.1 with multiple faldo:location annotations representing different transcript variants.
+    rdf: |
+      <http://ncbi.nlm.nih.gov/gene/10599>
+        a cvo:Gene , med2rdf:Gene ;
+        cvo:gene_id 10599 ;
+        cvo:symbol "SLCO1B1" ;
+        cvo:full_name "solute carrier organic anion transporter family member 1B1" ;
+        cvo:hgnc_id "HGNC:10959" ;
+        cvo:omim 604843 ;
+        cvo:cytogenetic_location "12p12.1" ;
+        cvo:relationship_type "within single gene" , "genes overlapped by variant" ;
+        cvo:source "calculated" , "submitted" ;
+        faldo:location _:loc1 ;
+        rdfs:seeAlso <http://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:HGNC:10959> .
+
+  - title: Single Nucleotide Variant
+    description: A missense variant in SLC9A4 gene with clinical significance classification.
+    rdf: |
+      <http://ncbi.nlm.nih.gov/clinvar/variation/3798403>
+        a cvo:VariationArchiveType ;
+        rdfs:label "NM_001011552.4(SLC9A4):c.1724C>A (p.Ala575Asp)" ;
+        cvo:accession "VCV003798403" ;
+        cvo:variation_type "single nucleotide variant" ;
+        cvo:species "Homo sapiens" ;
+        cvo:record_status "current" ;
+        cvo:classified_record _:classrec1 .
+
+  - title: Disease/Trait Association
+    description: Clinical assertion trait representing a disease condition with MedGen cross-reference.
+    rdf: |
+      _:disease1
+        a cvo:ClinAsserTraitType , med2rdf:Disease ;
+        cvo:type "Disease" ;
+        cvo:id 16789 ;
+        cvo:name _:name1 ;
+        dct:references <http://ncbi.nlm.nih.gov/medgen/C3150901> .
+
+  - title: Classified Record with Clinical Significance
+    description: A classified record containing germline classification and associated genes.
+    rdf: |
+      _:classrec1
+        a cvo:ClassifiedRecord , sio:SIO_001122 ;
+        cvo:classifications _:classi1 ;
+        cvo:clinical_assertion _:assertion1 ;
+        sio:SIO_000628 <http://ncbi.nlm.nih.gov/gene/10599> .
+      
+      _:classi1 cvo:germline_classification _:germ1 .
+      _:germ1 cvo:description "Uncertain significance" .
+
+sparql_query_examples:
+  - title: Search Variants by Gene Symbol
+    description: Find all variants associated with BRCA1 gene using keyword search
+    question: What genetic variants are recorded for the BRCA1 gene?
+    complexity: basic
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?variant ?label ?type ?status
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 rdfs:label ?label ;
+                 cvo:variation_type ?type ;
+                 cvo:record_status ?status .
+        ?label bif:contains "'BRCA1'" .
+      }
+      LIMIT 100
+
+  - title: Get Variant Details by Accession
+    description: Retrieve comprehensive information about a specific variant using its ClinVar accession number
+    question: What are the details of variant VCV000856461?
+    complexity: basic
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT *
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant cvo:accession "VCV000856461" ;
+                 ?property ?value .
+      }
+
+  - title: Find Pathogenic Variants with Clinical Significance
+    description: Retrieve variants with their clinical significance classifications
+    question: Which variants have been classified with specific clinical significance?
+    complexity: intermediate
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?variant ?label ?significance
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 rdfs:label ?label ;
+                 cvo:classified_record ?classrec .
+        ?classrec cvo:classifications ?classi .
+        ?classi cvo:germline_classification ?germ .
+        ?germ cvo:description ?significance .
+      }
+      LIMIT 100
+
+  - title: List Variants by Type
+    description: Count and group variants by their variation types
+    question: What types of genetic variations are in ClinVar and how many of each?
+    complexity: intermediate
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      
+      SELECT ?variation_type (COUNT(?variant) as ?count)
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 cvo:variation_type ?variation_type .
+      }
+      GROUP BY ?variation_type
+      ORDER BY DESC(?count)
+      LIMIT 50
+
+  - title: Gene-Disease Associations via Variants
+    description: Find associations between genes and diseases through variant annotations
+    question: What diseases are associated with variants in a specific gene?
+    complexity: intermediate
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX med2rdf: <http://med2rdf.org/ontology/med2rdf#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX sio: <http://semanticscience.org/resource/>
+      
+      SELECT DISTINCT ?variant ?label ?gene ?disease_type
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 rdfs:label ?label ;
+                 med2rdf:disease ?disease ;
+                 cvo:classified_record ?classrec .
+        ?disease a ?disease_type ;
+                 cvo:type "Disease" .
+        ?classrec sio:SIO_000628 ?gene .
+        ?gene a cvo:Gene .
+        ?label bif:contains "'TP53'" .
+      }
+      LIMIT 100
+
+  - title: Variants with Multiple Submitters and Recent Updates
+    description: Identify well-studied variants based on number of submitters and recent updates
+    question: Which variants have multiple independent submissions and were recently updated?
+    complexity: advanced
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      
+      SELECT ?variant ?label ?num_submitters ?last_updated ?type
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 rdfs:label ?label ;
+                 cvo:number_of_submitters ?num_submitters ;
+                 cvo:date_last_updated ?last_updated ;
+                 cvo:variation_type ?type .
+        FILTER(?num_submitters >= 3)
+        FILTER(?last_updated >= "2024-01-01"^^xsd:date)
+      }
+      ORDER BY DESC(?num_submitters) DESC(?last_updated)
+      LIMIT 100
+
+  - title: Gene Annotations with Chromosomal Locations
+    description: Retrieve genes with their cytogenetic locations and external database cross-references
+    question: What genes are annotated with their chromosomal locations and have HGNC identifiers?
+    complexity: advanced
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT DISTINCT ?gene ?symbol ?full_name ?cyto_loc ?hgnc ?omim ?hgnc_url
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?gene a cvo:Gene ;
+              cvo:symbol ?symbol ;
+              cvo:full_name ?full_name ;
+              cvo:cytogenetic_location ?cyto_loc .
+        OPTIONAL { ?gene cvo:hgnc_id ?hgnc }
+        OPTIONAL { ?gene cvo:omim ?omim }
+        OPTIONAL { ?gene rdfs:seeAlso ?hgnc_url }
+        FILTER(REGEX(?cyto_loc, "^[0-9]+[pq]"))
+      }
+      ORDER BY ?cyto_loc
+      LIMIT 100
+
+cross_references:
+  - pattern: rdfs:seeAlso from VariationArchiveType
+    description: |
+      Variants link to ClinVar web interface via rdfs:seeAlso. Pattern: http://ncbi.nlm.nih.gov/clinvar/variation/{variation_id}
+    databases:
+      primary:
+        - ClinVar Web: Direct links to variant detail pages
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?variant ?accession ?clinvar_url
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant a cvo:VariationArchiveType ;
+                 cvo:accession ?accession ;
+                 rdfs:seeAlso ?clinvar_url .
+      }
+      LIMIT 10
+
+  - pattern: dct:references from Disease/Trait nodes
+    description: |
+      Disease and trait annotations reference external databases including MedGen, OMIM, MeSH via dct:references. MedGen provides standardized disease concepts.
+    databases:
+      biomedical:
+        - MedGen: Medical genetics database (~95% coverage)
+        - OMIM: Mendelian inheritance database (~40% coverage)
+        - MeSH: Medical subject headings (~30% coverage)
+    sparql: |
+      PREFIX med2rdf: <http://med2rdf.org/ontology/med2rdf#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT DISTINCT ?disease ?ref
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?disease a med2rdf:Disease ;
+                 dct:references ?ref .
+        FILTER(CONTAINS(STR(?ref), "medgen") || CONTAINS(STR(?ref), "omim"))
+      }
+      LIMIT 50
+
+  - pattern: rdfs:seeAlso from Gene entities
+    description: |
+      Gene entities cross-reference HGNC (HUGO Gene Nomenclature Committee) for official gene symbols and identifiers.
+    databases:
+      genomics:
+        - HGNC: Gene nomenclature authority (~100% of human genes)
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?gene ?symbol ?hgnc_id ?hgnc_url
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?gene a cvo:Gene ;
+              cvo:symbol ?symbol ;
+              cvo:hgnc_id ?hgnc_id ;
+              rdfs:seeAlso ?hgnc_url .
+      }
+      LIMIT 20
+
+  - pattern: OMIM identifiers via cvo:omim property
+    description: |
+      Direct OMIM identifiers stored as integer properties on Gene entities, linking to OMIM disease entries.
+    databases:
+      genetics:
+        - OMIM: ~4,000 genes have OMIM identifiers
+    sparql: |
+      PREFIX cvo: <http://purl.jp/bio/10/clinvar/>
+      
+      SELECT ?gene ?symbol ?omim_id
+      FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?gene a cvo:Gene ;
+              cvo:symbol ?symbol ;
+              cvo:omim ?omim_id .
+      }
+      LIMIT 50
+
+architectural_notes:
+  schema_design:
+    - VariationArchiveType is the central entity representing genetic variants with VCV accession numbers
+    - Classified records contain clinical assertions, interpretations, and review status
+    - Disease/trait associations use blank nodes linking to external databases via dct:references
+    - Gene entities represent both calculated and submitted gene-variant relationships
+    - FALDO ontology used for genomic location coordinates (multiple locations per gene for different transcript variants)
+    - Temporal metadata tracks creation dates, last updates, and submission history
+  performance:
+    - Keyword search with bif:contains is efficient for gene symbol and variant name queries
+    - Direct property filters (variation_type, record_status) perform well
+    - Counting queries on VariationArchiveType complete in ~1-3 seconds
+    - Complex joins through blank nodes (classifications, diseases) may be slower
+    - Use LIMIT clauses liberally for exploratory queries
+  data_integration:
+    - MedGen cross-references provide standardized disease concepts
+    - HGNC links enable gene symbol standardization across databases
+    - OMIM identifiers connect to Mendelian inheritance resources
+    - MeSH terms support literature and clinical concept mapping
+    - Variation IDs enable programmatic access to NCBI ClinVar API
+  data_quality:
+    - Record status field indicates "current" vs deprecated entries
+    - Number of submitters/submissions indicates evidence strength
+    - Review status in classifications shows expert curation level
+    - Some variants lack disease associations or clinical significance
+    - Gene-variant relationships include both calculated and submitted sources
+    - Dates use both xsd:date and xsd:string formats inconsistently
+
+data_statistics:
+  total_variations: 3588969
+  total_genes: ~20000
+  coverage:
+    clinical_significance: "~90% of current variants"
+    disease_associations: "~75% of variants"
+    gene_associations: "~85% of variants"
+    external_refs: "~95% have MedGen cross-references"
+  cardinality:
+    avg_submitters_per_variant: 1.2
+    avg_diseases_per_variant: 1.5
+    avg_locations_per_gene: 15.3
+  performance_characteristics:
+    - Simple property queries: <1 second
+    - Keyword searches: 1-3 seconds
+    - Complex joins through blank nodes: 3-10 seconds
+    - Aggregation queries: 5-15 seconds
+    - Full graph pattern queries may timeout without LIMIT
+  data_quality_notes:
+    - Record_status "current" filters out deprecated variants
+    - Multiple date formats exist (date vs string)
+    - Blank node heavy structure impacts query performance
+    - Some properties have inconsistent cardinality
+
+anti_patterns:
+  - title: Querying without graph specification
+    problem: Queries without FROM clause may return incomplete results or timeout
+    wrong_sparql: |
+      SELECT ?s ?p ?o WHERE { ?s a cvo:VariationArchiveType . ?s ?p ?o . } LIMIT 10
+    correct_sparql: |
+      SELECT ?s ?p ?o FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE { ?s a cvo:VariationArchiveType . ?s ?p ?o . } LIMIT 10
+    explanation: Always specify FROM <http://rdfportal.org/dataset/clinvar> for reliable results
+
+  - title: Using FILTER CONTAINS for keyword search
+    problem: FILTER CONTAINS is slower than bif:contains built-in
+    wrong_sparql: |
+      SELECT ?variant ?label FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant rdfs:label ?label .
+        FILTER(CONTAINS(?label, "BRCA1"))
+      }
+    correct_sparql: |
+      SELECT ?variant ?label FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?variant rdfs:label ?label .
+        ?label bif:contains "'BRCA1'" .
+      }
+    explanation: Use bif:contains with single-quoted keywords inside double quotes for better performance
+
+  - title: Traversing blank nodes without OPTIONAL
+    problem: Inner joins through blank nodes filter out variants lacking those annotations
+    wrong_sparql: |
+      SELECT ?var ?sig FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?var cvo:classified_record ?rec .
+        ?rec cvo:classifications ?c .
+        ?c cvo:germline_classification ?g .
+        ?g cvo:description ?sig .
+      }
+    correct_sparql: |
+      SELECT ?var ?sig FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?var a cvo:VariationArchiveType .
+        OPTIONAL {
+          ?var cvo:classified_record ?rec .
+          ?rec cvo:classifications ?c .
+          ?c cvo:germline_classification ?g .
+          ?g cvo:description ?sig .
+        }
+      }
+    explanation: Use OPTIONAL for blank node chains to include variants even when classification data is missing
+
+common_errors:
+  - error: "Query timeout on aggregation without filters"
+    causes:
+      - Counting or grouping all 3.5M+ variants without constraints
+      - Complex property paths through blank nodes
+      - Missing LIMIT clause on exploratory queries
+    solutions:
+      - Add specific filters (variation_type, record_status, date ranges)
+      - Use LIMIT even on COUNT queries during development
+      - Break complex queries into smaller steps
+    example_fix: |
+      # Timeout risk
+      SELECT ?type (COUNT(?v) as ?count) FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE { ?v cvo:variation_type ?type } GROUP BY ?type
+      
+      # Better approach
+      SELECT ?type (COUNT(?v) as ?count) FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?v a cvo:VariationArchiveType ;
+           cvo:variation_type ?type ;
+           cvo:record_status "current" .
+      }
+      GROUP BY ?type LIMIT 50
+
+  - error: "Empty results when searching for cross-references"
+    causes:
+      - Querying for external URIs that exist only as references, not as RDF subjects
+      - Incorrect URI patterns for external databases
+      - Not following blank node chains to reach dct:references
+    solutions:
+      - Use disease/trait blank nodes to find dct:references
+      - Check rdfs:seeAlso on main entities, not external URIs
+      - Sample data first to understand URI patterns
+    example_fix: |
+      # Won't work - MedGen URI not in graph as subject
+      SELECT ?p ?o FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE { <http://ncbi.nlm.nih.gov/medgen/C3150901> ?p ?o }
+      
+      # Correct approach
+      SELECT ?disease ?medgen FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?var med2rdf:disease ?disease .
+        ?disease dct:references ?medgen .
+        FILTER(CONTAINS(STR(?medgen), "medgen"))
+      } LIMIT 50
+
+  - error: "Inconsistent date filtering results"
+    causes:
+      - ClinVar uses both xsd:date and xsd:string for date properties
+      - Same property (e.g., dct:created) may have different datatypes
+      - Date comparison operators fail on string-typed dates
+    solutions:
+      - Check datatype with sample queries before filtering
+      - Use cvo:date_created (xsd:date) not dct:created (xsd:string) for date comparisons
+      - Cast or convert when necessary
+    example_fix: |
+      # May fail on string dates
+      SELECT ?v ?created FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?v dct:created ?created .
+        FILTER(?created >= "2024-01-01"^^xsd:date)
+      }
+      
+      # More reliable
+      SELECT ?v ?created FROM <http://rdfportal.org/dataset/clinvar>
+      WHERE {
+        ?v cvo:date_created ?created .
+        FILTER(?created >= "2024-01-01"^^xsd:date)
+      }
