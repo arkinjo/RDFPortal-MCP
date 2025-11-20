@@ -301,6 +301,18 @@ Before finalizing, verify:
 - `get_MIE_file(dbname)` - Retrieve existing MIE file if available
 - `save_MIE_file(dbname, mie_content)` - Save the final MIE file
 
+## Special notes for the Virtuoso backend.
+If the backend database is Virtuoso, use `bif:contains` for keyword filtering.
+```sparql
+SELECT ?label
+WHERE {
+  ?s rdfs:label ?label .
+  label bif:contains "('amyloid' AND NOT 'precursor') OR 'alzheimer'" option (score ?sc)
+}
+ORDER BY DESC (?sc)
+LIMIT 50
+```
+You can sort the results by ?sc (keyword match score).
 ## MIE File Structure Template
 ```yaml
 schema_info:
