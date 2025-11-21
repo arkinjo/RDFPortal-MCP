@@ -1,0 +1,660 @@
+schema_info:
+  title: NCBI Gene Database
+  description: |
+    Comprehensive gene database providing gene-specific information including official nomenclature, gene symbols, synonyms, chromosomal locations, gene types, and cross-references. The database contains data for over 57 million gene entries across thousands of organisms, with extensive coverage of protein-coding genes, non-coding RNAs (ncRNA, tRNA, rRNA, snRNA, snoRNA), pseudogenes, and other gene types. Each gene entry includes taxonomic classification, orthology relationships, and links to external resources (Ensembl, HGNC, OMIM). The database serves as a central hub for gene annotation, supporting genomic research, comparative genomics, and functional analysis across species.
+  endpoint: https://rdfportal.org/ncbigene/sparql
+  base_uri: http://identifiers.org/ncbigene/
+  graphs:
+    - http://rdfportal.org/dataset/ncbigene
+  version:
+    mie_version: "1.1"
+    mie_created: "2025-01-09"
+    mie_updated: "2025-01-09"
+    data_version: "Updated November 2024"
+    update_frequency: "Regular updates"
+  license:
+    data_license: "NCBI Public Domain"
+    license_url: "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+  access:
+    rate_limiting: "Standard SPARQL query limits"
+    max_query_timeout: "60 seconds"
+
+shape_expressions: |
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+  PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+  PREFIX orth: <http://purl.org/net/orth#>
+  
+  <GeneShape> {
+    a [ insdc:Gene ] ;
+    dct:identifier xsd:integer ;
+    rdfs:label xsd:string ;                    # Gene symbol (e.g., "INS", "BRCA1")
+    dct:description xsd:string ? ;             # Full gene name (e.g., "insulin")
+    insdc:standard_name xsd:string ? ;
+    insdc:gene_synonym xsd:string * ;
+    dct:alternative xsd:string * ;
+    ncbio:typeOfGene xsd:string ;
+    ncbio:nomenclatureStatus xsd:string ? ;
+    ncbio:fullName xsd:string ? ;              # Alternative to dct:description
+    ncbio:taxid IRI ;
+    insdc:chromosome xsd:string ? ;
+    insdc:map xsd:string ? ;
+    insdc:dblink IRI * ;
+    insdc:db_xref xsd:string * ;
+    orth:hasOrtholog IRI * ;
+    dct:modified xsd:date
+  }
+
+sample_rdf_entries:
+  - title: Human Protein-Coding Gene (A1BG)
+    description: Alpha-1-B glycoprotein gene with complete metadata including synonyms, chromosomal location, and cross-references.
+    rdf: |
+      @prefix insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#> .
+      @prefix dct: <http://purl.org/dc/terms/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      
+      <http://identifiers.org/ncbigene/1> a insdc:Gene ;
+        dct:identifier "1" ;
+        rdfs:label "A1BG" ;
+        dct:description "alpha-1-B glycoprotein" ;
+        insdc:standard_name "A1BG" ;
+        insdc:gene_synonym "A1B", "ABG", "GAB", "HYST2477" ;
+        ncbio:typeOfGene "protein-coding" ;
+        ncbio:nomenclatureStatus "official" ;
+        ncbio:fullName "alpha-1-B glycoprotein" ;
+        insdc:chromosome "19" ;
+        insdc:map "19q13.43" ;
+        insdc:dblink <http://identifiers.org/ensembl/ENSG00000121410>,
+                     <http://identifiers.org/hgnc/5>,
+                     <http://identifiers.org/mim/138670> ;
+        insdc:db_xref "AllianceGenome:HGNC:5" ;
+        ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+        dct:modified "2024-11-14" .
+
+  - title: Non-Coding RNA Gene (LINC00165)
+    description: Long intergenic non-protein coding RNA with alternative names and genomic coordinates.
+    rdf: |
+      @prefix insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#> .
+      @prefix dct: <http://purl.org/dc/terms/> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      
+      <http://identifiers.org/ncbigene/727701> a insdc:Gene ;
+        dct:identifier "727701" ;
+        rdfs:label "LINC00165" ;
+        dct:description "long intergenic non-protein coding RNA 165" ;
+        insdc:standard_name "LINC00165" ;
+        insdc:gene_synonym "C21orf135", "NLC1B", "NCRNA00165", "NLC1-B" ;
+        ncbio:typeOfGene "ncRNA" ;
+        ncbio:nomenclatureStatus "official" ;
+        ncbio:fullName "long intergenic non-protein coding RNA 165" ;
+        insdc:chromosome "21" ;
+        insdc:map "21q22.3" ;
+        insdc:dblink <http://identifiers.org/hgnc/33166>,
+                     <http://identifiers.org/ensembl/ENSG00000261706> ;
+        ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+        dct:alternative "narcolepsy candidate-region 1 gene B",
+                       "narcolepsy candidate region gene 1B" .
+
+  - title: Gene with Orthology Information (INS)
+    description: Insulin gene demonstrating extensive orthology relationships across species.
+    rdf: |
+      @prefix insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#> .
+      @prefix orth: <http://purl.org/net/orth#> .
+      @prefix dct: <http://purl.org/dc/terms/> .
+      
+      <http://identifiers.org/ncbigene/3630> a insdc:Gene ;
+        rdfs:label "INS" ;
+        dct:description "insulin" ;
+        insdc:gene_synonym "IDDM1", "ILPR", "IDDM", "IRDN", "PNDM4", "MODY10", "IDDM2" ;
+        ncbio:typeOfGene "protein-coding" ;
+        insdc:chromosome "11" ;
+        insdc:map "11p15.5" ;
+        insdc:dblink <http://identifiers.org/hgnc/6081>,
+                     <http://identifiers.org/ensembl/ENSG00000254647>,
+                     <http://identifiers.org/mim/176730> ;
+        ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+        orth:hasOrtholog <http://identifiers.org/ncbigene/16334>,
+                         <http://identifiers.org/ncbigene/280829>,
+                         <http://identifiers.org/ncbigene/24506> .
+
+  - title: Cross-Reference Pattern Example
+    description: Gene demonstrating multiple external database links via dblink property.
+    rdf: |
+      @prefix insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#> .
+      
+      <http://identifiers.org/ncbigene/1> a insdc:Gene ;
+        rdfs:label "A1BG" ;
+        insdc:dblink <http://identifiers.org/ensembl/ENSG00000121410> ;
+        insdc:dblink <http://identifiers.org/hgnc/5> ;
+        insdc:dblink <http://identifiers.org/mim/138670> ;
+        insdc:db_xref "AllianceGenome:HGNC:5" ;
+        ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+
+  - title: Taxonomic Classification
+    description: Gene entry showing taxonomic linkage to organism via taxid property.
+    rdf: |
+      @prefix insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/> .
+      @prefix ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#> .
+      
+      <http://identifiers.org/ncbigene/3630> a insdc:Gene ;
+        rdfs:label "INS" ;
+        ncbio:typeOfGene "protein-coding" ;
+        ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+
+sparql_query_examples:
+  - title: Get Basic Gene Information
+    description: Retrieve gene symbol, description, and type for specific gene ID
+    question: What is the basic information for gene with ID 1?
+    complexity: basic
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT ?label ?description ?type_of_gene
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        <http://identifiers.org/ncbigene/1> a insdc:Gene ;
+          rdfs:label ?label ;
+          ncbio:typeOfGene ?type_of_gene .
+        OPTIONAL { <http://identifiers.org/ncbigene/1> dct:description ?description }
+      }
+
+  - title: List Genes by Type
+    description: Find all genes of a specific type (e.g., protein-coding) for human
+    question: What are some protein-coding genes in human?
+    complexity: basic
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT ?gene ?label ?description
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              ncbio:typeOfGene "protein-coding" ;
+              ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+        OPTIONAL { ?gene dct:description ?description }
+      }
+      LIMIT 10
+
+  - title: Search Gene Symbols Using bif:contains
+    description: Fast full-text search for gene symbols (short codes like INS, BRCA1, TP53)
+    question: Find genes with symbols INS, BRCA1, or TP53
+    complexity: intermediate
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT ?gene ?label ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+        ?label bif:contains "'INS' OR 'BRCA1' OR 'TP53'" option (score ?sc) .
+        OPTIONAL { ?gene dct:description ?description }
+      }
+      ORDER BY DESC(?sc)
+
+  - title: Search Full Gene Names Using bif:contains
+    description: Search for genes by keywords in their full names (e.g., "insulin", "kinase")
+    question: Find genes with "insulin" in their full name ranked by relevance
+    complexity: intermediate
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT ?gene ?label ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              dct:description ?description ;
+              ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+        ?description bif:contains "'insulin'" option (score ?sc) .
+      }
+      ORDER BY DESC(?sc)
+      LIMIT 20
+
+  - title: Complex Keyword Search with Boolean Logic
+    description: Advanced full-text search combining multiple keywords with AND, OR, NOT operators
+    question: Find genes related to cancer or tumor but not suppressors
+    complexity: intermediate
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      
+      SELECT ?gene ?label ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              dct:description ?description ;
+              ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+              ncbio:typeOfGene "protein-coding" .
+        ?description bif:contains "('cancer' OR 'tumor') AND NOT 'suppressor'" option (score ?sc) .
+      }
+      ORDER BY DESC(?sc)
+      LIMIT 20
+
+  - title: Get Gene Chromosomal Location
+    description: Retrieve genes located on a specific chromosome with precise mapping
+    question: Which genes are located on chromosome 19 in human?
+    complexity: intermediate
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      
+      SELECT ?gene ?label ?chromosome ?map
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              insdc:chromosome ?chromosome ;
+              ncbio:taxid <http://identifiers.org/taxonomy/9606> .
+        FILTER(?chromosome = "19")
+        OPTIONAL { ?gene insdc:map ?map }
+      }
+      LIMIT 100
+
+  - title: Explore Orthology Relationships
+    description: Find orthologous genes across species using hasOrtholog relationships
+    question: What are the orthologous genes for human INS gene?
+    complexity: advanced
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX orth: <http://purl.org/net/orth#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      
+      SELECT ?gene_label ?ortholog ?ortholog_label ?ortholog_taxid
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        <http://identifiers.org/ncbigene/3630> rdfs:label ?gene_label ;
+                                                orth:hasOrtholog ?ortholog .
+        ?ortholog rdfs:label ?ortholog_label ;
+                  ncbio:taxid ?ortholog_taxid .
+      }
+      LIMIT 100
+
+  - title: Complex Gene Annotation Query
+    description: Comprehensive gene information including all metadata and relationships
+    question: Get complete annotation for a specific gene including synonyms and cross-references
+    complexity: advanced
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX orth: <http://purl.org/net/orth#>
+      
+      SELECT ?label ?description ?type_of_gene ?nomenclature_status 
+             ?chromosome ?map (GROUP_CONCAT(DISTINCT ?synonym; separator="; ") as ?synonyms)
+             (GROUP_CONCAT(DISTINCT ?dblink; separator="; ") as ?external_links)
+             (COUNT(DISTINCT ?ortholog) as ?ortholog_count)
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        <http://identifiers.org/ncbigene/3630> a insdc:Gene ;
+          rdfs:label ?label ;
+          ncbio:typeOfGene ?type_of_gene .
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> dct:description ?description }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> ncbio:nomenclatureStatus ?nomenclature_status }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> insdc:chromosome ?chromosome }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> insdc:map ?map }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> insdc:gene_synonym ?synonym }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> insdc:dblink ?dblink }
+        OPTIONAL { <http://identifiers.org/ncbigene/3630> orth:hasOrtholog ?ortholog }
+      }
+      GROUP BY ?label ?description ?type_of_gene ?nomenclature_status ?chromosome ?map
+
+cross_references:
+  - pattern: insdc:dblink (IRI-based external links)
+    description: |
+      Primary mechanism for linking to external genomics databases. Links use identifiers.org URIs
+      to provide standardized cross-references to resources like Ensembl, HGNC, OMIM, and others.
+    databases:
+      Genomics:
+        - Ensembl: comprehensive gene annotations and comparative genomics
+        - HGNC: human gene nomenclature
+        - OMIM/MIM: genetic disorders and disease associations
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      
+      SELECT ?gene ?external_db
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              insdc:dblink ?external_db .
+        FILTER(STRSTARTS(STR(?external_db), "http://identifiers.org/ensembl/"))
+      }
+      LIMIT 10
+
+  - pattern: insdc:db_xref (string-based references)
+    description: |
+      Alternative cross-reference format using string values. Common pattern: "Database:ID"
+      (e.g., "AllianceGenome:HGNC:5"). Used for databases without standardized IRI formats.
+    databases:
+      Various:
+        - AllianceGenome: integrated genome resources
+        - Other databases using string-based identifiers
+    sparql: |
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      
+      SELECT ?gene ?db_xref
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              insdc:db_xref ?db_xref .
+        FILTER(CONTAINS(?db_xref, "AllianceGenome"))
+      }
+      LIMIT 10
+
+  - pattern: orth:hasOrtholog (orthology relationships)
+    description: |
+      Bidirectional relationships between orthologous genes across species. Links genes that
+      evolved from common ancestral genes, enabling comparative genomics and functional inference.
+    databases:
+      Internal:
+        - NCBI Gene: orthology computed within NCBI Gene database
+    sparql: |
+      PREFIX orth: <http://purl.org/net/orth#>
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      
+      SELECT ?gene1 ?gene2
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene1 a insdc:Gene ;
+               orth:hasOrtholog ?gene2 .
+      }
+      LIMIT 10
+
+  - pattern: ncbio:taxid (taxonomic linkage)
+    description: |
+      Links genes to their source organism via NCBI Taxonomy IDs. Essential for filtering
+      genes by species and understanding phylogenetic context.
+    databases:
+      Taxonomy:
+        - NCBI Taxonomy: comprehensive organism classification
+    sparql: |
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      
+      SELECT ?gene ?taxid
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              ncbio:taxid ?taxid .
+      }
+      LIMIT 10
+
+architectural_notes:
+  schema_design:
+    - Single entity type (Gene) with comprehensive property coverage
+    - Uses identifiers.org URIs for consistent cross-database linking
+    - Distinguishes between IRI-based (dblink) and string-based (db_xref) external references
+    - Bidirectional orthology relationships support comparative genomics workflows
+    - Taxonomic classification through taxid enables species-specific queries
+    - Label vs Description distinction: rdfs:label contains gene symbols (short codes), dct:description contains full gene names
+  performance:
+    - Queries filtering by typeOfGene are efficient due to high selectivity
+    - Chromosome-based filtering works well for locating genes in genomic regions
+    - Queries by specific gene ID (dct:identifier) are fast
+    - Use bif:contains for full-text search (much faster than REGEX or FILTER with CONTAINS)
+    - Broad orthology queries may be expensive; add LIMIT clauses
+    - Use FROM clause to ensure queries target correct graph
+  data_integration:
+    - Standardized identifiers.org URIs enable seamless integration with other databases
+    - HGNC links connect to official human gene nomenclature
+    - Ensembl links provide access to detailed genomic annotations
+    - OMIM links enable disease association studies
+    - Taxonomy links support cross-species comparative analysis
+  data_quality:
+    - Official nomenclature indicated by nomenclatureStatus property
+    - Gene synonyms capture historical and alternative names
+    - Multiple date stamps track data currency (dct:modified)
+    - Some properties optional (description, map location) depending on curation level
+    - Orthology completeness varies by organism
+  text_search_optimization:
+    - Use bif:contains on dct:description or ncbio:fullName for full gene names
+    - Use bif:contains on rdfs:label for gene symbols (HUGO nomenclature codes)
+    - Average label length is 11 characters (gene symbols like "INS", "BRCA1")
+    - Average description length is 46 characters (full names like "insulin receptor")
+    - bif:contains supports boolean operators (AND, OR, NOT) and relevance scoring
+
+data_statistics:
+  total_genes: 57768578
+  coverage:
+    typeOfGene_coverage: "100% (all genes classified)"
+    description_coverage: "~95% (most genes have descriptions)"
+    chromosomal_location_coverage: "~80% (varies by organism)"
+    external_links_coverage: "~70% (primarily for well-studied organisms)"
+    orthology_coverage: "~40% (extensive for model organisms)"
+  cardinality:
+    avg_synonyms_per_gene: 2.5
+    avg_external_links_per_gene: 1.8
+    avg_orthologs_per_gene: 150 (for well-studied genes)
+  gene_type_distribution:
+    protein_coding: 46105590
+    ncRNA: 3476823
+    tRNA: 3030346
+    pseudo: 2731789
+    rRNA: 993602
+    snRNA: 583997
+    snoRNA: 503582
+    biological_region: 168474
+    other: 108219
+    unknown: 60985
+  top_organisms_by_gene_count:
+    - "Human (9606): 193,288 genes"
+    - "Organism 495146: 186,828 genes"
+    - "Organism 4565: 155,762 genes"
+  performance_characteristics:
+    - "Gene ID lookup: <1 second"
+    - "Type-based filtering: 1-5 seconds"
+    - "bif:contains text search: 1-3 seconds"
+    - "Complex orthology queries: 10-30 seconds"
+    - "Chromosome-based queries: 2-10 seconds"
+  data_quality_notes:
+    - "Well-curated for model organisms (human, mouse, rat)"
+    - "Coverage decreases for non-model organisms"
+    - "Orthology data most complete between closely related species"
+  text_field_characteristics:
+    - "rdfs:label: Average 11 characters (gene symbols like INS, BRCA1, TP53)"
+    - "dct:description: Average 46 characters (full names like 'insulin receptor')"
+    - "Both fields indexed for bif:contains full-text search"
+
+anti_patterns:
+  - title: Searching by description without organism filter
+    problem: Queries timeout when searching descriptions across all 57M+ genes
+    wrong_sparql: |
+      PREFIX dct: <http://purl.org/dc/terms/>
+      SELECT ?gene ?description
+      WHERE {
+        ?gene dct:description ?description .
+        FILTER(CONTAINS(LCASE(?description), "insulin"))
+      }
+    correct_sparql: |
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      SELECT ?gene ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+              dct:description ?description .
+        ?description bif:contains "'insulin'" option (score ?sc) .
+      }
+      ORDER BY DESC(?sc)
+      LIMIT 100
+    explanation: Always filter by organism (taxid) first and use bif:contains instead of FILTER with CONTAINS
+
+  - title: Searching for full gene names in the label field
+    problem: No results when searching for full names like "insulin" in rdfs:label
+    wrong_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      SELECT ?gene ?label
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label .
+        ?label bif:contains "'insulin'" option (score ?sc) .
+      }
+    correct_sparql: |
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      SELECT ?gene ?label ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene ;
+              rdfs:label ?label ;
+              dct:description ?description .
+        ?description bif:contains "'insulin'" option (score ?sc) .
+      }
+      ORDER BY DESC(?sc)
+      LIMIT 10
+    explanation: rdfs:label contains gene SYMBOLS (INS, BRCA1), not full names. Use dct:description or ncbio:fullName for full gene names
+
+  - title: Querying orthologs without LIMIT
+    problem: Orthology queries can return millions of relationships causing timeouts
+    wrong_sparql: |
+      PREFIX orth: <http://purl.org/net/orth#>
+      SELECT ?gene1 ?gene2
+      WHERE {
+        ?gene1 orth:hasOrtholog ?gene2 .
+      }
+    correct_sparql: |
+      PREFIX orth: <http://purl.org/net/orth#>
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      SELECT ?gene1 ?gene2
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        <http://identifiers.org/ncbigene/3630> orth:hasOrtholog ?gene2 .
+        ?gene2 a insdc:Gene .
+      }
+      LIMIT 100
+    explanation: Start with specific gene and add LIMIT; avoid open-ended orthology traversal
+
+common_errors:
+  - error: "Query timeout or no results"
+    causes:
+      - "Searching across all 57M+ genes without organism filter"
+      - "Open-ended orthology queries without LIMIT"
+      - "Missing FROM clause specifying the graph"
+      - "Using FILTER with CONTAINS instead of bif:contains"
+      - "Overly broad FILTER conditions on optional properties"
+    solutions:
+      - "Always filter by ncbio:taxid early in the query"
+      - "Use bif:contains for text search instead of FILTER with CONTAINS or REGEX"
+      - "Add LIMIT clauses (typically 10-1000) to control result size"
+      - "Include FROM <http://rdfportal.org/dataset/ncbigene> in all queries"
+      - "Use specific gene IDs when possible instead of broad searches"
+    example_fix: |
+      # Before (slow with FILTER):
+      SELECT ?gene ?description
+      WHERE {
+        ?gene dct:description ?description .
+        FILTER(CONTAINS(?description, "insulin"))
+      }
+      
+      # After (fast with bif:contains):
+      PREFIX ncbio: <https://dbcls.github.io/ncbigene-rdf/ontology.ttl#>
+      PREFIX dct: <http://purl.org/dc/terms/>
+      SELECT ?gene ?description ?sc
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene ncbio:taxid <http://identifiers.org/taxonomy/9606> ;
+              dct:description ?description .
+        ?description bif:contains "'insulin'" option (score ?sc) .
+      }
+      ORDER BY DESC(?sc)
+      LIMIT 100
+
+  - error: "Searching full gene names returns no results"
+    causes:
+      - "Searching for full names like 'insulin' in rdfs:label field"
+      - "Confusion between gene symbols and gene names"
+      - "Not understanding the difference between label and description fields"
+    solutions:
+      - "Use rdfs:label ONLY for gene symbols (INS, BRCA1, TP53, etc.)"
+      - "Use dct:description or ncbio:fullName for full gene names"
+      - "Remember: labels are short codes (~11 chars), descriptions are full names (~46 chars)"
+      - "When in doubt, search both fields or use description for keyword searches"
+    example_fix: |
+      # Wrong - searching for full name "insulin" in label field:
+      ?label bif:contains "'insulin'"  # Returns nothing!
+      
+      # Correct - search symbol in label:
+      ?label bif:contains "'INS'"  # Returns INS gene
+      
+      # Correct - search full name in description:
+      ?description bif:contains "'insulin'"  # Returns insulin-related genes
+
+  - error: "Empty results for valid gene IDs"
+    causes:
+      - "Using wrong identifier format (integer vs string)"
+      - "Forgetting to specify the full URI"
+      - "Missing FROM clause"
+      - "Gene ID doesn't exist or was discontinued"
+    solutions:
+      - "Use full URI: <http://identifiers.org/ncbigene/GENE_ID>"
+      - "Verify gene ID exists in NCBI Gene database"
+      - "Always include FROM <http://rdfportal.org/dataset/ncbigene>"
+      - "Check dct:modified date to ensure gene entry is current"
+    example_fix: |
+      # Wrong (won't work):
+      SELECT * WHERE { ?gene dct:identifier 1 }
+      
+      # Correct:
+      PREFIX dct: <http://purl.org/dc/terms/>
+      SELECT * 
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        <http://identifiers.org/ncbigene/1> ?p ?o .
+      }
+
+  - error: "Missing external links or cross-references"
+    causes:
+      - "Using wrong property (dblink vs db_xref)"
+      - "Not accounting for OPTIONAL nature of some properties"
+      - "External database coverage varies by organism"
+      - "Some genes lack cross-references due to incomplete curation"
+    solutions:
+      - "Use both insdc:dblink and insdc:db_xref to find all links"
+      - "Wrap external link patterns in OPTIONAL blocks"
+      - "Filter by well-curated organisms (human, mouse) for better coverage"
+      - "Check if gene type typically has fewer external annotations"
+    example_fix: |
+      # Incomplete (misses db_xref):
+      SELECT ?gene ?external
+      WHERE {
+        ?gene insdc:dblink ?external .
+      }
+      
+      # Complete:
+      PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+      SELECT ?gene ?external_link ?xref
+      FROM <http://rdfportal.org/dataset/ncbigene>
+      WHERE {
+        ?gene a insdc:Gene .
+        OPTIONAL { ?gene insdc:dblink ?external_link }
+        OPTIONAL { ?gene insdc:db_xref ?xref }
+      }
+      LIMIT 100

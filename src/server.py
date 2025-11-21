@@ -28,13 +28,19 @@ SPARQL_ENDPOINT = {
     "mesh": "https://rdfportal.org/primary/sparql",
     "go": "https://rdfportal.org/primary/sparql",
     "taxonomy": "https://rdfportal.org/primary/sparql",
-    "wikidata": "https://query.wikidata.org/sparql",
     "mondo": "https://rdfportal.org/primary/sparql",
     "ddbj": "https://rdfportal.org/ddbj/sparql",
     "glycosmos": "https://ts.glycosmos.org/sparql",
     "bacdive": "https://rdfportal.org/primary/sparql",
     "mediadive": "https://rdfportal.org/primary/sparql",
-    "clinvar": "https://rdfportal.org/ncbi/sparql"
+    "clinvar": "https://rdfportal.org/ncbi/sparql",
+    "ensembl": "https://rdfportal.org/ebi/sparql",
+    "nando": "https://rdfportal.org/primary/sparql",
+    "pubmed": "https://rdfportal.org/ncbi/sparql",
+    "pubtator": "https://rdfportal.org/ncbi/sparql",
+    "ncbigene": "https://rdfportal.org/ncbi/sparql",
+    "medgen": "https://rdfportal.org/ncbi/sparql",
+    "rhea": "https://rdfportal.org/sib/sparql"
 }
 
 # The MIE files are used to define the shape expressions for SPARQL queries. 

@@ -21,6 +21,7 @@ Create documentation that is **compact, clear, and complete** - sufficient for r
   - **If an existing MIE file is found**: Perform compliance check (see section 1.2 below)
   - **If compliant**: Update/improve the file as needed
   - **If non-compliant**: Create a new MIE file from scratch
+- Attempt `get_sparql_example(dbname)` to retrieve an example SPARQL query
 
 **Step 2: Discover Schema/Ontology Definitions** (5 minutes)
 ```sparql
@@ -296,13 +297,14 @@ Before finalizing, verify:
 ## Available Tools
 - `get_sparql_endpoints()` - Get available SPARQL endpoints
 - `get_graph_list(dbname)` - List named graphs in database
+- `get_sparql_example(dbname)` - Get an example SPARQL query
 - `run_sparql(dbname, sparql_query)` - Execute SPARQL queries
 - `get_shex(dbname)` - Retrieve ShEx schema if available
 - `get_MIE_file(dbname)` - Retrieve existing MIE file if available
 - `save_MIE_file(dbname, mie_content)` - Save the final MIE file
 
-## Special notes for the Virtuoso backend.
-If the backend database is Virtuoso, use `bif:contains` for keyword filtering.
+## Using `bif:contains` for the Virtuoso backend.
+If the backend database is Virtuoso, **DO use `bif:contains` for string filtering whenever possible.**
 ```sparql
 SELECT ?label
 WHERE {
@@ -312,7 +314,9 @@ WHERE {
 ORDER BY DESC (?sc)
 LIMIT 50
 ```
-You can sort the results by ?sc (keyword match score).
+You can sort the results by `?sc` (keyword relevance score).　
+**DON'T use `?score` for the variable name** That would result in an error.
+
 ## MIE File Structure Template
 ```yaml
 schema_info:
