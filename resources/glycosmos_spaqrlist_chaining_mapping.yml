@@ -88,7 +88,7 @@ chains:
       - external_ids
   
   - chain_name: disease_to_glycan_motifs
-    descripttion: |
+    description: |
       Retrieve GlyTouCan accession number and the motifs that is associated with a given disease
       Example: “Please tell me about the glycans and their motifs that bind to the influenza virus.”
     steps:

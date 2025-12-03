@@ -1,0 +1,258 @@
+# Scoring Rubrics for RDF Portal Validation
+# Each question type has specific criteria
+
+# =============================================================================
+# QUANTITATIVE QUESTIONS (exact counts, values)
+# =============================================================================
+quantitative_rubric:
+  description: "Questions requiring exact numeric answers"
+  examples: [Q001, Q002, Q003, Q004, Q005, Q021, Q026]
+  
+  scoring:
+    score_3:
+      name: "Exact/Excellent"
+      criteria:
+        - "Exact value matches ground truth"
+        - "OR within 1% of ground truth for large counts"
+        - "Correct units specified"
+        - "Query executed successfully on first or second attempt"
+      
+    score_2:
+      name: "Close/Good"
+      criteria:
+        - "Value within 5% of ground truth"
+        - "OR correct order of magnitude with reasonable estimate"
+        - "Minor unit or precision issues"
+        - "Query required 3+ iterations but succeeded"
+      
+    score_1:
+      name: "Approximate/Partial"
+      criteria:
+        - "Value within 20% of ground truth"
+        - "OR correct order of magnitude"
+        - "Significant methodology issues"
+      
+    score_0:
+      name: "Incorrect/Failed"
+      criteria:
+        - "Value differs by >20% from ground truth"
+        - "OR query failed completely"
+        - "OR wrong entity/concept queried"
+
+  metrics_to_capture:
+    - absolute_error: "ground_truth - returned_value"
+    - relative_error: "(ground_truth - returned_value) / ground_truth"
+    - query_attempts: "number of SPARQL attempts"
+    - time_to_answer: "seconds from question to final answer"
+
+# =============================================================================
+# ENUMERATION QUESTIONS (complete lists)
+# =============================================================================
+enumeration_rubric:
+  description: "Questions requiring complete listing of items"
+  examples: [Q006, Q007, Q008, Q022, Q025, Q027, Q029]
+  
+  scoring:
+    score_3:
+      name: "Complete/Excellent"
+      criteria:
+        - "Recall >= 95% (found 95%+ of ground truth items)"
+        - "Precision = 100% (no false positives)"
+        - "No significant omissions of major items"
+      
+    score_2:
+      name: "Good Coverage"
+      criteria:
+        - "Recall >= 80%"
+        - "Precision >= 95%"
+        - "May miss some minor items"
+      
+    score_1:
+      name: "Partial Coverage"
+      criteria:
+        - "Recall >= 50%"
+        - "Precision >= 80%"
+        - "Missing major items"
+      
+    score_0:
+      name: "Poor/Failed"
+      criteria:
+        - "Recall < 50%"
+        - "OR Precision < 80%"
+        - "OR query failed"
+
+  metrics_to_capture:
+    - recall: "items_found / ground_truth_count"
+    - precision: "correct_items / returned_items"
+    - f1_score: "2 * (precision * recall) / (precision + recall)"
+    - false_positives: "list of incorrect items returned"
+    - false_negatives: "list of ground truth items missed"
+
+# =============================================================================
+# MULTI-CRITERIA QUESTIONS (complex filtering)
+# =============================================================================
+multi_criteria_rubric:
+  description: "Questions requiring multiple filter conditions"
+  examples: [Q009, Q010, Q011, Q012, Q023, Q024, Q028, Q030]
+  
+  scoring:
+    score_3:
+      name: "Correct & Complete"
+      criteria:
+        - "All filter criteria correctly applied"
+        - "Results satisfy ALL conditions"
+        - "Reasonable completeness of results"
+        - "Query efficient and well-formed"
+      
+    score_2:
+      name: "Mostly Correct"
+      criteria:
+        - "Most filter criteria correctly applied"
+        - "Results mostly satisfy conditions"
+        - "Minor issues with edge cases"
+        - "Query required iteration but succeeded"
+      
+    score_1:
+      name: "Partial Success"
+      criteria:
+        - "Some filter criteria applied"
+        - "Results partially match conditions"
+        - "Missing one or more major criteria"
+      
+    score_0:
+      name: "Failed"
+      criteria:
+        - "Criteria not properly applied"
+        - "Results don't match conditions"
+        - "Query failed or timed out"
+
+  metrics_to_capture:
+    - criteria_applied: "list of conditions successfully applied"
+    - criteria_missed: "list of conditions not applied"
+    - result_validity: "fraction of results meeting all criteria"
+    - query_complexity: "number of joins/filters in query"
+    - iterations_needed: "attempts to get working query"
+
+# =============================================================================
+# CROSS-DATABASE QUESTIONS (integration across sources)
+# =============================================================================
+cross_database_rubric:
+  description: "Questions requiring data from multiple databases"
+  examples: [Q013, Q014, Q015, Q016]
+  
+  scoring:
+    score_3:
+      name: "Successful Integration"
+      criteria:
+        - "Correctly linked entities across databases"
+        - "Used appropriate identifiers/URIs"
+        - "Results are valid cross-references"
+        - "Complete or near-complete coverage"
+      
+    score_2:
+      name: "Partial Integration"
+      criteria:
+        - "Linked entities but with some issues"
+        - "May have missed some cross-references"
+        - "Results mostly valid"
+      
+    score_1:
+      name: "Limited Success"
+      criteria:
+        - "Only partial linking achieved"
+        - "Significant cross-reference issues"
+        - "Or only single database queried"
+      
+    score_0:
+      name: "Failed"
+      criteria:
+        - "Could not link across databases"
+        - "Wrong identifiers used"
+        - "Query failed"
+
+  metrics_to_capture:
+    - databases_used: "list of databases queried"
+    - link_success_rate: "valid_links / attempted_links"
+    - identifier_correctness: "correct_ids / total_ids"
+    - integration_method: "federated query vs. sequential"
+
+# =============================================================================
+# VERIFICATION QUESTIONS (fact-checking)
+# =============================================================================
+verification_rubric:
+  description: "Questions verifying specific claims"
+  examples: [Q017, Q018, Q019, Q020]
+  
+  scoring:
+    score_3:
+      name: "Verified with Evidence"
+      criteria:
+        - "Correct answer (matches ground truth)"
+        - "Provides supporting evidence from database"
+        - "Evidence is relevant and authoritative"
+      
+    score_2:
+      name: "Correct but Limited Evidence"
+      criteria:
+        - "Correct answer"
+        - "Some supporting evidence"
+        - "Evidence could be more specific"
+      
+    score_1:
+      name: "Partially Correct"
+      criteria:
+        - "Answer is directionally correct"
+        - "But missing key details"
+        - "Or weak evidence"
+      
+    score_0:
+      name: "Incorrect/No Verification"
+      criteria:
+        - "Wrong answer"
+        - "Or no evidence provided"
+        - "Or evidence contradicts claim"
+
+  metrics_to_capture:
+    - answer_correctness: "boolean"
+    - evidence_provided: "boolean"
+    - evidence_quality: "high/medium/low"
+    - source_authority: "primary/secondary/none"
+
+# =============================================================================
+# PROCESS METRICS (applicable to all questions)
+# =============================================================================
+process_metrics:
+  description: "Metrics about the answering process itself"
+  
+  metrics:
+    - tool_calls:
+        description: "Number of tool invocations"
+        breakdown:
+          - get_MIE_file_calls
+          - run_sparql_calls
+          - other_tool_calls
+    
+    - query_iterations:
+        description: "SPARQL attempts before success"
+        levels:
+          - first_attempt_success: 1
+          - minor_iteration: 2-3
+          - significant_iteration: 4-5
+          - extensive_iteration: ">5"
+    
+    - error_types:
+        description: "Categories of errors encountered"
+        categories:
+          - timeout
+          - syntax_error
+          - empty_results
+          - wrong_pattern
+          - type_mismatch
+    
+    - time_to_answer:
+        description: "Seconds from question to final answer"
+        measurement: "wall clock time"
+    
+    - mie_file_usage:
+        description: "Whether MIE file was consulted"
+        options: ["used", "not_used", "partially_used"]

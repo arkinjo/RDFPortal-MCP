@@ -1,11 +1,9 @@
 import httpx
-from fastmcp import FastMCP
 from typing import List, Dict, Annotated
 from pydantic import Field
 import json
 
-
-mcp = FastMCP("TogoMCP Support API Tools")
+from .server import mcp
 
 ######################################
 #####　Database-specific tools ########
@@ -643,5 +641,3 @@ async def epitope_id_to_epitope_name(epitope_id: str) -> str:
     data = response.json()
     return json.dumps(data)
 
-if __name__ == "__main__":
-    mcp.run()

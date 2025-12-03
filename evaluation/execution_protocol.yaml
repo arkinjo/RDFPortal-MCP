@@ -1,0 +1,230 @@
+# RDF Portal MCP Server - Exhaustive Validation Protocol
+# Version: 1.0
+# Estimated Time: 4-6 hours for complete validation
+
+# =============================================================================
+# OVERVIEW
+# =============================================================================
+
+overview:
+  purpose: "Systematically evaluate RDF Portal MCP Server effectiveness"
+  methodology: "Three-arm comparison (Baseline vs Treatment vs Ground Truth)"
+  questions: 30
+  categories: 5
+  estimated_duration: "4-6 hours"
+
+# =============================================================================
+# PRE-VALIDATION SETUP
+# =============================================================================
+
+setup:
+  step_1_environment:
+    description: "Ensure consistent testing environment"
+    checklist:
+      - "Fresh conversation/session for each test arm"
+      - "Same model version for both arms"
+      - "RDF Portal MCP Server connected and functional"
+      - "Network connectivity stable"
+      - "Recording template ready"
+  
+  step_2_ground_truth:
+    description: "Verify all ground truth values before testing"
+    checklist:
+      - "Run verification SPARQL queries for quantitative questions"
+      - "Confirm enumeration lists are complete"
+      - "Document verification date and method"
+      - "Note any data that may change over time"
+  
+  step_3_randomization:
+    description: "Randomize question order to avoid learning effects"
+    method: "Use random permutation of question IDs"
+    seed: "Document seed for reproducibility"
+
+# =============================================================================
+# EXECUTION PROTOCOL
+# =============================================================================
+
+execution:
+  
+  # ---------------------------------------------------------------------------
+  # ARM A: BASELINE (No Tools)
+  # ---------------------------------------------------------------------------
+  arm_a_baseline:
+    name: "Baseline - LLM without RDF Portal"
+    instructions:
+      - "Start fresh conversation WITHOUT MCP tools enabled"
+      - "Present each question exactly as written"
+      - "Do NOT provide hints about databases or SPARQL"
+      - "Record the answer as-is"
+      - "Do NOT allow follow-up or iteration"
+    
+    prompt_template: |
+      Please answer the following question to the best of your ability:
+      
+      {question}
+      
+      Provide your answer directly. If you need to estimate, give your best estimate.
+    
+    recording:
+      - answer_text: "Full response"
+      - answer_value: "Extracted numeric/list value"
+      - confidence_stated: "Any confidence qualifiers"
+      - time_taken: "Response time"
+      - caveats_mentioned: "Any limitations noted"
+
+  # ---------------------------------------------------------------------------
+  # ARM B: TREATMENT (With RDF Portal)
+  # ---------------------------------------------------------------------------
+  arm_b_treatment:
+    name: "Treatment - LLM with RDF Portal MCP"
+    instructions:
+      - "Start fresh conversation WITH MCP tools enabled"
+      - "Present each question exactly as written"
+      - "Allow system to use tools as it sees fit"
+      - "Record all tool calls and results"
+      - "Allow iteration (up to 5 attempts per question)"
+    
+    prompt_template: |
+      Please answer the following question using the available RDF Portal tools:
+      
+      {question}
+      
+      Use the appropriate databases and SPARQL queries to find the answer.
+    
+    recording:
+      - answer_text: "Full response"
+      - answer_value: "Extracted numeric/list value"
+      - tools_used: "List of tool calls"
+      - sparql_queries: "All SPARQL queries attempted"
+      - iterations: "Number of attempts"
+      - errors_encountered: "Any errors and how resolved"
+      - time_taken: "Total time including iterations"
+      - mie_file_used: "Whether MIE file was consulted"
+
+  # ---------------------------------------------------------------------------
+  # COMPARISON
+  # ---------------------------------------------------------------------------
+  comparison:
+    name: "Compare Arm A vs Arm B vs Ground Truth"
+    for_each_question:
+      - "Score Arm A against ground truth using rubric"
+      - "Score Arm B against ground truth using rubric"
+      - "Calculate improvement (Arm B score - Arm A score)"
+      - "Categorize value added type"
+      - "Note any surprising results"
+
+# =============================================================================
+# QUESTION-BY-QUESTION PROTOCOL
+# =============================================================================
+
+per_question_protocol:
+  
+  step_1_setup:
+    actions:
+      - "Record question ID and text"
+      - "Note category and difficulty"
+      - "Retrieve ground truth from verification"
+  
+  step_2_baseline:
+    actions:
+      - "Present question in fresh no-tools session"
+      - "Record response verbatim"
+      - "Extract answer value"
+      - "Score against rubric"
+      - "Record time"
+  
+  step_3_treatment:
+    actions:
+      - "Present question in fresh MCP-enabled session"
+      - "Observe tool usage"
+      - "Record all SPARQL queries"
+      - "Note any iterations/errors"
+      - "Record final response"
+      - "Extract answer value"
+      - "Score against rubric"
+      - "Record time"
+  
+  step_4_comparison:
+    actions:
+      - "Compare both answers to ground truth"
+      - "Calculate precision metrics"
+      - "Determine value added category"
+      - "Note qualitative observations"
+
+# =============================================================================
+# BATCH EXECUTION ORDER
+# =============================================================================
+
+execution_order:
+  description: "Execute in batches by difficulty to manage fatigue"
+  
+  batch_1_easy:
+    questions: [Q001, Q002, Q003, Q004, Q017, Q018, Q027, Q029]
+    estimated_time: "45-60 minutes"
+    purpose: "Warm-up and establish baseline patterns"
+  
+  batch_2_medium:
+    questions: [Q005, Q006, Q007, Q009, Q013, Q014, Q019, Q020, Q021, Q022, Q026]
+    estimated_time: "90-120 minutes"
+    purpose: "Core evaluation of typical use cases"
+  
+  batch_3_hard:
+    questions: [Q008, Q010, Q011, Q012, Q015, Q016, Q023, Q024, Q025, Q028, Q030]
+    estimated_time: "120-150 minutes"
+    purpose: "Stress test complex queries"
+  
+  breaks:
+    - "10 minute break between batches"
+    - "Note any environmental changes"
+
+# =============================================================================
+# POST-VALIDATION ANALYSIS
+# =============================================================================
+
+analysis:
+  
+  quantitative_analysis:
+    - "Calculate mean scores by category (Baseline vs Treatment)"
+    - "Calculate improvement percentages"
+    - "Statistical significance testing (paired t-test or Wilcoxon)"
+    - "Breakdown by difficulty level"
+    - "Breakdown by database"
+  
+  qualitative_analysis:
+    - "Categorize failure modes"
+    - "Identify patterns in successful queries"
+    - "Note where baseline outperformed treatment (if any)"
+    - "Document edge cases and surprises"
+  
+  value_added_classification:
+    categories:
+      - precision: "Exact value vs estimate"
+      - completeness: "Full list vs examples"
+      - capability: "Possible vs impossible"
+      - verification: "Confirmed vs assumed"
+      - currency: "Current data vs training knowledge"
+      - none: "No improvement"
+
+# =============================================================================
+# REPORTING
+# =============================================================================
+
+reporting:
+  
+  summary_statistics:
+    - "Overall accuracy: Baseline vs Treatment"
+    - "By category breakdown"
+    - "By difficulty breakdown"
+    - "By database breakdown"
+  
+  key_findings:
+    - "Top 5 questions where RDF Portal added most value"
+    - "Top 5 questions where RDF Portal struggled"
+    - "Common failure patterns"
+    - "Recommendations for improvement"
+  
+  visualizations:
+    - "Bar chart: Scores by category"
+    - "Scatter plot: Baseline vs Treatment scores"
+    - "Confusion matrix: Expected vs actual results"
+    - "Time analysis: Query complexity vs time"

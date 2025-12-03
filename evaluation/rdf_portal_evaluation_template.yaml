@@ -1,0 +1,18 @@
+id: Q001
+question: "[Natural language question]"
+category: enumeration | quantitative | multi-criteria | cross-database | verification
+difficulty: easy | medium | hard
+why_rdf_portal: "[What value does the database add?]"
+databases_required:
+  - database1
+  - database2
+expected_tools:
+  - get_MIE_file
+  - run_sparql
+expected_sparql_pattern: "[Key query elements]"
+ground_truth: "[Verified answer or count]"
+llm_baseline: "[What I would say without tools]"
+evaluation_criteria:
+  - correctness: "[Is answer factually correct?]"
+  - completeness: "[Are all results returned?]"
+  - query_efficiency: "[Was the query well-formed?]"

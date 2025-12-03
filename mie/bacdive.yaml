@@ -493,7 +493,7 @@ cross_references:
       information maintained by different institutions worldwide.
     databases:
       German Collections:
-        - DSMZ: >90% strain coverage
+        - DSMZ: ">90% strain coverage"
       Japanese Collections:
         - JCM: ~40% strain coverage
         - NBRC: ~35% strain coverage
@@ -784,7 +784,7 @@ common_errors:
       - Use as triple pattern: ?var bif:contains "'keyword'" option (score ?sc)
       - Never use ?score as variable name; use ?sc, ?s, or another name
       - Always wrap keywords in single quotes: "'keyword'"
-      - Boolean operators syntax: "'keyword1' AND 'keyword2'", "'keyword1' OR 'keyword2'", "'keyword1' AND NOT 'keyword2'"
+      - "Boolean operators syntax: \"'keyword1' AND 'keyword2'\", \"'keyword1' OR 'keyword2'\", \"'keyword1' AND NOT 'keyword2'\""
       - Parentheses for grouping: "('keyword1' OR 'keyword2') AND 'keyword3'"
     example_fix: |
       # Wrong - in FILTER with ?score:

@@ -2,6 +2,10 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["togo_mcp*"]
+
 [project]
 name = "rdfportal-mcp"
 version = "0.1.0"
@@ -23,6 +27,9 @@ dependencies = [
     "pydantic>=2.0" #,
 #    "pyrudof>=0.1.90"
 ]
+
+[project.scripts]
+togo-mcp-server = "togo_mcp.main:run"
 
 [project.urls]
 "Homepage" = "https://github.com/arkinjo/RDFPortal-MCP"

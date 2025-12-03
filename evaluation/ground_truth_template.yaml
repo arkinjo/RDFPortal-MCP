@@ -1,0 +1,91 @@
+# Ground Truth Verification Template
+# For each question, verify the answer using authoritative sources
+
+questions:
+  - id: Q001
+    question: "How many reviewed (Swiss-Prot) human proteins are in UniProt?"
+    
+    # Primary verification
+    verification_method: "Direct SPARQL query to RDF Portal"
+    verification_date: "2025-01-27"
+    verified_by: "Claude + Human review"
+    
+    # Ground truth answer
+    ground_truth:
+      type: exact_count
+      value: 20435
+      units: proteins
+      confidence: high
+      
+    # Verification query (reproducible)
+    verification_sparql: |
+      PREFIX up: <http://purl.uniprot.org/core/>
+      SELECT (COUNT(DISTINCT ?protein) as ?count)
+      WHERE {
+        ?protein a up:Protein ;
+                 up:reviewed 1 ;
+                 up:organism <http://purl.uniprot.org/taxonomy/9606> .
+      }
+    
+    # Alternative verification sources
+    alternative_sources:
+      - source: "UniProt website statistics"
+        url: "https://www.uniprot.org/statistics/Swiss-Prot"
+        note: "May differ slightly due to release timing"
+    
+    # Acceptable answer criteria
+    acceptance_criteria:
+      exact_match_required: false
+      acceptable_range: [19000, 22000]  # For estimates
+      exact_value: 20435  # For database queries
+      units_must_match: true
+
+  - id: Q006
+    question: "List all approved (Phase 4) drugs indicated for melanoma"
+    
+    verification_method: "Direct SPARQL query to RDF Portal"
+    verification_date: "2025-01-27"
+    verified_by: "Claude + Human review"
+    
+    ground_truth:
+      type: exhaustive_list
+      values:
+        - ALDESLEUKIN
+        - BINIMETINIB
+        - COBIMETINIB FUMARATE
+        - DABRAFENIB MESYLATE
+        - DACARBAZINE
+        - ENCORAFENIB
+        - HYDROXYUREA
+        - INTERFERON ALFA-2B
+        - IPILIMUMAB
+        - NIVOLUMAB
+        - PEGINTERFERON ALFA-2B
+        - PEMBROLIZUMAB
+        - TEBENTAFUSP
+        - TECHNETIUM TC 99M SULFUR COLLOID
+        - TRAMETINIB DIMETHYL SULFOXIDE
+        - VEMURAFENIB
+      count: 16
+      confidence: high
+    
+    verification_sparql: |
+      PREFIX cco: <http://rdf.ebi.ac.uk/terms/chembl#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      SELECT DISTINCT ?label
+      FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+      WHERE {
+        ?drugInd cco:hasMolecule ?molecule ;
+                 cco:hasMeshHeading ?indication ;
+                 cco:highestDevelopmentPhase 4 .
+        ?molecule rdfs:label ?label .
+        FILTER(CONTAINS(LCASE(?indication), "melanoma"))
+      }
+      ORDER BY ?label
+    
+    acceptance_criteria:
+      minimum_recall: 0.80  # Must get at least 80% of drugs
+      precision_required: 1.0  # All returned items must be correct
+      order_matters: false
+
+# Continue for all 30 questions...

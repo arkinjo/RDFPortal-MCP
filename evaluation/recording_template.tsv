@@ -1,0 +1,31 @@
+question_id	question_text	category	difficulty	ground_truth_value	ground_truth_type	baseline_answer	baseline_score	baseline_time_sec	treatment_answer	treatment_score	treatment_time_sec	tools_used	sparql_attempts	errors_encountered	mie_file_used	value_added_type	notes
+Q001	How many reviewed (Swiss-Prot) human proteins are in UniProt?	quantitative	easy	20435	exact_count							
+Q002	How many approved (Phase 4) drugs are in ChEMBL?	quantitative	easy	3592	exact_count							
+Q003	How many cryo-EM structures are in PDB?	quantitative	easy	15032	exact_count							
+Q004	How many human pathways are curated in Reactome?	quantitative	easy	2673	exact_count							
+Q005	What is the best (highest) resolution protein structure in PDB?	quantitative	medium	0.48 Angstrom (5D8V, 3NIR)	exact_value							
+Q006	List all approved (Phase 4) drugs indicated for melanoma	enumeration	medium	16 drugs	exhaustive_list							
+Q007	List all GO molecular function terms containing 'kinase' in the name	enumeration	medium	7 terms	exhaustive_list							
+Q008	What are all the human proteins with 'tumor suppressor' in their recommended name?	enumeration	medium	multiple proteins	exhaustive_list							
+Q009	What is the binding affinity (Kd) of imatinib for ABL kinase?	multi_criteria	medium	1.0-8.5 nM	value_range							
+Q010	Find kinase inhibitors with IC50 less than 10 nM	multi_criteria	hard	multiple compounds	filtered_list							
+Q011	Find human proteins localized to mitochondria that are involved in apoptosis	multi_criteria	hard	multiple proteins	filtered_list							
+Q012	What drugs in Phase 3 or higher clinical trials target EGFR?	multi_criteria	medium	multiple drugs	filtered_list							
+Q013	For UniProt protein P04637 (p53), what PDB structures are available?	cross_database	medium	30+ structures	exhaustive_list							
+Q014	Find PDB structures containing p53 and their associated UniProt accessions	cross_database	medium	multiple mappings	cross_reference							
+Q015	What pathways in Reactome involve the protein p53 (TP53)?	cross_database	hard	20+ pathways	exhaustive_list							
+Q016	What ChEBI compounds are substrates in glycolysis pathways?	cross_database	hard	multiple compounds	cross_reference							
+Q017	Is imatinib (Gleevec) approved as a drug? What is its development phase?	verification	easy	Phase 4	boolean_with_value							
+Q018	Is BRCA1 annotated as involved in DNA repair in UniProt?	verification	easy	Yes	boolean_with_evidence							
+Q019	Does aspirin (acetylsalicylic acid) inhibit COX-1 according to ChEMBL?	verification	medium	Yes - INHIBITOR	boolean_with_evidence							
+Q020	Is there experimental structural data for the SARS-CoV-2 spike protein in PDB?	verification	medium	Yes - many structures	boolean_with_evidence							
+Q021	What is the molecular weight of the p53 protein according to UniProt?	quantitative	medium	43653 Da	exact_value							
+Q022	What experimental methods have been used to determine ribosome structures?	enumeration	medium	6 methods with counts	list_with_counts							
+Q023	Find drugs that target protein kinases and have indication for cancer	multi_criteria	hard	multiple drugs	filtered_list							
+Q024	How many proteins in each GO cellular component category are reviewed in UniProt for humans?	quantitative	hard	distribution	aggregation							
+Q025	What are the top 5 most commonly targeted proteins in ChEMBL drug mechanisms?	enumeration	hard	ranked list	ranked_list							
+Q026	What is the amino acid sequence length of human insulin?	quantitative	medium	110 aa (precursor)	exact_value							
+Q027	List all organisms represented in Reactome pathways	enumeration	easy	15 organisms	exhaustive_list							
+Q028	What NMR structures exist for small peptides (< 50 residues)?	multi_criteria	hard	multiple structures	filtered_list							
+Q029	What are all the synonyms for the GO term 'apoptotic process' (GO:0006915)?	enumeration	easy	multiple synonyms	exhaustive_list							
+Q030	What drugs have mechanism data linking them to both kinase inhibition and receptor binding?	multi_criteria	hard	multiple drugs	filtered_list							

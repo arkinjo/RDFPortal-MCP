@@ -1,0 +1,971 @@
+# RDF Portal MCP Server Evaluation Q&A Set
+# Version: 1.0
+# Created: 2025-01-27
+# Purpose: Evaluate the effectiveness of the RDF Portal MCP Server for biologically relevant queries
+#
+# Categories:
+#   - enumeration: Exhaustive listing (LLM can only give examples)
+#   - quantitative: Precise counts/values (LLM would estimate)
+#   - multi_criteria: Complex filtering across multiple conditions
+#   - cross_database: Integration across multiple databases
+#   - verification: Fact-checking against authoritative sources
+
+---
+
+# =============================================================================
+# CATEGORY 1: QUANTITATIVE PRECISION
+# Questions where the database provides exact values vs. LLM estimates
+# =============================================================================
+
+- id: Q001
+  question: "How many reviewed (Swiss-Prot) human proteins are in UniProt?"
+  category: quantitative
+  difficulty: easy
+  why_rdf_portal: "Exact count from authoritative source vs. LLM estimate"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT (COUNT(DISTINCT ?protein) as ?count)
+    WHERE {
+      ?protein a up:Protein ;
+               up:reviewed 1 ;
+               up:organism <http://purl.uniprot.org/taxonomy/9606> .
+    }
+  ground_truth: 20435
+  llm_baseline: "Around 20,000 reviewed human proteins (I would estimate)"
+  evaluation_criteria:
+    correctness: "Must return exact count within 5% of ground truth"
+    completeness: "Single definitive answer"
+    query_efficiency: "Must use up:reviewed 1 filter"
+
+- id: Q002
+  question: "How many approved (Phase 4) drugs are in ChEMBL?"
+  category: quantitative
+  difficulty: easy
+  why_rdf_portal: "Exact count of marketed drugs vs. rough estimate"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT (COUNT(DISTINCT ?molecule) as ?count)
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?molecule a cco:SmallMolecule ;
+                cco:highestDevelopmentPhase 4 .
+    }
+  ground_truth: 3592
+  llm_baseline: "Approximately 2,000-4,000 approved drugs"
+  evaluation_criteria:
+    correctness: "Must return exact count"
+    completeness: "Single definitive answer"
+    query_efficiency: "Should use highestDevelopmentPhase filter"
+
+- id: Q003
+  question: "How many cryo-EM structures are in PDB?"
+  category: quantitative
+  difficulty: easy
+  why_rdf_portal: "Exact count of EM structures"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT (COUNT(DISTINCT ?entry) as ?count)
+    FROM <http://rdfportal.org/dataset/pdbj>
+    WHERE {
+      ?entry a pdbx:datablock ;
+             pdbx:has_exptlCategory/pdbx:has_exptl ?exptl .
+      ?exptl pdbx:exptl.method "ELECTRON MICROSCOPY" .
+    }
+  ground_truth: 15032
+  llm_baseline: "Over 10,000 cryo-EM structures (growing rapidly)"
+  evaluation_criteria:
+    correctness: "Must return exact count"
+    completeness: "Single definitive answer"
+    query_efficiency: "Should filter by experimental method"
+
+- id: Q004
+  question: "How many human pathways are curated in Reactome?"
+  category: quantitative
+  difficulty: easy
+  why_rdf_portal: "Exact pathway count for a specific organism"
+  databases_required:
+    - reactome
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT (COUNT(DISTINCT ?pathway) as ?count)
+    FROM <http://rdf.ebi.ac.uk/dataset/reactome>
+    WHERE {
+      ?pathway a bp:Pathway ;
+               bp:organism ?organism .
+      ?organism bp:name ?organismName .
+      FILTER(STR(?organismName) = "Homo sapiens")
+    }
+  ground_truth: 2673
+  llm_baseline: "About 2,000-3,000 human pathways"
+  evaluation_criteria:
+    correctness: "Must return exact count"
+    completeness: "Single definitive answer"
+    query_efficiency: "Must use STR() for string comparison in Reactome"
+
+- id: Q005
+  question: "What is the best (highest) resolution protein structure in PDB?"
+  category: quantitative
+  difficulty: medium
+  why_rdf_portal: "Precise resolution value and structure identifier"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?entry_id ?resolution
+    ORDER BY xsd:decimal(?resolution)
+    LIMIT 1
+  ground_truth: "5D8V and 3NIR at 0.48 Angstrom"
+  llm_baseline: "Sub-angstrom resolution, perhaps 0.5-0.6 Å"
+  evaluation_criteria:
+    correctness: "Must identify correct PDB ID and resolution"
+    completeness: "Should return top result"
+    query_efficiency: "Should use ORDER BY with numeric casting"
+
+# =============================================================================
+# CATEGORY 2: EXHAUSTIVE ENUMERATION
+# Questions where the database provides complete lists vs. LLM examples
+# =============================================================================
+
+- id: Q006
+  question: "List all approved (Phase 4) drugs indicated for melanoma"
+  category: enumeration
+  difficulty: medium
+  why_rdf_portal: "Complete list from authoritative source vs. partial examples"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?molecule ?label ?phase
+    FROM <http://rdf.ebi.ac.uk/dataset/chembl>
+    WHERE {
+      ?drugInd cco:hasMolecule ?molecule ;
+               cco:hasMeshHeading ?indication ;
+               cco:highestDevelopmentPhase ?phase .
+      FILTER(CONTAINS(LCASE(?indication), "melanoma"))
+      FILTER(?phase = 4)
+    }
+  ground_truth:
+    - ALDESLEUKIN
+    - BINIMETINIB
+    - COBIMETINIB FUMARATE
+    - DABRAFENIB MESYLATE
+    - DACARBAZINE
+    - ENCORAFENIB
+    - HYDROXYUREA
+    - INTERFERON ALFA-2B
+    - IPILIMUMAB
+    - NIVOLUMAB
+    - PEMBROLIZUMAB
+    - PEGINTERFERON ALFA-2B
+    - TALIMOGENE LAHERPAREPVEC
+    - TRAMETINIB DIMETHYL SULFOXIDE
+    - VEMURAFENIB
+  llm_baseline: "I can name some: pembrolizumab, nivolumab, ipilimumab, vemurafenib, dabrafenib, trametinib..."
+  evaluation_criteria:
+    correctness: "Results must be actual approved melanoma drugs"
+    completeness: "Should return comprehensive list (10+ drugs)"
+    query_efficiency: "Should filter by indication and phase"
+
+- id: Q007
+  question: "List all GO molecular function terms containing 'kinase' in the name"
+  category: enumeration
+  difficulty: medium
+  why_rdf_portal: "Complete ontology enumeration vs. examples"
+  databases_required:
+    - go
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?go ?label
+    WHERE {
+      ?go rdfs:label ?label .
+      ?go oboinowl:hasOBONamespace "molecular_function" .
+      ?label bif:contains "'kinase'" .
+      FILTER(STRSTARTS(STR(?go), "http://purl.obolibrary.org/obo/GO_"))
+    }
+  ground_truth:
+    terms:
+      - "protein kinase activity (GO:0004672)"
+      - "protein tyrosine kinase activity (GO:0004713)"
+      - "transmembrane receptor protein tyrosine kinase activity (GO:0004714)"
+      - "glycerol kinase activity (GO:0004370)"
+      - "phosphorylase kinase activity (GO:0004689)"
+    count: 7
+  llm_baseline: "Protein kinase activity, tyrosine kinase activity, serine/threonine kinase activity..."
+  evaluation_criteria:
+    correctness: "Must return valid GO terms"
+    completeness: "Should return all matching terms"
+    query_efficiency: "Must use bif:contains and namespace filter"
+
+- id: Q008
+  question: "What are all the human proteins with 'tumor suppressor' in their recommended name?"
+  category: enumeration
+  difficulty: medium
+  why_rdf_portal: "Complete list from curated annotations"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?protein ?mnemonic ?fullName
+    WHERE {
+      ?protein a up:Protein ;
+               up:mnemonic ?mnemonic ;
+               up:reviewed 1 ;
+               up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+               up:recommendedName ?name .
+      ?name up:fullName ?fullName .
+      ?fullName bif:contains "'tumor suppressor'"
+    }
+  ground_truth:
+    examples:
+      - "VHL_HUMAN - von Hippel-Lindau disease tumor suppressor"
+      - "ARF_HUMAN - Tumor suppressor ARF"
+      - "TUSC2_HUMAN - Tumor suppressor candidate 2"
+      - "TUSC3_HUMAN - Tumor suppressor candidate 3"
+      - "LZTS1_HUMAN - Leucine zipper putative tumor suppressor 1"
+  llm_baseline: "p53, BRCA1, BRCA2, RB1, VHL, APC..."
+  evaluation_criteria:
+    correctness: "Must return proteins with official tumor suppressor annotations"
+    completeness: "Should be comprehensive list"
+    query_efficiency: "Must use bif:contains for text search"
+
+# =============================================================================
+# CATEGORY 3: COMPLEX MULTI-CRITERIA QUERIES
+# Questions requiring multiple filters that go beyond simple recall
+# =============================================================================
+
+- id: Q009
+  question: "What is the binding affinity (Kd) of imatinib for ABL kinase?"
+  category: multi_criteria
+  difficulty: medium
+  why_rdf_portal: "Precise bioactivity measurements with units"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?targetLabel ?activityType ?value ?units
+    WHERE {
+      ?activity cco:hasMolecule <chembl/molecule/CHEMBL941> ;
+                cco:standardType "Kd" ;
+                cco:standardValue ?value ;
+                cco:standardUnits ?units .
+    }
+  ground_truth:
+    target: "Tyrosine-protein kinase ABL"
+    values: "1.0-6.0 nM range"
+    best_kd: "1.0 nM"
+  llm_baseline: "Imatinib has high affinity for BCR-ABL, IC50 around 25-260 nM"
+  evaluation_criteria:
+    correctness: "Must return actual Kd values in nM"
+    completeness: "Should show range of measurements"
+    query_efficiency: "Must filter by activity type and units"
+
+- id: Q010
+  question: "Find kinase inhibitors with IC50 less than 10 nM"
+  category: multi_criteria
+  difficulty: hard
+  why_rdf_portal: "Database filtering by numeric criteria impossible for LLM"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?molecule ?label ?target ?targetLabel ?value ?units
+    WHERE {
+      ?activity cco:standardType "IC50" ;
+                cco:standardValue ?value ;
+                cco:standardUnits "nM" ;
+                cco:hasMolecule ?molecule .
+      ?target cco:hasProteinClassification ?protClass .
+      ?protClass skos:prefLabel ?className .
+      ?className bif:contains "'kinase'" .
+      FILTER(xsd:decimal(?value) < 10)
+    }
+  ground_truth: "Multiple potent kinase inhibitors exist with sub-10nM IC50"
+  llm_baseline: "Cannot provide specific list - would need to look up individual drugs"
+  evaluation_criteria:
+    correctness: "Must return actual potent inhibitors"
+    completeness: "Should return diverse set of compounds"
+    query_efficiency: "Must use numeric filtering with proper units"
+
+- id: Q011
+  question: "Find human proteins localized to mitochondria that are involved in apoptosis"
+  category: multi_criteria
+  difficulty: hard
+  why_rdf_portal: "Cross-filtering by localization AND function"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?protein ?mnemonic
+    WHERE {
+      ?protein a up:Protein ;
+               up:reviewed 1 ;
+               up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+               up:classifiedWith ?goTerm ;
+               up:annotation ?annot .
+      ?goTerm rdfs:label ?goLabel .
+      ?annot rdfs:comment ?function .
+      FILTER(CONTAINS(LCASE(?goLabel), "mitochondri"))
+      FILTER(CONTAINS(LCASE(?function), "apoptosis"))
+    }
+  ground_truth: 
+    examples:
+      - "BAX, BAK, BCL2, CYCS (cytochrome c)"
+  llm_baseline: "Cytochrome c, Bax, Bak, Bcl-2, SMAC/DIABLO, AIF..."
+  evaluation_criteria:
+    correctness: "Must return proteins with both annotations"
+    completeness: "Should capture key apoptotic mitochondrial proteins"
+    query_efficiency: "Should combine GO term and annotation filtering"
+
+- id: Q012
+  question: "What drugs in Phase 3 or higher clinical trials target EGFR?"
+  category: multi_criteria
+  difficulty: medium
+  why_rdf_portal: "Filtering by target AND clinical phase"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?molecule ?label ?phase ?targetLabel
+    WHERE {
+      ?mechanism cco:hasMolecule ?molecule ;
+                 cco:hasTarget ?target .
+      ?target rdfs:label ?targetLabel .
+      ?molecule rdfs:label ?label ;
+                cco:highestDevelopmentPhase ?phase .
+      ?targetLabel bif:contains "'EGFR' OR 'epidermal growth factor'" .
+      FILTER(?phase >= 3)
+    }
+  ground_truth:
+    examples:
+      - "Erlotinib (Phase 4)"
+      - "Gefitinib (Phase 4)"
+      - "Osimertinib (Phase 4)"
+      - "Afatinib (Phase 4)"
+  llm_baseline: "Erlotinib, gefitinib, afatinib, osimertinib, cetuximab..."
+  evaluation_criteria:
+    correctness: "Must return EGFR-targeting drugs"
+    completeness: "Should include both small molecules and biologics"
+    query_efficiency: "Must filter by mechanism target and phase"
+
+# =============================================================================
+# CATEGORY 4: CROSS-DATABASE INTEGRATION
+# Questions requiring data from multiple databases
+# =============================================================================
+
+- id: Q013
+  question: "For UniProt protein P04637 (p53), what PDB structures are available?"
+  category: cross_database
+  difficulty: medium
+  why_rdf_portal: "Linking protein to structural data"
+  databases_required:
+    - uniprot
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql (multiple)
+  expected_sparql_pattern: |
+    # UniProt query
+    SELECT ?pdb
+    WHERE {
+      uniprot:P04637 rdfs:seeAlso ?pdb .
+      FILTER(STRSTARTS(STR(?pdb), "http://rdf.wwpdb.org"))
+    }
+  ground_truth:
+    protein: "P04637 (Cellular tumor antigen p53)"
+    structures:
+      - "2MWY, 2MWO, 2MWP (NMR)"
+      - "Multiple crystal structures"
+  llm_baseline: "p53 has many structures including DNA-binding domain structures like 1TUP, 2AC0"
+  evaluation_criteria:
+    correctness: "Must return valid PDB IDs linked to P04637"
+    completeness: "Should return comprehensive list"
+    query_efficiency: "Should use cross-reference filtering"
+
+- id: Q014
+  question: "Find PDB structures containing p53 and their associated UniProt accessions"
+  category: cross_database
+  difficulty: medium
+  why_rdf_portal: "Reverse lookup from structure to protein"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?entry_id ?description ?uniprot_acc
+    WHERE {
+      ?entry pdbx:has_entityCategory/pdbx:has_entity ?entity .
+      ?entity pdbx:entity.pdbx_description ?description .
+      ?entry pdbx:has_struct_refCategory/pdbx:has_struct_ref ?ref .
+      ?ref pdbx:struct_ref.db_name "UNP" ;
+           pdbx:struct_ref.pdbx_db_accession ?uniprot_acc .
+      FILTER(CONTAINS(LCASE(?description), "p53"))
+    }
+  ground_truth:
+    examples:
+      - "P04637 - Cellular tumor antigen p53"
+      - "Q12888 - Tumor suppressor p53-binding protein 1"
+  llm_baseline: "p53 structures would link to UniProt P04637"
+  evaluation_criteria:
+    correctness: "Must return valid structure-protein mappings"
+    completeness: "Should include p53 and p53-binding proteins"
+    query_efficiency: "Should use text filter and struct_ref join"
+
+- id: Q015
+  question: "What pathways in Reactome involve the protein p53 (TP53)?"
+  category: cross_database
+  difficulty: hard
+  why_rdf_portal: "Linking protein identifier to pathway database"
+  databases_required:
+    - reactome
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?pathway ?pathwayName
+    WHERE {
+      ?pathway a bp:Pathway ;
+               bp:displayName ?pathwayName ;
+               bp:pathwayComponent+ ?component .
+      ?component ?role ?protein .
+      ?protein a bp:Protein ;
+               bp:displayName ?proteinName .
+      FILTER(CONTAINS(LCASE(STR(?proteinName)), "tp53") || 
+             CONTAINS(LCASE(STR(?proteinName)), "p53"))
+    }
+  ground_truth:
+    examples:
+      - "Transcriptional Regulation by TP53"
+      - "TP53 Regulates Metabolic Genes"
+      - "DNA Damage/Telomere Stress Induced Senescence"
+      - "Cell Cycle Checkpoints"
+  llm_baseline: "p53 is involved in cell cycle regulation, apoptosis, DNA repair pathways..."
+  evaluation_criteria:
+    correctness: "Must return Reactome pathway names"
+    completeness: "Should cover multiple p53 functions"
+    query_efficiency: "Should handle pathway traversal"
+
+- id: Q016
+  question: "What ChEBI compounds are substrates in glycolysis pathways?"
+  category: cross_database
+  difficulty: hard
+  why_rdf_portal: "Linking pathway reactions to chemical entities"
+  databases_required:
+    - reactome
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?molecule ?moleculeName ?chebiID
+    WHERE {
+      ?pathway a bp:Pathway ;
+               bp:displayName ?pathwayName .
+      FILTER(CONTAINS(LCASE(STR(?pathwayName)), "glycolysis"))
+      ?pathway bp:pathwayComponent ?reaction .
+      ?reaction bp:left|bp:right ?molecule .
+      ?molecule a bp:SmallMolecule ;
+                bp:displayName ?moleculeName ;
+                bp:entityReference ?molRef .
+      ?molRef bp:xref ?xref .
+      ?xref bp:db ?db ;
+            bp:id ?chebiID .
+      FILTER(STR(?db) = "ChEBI")
+    }
+  ground_truth:
+    examples:
+      - "Glucose, Glucose-6-phosphate, Fructose-6-phosphate"
+      - "ATP, ADP, NAD+, NADH"
+      - "Pyruvate"
+  llm_baseline: "Glucose, G6P, F6P, FBP, DHAP, G3P, 1,3-BPG, 3-PG, 2-PG, PEP, pyruvate"
+  evaluation_criteria:
+    correctness: "Must return glycolysis metabolites"
+    completeness: "Should include major intermediates"
+    query_efficiency: "Should link pathway to molecules to ChEBI"
+
+# =============================================================================
+# CATEGORY 5: VERIFICATION / FACT-CHECKING
+# Questions to verify claims against authoritative data
+# =============================================================================
+
+- id: Q017
+  question: "Is imatinib (Gleevec) approved as a drug? What is its development phase?"
+  category: verification
+  difficulty: easy
+  why_rdf_portal: "Verify drug approval status from authoritative source"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?molecule ?label ?phase
+    WHERE {
+      ?molecule rdfs:label ?label ;
+                cco:highestDevelopmentPhase ?phase .
+      ?label bif:contains "'imatinib'" .
+    }
+  ground_truth:
+    drug: "IMATINIB (CHEMBL941)"
+    phase: 4
+    status: "Marketed/Approved"
+  llm_baseline: "Yes, imatinib is an approved drug for CML and GIST"
+  evaluation_criteria:
+    correctness: "Must confirm Phase 4 status"
+    completeness: "Should identify the correct ChEMBL ID"
+    query_efficiency: "Simple lookup query"
+
+- id: Q018
+  question: "Is BRCA1 annotated as involved in DNA repair in UniProt?"
+  category: verification
+  difficulty: easy
+  why_rdf_portal: "Verify annotation from curated database"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?protein ?mnemonic ?functionComment
+    WHERE {
+      ?protein a up:Protein ;
+               up:mnemonic "BRCA1_HUMAN" ;
+               up:annotation ?annot .
+      ?annot a up:Function_Annotation ;
+             rdfs:comment ?functionComment .
+      FILTER(CONTAINS(LCASE(?functionComment), "dna repair"))
+    }
+  ground_truth:
+    protein: "P38398 (BRCA1_HUMAN)"
+    annotation: "Yes, DNA repair is a key annotated function"
+  llm_baseline: "Yes, BRCA1 is well-known for DNA repair functions"
+  evaluation_criteria:
+    correctness: "Must find DNA repair annotation"
+    completeness: "Should quote actual annotation"
+    query_efficiency: "Should use function annotation type"
+
+- id: Q019
+  question: "Does aspirin (acetylsalicylic acid) inhibit COX-1 according to ChEMBL?"
+  category: verification
+  difficulty: medium
+  why_rdf_portal: "Verify mechanism of action from bioactivity database"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?molecule ?moleculeLabel ?target ?targetLabel ?mechanismType
+    WHERE {
+      ?mechanism cco:hasMolecule ?molecule ;
+                 cco:hasTarget ?target ;
+                 cco:mechanismActionType ?mechanismType .
+      ?molecule rdfs:label ?moleculeLabel .
+      ?target rdfs:label ?targetLabel .
+      ?moleculeLabel bif:contains "'aspirin'" .
+      FILTER(CONTAINS(LCASE(?targetLabel), "cox") || 
+             CONTAINS(LCASE(?targetLabel), "cyclooxygenase"))
+    }
+  ground_truth:
+    drug: "ASPIRIN"
+    target: "Cyclooxygenase-1 (COX-1)"
+    mechanism: "INHIBITOR"
+  llm_baseline: "Yes, aspirin irreversibly inhibits COX-1 and COX-2"
+  evaluation_criteria:
+    correctness: "Must find COX inhibition mechanism"
+    completeness: "Should show mechanism type"
+    query_efficiency: "Should use mechanism query pattern"
+
+- id: Q020
+  question: "Is there experimental structural data for the SARS-CoV-2 spike protein in PDB?"
+  category: verification
+  difficulty: medium
+  why_rdf_portal: "Verify availability of structural data"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?entry_id ?description ?method
+    WHERE {
+      ?entry pdbx:has_entityCategory/pdbx:has_entity ?entity .
+      ?entity pdbx:entity.pdbx_description ?description .
+      ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptl .
+      ?exptl pdbx:exptl.method ?method .
+      FILTER(CONTAINS(LCASE(?description), "spike") && 
+             CONTAINS(LCASE(?description), "sars"))
+    }
+  ground_truth: "Yes, hundreds of spike protein structures exist"
+  llm_baseline: "Yes, many structures were determined during COVID-19 pandemic"
+  evaluation_criteria:
+    correctness: "Must find spike protein structures"
+    completeness: "Should show multiple methods (X-ray, cryo-EM)"
+    query_efficiency: "Should filter by description"
+
+# =============================================================================
+# CATEGORY 6: ADVANCED INTEGRATION QUERIES
+# Complex questions requiring sophisticated database usage
+# =============================================================================
+
+- id: Q021
+  question: "What is the molecular weight of the p53 protein according to UniProt?"
+  category: quantitative
+  difficulty: medium
+  why_rdf_portal: "Precise molecular property from sequence data"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?protein ?mass
+    WHERE {
+      ?protein a up:Protein ;
+               up:mnemonic "P53_HUMAN" ;
+               up:sequence ?iso .
+      ?iso up:mass ?mass .
+    }
+  ground_truth: "~43,653 Da (canonical isoform)"
+  llm_baseline: "p53 is about 43-44 kDa"
+  evaluation_criteria:
+    correctness: "Must return accurate molecular weight"
+    completeness: "Should specify isoform if multiple exist"
+    query_efficiency: "Should use sequence property path"
+
+- id: Q022
+  question: "What experimental methods have been used to determine ribosome structures?"
+  category: enumeration
+  difficulty: medium
+  why_rdf_portal: "Aggregate structural methodology data"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?method (COUNT(?entry) as ?count)
+    WHERE {
+      ?entry pdbx:has_entityCategory/pdbx:has_entity ?entity .
+      ?entity pdbx:entity.pdbx_description ?description .
+      ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptl .
+      ?exptl pdbx:exptl.method ?method .
+      FILTER(CONTAINS(LCASE(?description), "ribosom"))
+    }
+    GROUP BY ?method
+  ground_truth:
+    methods:
+      - "X-RAY DIFFRACTION"
+      - "ELECTRON MICROSCOPY"
+  llm_baseline: "X-ray crystallography and cryo-EM primarily"
+  evaluation_criteria:
+    correctness: "Must return valid experimental methods"
+    completeness: "Should include both major methods"
+    query_efficiency: "Should aggregate by method"
+
+- id: Q023
+  question: "Find drugs that target protein kinases and have indication for cancer"
+  category: multi_criteria
+  difficulty: hard
+  why_rdf_portal: "Complex filtering: target class + disease indication"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?molecule ?label ?targetLabel ?indication
+    WHERE {
+      # Drug has kinase target
+      ?mechanism cco:hasMolecule ?molecule ;
+                 cco:hasTarget ?target .
+      ?target cco:hasProteinClassification ?protClass .
+      ?protClass skos:prefLabel ?className .
+      ?className bif:contains "'kinase'" .
+      
+      # Drug has cancer indication
+      ?drugInd cco:hasMolecule ?molecule ;
+               cco:hasMeshHeading ?indication .
+      FILTER(CONTAINS(LCASE(?indication), "cancer") || 
+             CONTAINS(LCASE(?indication), "tumor") ||
+             CONTAINS(LCASE(?indication), "leukemia") ||
+             CONTAINS(LCASE(?indication), "lymphoma"))
+    }
+  ground_truth:
+    examples:
+      - "Imatinib - BCR-ABL kinase - Leukemia"
+      - "Gefitinib - EGFR kinase - Lung cancer"
+      - "Sorafenib - Multi-kinase - Liver cancer"
+  llm_baseline: "Many TKIs: imatinib, gefitinib, erlotinib, sunitinib, sorafenib..."
+  evaluation_criteria:
+    correctness: "Must return kinase inhibitors with cancer indications"
+    completeness: "Should return comprehensive list"
+    query_efficiency: "Must combine mechanism and indication queries"
+
+- id: Q024
+  question: "How many proteins in each GO cellular component category are reviewed in UniProt for humans?"
+  category: quantitative
+  difficulty: hard
+  why_rdf_portal: "Aggregate statistics by ontology classification"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?goLabel (COUNT(DISTINCT ?protein) as ?count)
+    WHERE {
+      ?protein a up:Protein ;
+               up:reviewed 1 ;
+               up:organism <http://purl.uniprot.org/taxonomy/9606> ;
+               up:classifiedWith ?goTerm .
+      ?goTerm rdfs:label ?goLabel .
+      FILTER(STRSTARTS(STR(?goTerm), "http://purl.obolibrary.org/obo/GO_"))
+    }
+    GROUP BY ?goLabel
+    ORDER BY DESC(?count)
+  ground_truth: "Distribution across nucleus, cytoplasm, membrane, etc."
+  llm_baseline: "Cannot provide exact counts per GO term"
+  evaluation_criteria:
+    correctness: "Must return valid GO term counts"
+    completeness: "Should show top categories"
+    query_efficiency: "Must aggregate by GO classification"
+
+- id: Q025
+  question: "What are the top 5 most commonly targeted proteins in ChEMBL drug mechanisms?"
+  category: enumeration
+  difficulty: hard
+  why_rdf_portal: "Aggregate target frequency analysis"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?targetLabel (COUNT(DISTINCT ?molecule) as ?drugCount)
+    WHERE {
+      ?mechanism cco:hasMolecule ?molecule ;
+                 cco:hasTarget ?target .
+      ?target rdfs:label ?targetLabel .
+    }
+    GROUP BY ?targetLabel
+    ORDER BY DESC(?drugCount)
+    LIMIT 10
+  ground_truth:
+    likely_targets:
+      - "Dopamine receptors"
+      - "Serotonin receptors"
+      - "Adrenergic receptors"
+      - "Histamine receptors"
+      - "Opioid receptors"
+  llm_baseline: "GPCRs are highly druggable - dopamine, serotonin, histamine receptors"
+  evaluation_criteria:
+    correctness: "Must return actual high-frequency targets"
+    completeness: "Should show count data"
+    query_efficiency: "Must aggregate by target"
+
+# =============================================================================
+# ADDITIONAL EDGE CASES AND CHALLENGING QUERIES
+# =============================================================================
+
+- id: Q026
+  question: "What is the amino acid sequence length of human insulin?"
+  category: quantitative
+  difficulty: medium
+  why_rdf_portal: "Precise sequence data from authoritative source"
+  databases_required:
+    - uniprot
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?protein ?sequence (STRLEN(?sequence) as ?length)
+    WHERE {
+      ?protein a up:Protein ;
+               up:mnemonic "INS_HUMAN" ;
+               up:sequence ?iso .
+      ?iso rdf:value ?sequence .
+    }
+  ground_truth: 
+    precursor: "110 amino acids (preproinsulin)"
+    note: "Mature insulin is processed to A and B chains"
+  llm_baseline: "Insulin is 51 amino acids (mature form: A chain 21 + B chain 30)"
+  evaluation_criteria:
+    correctness: "Must return sequence with correct length"
+    completeness: "May need to note precursor vs. mature form"
+    query_efficiency: "Should use sequence value property"
+
+- id: Q027
+  question: "List all organisms represented in Reactome pathways"
+  category: enumeration
+  difficulty: easy
+  why_rdf_portal: "Complete organism coverage enumeration"
+  databases_required:
+    - reactome
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?organismName (COUNT(?pathway) as ?pathwayCount)
+    WHERE {
+      ?pathway a bp:Pathway ;
+               bp:organism ?organism .
+      ?organism bp:name ?organismName .
+    }
+    GROUP BY ?organismName
+  ground_truth:
+    organisms:
+      - "Homo sapiens"
+      - "Mus musculus"
+      - "Rattus norvegicus"
+      - "Bos taurus"
+      - "Canis familiaris"
+      - "Drosophila melanogaster"
+      - "And others (~10 total)"
+  llm_baseline: "Human, mouse, rat, and several model organisms"
+  evaluation_criteria:
+    correctness: "Must return actual organisms in Reactome"
+    completeness: "Should return all organisms"
+    query_efficiency: "Should aggregate by organism"
+
+- id: Q028
+  question: "What NMR structures exist for small peptides (< 50 residues)?"
+  category: multi_criteria
+  difficulty: hard
+  why_rdf_portal: "Filtering by method AND size criteria"
+  databases_required:
+    - pdb
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?entry_id ?sequence ?method
+    WHERE {
+      ?entry pdbx:has_entity_polyCategory/pdbx:has_entity_poly ?poly .
+      ?poly pdbx:entity_poly.pdbx_seq_one_letter_code ?sequence .
+      ?entry pdbx:has_exptlCategory/pdbx:has_exptl ?exptl .
+      ?exptl pdbx:exptl.method "SOLUTION NMR" .
+      FILTER(STRLEN(?sequence) < 50)
+    }
+  ground_truth: "Many small peptide NMR structures exist"
+  llm_baseline: "Cannot list specific structures meeting these criteria"
+  evaluation_criteria:
+    correctness: "Must return NMR structures of small peptides"
+    completeness: "Should return diverse set"
+    query_efficiency: "Must combine method and length filters"
+
+- id: Q029
+  question: "What are all the synonyms for the GO term 'apoptotic process' (GO:0006915)?"
+  category: enumeration
+  difficulty: easy
+  why_rdf_portal: "Complete synonym enumeration from ontology"
+  databases_required:
+    - go
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT ?synonym
+    WHERE {
+      obo:GO_0006915 oboinowl:hasExactSynonym|oboinowl:hasRelatedSynonym|
+                     oboinowl:hasNarrowSynonym|oboinowl:hasBroadSynonym ?synonym .
+    }
+  ground_truth:
+    synonyms:
+      - "apoptosis"
+      - "apoptotic cell death"
+      - "programmed cell death by apoptosis"
+      - "type I programmed cell death"
+  llm_baseline: "Apoptosis, programmed cell death"
+  evaluation_criteria:
+    correctness: "Must return valid GO synonyms"
+    completeness: "Should return all synonym types"
+    query_efficiency: "Should use union of synonym properties"
+
+- id: Q030
+  question: "What drugs have mechanism data linking them to both kinase inhibition and receptor binding?"
+  category: multi_criteria
+  difficulty: hard
+  why_rdf_portal: "Finding drugs with multiple mechanism types"
+  databases_required:
+    - chembl
+  expected_tools:
+    - get_MIE_file
+    - run_sparql
+  expected_sparql_pattern: |
+    SELECT DISTINCT ?molecule ?label
+    WHERE {
+      # Has kinase mechanism
+      ?mech1 cco:hasMolecule ?molecule ;
+             cco:hasTarget ?target1 .
+      ?target1 cco:hasProteinClassification ?class1 .
+      ?class1 skos:prefLabel ?className1 .
+      ?className1 bif:contains "'kinase'" .
+      
+      # Has receptor mechanism
+      ?mech2 cco:hasMolecule ?molecule ;
+             cco:hasTarget ?target2 .
+      ?target2 cco:hasProteinClassification ?class2 .
+      ?class2 skos:prefLabel ?className2 .
+      ?className2 bif:contains "'receptor'" .
+      
+      ?molecule rdfs:label ?label .
+    }
+  ground_truth: "Multi-target drugs like sunitinib, sorafenib"
+  llm_baseline: "Some TKIs also affect receptor pathways"
+  evaluation_criteria:
+    correctness: "Must return multi-mechanism drugs"
+    completeness: "Should identify true polypharmacology drugs"
+    query_efficiency: "Must join two mechanism patterns"
+
+---
+# Evaluation Summary
+# Total Questions: 30
+# 
+# Distribution by Category:
+#   - Quantitative: 7 questions (Q001-Q005, Q021, Q026)
+#   - Enumeration: 6 questions (Q006-Q008, Q022, Q027, Q029)
+#   - Multi-criteria: 8 questions (Q009-Q012, Q023, Q024, Q028, Q030)
+#   - Cross-database: 4 questions (Q013-Q016)
+#   - Verification: 5 questions (Q017-Q020, Q025)
+#
+# Distribution by Difficulty:
+#   - Easy: 8 questions
+#   - Medium: 12 questions
+#   - Hard: 10 questions
+#
+# Databases Covered:
+#   - UniProt: 10 questions
+#   - ChEMBL: 10 questions
+#   - PDB: 6 questions
+#   - GO: 3 questions
+#   - Reactome: 5 questions

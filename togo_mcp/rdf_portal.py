@@ -1,55 +1,41 @@
 import httpx
 import json
 import os
+import csv
 import yaml
 import sys
-from fastmcp import FastMCP
 from typing import Annotated, List, Dict, Any
 from pydantic import Field
+from .server import mcp
 
-# Initialize the FastMCP server
-# This is the entry point for the MCP server, which will handle requests and provide tools.
-mcp = FastMCP("RDF Portal MCP Server")
+# The MIE files are used to define the shape expressions for SPARQL queries. 
+CWD="/Users/arkinjo/work/GitHub/RDFPortal-MCP/"
+MIE_DIR = CWD + "mie"
+MIE_PROMPT= CWD + "resources/MIE_prompt.md"
+RDF_PORTAL_GUIDE= CWD + "resources/rdf_portal_guide.md"
+SPARQL_EXAMPLES= CWD + "sparql-examples"
+RDF_CONFIG_TEMPLATE= CWD + "rdf-config/template.yaml"
+ENDPOINTS_CSV = CWD + "resources/endpoints.csv"
 
 @mcp.resource("resource://boilerplate")
 def boilerplate() -> str:
     return "Hello! I don't know why this is here. But, the server doesn't work without it."
 
-# --- Constants and Configuration (Consolidated) ---
-# The SPARQL endpoints for various RDF databases. These endpoints are used to query the RDF data.
-# See also: https://github.com/rdfportal/rdfportal.github.io/blob/feature/legacy/info/ep_dataset_graph.tsv
-SPARQL_ENDPOINT = {
-    "uniprot": "https://rdfportal.org/backend/sib/sparql",
-    "pubchem": "https://rdfportal.org/backend/pubchem/sparql",
-    "pdb": "https://rdfportal.org/backend/pdb/sparql",
-    "chembl": "https://rdfportal.org/backend/ebi/sparql",
-    "chebi": "https://rdfportal.org/backend/ebi/sparql",
-    "reactome": "https://rdfportal.org/backend/ebi/sparql",
-    "mesh": "https://rdfportal.org/primary/sparql",
-    "go": "https://rdfportal.org/primary/sparql",
-    "taxonomy": "https://rdfportal.org/primary/sparql",
-    "mondo": "https://rdfportal.org/primary/sparql",
-    "ddbj": "https://rdfportal.org/ddbj/sparql",
-    "glycosmos": "https://ts.glycosmos.org/sparql",
-    "bacdive": "https://rdfportal.org/primary/sparql",
-    "mediadive": "https://rdfportal.org/primary/sparql",
-    "clinvar": "https://rdfportal.org/ncbi/sparql",
-    "ensembl": "https://rdfportal.org/ebi/sparql",
-    "nando": "https://rdfportal.org/primary/sparql",
-    "pubmed": "https://rdfportal.org/ncbi/sparql",
-    "pubtator": "https://rdfportal.org/ncbi/sparql",
-    "ncbigene": "https://rdfportal.org/ncbi/sparql",
-    "medgen": "https://rdfportal.org/ncbi/sparql",
-    "rhea": "https://rdfportal.org/sib/sparql"
-}
+def load_sparql_endpoints(path: str) -> Dict[str, str]:
+    """Load SPARQL endpoints from a CSV file."""
+    endpoints = {}
+    with open(path, mode='r', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # Skip header
+        for row in reader:
+            db_name, endpoint_url = row
+            key = db_name.lower().replace(' ', '_').replace('-', '')
+            endpoints[key] = endpoint_url
+    return endpoints
 
-# The MIE files are used to define the shape expressions for SPARQL queries. 
-MIE_DIR = "mie"
-MIE_PROMPT="resources/MIE_prompt.md"
-RDF_PORTAL_GUIDE="resources/rdf_portal_guide.md"
-SPARQL_EXAMPLES="sparql-examples"
+# The SPARQL endpoints for various RDF databases, loaded from a CSV file.
+SPARQL_ENDPOINT = load_sparql_endpoints(ENDPOINTS_CSV)
 
-RDF_CONFIG_TEMPLATE="rdf-config/template.yaml"
 
 @mcp.tool(name="RDF_Portal_Guide",
             description="A general guideline for using the RDF Portal.")
@@ -526,6 +512,3 @@ def get_sparql_example(
             return file.read()
     except Exception as e:
         return f"Error reading SPARQL example file for '{dbname}': {e}"
-
-if __name__ == "__main__":
-    mcp.run()
